@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuscript Upload Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 500;
+        }
+        input[type="file"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input[type="file"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+        .result.success {
+            background: #f0fdf4;
+            border-left-color: #22c55e;
+        }
+        .result.error {
+            background: #fef2f2;
+            border-left-color: #ef4444;
+        }
+        .config-note {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .config-note strong {
+            color: #d97706;
+        }
+        .loading {
+            display: none;
+            margin-left: 10px;
+            color: #667eea;
+        }
+        .url-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .url-input input {
+            flex: 1;
+        }
+        .url-input button {
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Manuscript Platform - Upload Test</h1>
+        
+        <div class="config-note">
+            <strong>⚠️ Set your Worker URL:</strong> Enter your Cloudflare Worker URL below
+        </div>
+        
+        <div class="url-input">
+            <input type="text" id="workerUrl" placeholder="manuscript-upload-api.scarter4work.workers.dev" />
+            <button onclick="setWorkerUrl()">Set URL</button>
+        </div>
+
+        <!-- Manuscript Upload -->
+        <div class="upload-section">
+            <h2>📄 Upload Manuscript</h2>
+            <div class="form-group">
+                <label>Author ID:</label>
+                <input type="text" id="authorId" value="test-author-001" />
+            </div>
+            <div class="form-group">
+                <label>Manuscript ID (optional):</label>
+                <input type="text" id="manuscriptId" placeholder="Leave blank to auto-generate" />
+            </div>
+            <div class="form-group">
+                <label>Version:</label>
+                <input type="text" id="version" value="1.0" />
+            </div>
+            <div class="form-group">
+                <label>Select Manuscript File (PDF, DOCX, TXT):</label>
+                <input type="file" id="manuscriptFile" accept=".pdf,.docx,.doc,.txt,.epub" />
+            </div>
+            <button onclick="uploadManuscript()">
+                Upload Manuscript
+            </button>
+            <span class="loading" id="manuscriptLoading">Uploading...</span>
+            <div class="result" id="manuscriptResult"></div>
+        </div>
+
+        <!-- Marketing Asset Upload -->
+        <div class="upload-section">
+            <h2>🎨 Upload Marketing Asset</h2>
+            <div class="form-group">
+                <label>Author ID:</label>
+                <input type="text" id="marketingAuthorId" value="test-author-001" />
+            </div>
+            <div class="form-group">
+                <label>Asset Type:</label>
+                <input type="text" id="assetType" value="cover" placeholder="cover, author-photo, banner" />
+            </div>
+            <div class="form-group">
+                <label>Select Image File:</label>
+                <input type="file" id="marketingFile" accept="image/*" />
+            </div>
+            <button onclick="uploadMarketing()">
+                Upload Marketing Asset
+            </button>
+            <span class="loading" id="marketingLoading">Uploading...</span>
+            <div class="result" id="marketingResult"></div>
+        </div>
+
+        <!-- List Files -->
+        <div class="upload-section">
+            <h2>📋 List Author Files</h2>
+            <div class="form-group">
+                <label>Author ID:</label>
+                <input type="text" id="listAuthorId" value="test-author-001" />
+            </div>
+            <button onclick="listFiles()">
+                List Files
+            </button>
+            <span class="loading" id="listLoading">Loading...</span>
+            <div class="result" id="listResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Hardcode your Worker URL here
+        let WORKER_URL = 'https://manuscript-upload-api.YOUR-SUBDOMAIN.workers.dev'; // REPLACE THIS!
+        
+        // Or try to get from localStorage
+        if (localStorage.getItem('workerUrl')) {
+            WORKER_URL = localStorage.getItem('workerUrl');
+        }
+        
+        // Set the URL in the input on load
+        window.onload = function() {
+            if (WORKER_URL && WORKER_URL !== 'https://manuscript-upload-api.YOUR-SUBDOMAIN.workers.dev') {
+                document.getElementById('workerUrl').value = WORKER_URL;
+            }
+        };
+        
+        function setWorkerUrl() {
+            const inputUrl = document.getElementById('workerUrl').value;
+            if (!inputUrl) {
+                alert('Please enter a URL');
+                return;
+            }
+            WORKER_URL = inputUrl;
+            localStorage.setItem('workerUrl', WORKER_URL);
+            alert('Worker URL set to: ' + WORKER_URL);
+            console.log('Worker URL saved:', WORKER_URL);
+        }
+        
+        async function uploadManuscript() {
+            if (!WORKER_URL) {
+                alert('Please set your Worker URL first!');
+                return;
+            }
+            
+            const fileInput = document.getElementById('manuscriptFile');
+            const authorId = document.getElementById('authorId').value;
+            const manuscriptId = document.getElementById('manuscriptId').value;
+            const version = document.getElementById('version').value;
+            const resultDiv = document.getElementById('manuscriptResult');
+            const loadingSpan = document.getElementById('manuscriptLoading');
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('authorId', authorId);
+            if (manuscriptId) formData.append('manuscriptId', manuscriptId);
+            formData.append('version', version);
+            
+            loadingSpan.style.display = 'inline';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${WORKER_URL}/upload/manuscript`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+                resultDiv.className = response.ok ? 'result success' : 'result error';
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            } finally {
+                loadingSpan.style.display = 'none';
+            }
+        }
+        
+        async function uploadMarketing() {
+            if (!WORKER_URL) {
+                alert('Please set your Worker URL first!');
+                return;
+            }
+            
+            const fileInput = document.getElementById('marketingFile');
+            const authorId = document.getElementById('marketingAuthorId').value;
+            const assetType = document.getElementById('assetType').value;
+            const resultDiv = document.getElementById('marketingResult');
+            const loadingSpan = document.getElementById('marketingLoading');
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('authorId', authorId);
+            formData.append('assetType', assetType);
+            
+            loadingSpan.style.display = 'inline';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${WORKER_URL}/upload/marketing`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+                resultDiv.className = response.ok ? 'result success' : 'result error';
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            } finally {
+                loadingSpan.style.display = 'none';
+            }
+        }
+        
+        async function listFiles() {
+            if (!WORKER_URL) {
+                alert('Please set your Worker URL first!');
+                return;
+            }
+            
+            const authorId = document.getElementById('listAuthorId').value;
+            const resultDiv = document.getElementById('listResult');
+            const loadingSpan = document.getElementById('listLoading');
+            
+            loadingSpan.style.display = 'inline';
+            resultDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${WORKER_URL}/list/${authorId}?bucket=raw`);
+                const data = await response.json();
+                
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            } finally {
+                loadingSpan.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

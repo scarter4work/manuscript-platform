@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuscript Upload Test - Simple</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 8px;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manuscript Upload Test</h1>
+    
+    <!-- REPLACE THIS URL WITH YOUR ACTUAL WORKER URL -->
+    <script>
+        const WORKER_URL = 'https://manuscript-upload-api.scarter4work.workers.dev'; // <-- CHANGE THIS!
+    </script>
+    
+    <div class="section">
+        <h2>Test Connection</h2>
+        <button onclick="testConnection()">Test API</button>
+        <div id="testResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>Upload Manuscript</h2>
+        <input type="text" id="authorId" placeholder="Author ID" value="test-author">
+        <input type="file" id="manuscriptFile" accept=".pdf,.txt,.docx">
+        <button onclick="uploadManuscript()">Upload</button>
+        <div id="uploadResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>List Files</h2>
+        <input type="text" id="listAuthorId" placeholder="Author ID" value="test-author">
+        <button onclick="listFiles()">List Files</button>
+        <div id="listResult"></div>
+    </div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('testResult');
+            try {
+                const response = await fetch(WORKER_URL + '/');
+                const data = await response.json();
+                resultDiv.className = 'result success';
+                resultDiv.textContent = 'API Connected!\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function uploadManuscript() {
+            const resultDiv = document.getElementById('uploadResult');
+            const fileInput = document.getElementById('manuscriptFile');
+            const authorId = document.getElementById('authorId').value;
+            
+            if (!fileInput.files[0]) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Please select a file';
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('authorId', authorId);
+            
+            try {
+                resultDiv.className = 'result';
+                resultDiv.textContent = 'Uploading...';
+                
+                const response = await fetch(WORKER_URL + '/upload/manuscript', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                resultDiv.className = response.ok ? 'result success' : 'result error';
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function listFiles() {
+            const resultDiv = document.getElementById('listResult');
+            const authorId = document.getElementById('listAuthorId').value;
+            
+            try {
+                const response = await fetch(WORKER_URL + '/list/' + authorId);
+                const data = await response.json();
+                resultDiv.className = 'result success';
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        // Test connection on load
+        window.onload = () => {
+            console.log('Using Worker URL:', WORKER_URL);
+            if (WORKER_URL.includes('YOUR-SUBDOMAIN')) {
+                alert('Please edit this file and replace the WORKER_URL with your actual Worker URL!');
+            }
+        };
+    </script>
+</body>
+</html>

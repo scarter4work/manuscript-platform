@@ -5,9 +5,18 @@ export default {
   async fetch(request, env, ctx) {
     console.log('Incoming request:', request.method, request.url);
     
-    // CORS headers - Update the origin to match where you're testing from
+    // CORS headers - Update with your actual domain
+    const allowedOrigins = [
+      'https://scarter4workmanuscripthub.com',
+      'https://www.scarter4workmanuscripthub.com',
+      'https://api.scarter4workmanuscripthub.com',
+      'http://localhost:8000', // for local testing
+      'http://localhost:3000', // for local React dev
+    ];
+    
+    const origin = request.headers.get('Origin');
     const corsHeaders = {
-      'Access-Control-Allow-Origin': '*', // This allows all origins
+      'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : allowedOrigins[0],
       'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, X-Filename, X-Author-Id, X-File-Type',
       'Access-Control-Max-Age': '86400',
