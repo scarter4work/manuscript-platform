@@ -45,6 +45,23 @@ export default {
         return await handleFileDelete(request, env, corsHeaders);
       }
 
+      // Add a root route for testing
+      if (path === '/' && request.method === 'GET') {
+        return new Response(JSON.stringify({
+          message: 'Manuscript Upload API is running!',
+          version: '1.0.0',
+          endpoints: [
+            'POST /upload/manuscript',
+            'POST /upload/marketing',
+            'GET /list/{authorId}',
+            'GET /get/{key}',
+            'DELETE /delete/{key}'
+          ]
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       return new Response('Not Found', { status: 404, headers: corsHeaders });
 
     } catch (error) {
