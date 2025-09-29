@@ -1,0 +1,13 @@
+{
+  "name": "manuscript-upload-api",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for manuscript upload and management",
+  "main": "worker.js",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

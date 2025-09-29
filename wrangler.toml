@@ -1,0 +1,19 @@
+name = "manuscript-upload-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# R2 Bucket bindings
+[[r2_buckets]]
+binding = "MANUSCRIPTS_RAW"
+bucket_name = "manuscripts-raw"
+
+[[r2_buckets]]
+binding = "MANUSCRIPTS_PROCESSED"
+bucket_name = "manuscripts-processed"
+
+[[r2_buckets]]
+binding = "MARKETING_ASSETS"
+bucket_name = "marketing-assets"
+
+# Optional: Add custom domain
+# route = "api.yourdomain.com/*"
