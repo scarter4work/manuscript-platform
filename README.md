@@ -26,3 +26,7 @@ A Cloudflare Worker for handling manuscript uploads, processing, and publishing 
 ## Deployment
 
 This Worker is automatically deployed via GitHub Actions when you push to the main branch.
+
+## Last Updated
+
+- 2025-09-29: Initial deployment with GitHub integration
