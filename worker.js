@@ -5,9 +5,9 @@ export default {
   async fetch(request, env, ctx) {
     console.log('Incoming request:', request.method, request.url);
     
-    // CORS headers
+    // CORS headers - Update the origin to match where you're testing from
     const corsHeaders = {
-      'Access-Control-Allow-Origin': '*', // Replace with your domain in production
+      'Access-Control-Allow-Origin': '*', // This allows all origins
       'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, X-Filename, X-Author-Id, X-File-Type',
       'Access-Control-Max-Age': '86400',
@@ -78,77 +78,88 @@ export default {
 
 // Handle manuscript uploads
 async function handleManuscriptUpload(request, env, corsHeaders) {
-  const formData = await request.formData();
-  const file = formData.get('file');
-  const authorId = formData.get('authorId') || 'anonymous';
-  const manuscriptId = formData.get('manuscriptId') || crypto.randomUUID();
-  
-  if (!file) {
-    return new Response(JSON.stringify({ error: 'No file provided' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-  }
-
-  // Validate file size (e.g., 50MB limit for manuscripts)
-  const maxSize = 50 * 1024 * 1024; // 50MB
-  if (file.size > maxSize) {
-    return new Response(JSON.stringify({ error: 'File too large. Maximum size is 50MB' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-  }
-
-  // Validate file type
-  const allowedTypes = [
-    'application/pdf',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-    'application/msword', // .doc
-    'text/plain',
-    'application/epub+zip'
-  ];
-  
-  if (!allowedTypes.includes(file.type)) {
-    return new Response(JSON.stringify({ error: 'Invalid file type' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-  }
-
-  // Generate storage key with metadata
-  const timestamp = new Date().toISOString();
-  const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-  const key = `${authorId}/${manuscriptId}/${timestamp}_${sanitizedFilename}`;
-
-  // Create metadata object
-  const metadata = {
-    authorId: authorId,
-    manuscriptId: manuscriptId,
-    originalName: file.name,
-    uploadTime: timestamp,
-    fileType: file.type,
-    fileSize: file.size,
-    version: formData.get('version') || '1.0'
-  };
-
-  // Upload to R2 with metadata
-  await env.MANUSCRIPTS_RAW.put(key, file.stream(), {
-    customMetadata: metadata,
-    httpMetadata: {
-      contentType: file.type,
+  try {
+    console.log('Processing manuscript upload...');
+    const formData = await request.formData();
+    const file = formData.get('file');
+    const authorId = formData.get('authorId') || 'anonymous';
+    const manuscriptId = formData.get('manuscriptId') || crypto.randomUUID();
+    
+    if (!file) {
+      return new Response(JSON.stringify({ error: 'No file provided' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
-  });
 
-  // Return success response with file details
-  return new Response(JSON.stringify({
-    success: true,
-    manuscriptId: manuscriptId,
-    key: key,
-    metadata: metadata
-  }), {
-    status: 200,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-  });
+    // Validate file size (e.g., 50MB limit for manuscripts)
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSize) {
+      return new Response(JSON.stringify({ error: 'File too large. Maximum size is 50MB' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+      'application/msword', // .doc
+      'text/plain',
+      'application/epub+zip'
+    ];
+    
+    if (!allowedTypes.includes(file.type)) {
+      return new Response(JSON.stringify({ error: 'Invalid file type' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Generate storage key with metadata
+    const timestamp = new Date().toISOString();
+    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const key = `${authorId}/${manuscriptId}/${timestamp}_${sanitizedFilename}`;
+
+    // Create metadata object
+    const metadata = {
+      authorId: authorId,
+      manuscriptId: manuscriptId,
+      originalName: file.name,
+      uploadTime: timestamp,
+      fileType: file.type,
+      fileSize: file.size,
+      version: formData.get('version') || '1.0'
+    };
+
+    console.log('Uploading to R2:', key);
+    
+    // Upload to R2 with metadata
+    await env.MANUSCRIPTS_RAW.put(key, file.stream(), {
+      customMetadata: metadata,
+      httpMetadata: {
+        contentType: file.type,
+      }
+    });
+
+    // Return success response with file details
+    return new Response(JSON.stringify({
+      success: true,
+      manuscriptId: manuscriptId,
+      key: key,
+      metadata: metadata
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    console.error('Upload error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
 }
 
 // Handle marketing asset uploads (covers, author photos, etc.)
