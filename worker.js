@@ -3,6 +3,8 @@
 
 export default {
   async fetch(request, env, ctx) {
+    console.log('Incoming request:', request.method, request.url);
+    
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*', // Replace with your domain in production
@@ -18,6 +20,7 @@ export default {
 
     const url = new URL(request.url);
     const path = url.pathname;
+    console.log('Request path:', path);
 
     try {
       // Route: Upload raw manuscript
@@ -282,6 +285,8 @@ async function handleFileList(request, env, corsHeaders) {
   const url = new URL(request.url);
   const authorId = url.pathname.replace('/list/', '');
   const bucket = url.searchParams.get('bucket') || 'raw';
+  
+  console.log('List files for author:', authorId, 'in bucket:', bucket);
   
   let r2Bucket;
   switch(bucket) {

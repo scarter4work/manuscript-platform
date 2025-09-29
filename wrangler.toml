@@ -2,6 +2,10 @@ name = "manuscript-upload-api"
 main = "worker.js"
 compatibility_date = "2024-01-01"
 
+# Enable logging
+logpush = false
+observability = { enabled = true }
+
 # R2 Bucket bindings
 [[r2_buckets]]
 binding = "MANUSCRIPTS_RAW"
