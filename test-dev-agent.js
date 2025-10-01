@@ -74,59 +74,70 @@ function displayAnalysis(analysis) {
   console.log('\n📊 ANALYSIS RESULTS\n');
   console.log('═'.repeat(60));
   
+  // Debug: show what we actually got
+  if (!analysis.structure || !analysis.characters) {
+    console.log('\n⚠️  Raw analysis structure:');
+    console.log(JSON.stringify(analysis, null, 2));
+    return;
+  }
+  
   // Overall Score
   console.log(`\n🎯 Overall Score: ${analysis.overallScore}/10\n`);
   
   // Structure
   console.log('📖 STRUCTURE');
   console.log('   Score:', `${analysis.structure.score}/10`);
-  console.log('   Strengths:', analysis.structure.strengths.join(', '));
-  if (analysis.structure.weaknesses.length > 0) {
+  console.log('   Strengths:', analysis.structure.strengths?.join(', ') || 'N/A');
+  if (analysis.structure.weaknesses?.length > 0) {
     console.log('   Weaknesses:', analysis.structure.weaknesses.join(', '));
   }
-  if (analysis.structure.recommendations.length > 0) {
+  if (analysis.structure.recommendations?.length > 0) {
     console.log('   ➜', analysis.structure.recommendations[0]);
   }
   
   // Characters
   console.log('\n👥 CHARACTERS');
   console.log('   Score:', `${analysis.characters.score}/10`);
-  console.log('   Strengths:', analysis.characters.strengths.join(', '));
-  if (analysis.characters.weaknesses.length > 0) {
+  console.log('   Strengths:', analysis.characters.strengths?.join(', ') || 'N/A');
+  if (analysis.characters.weaknesses?.length > 0) {
     console.log('   Weaknesses:', analysis.characters.weaknesses.join(', '));
   }
-  if (analysis.characters.recommendations.length > 0) {
+  if (analysis.characters.recommendations?.length > 0) {
     console.log('   ➜', analysis.characters.recommendations[0]);
   }
   
   // Plot
   console.log('\n📝 PLOT');
   console.log('   Score:', `${analysis.plot.score}/10`);
-  console.log('   Strengths:', analysis.plot.strengths.join(', '));
-  if (analysis.plot.weaknesses.length > 0) {
+  console.log('   Strengths:', analysis.plot.strengths?.join(', ') || 'N/A');
+  if (analysis.plot.weaknesses?.length > 0) {
     console.log('   Weaknesses:', analysis.plot.weaknesses.join(', '));
   }
   
   // Voice
   console.log('\n🎭 VOICE & STYLE');
   console.log('   Score:', `${analysis.voice.score}/10`);
-  console.log('   Strengths:', analysis.voice.strengths.join(', '));
+  console.log('   Strengths:', analysis.voice.strengths?.join(', ') || 'N/A');
   
   // Genre Fit
   console.log('\n🎬 GENRE FIT');
   console.log('   Score:', `${analysis.genreFit.score}/10`);
-  console.log('   Strengths:', analysis.genreFit.strengths.join(', '));
+  console.log('   Strengths:', analysis.genreFit.strengths?.join(', ') || 'N/A');
   
   // Marketability
-  console.log('\n💰 MARKETABILITY');
-  console.log('   Score:', `${analysis.marketability.score}/10`);
-  console.log('   Summary:', analysis.marketability.summary);
+  if (analysis.marketability) {
+    console.log('\n💰 MARKETABILITY');
+    console.log('   Score:', `${analysis.marketability.score}/10`);
+    console.log('   Summary:', analysis.marketability.summary);
+  }
   
   // Top Priorities
-  console.log('\n🚀 TOP PRIORITIES');
-  analysis.topPriorities.forEach((priority, index) => {
-    console.log(`   ${index + 1}. ${priority}`);
-  });
+  if (analysis.topPriorities?.length > 0) {
+    console.log('\n🚀 TOP PRIORITIES');
+    analysis.topPriorities.forEach((priority, index) => {
+      console.log(`   ${index + 1}. ${priority}`);
+    });
+  }
   
   console.log('\n' + '═'.repeat(60));
 }
