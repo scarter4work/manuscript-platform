@@ -2,6 +2,7 @@
 // Deploy this via Cloudflare Dashboard > Workers & Pages
 
 import { DevelopmentalAgent } from './developmental-agent.js';
+import { LineEditingAgent } from './line-editing-agent.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -62,6 +63,11 @@ export default {
       // Route: Analyze manuscript (Developmental Agent)
       if (path === '/analyze/developmental' && request.method === 'POST') {
         return await handleDevelopmentalAnalysis(request, env, corsHeaders);
+      }
+
+      // Route: Analyze manuscript (Line Editing Agent)
+      if (path === '/analyze/line-editing' && request.method === 'POST') {
+        return await handleLineEditingAnalysis(request, env, corsHeaders);
       }
 
       // Route: Get analysis results
@@ -435,6 +441,46 @@ async function handleDevelopmentalAnalysis(request, env, corsHeaders) {
 
   } catch (error) {
     console.error('Analysis error:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      stack: error.stack 
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Handle line editing analysis request
+async function handleLineEditingAnalysis(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { manuscriptKey, genre } = body;
+
+    if (!manuscriptKey) {
+      return new Response(JSON.stringify({ error: 'manuscriptKey is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Initialize the line editing agent
+    const agent = new LineEditingAgent(env);
+
+    // Run analysis (this will take longer as it processes sections)
+    console.log(`Starting line editing analysis for ${manuscriptKey}`);
+    const analysis = await agent.analyze(manuscriptKey, genre || 'general');
+
+    return new Response(JSON.stringify({
+      success: true,
+      analysis: analysis
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Line editing analysis error:', error);
     return new Response(JSON.stringify({ 
       error: error.message,
       stack: error.stack 

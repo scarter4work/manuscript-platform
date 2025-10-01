@@ -5,3 +5,4 @@ dist/
 .env.local
 .dev.vars
 analysis-*.json
+line-analysis-*.json

@@ -24,9 +24,14 @@ Replace the traditional publishing gatekeepers with AI-driven tools that help au
   - Compares against successful comp titles
   - Provides actionable recommendations
   - Identifies marketability potential
-- 🚧 Line Editing Agent (Phase 2)
-- 🚧 Copy Editing Agent (Phase 2)
-- 🚧 Proofreading Agent (Phase 2)
+- ✅ **Line Editing Agent** - Sentence-level prose improvement
+  - Identifies weak words, passive voice, redundancies
+  - Analyzes sentence structure and rhythm
+  - Provides specific before/after rewrites
+  - Processes in sections for detailed feedback
+  - Tracks patterns across entire manuscript
+- 🚧 Copy Editing Agent (Phase 3)
+- 🚧 Proofreading Agent (Phase 3)
 
 ## 🏗️ Architecture
 
