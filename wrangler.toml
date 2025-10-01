@@ -22,3 +22,9 @@ bucket_name = "marketing-assets"
 # Note: Custom domain is configured via Cloudflare Dashboard
 # Go to Workers & Pages > manuscript-upload-api > Custom Domains
 # Add: api.scarter4workmanuscripthub.com
+
+# Environment variables (set via Cloudflare Dashboard for production)
+# For local development, create a .dev.vars file with:
+# ANTHROPIC_API_KEY=your_key_here
+[vars]
+# ANTHROPIC_API_KEY will be set via dashboard secrets for production

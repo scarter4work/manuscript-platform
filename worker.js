@@ -1,6 +1,8 @@
 // Cloudflare Worker for handling manuscript uploads
 // Deploy this via Cloudflare Dashboard > Workers & Pages
 
+import { DevelopmentalAgent } from './developmental-agent.js';
+
 export default {
   async fetch(request, env, ctx) {
     console.log('Incoming request:', request.method, request.url);
@@ -55,6 +57,16 @@ export default {
       // Route: Delete file
       if (path.startsWith('/delete/') && request.method === 'DELETE') {
         return await handleFileDelete(request, env, corsHeaders);
+      }
+
+      // Route: Analyze manuscript (Developmental Agent)
+      if (path === '/analyze/developmental' && request.method === 'POST') {
+        return await handleDevelopmentalAnalysis(request, env, corsHeaders);
+      }
+
+      // Route: Get analysis results
+      if (path.startsWith('/analysis/') && request.method === 'GET') {
+        return await handleGetAnalysis(request, env, corsHeaders);
       }
 
       // Add a root route for testing
@@ -391,4 +403,76 @@ function isAuthorized(authHeader) {
   // Implement your auth logic here
   // For now, returning true for development
   return true;
+}
+
+// Handle developmental analysis request
+async function handleDevelopmentalAnalysis(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { manuscriptKey, genre } = body;
+
+    if (!manuscriptKey) {
+      return new Response(JSON.stringify({ error: 'manuscriptKey is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Initialize the developmental agent
+    const agent = new DevelopmentalAgent(env);
+
+    // Run analysis (this may take a while)
+    console.log(`Starting developmental analysis for ${manuscriptKey}`);
+    const analysis = await agent.analyze(manuscriptKey, genre || 'general');
+
+    return new Response(JSON.stringify({
+      success: true,
+      analysis: analysis
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Analysis error:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      stack: error.stack 
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Get stored analysis results
+async function handleGetAnalysis(request, env, corsHeaders) {
+  const url = new URL(request.url);
+  const manuscriptKey = url.pathname.replace('/analysis/', '');
+  const processedKey = `${manuscriptKey}-analysis.json`;
+
+  try {
+    const analysis = await env.MANUSCRIPTS_PROCESSED.get(processedKey);
+    
+    if (!analysis) {
+      return new Response(JSON.stringify({ error: 'Analysis not found' }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const analysisData = await analysis.json();
+
+    return new Response(JSON.stringify(analysisData), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error retrieving analysis:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
 }
