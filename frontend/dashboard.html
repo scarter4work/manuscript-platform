@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuscript Analysis Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .upload-section {
+            text-align: center;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px 0;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 40px;
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .file-input-label:hover {
+            background: #eef1ff;
+            border-color: #764ba2;
+        }
+
+        .file-input-label.has-file {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #4caf50;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .analysis-status {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .analysis-status.active {
+            display: block;
+        }
+
+        .agent-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .agent-card.running {
+            border-left-color: #ffa726;
+            background: #fff8e1;
+        }
+
+        .agent-card.complete {
+            border-left-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .agent-card.error {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .agent-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .agent-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .status-running {
+            background: #ffa726;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .status-complete {
+            background: #4caf50;
+            color: white;
+        }
+
+        .status-error {
+            background: #f44336;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .agent-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            display: none;
+        }
+
+        .agent-details.visible {
+            display: block;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .issue-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .issue-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #ffa726;
+        }
+
+        .issue-item.high {
+            border-left-color: #f44336;
+        }
+
+        .issue-item.medium {
+            border-left-color: #ffa726;
+        }
+
+        .issue-item.low {
+            border-left-color: #4caf50;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .summary-card.visible {
+            display: block;
+        }
+
+        .summary-card h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .view-details-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 20px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .view-details-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .alert-warning {
+            background: #fff8e1;
+            color: #f57f17;
+            border-left: 4px solid #ffa726;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Manuscript Analysis Dashboard</h1>
+            <p>AI-Powered Editing Suite for Authors</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="card upload-section" id="uploadCard">
+            <h2>Upload Your Manuscript</h2>
+            
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" accept=".txt,.pdf,.docx">
+                <label for="fileInput" class="file-input-label" id="fileLabel">
+                    <div style="font-size: 3em; margin-bottom: 10px;">📄</div>
+                    <div id="fileName">Click or drag to upload manuscript</div>
+                    <div style="font-size: 0.9em; color: #666; margin-top: 10px;">
+                        Supports .txt, .pdf, .docx (up to 50MB)
+                    </div>
+                </label>
+            </div>
+
+            <div class="input-group">
+                <label for="authorId">Author ID</label>
+                <input type="text" id="authorId" placeholder="Enter your author ID" value="test-author">
+            </div>
+
+            <div class="input-group">
+                <label for="genre">Genre</label>
+                <select id="genre">
+                    <option value="thriller">Thriller</option>
+                    <option value="romance">Romance</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="sci-fi">Sci-Fi</option>
+                    <option value="mystery">Mystery</option>
+                    <option value="literary">Literary Fiction</option>
+                    <option value="horror">Horror</option>
+                    <option value="general">General</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="styleGuide">Style Guide (for Copy Editing)</label>
+                <select id="styleGuide">
+                    <option value="chicago">Chicago Manual of Style</option>
+                    <option value="ap">AP Style</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+
+            <button class="btn" id="uploadBtn" onclick="uploadAndAnalyze()">
+                Upload & Start Analysis
+            </button>
+        </div>
+
+        <!-- Analysis Progress Section -->
+        <div class="card analysis-status" id="analysisCard">
+            <h2>Analysis in Progress</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            <p id="progressText" style="text-align: center; margin-top: 10px; color: #666;">
+                Uploading manuscript...
+            </p>
+
+            <!-- Agent Cards -->
+            <div class="agent-card" id="devAgent">
+                <div class="agent-header">
+                    <div class="agent-name">🎯 Developmental Analysis</div>
+                    <span class="agent-status status-pending" id="devStatus">Pending</span>
+                </div>
+                <div style="color: #666; font-size: 0.9em;">
+                    Analyzing plot, characters, pacing, and structure
+                </div>
+                <div class="agent-details" id="devDetails"></div>
+                <button class="view-details-btn hidden" id="devDetailsBtn" onclick="toggleDetails('dev')">
+                    View Details
+                </button>
+            </div>
+
+            <div class="agent-card" id="lineAgent">
+                <div class="agent-header">
+                    <div class="agent-name">✍️ Line Editing Analysis</div>
+                    <span class="agent-status status-pending" id="lineStatus">Pending</span>
+                </div>
+                <div style="color: #666; font-size: 0.9em;">
+                    Reviewing prose quality and sentence structure
+                </div>
+                <div class="agent-details" id="lineDetails"></div>
+                <button class="view-details-btn hidden" id="lineDetailsBtn" onclick="toggleDetails('line')">
+                    View Details
+                </button>
+            </div>
+
+            <div class="agent-card" id="copyAgent">
+                <div class="agent-header">
+                    <div class="agent-name">📝 Copy Editing Analysis</div>
+                    <span class="agent-status status-pending" id="copyStatus">Pending</span>
+                </div>
+                <div style="color: #666; font-size: 0.9em;">
+                    Checking grammar, punctuation, and consistency
+                </div>
+                <div class="agent-details" id="copyDetails"></div>
+                <button class="view-details-btn hidden" id="copyDetailsBtn" onclick="toggleDetails('copy')">
+                    View Details
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-card" id="summaryCard">
+            <h2>✨ Analysis Complete!</h2>
+            <p>Your manuscript has been thoroughly analyzed by our AI editing suite.</p>
+            
+            <div class="summary-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="overallScore">-</div>
+                    <div class="stat-label">Overall Score</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalIssues">-</div>
+                    <div class="stat-label">Total Issues</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="readyStatus">-</div>
+                    <div class="stat-label">Publication Ready</div>
+                </div>
+            </div>
+
+            <div id="summaryMessage" style="font-size: 1.2em; margin: 20px 0;"></div>
+
+            <button class="btn btn-secondary" onclick="downloadReports()">
+                📥 Download Full Reports
+            </button>
+            <button class="btn" onclick="resetDashboard()">
+                🔄 Analyze Another Manuscript
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8787'; // Change to production URL when deployed
+        let manuscriptKey = null;
+        let analysisResults = {
+            developmental: null,
+            lineEditing: null,
+            copyEditing: null
+        };
+
+        // File input handling
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileLabel').classList.add('has-file');
+            }
+        });
+
+        async function uploadAndAnalyze() {
+            const fileInput = document.getElementById('fileInput');
+            const authorId = document.getElementById('authorId').value;
+            const genre = document.getElementById('genre').value;
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a manuscript file');
+                return;
+            }
+
+            if (!authorId) {
+                alert('Please enter an author ID');
+                return;
+            }
+
+            // Show analysis card, hide upload card
+            document.getElementById('uploadCard').style.display = 'none';
+            document.getElementById('analysisCard').classList.add('active');
+            updateProgress(10, 'Uploading manuscript...');
+
+            try {
+                // Upload manuscript
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                formData.append('authorId', authorId);
+                formData.append('manuscriptId', `ms-${Date.now()}`);
+
+                const uploadResponse = await fetch(`${API_BASE}/upload/manuscript`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error('Upload failed');
+                }
+
+                const uploadResult = await uploadResponse.json();
+                manuscriptKey = uploadResult.key;
+                
+                updateProgress(20, 'Upload complete! Starting analysis...');
+
+                // Run all three agents sequentially
+                await runDevelopmentalAgent(genre);
+                await runLineEditingAgent(genre);
+                await runCopyEditingAgent();
+
+                // Show summary
+                showSummary();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Analysis failed: ' + error.message);
+                resetDashboard();
+            }
+        }
+
+        async function runDevelopmentalAgent(genre) {
+            updateAgentStatus('dev', 'running', 'Running...');
+            updateProgress(30, 'Running developmental analysis...');
+
+            try {
+                const response = await fetch(`${API_BASE}/analyze/developmental`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ manuscriptKey, genre })
+                });
+
+                if (!response.ok) throw new Error('Developmental analysis failed');
+
+                const result = await response.json();
+                analysisResults.developmental = result.analysis;
+                
+                updateAgentStatus('dev', 'complete', 'Complete');
+                displayDevelopmentalResults(result.analysis);
+                updateProgress(45, 'Developmental analysis complete!');
+
+            } catch (error) {
+                updateAgentStatus('dev', 'error', 'Error');
+                throw error;
+            }
+        }
+
+        async function runLineEditingAgent(genre) {
+            updateAgentStatus('line', 'running', 'Running...');
+            updateProgress(50, 'Running line editing analysis...');
+
+            try {
+                const response = await fetch(`${API_BASE}/analyze/line-editing`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ manuscriptKey, genre })
+                });
+
+                if (!response.ok) throw new Error('Line editing analysis failed');
+
+                const result = await response.json();
+                analysisResults.lineEditing = result.analysis;
+                
+                updateAgentStatus('line', 'complete', 'Complete');
+                displayLineEditingResults(result.analysis);
+                updateProgress(70, 'Line editing analysis complete!');
+
+            } catch (error) {
+                updateAgentStatus('line', 'error', 'Error');
+                throw error;
+            }
+        }
+
+        async function runCopyEditingAgent() {
+            const styleGuide = document.getElementById('styleGuide').value;
+            updateAgentStatus('copy', 'running', 'Running...');
+            updateProgress(75, 'Running copy editing analysis...');
+
+            try {
+                const response = await fetch(`${API_BASE}/analyze/copy-editing`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ manuscriptKey, styleGuide })
+                });
+
+                if (!response.ok) throw new Error('Copy editing analysis failed');
+
+                const result = await response.json();
+                analysisResults.copyEditing = result.analysis;
+                
+                updateAgentStatus('copy', 'complete', 'Complete');
+                displayCopyEditingResults(result.analysis);
+                updateProgress(100, 'All analyses complete!');
+
+            } catch (error) {
+                updateAgentStatus('copy', 'error', 'Error');
+                throw error;
+            }
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+
+        function updateAgentStatus(agent, status, text) {
+            const agentCard = document.getElementById(agent + 'Agent');
+            const statusSpan = document.getElementById(agent + 'Status');
+            
+            agentCard.className = 'agent-card ' + status;
+            statusSpan.className = 'agent-status status-' + status;
+            statusSpan.textContent = text;
+        }
+
+        function displayDevelopmentalResults(analysis) {
+            const details = document.getElementById('devDetails');
+            const btn = document.getElementById('devDetailsBtn');
+            
+            details.innerHTML = `
+                <div class="score-display">
+                    <div class="score-item">
+                        <div class="score-value">${analysis.analysis.overallScore}/10</div>
+                        <div class="score-label">Overall Score</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value">${analysis.analysis.structure?.score || '-'}/10</div>
+                        <div class="score-label">Structure</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value">${analysis.analysis.characters?.score || '-'}/10</div>
+                        <div class="score-label">Characters</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <strong>Top Priorities:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        ${(analysis.analysis.topPriorities || []).map(p => `<li>${p}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            btn.classList.remove('hidden');
+        }
+
+        function displayLineEditingResults(analysis) {
+            const details = document.getElementById('lineDetails');
+            const btn = document.getElementById('lineDetailsBtn');
+            
+            const assessment = analysis.overallAssessment;
+            const patterns = analysis.patterns;
+            
+            details.innerHTML = `
+                <div class="score-display">
+                    <div class="score-item">
+                        <div class="score-value">${assessment.overallProseScore}/10</div>
+                        <div class="score-label">Prose Score</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value">${patterns.totalIssues}</div>
+                        <div class="score-label">Issues Found</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value">${patterns.passiveVoiceTotal}</div>
+                        <div class="score-label">Passive Voice</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <strong>Key Weaknesses:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        ${(assessment.keyWeaknesses || []).map(w => `<li>${w}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            btn.classList.remove('hidden');
+        }
+
+        function displayCopyEditingResults(analysis) {
+            const details = document.getElementById('copyDetails');
+            const btn = document.getElementById('copyDetailsBtn');
+            
+            const assessment = analysis.overallAssessment;
+            
+            details.innerHTML = `
+                <div class="score-display">
+                    <div class="score-item">
+                        <div class="score-value">${assessment.overallCopyScore}/10</div>
+                        <div class="score-label">Copy Score</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value">${assessment.totalErrors}</div>
+                        <div class="score-label">Errors Found</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value">${assessment.readyForPublication ? '✓' : '✗'}</div>
+                        <div class="score-label">Ready to Publish</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <strong>Summary:</strong>
+                    <p style="margin-top: 10px;">${assessment.summary}</p>
+                </div>
+            `;
+            
+            btn.classList.remove('hidden');
+        }
+
+        function toggleDetails(agent) {
+            const details = document.getElementById(agent + 'Details');
+            details.classList.toggle('visible');
+            
+            const btn = document.getElementById(agent + 'DetailsBtn');
+            btn.textContent = details.classList.contains('visible') ? 'Hide Details' : 'View Details';
+        }
+
+        function showSummary() {
+            const dev = analysisResults.developmental.analysis;
+            const line = analysisResults.lineEditing.overallAssessment;
+            const copy = analysisResults.copyEditing.overallAssessment;
+
+            // Calculate overall score (weighted average)
+            const overallScore = ((dev.overallScore * 0.4) + 
+                                 (line.overallProseScore * 0.3) + 
+                                 (copy.overallCopyScore * 0.3)).toFixed(1);
+
+            // Total issues
+            const totalIssues = (analysisResults.lineEditing.patterns.totalIssues || 0) + 
+                               (copy.totalErrors || 0);
+
+            // Ready for publication?
+            const ready = overallScore >= 8 && copy.readyForPublication;
+
+            document.getElementById('overallScore').textContent = overallScore + '/10';
+            document.getElementById('totalIssues').textContent = totalIssues;
+            document.getElementById('readyStatus').textContent = ready ? '✓ Yes' : '✗ Not Yet';
+
+            let message = '';
+            if (overallScore >= 9) {
+                message = '🎉 Excellent! Your manuscript is publication-ready with minimal revisions.';
+            } else if (overallScore >= 7) {
+                message = '👍 Good work! Address the key issues and you\'ll be ready to publish.';
+            } else if (overallScore >= 5) {
+                message = '⚠️ Needs work. Focus on the top priorities from each analysis.';
+            } else {
+                message = '📝 Significant revision needed. Consider working through each agent\'s recommendations systematically.';
+            }
+
+            document.getElementById('summaryMessage').textContent = message;
+            document.getElementById('summaryCard').classList.add('visible');
+        }
+
+        function downloadReports() {
+            // Create a combined report
+            const report = {
+                manuscriptKey: manuscriptKey,
+                timestamp: new Date().toISOString(),
+                developmental: analysisResults.developmental,
+                lineEditing: analysisResults.lineEditing,
+                copyEditing: analysisResults.copyEditing
+            };
+
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `manuscript-analysis-${Date.now()}.json`;
+            a.click();
+        }
+
+        function resetDashboard() {
+            document.getElementById('uploadCard').style.display = 'block';
+            document.getElementById('analysisCard').classList.remove('active');
+            document.getElementById('summaryCard').classList.remove('visible');
+            
+            // Reset form
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileName').textContent = 'Click or drag to upload manuscript';
+            document.getElementById('fileLabel').classList.remove('has-file');
+            
+            // Reset agent cards
+            ['dev', 'line', 'copy'].forEach(agent => {
+                updateAgentStatus(agent, 'pending', 'Pending');
+                document.getElementById(agent + 'Details').innerHTML = '';
+                document.getElementById(agent + 'Details').classList.remove('visible');
+                document.getElementById(agent + 'DetailsBtn').classList.add('hidden');
+            });
+            
+            // Reset data
+            manuscriptKey = null;
+            analysisResults = { developmental: null, lineEditing: null, copyEditing: null };
+        }
+    </script>
+</body>
+</html>
