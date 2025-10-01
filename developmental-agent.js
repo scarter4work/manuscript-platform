@@ -144,6 +144,13 @@ export class DevelopmentalAgent {
    * Run comprehensive developmental analysis using Claude
    */
   async runDevelopmentalAnalysis(text, structure, genre) {
+    // Check if API key is set
+    if (!this.claudeApiKey) {
+      throw new Error('ANTHROPIC_API_KEY is not set in environment variables');
+    }
+    
+    console.log('Using API key:', this.claudeApiKey.substring(0, 10) + '...');
+    
     // Prepare the manuscript for analysis (truncate if too long)
     const maxTokens = 100000; // Approximate token limit
     const truncatedText = this.truncateForAnalysis(text, maxTokens);
@@ -217,7 +224,9 @@ Provide your analysis in JSON format with the following structure:
       });
 
       if (!response.ok) {
-        throw new Error(`Claude API error: ${response.status}`);
+        const errorBody = await response.text();
+        console.error('Claude API error details:', errorBody);
+        throw new Error(`Claude API error: ${response.status} - ${errorBody}`);
       }
 
       const data = await response.json();
