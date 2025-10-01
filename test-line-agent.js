@@ -67,12 +67,27 @@ async function analyzeManuscript(manuscriptKey, genre) {
   }
 
   const result = await response.json();
+  console.log('\n✅ Analysis complete!');
+  console.log('   Response keys:', Object.keys(result));
+  
+  if (!result.analysis) {
+    console.log('\n⚠️  Warning: No analysis object in response');
+    console.log('   Full response:', JSON.stringify(result, null, 2));
+  }
+  
   return result.analysis;
 }
 
 function displayAnalysis(analysis) {
   console.log('\n📊 LINE EDITING ANALYSIS\n');
   console.log('═'.repeat(70));
+  
+  // Debug: Check if we have the expected structure
+  if (!analysis || !analysis.overallAssessment) {
+    console.log('\n⚠️  Analysis structure issue:');
+    console.log(JSON.stringify(analysis, null, 2));
+    return;
+  }
   
   // Overall Assessment
   const assessment = analysis.overallAssessment;
