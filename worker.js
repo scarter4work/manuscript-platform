@@ -20,7 +20,7 @@ export default {
     
     const origin = request.headers.get('Origin');
     const corsHeaders = {
-      'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : allowedOrigins[0],
+      'Access-Control-Allow-Origin': origin && allowedOrigins.includes(origin) ? origin : '*', // Allow all for dev
       'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, X-Filename, X-Author-Id, X-File-Type',
       'Access-Control-Max-Age': '86400',
@@ -91,8 +91,12 @@ export default {
             'POST /upload/marketing',
             'GET /list/{authorId}',
             'GET /get/{key}',
-            'DELETE /delete/{key}'
-          ]
+            'DELETE /delete/{key}',
+            'POST /analyze/developmental',
+            'POST /analyze/line-editing',
+            'POST /analyze/copy-editing'
+          ],
+          dashboard: 'Visit https://scarter4workmanuscripthub.com for the dashboard'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });

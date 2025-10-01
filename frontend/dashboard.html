@@ -535,7 +535,9 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:8787'; // Change to production URL when deployed
+        const API_BASE = window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+            ? 'http://localhost:8787'
+            : 'https://api.scarter4workmanuscripthub.com';
         let manuscriptKey = null;
         let analysisResults = {
             developmental: null,
