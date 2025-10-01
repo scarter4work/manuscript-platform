@@ -30,7 +30,12 @@ Replace the traditional publishing gatekeepers with AI-driven tools that help au
   - Provides specific before/after rewrites
   - Processes in sections for detailed feedback
   - Tracks patterns across entire manuscript
-- 🚧 Copy Editing Agent (Phase 3)
+- ✅ **Copy Editing Agent** - Grammar, punctuation, and technical correctness
+  - Checks grammar, spelling, punctuation
+  - Verifies consistency (names, numbers, formatting)
+  - Supports Chicago, AP, and custom style guides
+  - Flags errors with corrections and explanations
+  - Provides publication-readiness assessment
 - 🚧 Proofreading Agent (Phase 3)
 
 ## 🏗️ Architecture

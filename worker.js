@@ -3,6 +3,7 @@
 
 import { DevelopmentalAgent } from './developmental-agent.js';
 import { LineEditingAgent } from './line-editing-agent.js';
+import { CopyEditingAgent } from './copy-editing-agent.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -68,6 +69,11 @@ export default {
       // Route: Analyze manuscript (Line Editing Agent)
       if (path === '/analyze/line-editing' && request.method === 'POST') {
         return await handleLineEditingAnalysis(request, env, corsHeaders);
+      }
+
+      // Route: Analyze manuscript (Copy Editing Agent)
+      if (path === '/analyze/copy-editing' && request.method === 'POST') {
+        return await handleCopyEditingAnalysis(request, env, corsHeaders);
       }
 
       // Route: Get analysis results
@@ -481,6 +487,46 @@ async function handleLineEditingAnalysis(request, env, corsHeaders) {
 
   } catch (error) {
     console.error('Line editing analysis error:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      stack: error.stack 
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Handle copy editing analysis request
+async function handleCopyEditingAnalysis(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { manuscriptKey, styleGuide } = body;
+
+    if (!manuscriptKey) {
+      return new Response(JSON.stringify({ error: 'manuscriptKey is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Initialize the copy editing agent
+    const agent = new CopyEditingAgent(env);
+
+    // Run analysis
+    console.log(`Starting copy editing analysis for ${manuscriptKey}`);
+    const analysis = await agent.analyze(manuscriptKey, styleGuide || 'chicago');
+
+    return new Response(JSON.stringify({
+      success: true,
+      analysis: analysis
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Copy editing analysis error:', error);
     return new Response(JSON.stringify({ 
       error: error.message,
       stack: error.stack 

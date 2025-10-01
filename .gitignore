@@ -6,3 +6,4 @@ dist/
 .dev.vars
 analysis-*.json
 line-analysis-*.json
+copy-analysis-*.json
