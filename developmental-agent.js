@@ -193,7 +193,7 @@ Manuscript Statistics:
 Manuscript Text:
 ${truncatedText}
 
-Provide your analysis in JSON format with the following structure:
+Provide your analysis ONLY as valid JSON (no other text before or after). Return this exact structure:
 {
   "overallScore": 1-10,
   "structure": { "score": 1-10, "strengths": [], "weaknesses": [], "recommendations": [] },

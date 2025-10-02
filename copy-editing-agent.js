@@ -204,7 +204,7 @@ Focus on:
 Section Text:
 ${section.text}
 
-Provide specific errors in JSON format:
+Provide specific errors ONLY as valid JSON (no other text before or after). Return this exact structure:
 {
   "overallScore": 1-10,
   "errorCount": number,

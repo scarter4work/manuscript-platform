@@ -162,7 +162,7 @@ Focus on:
 Section Text:
 ${section.text}
 
-Provide your analysis in JSON format with specific examples:
+Provide your analysis ONLY as valid JSON (no other text before or after). Return this exact structure:
 {
   "overallScore": 1-10,
   "issues": [
@@ -213,16 +213,31 @@ Be specific with locations and examples. Provide actual rewrites, not just descr
       const data = await response.json();
       const analysisText = data.content[0].text;
       
-      // Parse JSON response
-      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const analysis = JSON.parse(jsonMatch[0]);
-        return {
-          sectionNumber: section.sectionNumber,
-          wordRange: `${section.startWord}-${section.endWord}`,
-          ...analysis
-        };
+      // Parse JSON response - be more robust
+      let analysis;
+      try {
+        // Try to find JSON in the response
+        const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          // Clean up the JSON string - remove any trailing commas before closing braces
+          let jsonStr = jsonMatch[0];
+          // Fix trailing commas in arrays and objects
+          jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1');
+          analysis = JSON.parse(jsonStr);
+        } else {
+          throw new Error('No JSON found in response');
+        }
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError.message);
+        console.error('Raw response:', analysisText);
+        throw new Error(`Failed to parse analysis JSON: ${parseError.message}`);
       }
+      
+      return {
+        sectionNumber: section.sectionNumber,
+        wordRange: `${section.startWord}-${section.endWord}`,
+        ...analysis
+      };
       
       // Fallback if JSON parsing fails
       return {
