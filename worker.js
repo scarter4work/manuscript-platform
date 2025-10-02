@@ -5,6 +5,7 @@ import { DevelopmentalAgent } from './developmental-agent.js';
 import { LineEditingAgent } from './line-editing-agent.js';
 import { CopyEditingAgent } from './copy-editing-agent.js';
 import { ReportGenerator } from './report-generator.js';
+import { AnnotatedManuscriptGenerator } from './annotated-manuscript-generator.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -85,6 +86,11 @@ export default {
       // Route: Generate formatted report
       if (path.startsWith('/report/') && request.method === 'GET') {
         return await handleGenerateReport(request, env, corsHeaders);
+      }
+
+      // Route: Generate annotated manuscript
+      if (path.startsWith('/annotated/') && request.method === 'GET') {
+        return await handleGenerateAnnotatedManuscript(request, env, corsHeaders);
       }
 
       // Add a root route for testing
@@ -642,6 +648,87 @@ async function handleGenerateReport(request, env, corsHeaders) {
       error: error.message,
       stack: error.stack,
       manuscriptKey: manuscriptKey
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Generate annotated manuscript with inline highlights
+async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
+  const url = new URL(request.url);
+  const manuscriptKey = url.pathname.replace('/annotated/', '');
+  
+  console.log('Generating annotated manuscript for:', manuscriptKey);
+  
+  try {
+    // Fetch the original manuscript text
+    const manuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    if (!manuscript) {
+      return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Extract text
+    const buffer = await manuscript.arrayBuffer();
+    const manuscriptText = new TextDecoder().decode(buffer);
+    
+    // Fetch all analyses
+    const [lineAnalysis, copyAnalysis] = await Promise.all([
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(() => null),
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(() => null)
+    ]);
+    
+    // Combine all issues from both analyses
+    const allIssues = [];
+    
+    if (lineAnalysis?.topSuggestions) {
+      allIssues.push(...lineAnalysis.topSuggestions.map(issue => ({
+        ...issue,
+        category: 'line-editing'
+      })));
+    }
+    
+    if (copyAnalysis?.topIssues) {
+      allIssues.push(...copyAnalysis.topIssues.map(issue => ({
+        ...issue,
+        category: 'copy-editing',
+        original: issue.original,
+        suggestion: issue.correction
+      })));
+    }
+    
+    console.log(`Found ${allIssues.length} total issues to annotate`);
+    
+    // Get metadata
+    const metadata = manuscript.customMetadata || { originalName: 'Unknown', authorId: 'Unknown' };
+    
+    // Generate annotated HTML
+    const annotatedHtml = AnnotatedManuscriptGenerator.generateAnnotatedManuscript(
+      manuscriptKey,
+      manuscriptText,
+      allIssues,
+      metadata,
+      env
+    );
+    
+    return new Response(annotatedHtml, {
+      status: 200,
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'text/html; charset=utf-8'
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error generating annotated manuscript:', error);
+    console.error('Error stack:', error.stack);
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      stack: error.stack
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

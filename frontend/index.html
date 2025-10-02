@@ -526,7 +526,10 @@
             <div id="summaryMessage" style="font-size: 1.2em; margin: 20px 0;"></div>
 
             <button class="btn btn-secondary" onclick="viewFormattedReport()">
-                📄 View Beautiful Report
+                📄 View Summary Report
+            </button>
+            <button class="btn btn-secondary" onclick="viewAnnotatedManuscript()">
+                ✏️ View Annotated Manuscript
             </button>
             <button class="btn" onclick="downloadReports()">
                 📥 Download JSON Data
@@ -852,6 +855,17 @@
             // Open the formatted report in a new window
             const reportUrl = `${API_BASE}/report/${manuscriptKey}`;
             window.open(reportUrl, '_blank');
+        }
+
+        function viewAnnotatedManuscript() {
+            if (!manuscriptKey) {
+                alert('No manuscript analysis available');
+                return;
+            }
+            
+            // Open the annotated manuscript in a new window
+            const annotatedUrl = `${API_BASE}/annotated/${manuscriptKey}`;
+            window.open(annotatedUrl, '_blank');
         }
 
         function downloadReports() {
