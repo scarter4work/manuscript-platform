@@ -5,7 +5,7 @@ export class AnnotatedManuscriptGenerator {
   /**
    * Generate an annotated manuscript with inline highlights and comments
    */
-  static async generateAnnotatedManuscript(manuscriptKey, manuscriptText, allIssues, metadata, env) {
+  static generateAnnotatedManuscript(manuscriptKey, manuscriptText, allIssues, metadata, env) {
     // Sort issues by position in manuscript (if available)
     const sortedIssues = this.sortIssuesByPosition(allIssues, manuscriptText);
     
