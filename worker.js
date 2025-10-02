@@ -584,13 +584,22 @@ async function handleGenerateReport(request, env, corsHeaders) {
   const url = new URL(request.url);
   const manuscriptKey = url.pathname.replace('/report/', '');
   
+  console.log('Generating report for manuscriptKey:', manuscriptKey);
+  
   try {
     // Fetch all three analyses
+    console.log('Fetching analyses from R2...');
     const [devAnalysis, lineAnalysis, copyAnalysis] = await Promise.all([
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`).then(r => r?.json()).catch(() => null),
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(() => null),
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(() => null)
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`).then(r => r?.json()).catch(e => { console.error('Dev analysis error:', e); return null; }),
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(e => { console.error('Line analysis error:', e); return null; }),
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(e => { console.error('Copy analysis error:', e); return null; })
     ]);
+    
+    console.log('Analyses fetched:', { 
+      hasDev: !!devAnalysis, 
+      hasLine: !!lineAnalysis, 
+      hasCopy: !!copyAnalysis 
+    });
     
     if (!devAnalysis && !lineAnalysis && !copyAnalysis) {
       return new Response(JSON.stringify({ error: 'No analysis found for this manuscript' }), {
@@ -600,10 +609,13 @@ async function handleGenerateReport(request, env, corsHeaders) {
     }
     
     // Get manuscript metadata
+    console.log('Fetching manuscript metadata...');
     const rawManuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
     const metadata = rawManuscript?.customMetadata || { originalName: 'Unknown', authorId: 'Unknown' };
+    console.log('Metadata:', metadata);
     
     // Generate HTML report
+    console.log('Generating HTML report...');
     const reportHtml = ReportGenerator.generateFullReport(
       manuscriptKey,
       devAnalysis,
@@ -611,6 +623,8 @@ async function handleGenerateReport(request, env, corsHeaders) {
       copyAnalysis,
       metadata
     );
+    
+    console.log('Report generated, length:', reportHtml.length);
     
     return new Response(reportHtml, {
       status: 200,
@@ -623,7 +637,12 @@ async function handleGenerateReport(request, env, corsHeaders) {
     
   } catch (error) {
     console.error('Error generating report:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error('Error stack:', error.stack);
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      stack: error.stack,
+      manuscriptKey: manuscriptKey
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
