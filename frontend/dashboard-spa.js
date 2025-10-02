@@ -487,12 +487,19 @@ const app = {
             
             const reportHtml = await response.text();
             
-            // Extract body content only (remove html/head/body tags from API response)
+            // Extract styles and body content
             const parser = new DOMParser();
             const doc = parser.parseFromString(reportHtml, 'text/html');
-            const bodyContent = doc.body.innerHTML;
             
-            document.getElementById('reportContent').innerHTML = bodyContent;
+            // Extract CSS from style tags
+            const styles = doc.querySelectorAll('style');
+            const styleContent = Array.from(styles).map(s => s.innerHTML).join('\n');
+            
+            // Create a container with the styles
+            const bodyContent = doc.body.innerHTML;
+            const styledContent = `<style>${styleContent}</style>${bodyContent}`;
+            
+            document.getElementById('reportContent').innerHTML = styledContent;
             document.getElementById('reportLoading').style.display = 'none';
             document.getElementById('reportContent').style.display = 'block';
             
@@ -520,12 +527,19 @@ const app = {
             
             const annotatedHtml = await response.text();
             
-            // Extract body content only
+            // Extract styles and body content
             const parser = new DOMParser();
             const doc = parser.parseFromString(annotatedHtml, 'text/html');
-            const bodyContent = doc.body.innerHTML;
             
-            document.getElementById('annotatedContent').innerHTML = bodyContent;
+            // Extract CSS from style tags and link tags
+            const styles = doc.querySelectorAll('style');
+            const styleContent = Array.from(styles).map(s => s.innerHTML).join('\n');
+            
+            // Create a container with the styles
+            const bodyContent = doc.body.innerHTML;
+            const styledContent = `<style>${styleContent}</style>${bodyContent}`;
+            
+            document.getElementById('annotatedContent').innerHTML = styledContent;
             document.getElementById('annotatedLoading').style.display = 'none';
             document.getElementById('annotatedContent').style.display = 'block';
             
