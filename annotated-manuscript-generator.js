@@ -646,20 +646,33 @@ ${annotatedText}
       }))
       .sort((a, b) => b.position - a.position);
 
-    let result = manuscriptText;
+    // First, escape the entire manuscript text
+    let result = this.escapeHtml(manuscriptText);
 
     // Insert highlights from end to beginning (so positions don't shift)
+    // We need to work with the escaped version, so recalculate positions
     sortedAnnotations.forEach(annotation => {
-      const before = result.substring(0, annotation.position);
-      const highlighted = result.substring(annotation.position, annotation.endPosition);
-      const after = result.substring(annotation.endPosition);
+      // Find the escaped version of the text to highlight
+      const originalText = manuscriptText.substring(annotation.position, annotation.endPosition);
+      const escapedText = this.escapeHtml(originalText);
+      
+      // Find this text in the escaped result (it might be in a different position now)
+      const escapedPosition = result.indexOf(escapedText);
+      
+      if (escapedPosition === -1) {
+        console.warn('Could not find text to highlight:', originalText);
+        return;
+      }
+      
+      const before = result.substring(0, escapedPosition);
+      const after = result.substring(escapedPosition + escapedText.length);
 
       const issue = annotation.issues[0]; // Use first issue for styling
       const classes = `highlight ${issue.type} ${issue.severity}`;
       
       result = before + 
                `<span class="${classes}" id="${issue.id}">` + 
-               this.escapeHtml(highlighted) + 
+               escapedText + 
                '</span>' + 
                after;
     });

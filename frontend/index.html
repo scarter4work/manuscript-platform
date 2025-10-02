@@ -397,9 +397,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📚 Manuscript Analysis Dashboard</h1>
-            <p>AI-Powered Editing Suite for Authors</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                    <h1>📚 Manuscript Analysis Dashboard</h1>
+                <p>AI-Powered Editing Suite for Authors</p>
+            </div>
+            <div id="userInfo" style="text-align: right; color: white; font-size: 14px;">
+                <!-- User info will be populated here -->
+            </div>
         </div>
+    </div>
 
         <!-- Upload Section -->
         <div class="card upload-section" id="uploadCard">
@@ -414,11 +421,6 @@
                         Supports .txt, .pdf, .docx (up to 50MB)
                     </div>
                 </label>
-            </div>
-
-            <div class="input-group">
-                <label for="authorId">Author ID</label>
-                <input type="text" id="authorId" placeholder="Enter your author ID" value="test-author">
             </div>
 
             <div class="input-group">
@@ -556,6 +558,27 @@
         const urlParams = new URLSearchParams(window.location.search);
         const loadReportId = urlParams.get('loadReport');
         
+        // Fetch and display current user
+        async function loadUserInfo() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`);
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    const userInfoDiv = document.getElementById('userInfo');
+                    userInfoDiv.innerHTML = `
+                        <div style="opacity: 0.9;">👤 ${data.name || data.email}</div>
+                        <div style="font-size: 12px; opacity: 0.7;">${data.email}</div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load user info:', error);
+            }
+        }
+        
+        // Load user info on page load
+        loadUserInfo();
+        
         if (loadReportId) {
             // Load existing report on page load
             window.addEventListener('DOMContentLoaded', () => {
@@ -574,16 +597,10 @@
 
         async function uploadAndAnalyze() {
             const fileInput = document.getElementById('fileInput');
-            const authorId = document.getElementById('authorId').value;
             const genre = document.getElementById('genre').value;
             
             if (!fileInput.files[0]) {
                 alert('Please select a manuscript file');
-                return;
-            }
-
-            if (!authorId) {
-                alert('Please enter an author ID');
                 return;
             }
 
@@ -596,7 +613,6 @@
                 // Upload manuscript
                 const formData = new FormData();
                 formData.append('file', fileInput.files[0]);
-                formData.append('authorId', authorId);
                 formData.append('manuscriptId', `ms-${Date.now()}`);
 
                 const uploadResponse = await fetch(`${API_BASE}/upload/manuscript`, {
