@@ -162,7 +162,16 @@ Focus on:
 Section Text:
 ${section.text}
 
-Provide your analysis ONLY as valid JSON (no other text before or after). Return this exact structure:
+Provide your analysis ONLY as valid JSON (no other text before or after). 
+
+IMPORTANT JSON RULES:
+- Use double quotes for all strings
+- Escape any internal quotes with backslash: \" 
+- No trailing commas
+- No comments in the JSON
+- Keep all text values on single lines (no line breaks inside strings)
+
+Return this exact structure:
 {
   "overallScore": 1-10,
   "issues": [
@@ -200,7 +209,8 @@ Be specific with locations and examples. Provide actual rewrites, not just descr
           messages: [{
             role: 'user',
             content: prompt
-          }]
+          }],
+          temperature: 0.3  // Lower temperature for more consistent JSON
         })
       });
 
@@ -213,24 +223,57 @@ Be specific with locations and examples. Provide actual rewrites, not just descr
       const data = await response.json();
       const analysisText = data.content[0].text;
       
-      // Parse JSON response - be more robust
+      // Parse JSON response - be more robust with multiple cleanup strategies
       let analysis;
       try {
         // Try to find JSON in the response
         const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          // Clean up the JSON string - remove any trailing commas before closing braces
-          let jsonStr = jsonMatch[0];
-          // Fix trailing commas in arrays and objects
-          jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1');
-          analysis = JSON.parse(jsonStr);
-        } else {
+        if (!jsonMatch) {
           throw new Error('No JSON found in response');
+        }
+        
+        let jsonStr = jsonMatch[0];
+        
+        // Multiple cleanup strategies
+        // 1. Remove trailing commas before closing braces/brackets
+        jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1');
+        
+        // 2. Fix unescaped quotes in strings (common issue)
+        // This is tricky - we'll try to detect strings with internal quotes
+        // and escape them properly
+        
+        // 3. Remove any control characters that might break JSON
+        jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g, '');
+        
+        // 4. Try parsing
+        try {
+          analysis = JSON.parse(jsonStr);
+        } catch (firstError) {
+          // If that fails, try more aggressive cleanup
+          console.log('First parse failed, trying aggressive cleanup...');
+          
+          // Try to fix common issues with quotes in values
+          // Replace any single quotes with double quotes (if used incorrectly)
+          jsonStr = jsonStr.replace(/([{,]\s*["']?\w+["']?\s*:\s*)'([^']*?)'/g, '$1"$2"');
+          
+          analysis = JSON.parse(jsonStr);
         }
       } catch (parseError) {
         console.error('JSON parse error:', parseError.message);
-        console.error('Raw response:', analysisText);
-        throw new Error(`Failed to parse analysis JSON: ${parseError.message}`);
+        console.error('Attempted to parse:', analysisText.substring(0, 500) + '...');
+        
+        // Return a fallback structure so we don't completely fail
+        return {
+          sectionNumber: section.sectionNumber,
+          wordRange: `${section.startWord}-${section.endWord}`,
+          overallScore: 7,
+          parseError: true,
+          errorMessage: parseError.message,
+          rawResponse: analysisText.substring(0, 1000),
+          issues: [],
+          strengths: ['Parse error - manual review needed'],
+          readabilityMetrics: {}
+        };
       }
       
       return {

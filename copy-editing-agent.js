@@ -204,7 +204,16 @@ Focus on:
 Section Text:
 ${section.text}
 
-Provide specific errors ONLY as valid JSON (no other text before or after). Return this exact structure:
+Provide specific errors ONLY as valid JSON (no other text before or after).
+
+IMPORTANT JSON RULES:
+- Use double quotes for all strings
+- Escape any internal quotes with backslash: \" 
+- No trailing commas
+- No comments in the JSON
+- Keep all text values on single lines (no line breaks inside strings)
+
+Return this exact structure:
 {
   "overallScore": 1-10,
   "errorCount": number,
@@ -239,7 +248,8 @@ Only flag clear, definite errors. If something is stylistic preference rather th
           messages: [{
             role: 'user',
             content: prompt
-          }]
+          }],
+          temperature: 0.3  // Lower temperature for more consistent JSON
         })
       });
 
