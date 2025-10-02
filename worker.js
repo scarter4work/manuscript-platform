@@ -6,6 +6,7 @@ import { LineEditingAgent } from './line-editing-agent.js';
 import { CopyEditingAgent } from './copy-editing-agent.js';
 import { ReportGenerator } from './report-generator.js';
 import { AnnotatedManuscriptGenerator } from './annotated-manuscript-generator.js';
+import { Auth } from './auth.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -38,6 +39,18 @@ export default {
     console.log('Request path:', path);
 
     try {
+      // Auth routes (no auth required)
+      if (path === '/auth/register' && request.method === 'POST') {
+        return await handleRegister(request, env, corsHeaders);
+      }
+
+      if (path === '/auth/login' && request.method === 'POST') {
+        return await handleLogin(request, env, corsHeaders);
+      }
+
+      if (path === '/auth/verify' && request.method === 'GET') {
+        return await handleVerifyToken(request, env, corsHeaders);
+      }
       // Route: Upload raw manuscript
       if (path === '/upload/manuscript' && request.method === 'POST') {
         return await handleManuscriptUpload(request, env, corsHeaders);
@@ -609,17 +622,24 @@ async function handleGenerateReport(request, env, corsHeaders) {
   console.log('Generating report for ID:', reportId);
   
   try {
-    // Get manuscript key from KV mapping
-    const manuscriptKey = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`, { type: 'text' });
+    // Get manuscript key from mapping
+    console.log('Looking up report-id:', `report-id:${reportId}`);
+    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
     
-    if (!manuscriptKey) {
-      return new Response(JSON.stringify({ error: 'Report not found' }), {
+    if (!mappingObject) {
+      console.error('No mapping found for report ID:', reportId);
+      return new Response(JSON.stringify({ 
+        error: 'Report not found',
+        reportId: reportId,
+        hint: 'The report ID may have expired or is invalid'
+      }), {
         status: 404,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
     
-    console.log('Found manuscript key:', manuscriptKey);
+    const manuscriptKey = await mappingObject.text();
+    console.log('Found manuscript key from mapping:', manuscriptKey);
     // Fetch all three analyses
     console.log('Fetching analyses from R2...');
     const [devAnalysis, lineAnalysis, copyAnalysis] = await Promise.all([
@@ -697,17 +717,24 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
   console.log('Generating annotated manuscript for ID:', reportId);
   
   try {
-    // Get manuscript key from KV mapping
-    const manuscriptKey = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`, { type: 'text' });
+    // Get manuscript key from mapping
+    console.log('Looking up report-id:', `report-id:${reportId}`);
+    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
     
-    if (!manuscriptKey) {
-      return new Response(JSON.stringify({ error: 'Report not found' }), {
+    if (!mappingObject) {
+      console.error('No mapping found for report ID:', reportId);
+      return new Response(JSON.stringify({ 
+        error: 'Report not found',
+        reportId: reportId,
+        hint: 'The report ID may have expired or is invalid'
+      }), {
         status: 404,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
     
-    console.log('Found manuscript key:', manuscriptKey);
+    const manuscriptKey = await mappingObject.text();
+    console.log('Found manuscript key from mapping:', manuscriptKey);
     // Fetch the original manuscript text
     const manuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
     if (!manuscript) {
