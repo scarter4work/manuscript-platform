@@ -119,10 +119,16 @@ export default {
         const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
         if (mappingObject) {
           const manuscriptKey = await mappingObject.text();
+          
+          // Also check if the manuscript file exists
+          const manuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+          
           return new Response(JSON.stringify({ 
             found: true,
             reportId: reportId,
-            manuscriptKey: manuscriptKey
+            manuscriptKey: manuscriptKey,
+            manuscriptExists: !!manuscript,
+            manuscriptSize: manuscript?.size || 0
           }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });

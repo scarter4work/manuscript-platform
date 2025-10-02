@@ -13,7 +13,7 @@ export class AnnotatedManuscriptGenerator {
     const annotations = this.createAnnotations(sortedIssues, manuscriptText);
     
     // Generate HTML with highlights
-    const annotatedHtml = this.generateHTML(manuscriptText, annotations, metadata, sortedIssues);
+    const annotatedHtml = this.generateHTML(manuscriptText, annotations, metadata, sortedIssues, reportId);
     
     return annotatedHtml;
   }
@@ -75,7 +75,7 @@ export class AnnotatedManuscriptGenerator {
   /**
    * Generate the full HTML document
    */
-  static generateHTML(manuscriptText, annotations, metadata, allIssues) {
+  static generateHTML(manuscriptText, annotations, metadata, allIssues, reportId) {
     const reportDate = new Date().toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
