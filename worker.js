@@ -48,8 +48,27 @@ export default {
         return await handleLogin(request, env, corsHeaders);
       }
 
-      if (path === '/auth/verify' && request.method === 'GET') {
-        return await handleVerifyToken(request, env, corsHeaders);
+      // Route: Get current user (from Cloudflare Access)
+      if (path === '/auth/me' && request.method === 'GET') {
+        // Cloudflare Access adds user info to headers
+        const userEmail = request.headers.get('Cf-Access-Authenticated-User-Email');
+        const userName = request.headers.get('Cf-Access-Authenticated-User-Name') || userEmail;
+        
+        if (userEmail) {
+          return new Response(JSON.stringify({
+            authenticated: true,
+            email: userEmail,
+            name: userName
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } else {
+          return new Response(JSON.stringify({
+            authenticated: false
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
       }
       // Route: Upload raw manuscript
       if (path === '/upload/manuscript' && request.method === 'POST') {
@@ -179,9 +198,13 @@ export default {
 async function handleManuscriptUpload(request, env, corsHeaders) {
   try {
     console.log('Processing manuscript upload...');
+    
+    // Get authenticated user from Cloudflare Access headers
+    const userEmail = request.headers.get('Cf-Access-Authenticated-User-Email');
+    const authorId = userEmail || 'anonymous'; // Use email as author ID
+    
     const formData = await request.formData();
     const file = formData.get('file');
-    const authorId = formData.get('authorId') || 'anonymous';
     const manuscriptId = formData.get('manuscriptId') || crypto.randomUUID();
     
     if (!file) {
@@ -711,7 +734,8 @@ async function handleGenerateReport(request, env, corsHeaders) {
       devAnalysis,
       lineAnalysis,
       copyAnalysis,
-      metadata
+      metadata,
+      reportId
     );
     
     console.log('Report generated, length:', reportHtml.length);

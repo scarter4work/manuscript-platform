@@ -392,10 +392,51 @@
             color: #c62828;
             border-left: 4px solid #f44336;
         }
+        
+        .breadcrumb {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-separator {
+            color: #999;
+        }
+        
+        .breadcrumb-current {
+            color: #666;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <nav class="breadcrumb" id="breadcrumb" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color: #667eea;">
+                <path d="M8 0L0 6v10h6V10h4v6h6V6L8 0z"/>
+            </svg>
+            <span class="breadcrumb-current">Dashboard</span>
+            <span class="breadcrumb-separator" id="breadcrumbArrow" style="display: none;">›</span>
+            <span class="breadcrumb-current" id="breadcrumbReport" style="display: none;">Viewing Analysis</span>
+        </nav>
         <div class="header">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
@@ -942,6 +983,11 @@
         async function loadExistingReport(loadReportId) {
             try {
                 console.log('Loading existing report:', loadReportId);
+                
+                // Show breadcrumb for loaded report
+                document.getElementById('breadcrumb').style.display = 'flex';
+                document.getElementById('breadcrumbArrow').style.display = 'inline';
+                document.getElementById('breadcrumbReport').style.display = 'inline';
                 
                 // Hide upload card, show analysis card
                 document.getElementById('uploadCard').style.display = 'none';
