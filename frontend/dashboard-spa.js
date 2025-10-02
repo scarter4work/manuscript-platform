@@ -107,6 +107,9 @@ const app = {
                 this.loadReport();
             } else if (view === 'annotated') {
                 this.loadAnnotated();
+            } else if (view === 'summary' && this.state.reportId && !this.state.analysisResults.developmental) {
+                // If navigating to summary but don't have results, show limited view
+                this.showLimitedSummary();
             }
         }
     },
@@ -468,6 +471,15 @@ const app = {
         
         // Navigate to summary view
         this.navigate('summary');
+    },
+
+    // Show limited summary (when we only have reportId, not full analysis)
+    showLimitedSummary() {
+        document.getElementById('overallScore').textContent = '✓';
+        document.getElementById('totalIssues').textContent = '✓';
+        document.getElementById('readyStatus').textContent = '✓';
+        document.getElementById('summaryMessage').textContent = 
+            'Your analysis is complete. Click the buttons below to view the detailed reports.';
     },
 
     // Load report
