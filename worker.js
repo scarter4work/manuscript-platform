@@ -4,6 +4,7 @@
 import { DevelopmentalAgent } from './developmental-agent.js';
 import { LineEditingAgent } from './line-editing-agent.js';
 import { CopyEditingAgent } from './copy-editing-agent.js';
+import { ReportGenerator } from './report-generator.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -79,6 +80,11 @@ export default {
       // Route: Get analysis results
       if (path.startsWith('/analysis/') && request.method === 'GET') {
         return await handleGetAnalysis(request, env, corsHeaders);
+      }
+
+      // Route: Generate formatted report
+      if (path.startsWith('/report/') && request.method === 'GET') {
+        return await handleGenerateReport(request, env, corsHeaders);
       }
 
       // Add a root route for testing
@@ -566,6 +572,57 @@ async function handleGetAnalysis(request, env, corsHeaders) {
 
   } catch (error) {
     console.error('Error retrieving analysis:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Generate formatted HTML report
+async function handleGenerateReport(request, env, corsHeaders) {
+  const url = new URL(request.url);
+  const manuscriptKey = url.pathname.replace('/report/', '');
+  
+  try {
+    // Fetch all three analyses
+    const [devAnalysis, lineAnalysis, copyAnalysis] = await Promise.all([
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`).then(r => r?.json()).catch(() => null),
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(() => null),
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(() => null)
+    ]);
+    
+    if (!devAnalysis && !lineAnalysis && !copyAnalysis) {
+      return new Response(JSON.stringify({ error: 'No analysis found for this manuscript' }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Get manuscript metadata
+    const rawManuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const metadata = rawManuscript?.customMetadata || { originalName: 'Unknown', authorId: 'Unknown' };
+    
+    // Generate HTML report
+    const reportHtml = ReportGenerator.generateFullReport(
+      manuscriptKey,
+      devAnalysis,
+      lineAnalysis,
+      copyAnalysis,
+      metadata
+    );
+    
+    return new Response(reportHtml, {
+      status: 200,
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Disposition': `inline; filename="manuscript-report-${Date.now()}.html"`
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error generating report:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

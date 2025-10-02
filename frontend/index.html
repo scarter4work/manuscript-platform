@@ -525,8 +525,11 @@
 
             <div id="summaryMessage" style="font-size: 1.2em; margin: 20px 0;"></div>
 
-            <button class="btn btn-secondary" onclick="downloadReports()">
-                📥 Download Full Reports
+            <button class="btn btn-secondary" onclick="viewFormattedReport()">
+                📄 View Beautiful Report
+            </button>
+            <button class="btn" onclick="downloadReports()">
+                📥 Download JSON Data
             </button>
             <button class="btn" onclick="resetDashboard()">
                 🔄 Analyze Another Manuscript
@@ -838,6 +841,17 @@
 
             document.getElementById('summaryMessage').textContent = message;
             document.getElementById('summaryCard').classList.add('visible');
+        }
+
+        function viewFormattedReport() {
+            if (!manuscriptKey) {
+                alert('No manuscript analysis available');
+                return;
+            }
+            
+            // Open the formatted report in a new window
+            const reportUrl = `${API_BASE}/report/${manuscriptKey}`;
+            window.open(reportUrl, '_blank');
         }
 
         function downloadReports() {
