@@ -1,0 +1,2 @@
+// Backup of original index.html before SPA conversion
+// Moved to index-old.html on [date]

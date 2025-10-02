@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuscript Analysis Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Header - Always visible */
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            text-align: right;
+            font-size: 14px;
+        }
+
+        /* Breadcrumb - Always visible when navigating */
+        .breadcrumb {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .breadcrumb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            color: #999;
+        }
+
+        .breadcrumb-current {
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Main content area */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* View containers */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card styling */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Report/Annotated view container */
+        .report-view {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .report-content {
+            /* Report HTML will be injected here */
+        }
+
+        /* Loading spinner */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #4caf50;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-back {
+            background: #6c757d;
+            padding: 10px 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .btn-back:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        /* Upload section styling (keep existing styles) */
+        .upload-section {
+            text-align: center;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px 0;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 40px;
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .file-input-label:hover {
+            background: #eef1ff;
+            border-color: #764ba2;
+        }
+
+        .file-input-label.has-file {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Analysis progress styling (existing styles) */
+        .analysis-status {
+            margin-top: 20px;
+        }
+
+        .agent-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .agent-card.running {
+            border-left-color: #ffa726;
+            background: #fff8e1;
+        }
+
+        .agent-card.complete {
+            border-left-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .agent-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .agent-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .status-running {
+            background: #ffa726;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .status-complete {
+            background: #4caf50;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        /* Summary card */
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Agent details */
+        .agent-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            display: none;
+        }
+
+        .agent-details.visible {
+            display: block;
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .view-details-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 20px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .view-details-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Always visible header -->
+    <div class="app-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>📚 Manuscript Analysis Dashboard</h1>
+                <p>AI-Powered Editing Suite for Authors</p>
+            </div>
+            <div class="user-info" id="userInfo">
+                <!-- User info populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb navigation -->
+    <nav class="breadcrumb" id="breadcrumb" style="display: none;">
+        <div class="breadcrumb-content" id="breadcrumbContent">
+            <!-- Breadcrumb populated dynamically -->
+        </div>
+    </nav>
+
+    <!-- Main content container -->
+    <div class="container">
+        <!-- VIEW: Upload -->
+        <div id="viewUpload" class="view active">
+            <div class="card upload-section">
+                <h2>Upload Your Manuscript</h2>
+                
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" accept=".txt,.pdf,.docx">
+                    <label for="fileInput" class="file-input-label" id="fileLabel">
+                        <div style="font-size: 3em; margin-bottom: 10px;">📄</div>
+                        <div id="fileName">Click or drag to upload manuscript</div>
+                        <div style="font-size: 0.9em; color: #666; margin-top: 10px;">
+                            Supports .txt, .pdf, .docx (up to 50MB)
+                        </div>
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <label for="genre">Genre</label>
+                    <select id="genre">
+                        <option value="thriller">Thriller</option>
+                        <option value="romance">Romance</option>
+                        <option value="fantasy">Fantasy</option>
+                        <option value="sci-fi">Sci-Fi</option>
+                        <option value="mystery">Mystery</option>
+                        <option value="literary">Literary Fiction</option>
+                        <option value="horror">Horror</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="styleGuide">Style Guide (for Copy Editing)</label>
+                    <select id="styleGuide">
+                        <option value="chicago">Chicago Manual of Style</option>
+                        <option value="ap">AP Style</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="app.uploadAndAnalyze()">
+                    Upload & Start Analysis
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW: Analysis in Progress -->
+        <div id="viewAnalysis" class="view">
+            <div class="card analysis-status">
+                <h2>Analysis in Progress</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <p id="progressText" style="text-align: center; margin-top: 10px; color: #666;">
+                    Uploading manuscript...
+                </p>
+
+                <!-- Agent Cards -->
+                <div class="agent-card" id="devAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">🎯 Developmental Analysis</div>
+                        <span class="agent-status status-pending" id="devStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Analyzing plot, characters, pacing, and structure
+                    </div>
+                    <div class="agent-details" id="devDetails"></div>
+                    <button class="view-details-btn hidden" id="devDetailsBtn" onclick="app.toggleDetails('dev')">
+                        View Details
+                    </button>
+                </div>
+
+                <div class="agent-card" id="lineAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">✍️ Line Editing Analysis</div>
+                        <span class="agent-status status-pending" id="lineStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Reviewing prose quality and sentence structure
+                    </div>
+                    <div class="agent-details" id="lineDetails"></div>
+                    <button class="view-details-btn hidden" id="lineDetailsBtn" onclick="app.toggleDetails('line')">
+                        View Details
+                    </button>
+                </div>
+
+                <div class="agent-card" id="copyAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">📝 Copy Editing Analysis</div>
+                        <span class="agent-status status-pending" id="copyStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Checking grammar, punctuation, and consistency
+                    </div>
+                    <div class="agent-details" id="copyDetails"></div>
+                    <button class="view-details-btn hidden" id="copyDetailsBtn" onclick="app.toggleDetails('copy')">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Analysis Complete (Summary) -->
+        <div id="viewSummary" class="view">
+            <div class="summary-card">
+                <h2>✨ Analysis Complete!</h2>
+                <p>Your manuscript has been thoroughly analyzed by our AI editing suite.</p>
+                
+                <div class="summary-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="overallScore">-</div>
+                        <div class="stat-label">Overall Score</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalIssues">-</div>
+                        <div class="stat-label">Total Issues</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="readyStatus">-</div>
+                        <div class="stat-label">Publication Ready</div>
+                    </div>
+                </div>
+
+                <div id="summaryMessage" style="font-size: 1.2em; margin: 20px 0;"></div>
+
+                <button class="btn btn-secondary" onclick="app.navigate('report')">
+                    📄 View Summary Report
+                </button>
+                <button class="btn btn-secondary" onclick="app.navigate('annotated')">
+                    ✏️ View Annotated Manuscript
+                </button>
+                <button class="btn" onclick="app.downloadReports()">
+                    📥 Download JSON Data
+                </button>
+                <button class="btn" onclick="app.navigate('upload', true)">
+                    🔄 Analyze Another Manuscript
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW: Summary Report -->
+        <div id="viewReport" class="view">
+            <div class="loading" id="reportLoading">
+                <div class="spinner"></div>
+                <p>Loading report...</p>
+            </div>
+            <div class="report-view" id="reportContent" style="display: none;">
+                <!-- Report HTML injected here -->
+            </div>
+        </div>
+
+        <!-- VIEW: Annotated Manuscript -->
+        <div id="viewAnnotated" class="view">
+            <div class="loading" id="annotatedLoading">
+                <div class="spinner"></div>
+                <p>Loading annotated manuscript...</p>
+            </div>
+            <div class="report-view" id="annotatedContent" style="display: none;">
+                <!-- Annotated manuscript HTML injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard-spa.js"></script>
+</body>
+</html>

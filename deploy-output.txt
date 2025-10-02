@@ -1,0 +1,12 @@
+Deploying breadcrumbs and fixes...
+
+Deployed! Wait 30-60 seconds for Cloudflare to update.
+
+Changes deployed:
+- Added breadcrumbs to Summary Report page
+- Added breadcrumbs to Dashboard when viewing reports
+- Fixed annotated manuscript HTML span rendering
+- Removed Author ID field from dashboard
+
+Test at: https://dashboard.scarter4workmanuscripthub.com
+Press any key to continue . . . 
