@@ -106,6 +106,37 @@ export default {
         return await handleGenerateAnnotatedManuscript(request, env, corsHeaders);
       }
 
+      // Debug endpoint to check report ID mapping
+      if (path === '/debug/report-id' && request.method === 'GET') {
+        const reportId = url.searchParams.get('id');
+        if (!reportId) {
+          return new Response(JSON.stringify({ error: 'id parameter required' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+        
+        const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+        if (mappingObject) {
+          const manuscriptKey = await mappingObject.text();
+          return new Response(JSON.stringify({ 
+            found: true,
+            reportId: reportId,
+            manuscriptKey: manuscriptKey
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } else {
+          return new Response(JSON.stringify({ 
+            found: false,
+            reportId: reportId,
+            message: 'No mapping found for this report ID'
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
       // Add a root route for testing
       if (path === '/' && request.method === 'GET') {
         return new Response(JSON.stringify({
