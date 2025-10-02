@@ -528,6 +528,17 @@ const app = {
                 });
             }, 100);
             
+            // Extract and execute scripts
+            const scripts = doc.querySelectorAll('script');
+            scripts.forEach(script => {
+                if (script.innerHTML) {
+                    // Create a new script element and execute it
+                    const newScript = document.createElement('script');
+                    newScript.textContent = script.innerHTML;
+                    document.getElementById('reportContent').appendChild(newScript);
+                }
+            });
+            
             document.getElementById('reportLoading').style.display = 'none';
             document.getElementById('reportContent').style.display = 'block';
             
@@ -582,6 +593,17 @@ const app = {
                     };
                 });
             }, 100);
+            
+            // Extract and execute scripts
+            const scripts = doc.querySelectorAll('script');
+            scripts.forEach(script => {
+                if (script.innerHTML) {
+                    // Create a new script element and execute it
+                    const newScript = document.createElement('script');
+                    newScript.textContent = script.innerHTML;
+                    document.getElementById('annotatedContent').appendChild(newScript);
+                }
+            });
             
             document.getElementById('annotatedLoading').style.display = 'none';
             document.getElementById('annotatedContent').style.display = 'block';
