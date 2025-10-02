@@ -179,6 +179,9 @@ const app = {
             document.getElementById(agent + 'DetailsBtn').classList.add('hidden');
         });
         
+        // Hide breadcrumb
+        document.getElementById('breadcrumb').style.display = 'none';
+        
         // Clear URL hash
         window.location.hash = '';
     },
@@ -512,6 +515,19 @@ const app = {
             const styledContent = `<style>${styleContent}</style>${bodyContent}`;
             
             document.getElementById('reportContent').innerHTML = styledContent;
+            
+            // Fix breadcrumb links after injection
+            setTimeout(() => {
+                const breadcrumbLinks = document.querySelectorAll('#reportContent .breadcrumb a');
+                breadcrumbLinks.forEach(link => {
+                    link.href = 'javascript:void(0)';
+                    link.onclick = (e) => {
+                        e.preventDefault();
+                        this.navigate('summary');
+                    };
+                });
+            }, 100);
+            
             document.getElementById('reportLoading').style.display = 'none';
             document.getElementById('reportContent').style.display = 'block';
             
@@ -543,15 +559,30 @@ const app = {
             const parser = new DOMParser();
             const doc = parser.parseFromString(annotatedHtml, 'text/html');
             
-            // Extract CSS from style tags and link tags
+            // Extract CSS from style tags
             const styles = doc.querySelectorAll('style');
             const styleContent = Array.from(styles).map(s => s.innerHTML).join('\n');
             
-            // Create a container with the styles
+            // Get body content
             const bodyContent = doc.body.innerHTML;
+            
+            // Create container with styles
             const styledContent = `<style>${styleContent}</style>${bodyContent}`;
             
             document.getElementById('annotatedContent').innerHTML = styledContent;
+            
+            // Fix breadcrumb links after injection
+            setTimeout(() => {
+                const breadcrumbLinks = document.querySelectorAll('#annotatedContent .breadcrumb a');
+                breadcrumbLinks.forEach(link => {
+                    link.href = 'javascript:void(0)';
+                    link.onclick = (e) => {
+                        e.preventDefault();
+                        this.navigate('summary');
+                    };
+                });
+            }, 100);
+            
             document.getElementById('annotatedLoading').style.display = 'none';
             document.getElementById('annotatedContent').style.display = 'block';
             
