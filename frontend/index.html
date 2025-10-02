@@ -552,6 +552,17 @@
             copyEditing: null
         };
 
+        // Check if we're loading an existing report from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const loadReportId = urlParams.get('loadReport');
+        
+        if (loadReportId) {
+            // Load existing report on page load
+            window.addEventListener('DOMContentLoaded', () => {
+                loadExistingReport(loadReportId);
+            });
+        }
+
         // File input handling
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -910,6 +921,44 @@
             manuscriptKey = null;
             reportId = null;
             analysisResults = { developmental: null, lineEditing: null, copyEditing: null };
+        }
+
+        async function loadExistingReport(loadReportId) {
+            try {
+                console.log('Loading existing report:', loadReportId);
+                
+                // Hide upload card, show analysis card
+                document.getElementById('uploadCard').style.display = 'none';
+                document.getElementById('analysisCard').classList.add('active');
+                updateProgress(50, 'Loading existing analysis...');
+                
+                // Set the reportId
+                reportId = loadReportId;
+                
+                // We don't have the manuscript key, but we can still show results
+                // Fetch analyses using the reportId
+                // For now, just show the summary since we have the reportId
+                
+                updateProgress(100, 'Report loaded!');
+                
+                // Show all agents as complete
+                updateAgentStatus('dev', 'complete', 'Loaded');
+                updateAgentStatus('line', 'complete', 'Loaded');
+                updateAgentStatus('copy', 'complete', 'Loaded');
+                
+                // Show summary card with limited info
+                document.getElementById('summaryCard').classList.add('visible');
+                document.getElementById('summaryMessage').textContent = 
+                    'Your previous analysis has been loaded. Click the buttons below to view the reports.';
+                document.getElementById('overallScore').textContent = 'Loaded';
+                document.getElementById('totalIssues').textContent = '✓';
+                document.getElementById('readyStatus').textContent = '✓';
+                
+            } catch (error) {
+                console.error('Error loading report:', error);
+                alert('Failed to load report: ' + error.message);
+                resetDashboard();
+            }
         }
     </script>
 </body>

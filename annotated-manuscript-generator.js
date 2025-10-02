@@ -5,7 +5,7 @@ export class AnnotatedManuscriptGenerator {
   /**
    * Generate an annotated manuscript with inline highlights and comments
    */
-  static generateAnnotatedManuscript(manuscriptKey, manuscriptText, allIssues, metadata, env) {
+  static generateAnnotatedManuscript(manuscriptKey, manuscriptText, allIssues, metadata, reportId) {
     // Sort issues by position in manuscript (if available)
     const sortedIssues = this.sortIssuesByPosition(allIssues, manuscriptText);
     
@@ -87,6 +87,9 @@ export class AnnotatedManuscriptGenerator {
     
     // Count issues by category
     const issueStats = this.calculateIssueStats(allIssues);
+    
+    // Dashboard URL (assumes dashboard is at root of same domain or custom domain)
+    const dashboardUrl = `https://dashboard.scarter4workmanuscripthub.com/?loadReport=${reportId}`;
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -105,6 +108,40 @@ export class AnnotatedManuscriptGenerator {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             line-height: 1.6;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: #5568d3;
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            color: #999;
+            user-select: none;
+        }
+
+        .breadcrumb-current {
+            color: #666;
+            font-weight: 500;
         }
 
         .header {
@@ -452,6 +489,19 @@ export class AnnotatedManuscriptGenerator {
     </style>
 </head>
 <body>
+    <nav class="breadcrumb">
+        <a href="${dashboardUrl}">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0L0 6v10h6V10h4v6h6V6L8 0z"/>
+            </svg>
+            Dashboard
+        </a>
+        <span class="breadcrumb-separator">›</span>
+        <a href="${dashboardUrl}">Analysis Results</a>
+        <span class="breadcrumb-separator">›</span>
+        <span class="breadcrumb-current">Annotated Manuscript</span>
+    </nav>
+
     <div class="header">
         <h1>📝 ${metadata.originalName || 'Untitled Manuscript'}</h1>
         <p>Author: ${metadata.authorId || 'Unknown'} • Generated: ${reportDate} • ${issueStats.total} Issues Found</p>

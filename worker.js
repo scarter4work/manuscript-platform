@@ -757,7 +757,7 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
       manuscriptText,
       allIssues,
       metadata,
-      env
+      reportId
     );
     
     return new Response(annotatedHtml, {
