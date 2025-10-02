@@ -84,12 +84,12 @@ export default {
       }
 
       // Route: Generate formatted report
-      if (path.startsWith('/report/') && request.method === 'GET') {
+      if (path === '/report' && request.method === 'GET') {
         return await handleGenerateReport(request, env, corsHeaders);
       }
 
       // Route: Generate annotated manuscript
-      if (path.startsWith('/annotated/') && request.method === 'GET') {
+      if (path === '/annotated' && request.method === 'GET') {
         return await handleGenerateAnnotatedManuscript(request, env, corsHeaders);
       }
 
@@ -184,6 +184,9 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
 
     console.log('Uploading to R2:', key);
     
+    // Generate a short report ID (8 characters)
+    const reportId = crypto.randomUUID().substring(0, 8);
+    
     // Upload to R2 with metadata
     await env.MANUSCRIPTS_RAW.put(key, file.stream(), {
       customMetadata: metadata,
@@ -191,12 +194,18 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
         contentType: file.type,
       }
     });
+    
+    // Store report ID mapping (for clean URLs)
+    await env.MANUSCRIPTS_RAW.put(`report-id:${reportId}`, key, {
+      expirationTtl: 60 * 60 * 24 * 30 // 30 days
+    });
 
     // Return success response with file details
     return new Response(JSON.stringify({
       success: true,
       manuscriptId: manuscriptId,
       key: key,
+      reportId: reportId,
       metadata: metadata
     }), {
       status: 200,
@@ -588,11 +597,29 @@ async function handleGetAnalysis(request, env, corsHeaders) {
 // Generate formatted HTML report
 async function handleGenerateReport(request, env, corsHeaders) {
   const url = new URL(request.url);
-  const manuscriptKey = url.pathname.replace('/report/', '');
+  const reportId = url.searchParams.get('id');
   
-  console.log('Generating report for manuscriptKey:', manuscriptKey);
+  if (!reportId) {
+    return new Response(JSON.stringify({ error: 'Report ID required' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+  
+  console.log('Generating report for ID:', reportId);
   
   try {
+    // Get manuscript key from KV mapping
+    const manuscriptKey = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`, { type: 'text' });
+    
+    if (!manuscriptKey) {
+      return new Response(JSON.stringify({ error: 'Report not found' }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    
+    console.log('Found manuscript key:', manuscriptKey);
     // Fetch all three analyses
     console.log('Fetching analyses from R2...');
     const [devAnalysis, lineAnalysis, copyAnalysis] = await Promise.all([
@@ -658,11 +685,29 @@ async function handleGenerateReport(request, env, corsHeaders) {
 // Generate annotated manuscript with inline highlights
 async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
   const url = new URL(request.url);
-  const manuscriptKey = url.pathname.replace('/annotated/', '');
+  const reportId = url.searchParams.get('id');
   
-  console.log('Generating annotated manuscript for:', manuscriptKey);
+  if (!reportId) {
+    return new Response(JSON.stringify({ error: 'Report ID required' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+  
+  console.log('Generating annotated manuscript for ID:', reportId);
   
   try {
+    // Get manuscript key from KV mapping
+    const manuscriptKey = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`, { type: 'text' });
+    
+    if (!manuscriptKey) {
+      return new Response(JSON.stringify({ error: 'Report not found' }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    
+    console.log('Found manuscript key:', manuscriptKey);
     // Fetch the original manuscript text
     const manuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
     if (!manuscript) {

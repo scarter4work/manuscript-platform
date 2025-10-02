@@ -545,6 +545,7 @@
             ? 'http://localhost:8787'
             : 'https://api.scarter4workmanuscripthub.com';
         let manuscriptKey = null;
+        let reportId = null;
         let analysisResults = {
             developmental: null,
             lineEditing: null,
@@ -598,6 +599,7 @@
 
                 const uploadResult = await uploadResponse.json();
                 manuscriptKey = uploadResult.key;
+                reportId = uploadResult.reportId;
                 
                 updateProgress(20, 'Upload complete! Starting analysis...');
 
@@ -847,24 +849,24 @@
         }
 
         function viewFormattedReport() {
-            if (!manuscriptKey) {
-                alert('No manuscript analysis available');
+            if (!reportId) {
+                alert('No report ID available');
                 return;
             }
             
-            // Open the formatted report in a new window
-            const reportUrl = `${API_BASE}/report/${manuscriptKey}`;
+            // Open the formatted report with clean URL
+            const reportUrl = `${API_BASE}/report?id=${reportId}`;
             window.open(reportUrl, '_blank');
         }
 
         function viewAnnotatedManuscript() {
-            if (!manuscriptKey) {
-                alert('No manuscript analysis available');
+            if (!reportId) {
+                alert('No report ID available');
                 return;
             }
             
-            // Open the annotated manuscript in a new window
-            const annotatedUrl = `${API_BASE}/annotated/${manuscriptKey}`;
+            // Open the annotated manuscript with clean URL
+            const annotatedUrl = `${API_BASE}/annotated?id=${reportId}`;
             window.open(annotatedUrl, '_blank');
         }
 
@@ -906,6 +908,7 @@
             
             // Reset data
             manuscriptKey = null;
+            reportId = null;
             analysisResults = { developmental: null, lineEditing: null, copyEditing: null };
         }
     </script>
