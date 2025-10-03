@@ -195,112 +195,106 @@ Return this exact structure:
 
 Be specific with locations and examples. Provide actual rewrites, not just descriptions of what's wrong.`;
 
-    try {
-      // Use Cloudflare AI Gateway instead of direct API call
-      const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
-      
-      const response = await fetch(gatewayUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': this.claudeApiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-5',
-          max_tokens: 4096,
-          messages: [{
-            role: 'user',
-            content: prompt
-          }],
-          temperature: 0.3  // Lower temperature for more consistent JSON
-        })
-      });
-
-      if (!response.ok) {
-        const errorBody = await response.text();
-        console.error('Claude API error details:', errorBody);
-        throw new Error(`Claude API error: ${response.status} - ${errorBody}`);
-      }
-
-      const data = await response.json();
-      const analysisText = data.content[0].text;
-      
-      // Parse JSON response - be more robust with multiple cleanup strategies
-      let analysis;
+    // Retry logic with exponential backoff
+    const maxRetries = 5;
+    let lastError;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        // Try to find JSON in the response
-        const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-          throw new Error('No JSON found in response');
+        console.log(`Section ${section.sectionNumber} - Attempt ${attempt}/${maxRetries}`);
+        
+        // Use Cloudflare AI Gateway instead of direct API call
+        const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
+        
+        const response = await fetch(gatewayUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': this.claudeApiKey,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 4096,
+            messages: [{
+              role: 'user',
+              content: prompt
+            }],
+            temperature: 0.3
+          })
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.text();
+          console.error('Claude API error details:', errorBody);
+          
+          // If it's a rate limit (429) or server error (5xx), retry
+          if (response.status === 429 || response.status >= 500) {
+            throw new Error(`Retryable error: ${response.status} - ${errorBody}`);
+          }
+          
+          throw new Error(`Claude API error: ${response.status} - ${errorBody}`);
         }
+
+        const data = await response.json();
+        const analysisText = data.content[0].text;
         
-        let jsonStr = jsonMatch[0];
-        
-        // Multiple cleanup strategies
-        // 1. Remove trailing commas before closing braces/brackets
-        jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1');
-        
-        // 2. Fix unescaped quotes in strings (common issue)
-        // This is tricky - we'll try to detect strings with internal quotes
-        // and escape them properly
-        
-        // 3. Remove any control characters that might break JSON
-        jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g, '');
-        
-        // 4. Try parsing
+        // Parse JSON response
+        let analysis;
         try {
-          analysis = JSON.parse(jsonStr);
-        } catch (firstError) {
-          // If that fails, try more aggressive cleanup
-          console.log('First parse failed, trying aggressive cleanup...');
+          const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+          if (!jsonMatch) {
+            throw new Error('No JSON found in response');
+          }
           
-          // Try to fix common issues with quotes in values
-          // Replace any single quotes with double quotes (if used incorrectly)
-          jsonStr = jsonStr.replace(/([{,]\s*["']?\w+["']?\s*:\s*)'([^']*?)'/g, '$1"$2"');
+          let jsonStr = jsonMatch[0];
+          jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1');
+          jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g, '');
           
           analysis = JSON.parse(jsonStr);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError.message);
+          return {
+            sectionNumber: section.sectionNumber,
+            wordRange: `${section.startWord}-${section.endWord}`,
+            overallScore: 7,
+            parseError: true,
+            issues: [],
+            strengths: ['Parse error - manual review needed'],
+            readabilityMetrics: {}
+          };
         }
-      } catch (parseError) {
-        console.error('JSON parse error:', parseError.message);
-        console.error('Attempted to parse:', analysisText.substring(0, 500) + '...');
         
-        // Return a fallback structure so we don't completely fail
         return {
           sectionNumber: section.sectionNumber,
           wordRange: `${section.startWord}-${section.endWord}`,
-          overallScore: 7,
-          parseError: true,
-          errorMessage: parseError.message,
-          rawResponse: analysisText.substring(0, 1000),
-          issues: [],
-          strengths: ['Parse error - manual review needed'],
-          readabilityMetrics: {}
+          ...analysis
         };
+        
+      } catch (error) {
+        console.error(`Section ${section.sectionNumber} - Attempt ${attempt} failed:`, error.message);
+        lastError = error;
+        
+        if (attempt < maxRetries) {
+          const waitTime = Math.pow(2, attempt) * 1000;
+          console.log(`Waiting ${waitTime}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
       }
-      
-      return {
-        sectionNumber: section.sectionNumber,
-        wordRange: `${section.startWord}-${section.endWord}`,
-        ...analysis
-      };
-      
-      // Fallback if JSON parsing fails
-      return {
-        sectionNumber: section.sectionNumber,
-        wordRange: `${section.startWord}-${section.endWord}`,
-        overallScore: 7,
-        rawAnalysis: analysisText,
-        parseError: true,
-        issues: [],
-        strengths: [],
-        readabilityMetrics: {}
-      };
-      
-    } catch (error) {
-      console.error('Claude API error:', error);
-      throw new Error(`Failed to analyze section: ${error.message}`);
     }
+    
+    // All retries failed - return fallback
+    console.error(`Section ${section.sectionNumber} - All retries failed`);
+    return {
+      sectionNumber: section.sectionNumber,
+      wordRange: `${section.startWord}-${section.endWord}`,
+      overallScore: 7,
+      error: true,
+      errorMessage: lastError.message,
+      issues: [],
+      strengths: [],
+      readabilityMetrics: {}
+    };
   }
 
   /**
