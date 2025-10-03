@@ -11,13 +11,6 @@ observability = { enabled = true }
 queue = "manuscript-analysis-queue"
 binding = "ANALYSIS_QUEUE"
 
-[[queues.consumers]]
-queue = "manuscript-analysis-queue"
-max_batch_size = 1
-max_batch_timeout = 30
-max_retries = 3
-dead_letter_queue = "manuscript-analysis-dlq"
-
 # R2 Bucket bindings
 [[r2_buckets]]
 binding = "MANUSCRIPTS_RAW"
