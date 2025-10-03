@@ -214,68 +214,93 @@ Return this exact structure:
   "marketability": { "score": 1-10, "summary": "Brief assessment of commercial potential" }
 }`;
 
-    try {
-      console.log('Attempting to call Claude API via AI Gateway...');
-      
-      // Use Cloudflare AI Gateway instead of direct API call
-      // This works from Workers and provides caching/analytics
-      const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
-      
-      console.log('Gateway URL:', gatewayUrl);
-      console.log('API Key present:', !!this.claudeApiKey);
-      console.log('API Key starts with:', this.claudeApiKey?.substring(0, 15));
-      
-      const requestBody = {
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4096,
-        messages: [{
-          role: 'user',
-          content: prompt
-        }],
-        temperature: 0.3
-      };
-      
-      console.log('Request body:', JSON.stringify({ ...requestBody, messages: '[REDACTED]' }));
-      
-      const response = await fetch(gatewayUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': this.claudeApiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify(requestBody)
-      });
-      
-      console.log('Response status:', response.status);
-      console.log('Response statusText:', response.statusText);
+    // Retry logic with exponential backoff
+    const maxRetries = 5;
+    let lastError;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Attempt ${attempt}/${maxRetries} to call Claude API via AI Gateway...`);
+        
+        // Use Cloudflare AI Gateway instead of direct API call
+        // This works from Workers and provides caching/analytics
+        const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
+        
+        console.log('Gateway URL:', gatewayUrl);
+        console.log('API Key present:', !!this.claudeApiKey);
+        console.log('API Key starts with:', this.claudeApiKey?.substring(0, 15));
+        
+        const requestBody = {
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 4096,
+          messages: [{
+            role: 'user',
+            content: prompt
+          }],
+          temperature: 0.3
+        };
+        
+        console.log('Request body:', JSON.stringify({ ...requestBody, messages: '[REDACTED]' }));
+        
+        const response = await fetch(gatewayUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': this.claudeApiKey,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify(requestBody)
+        });
+        
+        console.log('Response status:', response.status);
+        console.log('Response statusText:', response.statusText);
 
-      if (!response.ok) {
-        const errorBody = await response.text();
-        console.error('Claude API error details:', errorBody);
-        throw new Error(`Claude API error: ${response.status} - ${errorBody}`);
-      }
+        if (!response.ok) {
+          const errorBody = await response.text();
+          console.error('Claude API error details:', errorBody);
+          
+          // If it's a rate limit (429) or server error (5xx), retry
+          if (response.status === 429 || response.status >= 500) {
+            throw new Error(`Retryable error: ${response.status} - ${errorBody}`);
+          }
+          
+          // Otherwise, fail immediately
+          throw new Error(`Claude API error: ${response.status} - ${errorBody}`);
+        }
 
-      const data = await response.json();
-      const analysisText = data.content[0].text;
-      
-      // Parse JSON response
-      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        const data = await response.json();
+        const analysisText = data.content[0].text;
+        
+        // Parse JSON response
+        const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        
+        // Fallback if JSON parsing fails
+        return {
+          overallScore: 7,
+          rawAnalysis: analysisText,
+          parseError: true
+        };
+        
+      } catch (error) {
+        console.error(`Attempt ${attempt} failed:`, error.message);
+        lastError = error;
+        
+        // If this isn't the last attempt, wait before retrying
+        if (attempt < maxRetries) {
+          // Exponential backoff: 2s, 4s, 8s, 16s
+          const waitTime = Math.pow(2, attempt) * 1000;
+          console.log(`Waiting ${waitTime}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
       }
-      
-      // Fallback if JSON parsing fails
-      return {
-        overallScore: 7,
-        rawAnalysis: analysisText,
-        parseError: true
-      };
-      
-    } catch (error) {
-      console.error('Claude API error:', error);
-      throw new Error(`Failed to analyze manuscript: ${error.message}`);
     }
+    
+    // All retries failed
+    console.error('All retry attempts failed');
+    throw new Error(`Failed to analyze manuscript after ${maxRetries} attempts: ${lastError.message}`);
   }
 
   /**
