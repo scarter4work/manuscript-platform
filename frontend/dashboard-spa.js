@@ -516,16 +516,12 @@ const app = {
             
             document.getElementById('reportContent').innerHTML = styledContent;
             
-            // Fix breadcrumb links after injection
+            // Hide the report's internal breadcrumb (we use the dashboard's breadcrumb)
             setTimeout(() => {
-                const breadcrumbLinks = document.querySelectorAll('#reportContent .breadcrumb a');
-                breadcrumbLinks.forEach(link => {
-                    link.href = 'javascript:void(0)';
-                    link.onclick = (e) => {
-                        e.preventDefault();
-                        this.navigate('summary');
-                    };
-                });
+                const reportBreadcrumb = document.querySelector('#reportContent .breadcrumb');
+                if (reportBreadcrumb) {
+                    reportBreadcrumb.style.display = 'none';
+                }
             }, 100);
             
             // Extract and execute scripts
@@ -582,16 +578,12 @@ const app = {
             
             document.getElementById('annotatedContent').innerHTML = styledContent;
             
-            // Fix breadcrumb links after injection
+            // Hide the annotated manuscript's internal breadcrumb (we use the dashboard's breadcrumb)
             setTimeout(() => {
-                const breadcrumbLinks = document.querySelectorAll('#annotatedContent .breadcrumb a');
-                breadcrumbLinks.forEach(link => {
-                    link.href = 'javascript:void(0)';
-                    link.onclick = (e) => {
-                        e.preventDefault();
-                        this.navigate('summary');
-                    };
-                });
+                const annotatedBreadcrumb = document.querySelector('#annotatedContent .breadcrumb');
+                if (annotatedBreadcrumb) {
+                    annotatedBreadcrumb.style.display = 'none';
+                }
             }, 100);
             
             // Extract and execute scripts
