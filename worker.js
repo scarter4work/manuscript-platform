@@ -110,6 +110,16 @@ export default {
         return await handleCopyEditingAnalysis(request, env, corsHeaders);
       }
 
+      // NEW: Start async analysis (queues the job)
+      if (path === '/analyze/start' && request.method === 'POST') {
+        return await handleStartAnalysis(request, env, corsHeaders);
+      }
+
+      // NEW: Check analysis status
+      if (path === '/analyze/status' && request.method === 'GET') {
+        return await handleAnalysisStatus(request, env, corsHeaders);
+      }
+
       // Route: Get analysis results
       if (path.startsWith('/analysis/') && request.method === 'GET') {
         return await handleGetAnalysis(request, env, corsHeaders);
@@ -862,6 +872,106 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
     return new Response(JSON.stringify({ 
       error: error.message,
       stack: error.stack
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// NEW ASYNC HANDLERS
+
+// Start async analysis (queues the job)
+async function handleStartAnalysis(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { manuscriptKey, genre, styleGuide, reportId } = body;
+
+    if (!manuscriptKey || !reportId) {
+      return new Response(JSON.stringify({ error: 'manuscriptKey and reportId are required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Initialize status
+    await env.MANUSCRIPTS_RAW.put(
+      `status:${reportId}`,
+      JSON.stringify({
+        status: 'queued',
+        progress: 0,
+        message: 'Analysis queued',
+        timestamp: new Date().toISOString()
+      }),
+      { expirationTtl: 60 * 60 * 24 * 7 } // 7 days
+    );
+
+    // Queue the analysis job
+    await env.ANALYSIS_QUEUE.send({
+      manuscriptKey,
+      genre: genre || 'general',
+      styleGuide: styleGuide || 'chicago',
+      reportId
+    });
+
+    console.log(`Analysis queued for ${manuscriptKey}`);
+
+    return new Response(JSON.stringify({
+      success: true,
+      reportId: reportId,
+      message: 'Analysis started'
+    }), {
+      status: 202, // Accepted
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error starting analysis:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message 
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Check analysis status
+async function handleAnalysisStatus(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const reportId = url.searchParams.get('reportId');
+
+    if (!reportId) {
+      return new Response(JSON.stringify({ error: 'reportId is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const statusObj = await env.MANUSCRIPTS_RAW.get(`status:${reportId}`);
+    
+    if (!statusObj) {
+      return new Response(JSON.stringify({ 
+        error: 'Status not found',
+        status: 'unknown'
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const status = await statusObj.json();
+
+    return new Response(JSON.stringify(status), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error checking status:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
