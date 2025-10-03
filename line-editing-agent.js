@@ -196,7 +196,10 @@ Return this exact structure:
 Be specific with locations and examples. Provide actual rewrites, not just descriptions of what's wrong.`;
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      // Use Cloudflare AI Gateway instead of direct API call
+      const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
+      
+      const response = await fetch(gatewayUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
