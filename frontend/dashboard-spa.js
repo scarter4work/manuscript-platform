@@ -186,10 +186,11 @@ const app = {
         window.location.hash = '';
     },
 
-    // Upload and analyze
+    // Upload and analyze (ASYNC VERSION)
     async uploadAndAnalyze() {
         const fileInput = document.getElementById('fileInput');
         const genre = document.getElementById('genre').value;
+        const styleGuide = document.getElementById('styleGuide').value;
         
         if (!fileInput.files[0]) {
             alert('Please select a manuscript file');
@@ -221,13 +222,24 @@ const app = {
             
             this.updateProgress(20, 'Upload complete! Starting analysis...');
 
-            // Run all three agents sequentially
-            await this.runDevelopmentalAgent(genre);
-            await this.runLineEditingAgent(genre);
-            await this.runCopyEditingAgent();
+            // Start async analysis
+            const startResponse = await fetch(`${this.API_BASE}/analyze/start`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    manuscriptKey: this.state.manuscriptKey,
+                    reportId: this.state.reportId,
+                    genre: genre,
+                    styleGuide: styleGuide
+                })
+            });
 
-            // Show summary
-            this.showSummary();
+            if (!startResponse.ok) {
+                throw new Error('Failed to start analysis');
+            }
+
+            // Poll for status updates
+            await this.pollAnalysisStatus();
 
         } catch (error) {
             console.error('Error:', error);
@@ -236,86 +248,83 @@ const app = {
         }
     },
 
-    // Run developmental agent
-    async runDevelopmentalAgent(genre) {
-        this.updateAgentStatus('dev', 'running', 'Running...');
-        this.updateProgress(30, 'Running developmental analysis...');
+    // Poll for analysis status
+    async pollAnalysisStatus() {
+        const pollInterval = 2000; // Poll every 2 seconds
+        const maxPolls = 300; // Max 10 minutes (300 * 2 seconds)
+        let pollCount = 0;
 
-        try {
-            const response = await fetch(`${this.API_BASE}/analyze/developmental`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ manuscriptKey: this.state.manuscriptKey, genre })
-            });
+        const poll = async () => {
+            try {
+                const response = await fetch(
+                    `${this.API_BASE}/analyze/status?reportId=${this.state.reportId}`
+                );
 
-            if (!response.ok) throw new Error('Developmental analysis failed');
+                if (!response.ok) {
+                    throw new Error('Failed to get status');
+                }
 
-            const result = await response.json();
-            this.state.analysisResults.developmental = result.analysis;
-            
-            this.updateAgentStatus('dev', 'complete', 'Complete');
-            this.displayDevelopmentalResults(result.analysis);
-            this.updateProgress(45, 'Developmental analysis complete!');
+                const status = await response.json();
+                console.log('Status:', status);
 
-        } catch (error) {
-            this.updateAgentStatus('dev', 'error', 'Error');
-            throw error;
-        }
-    },
+                // Update UI based on status
+                if (status.status === 'queued') {
+                    this.updateProgress(25, 'Analysis queued...');
+                    this.updateAgentStatus('dev', 'pending', 'Queued');
+                    this.updateAgentStatus('line', 'pending', 'Queued');
+                    this.updateAgentStatus('copy', 'pending', 'Queued');
+                } else if (status.status === 'running') {
+                    // Update progress based on percentage
+                    const progress = 25 + (status.progress * 0.75); // Scale from 25-100
+                    this.updateProgress(progress, status.message || 'Running analysis...');
 
-    // Run line editing agent
-    async runLineEditingAgent(genre) {
-        this.updateAgentStatus('line', 'running', 'Running...');
-        this.updateProgress(50, 'Running line editing analysis...');
+                    // Update agent statuses based on progress
+                    if (status.progress < 33) {
+                        this.updateAgentStatus('dev', 'running', 'Running...');
+                        this.updateAgentStatus('line', 'pending', 'Pending');
+                        this.updateAgentStatus('copy', 'pending', 'Pending');
+                    } else if (status.progress < 66) {
+                        this.updateAgentStatus('dev', 'complete', 'Complete');
+                        this.updateAgentStatus('line', 'running', 'Running...');
+                        this.updateAgentStatus('copy', 'pending', 'Pending');
+                    } else {
+                        this.updateAgentStatus('dev', 'complete', 'Complete');
+                        this.updateAgentStatus('line', 'complete', 'Complete');
+                        this.updateAgentStatus('copy', 'running', 'Running...');
+                    }
+                } else if (status.status === 'complete') {
+                    // All done!
+                    this.updateProgress(100, 'All analyses complete!');
+                    this.updateAgentStatus('dev', 'complete', 'Complete');
+                    this.updateAgentStatus('line', 'complete', 'Complete');
+                    this.updateAgentStatus('copy', 'complete', 'Complete');
+                    
+                    // Navigate to summary
+                    setTimeout(() => {
+                        this.navigate('summary');
+                    }, 1000);
+                    return; // Stop polling
+                } else if (status.status === 'error') {
+                    throw new Error(status.message || 'Analysis failed');
+                }
 
-        try {
-            const response = await fetch(`${this.API_BASE}/analyze/line-editing`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ manuscriptKey: this.state.manuscriptKey, genre })
-            });
+                // Continue polling if not complete
+                pollCount++;
+                if (pollCount < maxPolls) {
+                    setTimeout(poll, pollInterval);
+                } else {
+                    throw new Error('Analysis timeout - please try again');
+                }
 
-            if (!response.ok) throw new Error('Line editing analysis failed');
+            } catch (error) {
+                console.error('Polling error:', error);
+                alert('Analysis error: ' + error.message);
+                this.navigate('upload', true);
+            }
+        };
 
-            const result = await response.json();
-            this.state.analysisResults.lineEditing = result.analysis;
-            
-            this.updateAgentStatus('line', 'complete', 'Complete');
-            this.displayLineEditingResults(result.analysis);
-            this.updateProgress(70, 'Line editing analysis complete!');
-
-        } catch (error) {
-            this.updateAgentStatus('line', 'error', 'Error');
-            throw error;
-        }
-    },
-
-    // Run copy editing agent
-    async runCopyEditingAgent() {
-        const styleGuide = document.getElementById('styleGuide').value;
-        this.updateAgentStatus('copy', 'running', 'Running...');
-        this.updateProgress(75, 'Running copy editing analysis...');
-
-        try {
-            const response = await fetch(`${this.API_BASE}/analyze/copy-editing`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ manuscriptKey: this.state.manuscriptKey, styleGuide })
-            });
-
-            if (!response.ok) throw new Error('Copy editing analysis failed');
-
-            const result = await response.json();
-            this.state.analysisResults.copyEditing = result.analysis;
-            
-            this.updateAgentStatus('copy', 'complete', 'Complete');
-            this.displayCopyEditingResults(result.analysis);
-            this.updateProgress(100, 'All analyses complete!');
-
-        } catch (error) {
-            this.updateAgentStatus('copy', 'error', 'Error');
-            throw error;
-        }
+        // Start polling
+        poll();
     },
 
     // Update progress bar
