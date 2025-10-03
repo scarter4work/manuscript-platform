@@ -215,11 +215,13 @@ Return this exact structure:
 }`;
 
     try {
-      console.log('Attempting to call Claude API...');
-      console.log('API endpoint: https://api.anthropic.com/v1/messages');
-      console.log('API key present:', !!this.claudeApiKey);
+      console.log('Attempting to call Claude API via AI Gateway...');
       
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      // Use Cloudflare AI Gateway instead of direct API call
+      // This works from Workers and provides caching/analytics
+      const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
+      
+      const response = await fetch(gatewayUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -233,12 +235,11 @@ Return this exact structure:
             role: 'user',
             content: prompt
           }],
-          temperature: 0.3  // Lower temperature for more consistent JSON
+          temperature: 0.3
         })
       });
       
       console.log('Response status:', response.status);
-      console.log('Response headers:', JSON.stringify([...response.headers.entries()]));
 
       if (!response.ok) {
         const errorBody = await response.text();
