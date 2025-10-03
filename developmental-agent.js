@@ -221,6 +221,22 @@ Return this exact structure:
       // This works from Workers and provides caching/analytics
       const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
       
+      console.log('Gateway URL:', gatewayUrl);
+      console.log('API Key present:', !!this.claudeApiKey);
+      console.log('API Key starts with:', this.claudeApiKey?.substring(0, 15));
+      
+      const requestBody = {
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        messages: [{
+          role: 'user',
+          content: prompt
+        }],
+        temperature: 0.3
+      };
+      
+      console.log('Request body:', JSON.stringify({ ...requestBody, messages: '[REDACTED]' }));
+      
       const response = await fetch(gatewayUrl, {
         method: 'POST',
         headers: {
@@ -228,18 +244,11 @@ Return this exact structure:
           'x-api-key': this.claudeApiKey,
           'anthropic-version': '2023-06-01'
         },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 4096,
-          messages: [{
-            role: 'user',
-            content: prompt
-          }],
-          temperature: 0.3
-        })
+        body: JSON.stringify(requestBody)
       });
       
       console.log('Response status:', response.status);
+      console.log('Response statusText:', response.statusText);
 
       if (!response.ok) {
         const errorBody = await response.text();
