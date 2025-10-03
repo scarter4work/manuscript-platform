@@ -215,6 +215,10 @@ Return this exact structure:
 }`;
 
     try {
+      console.log('Attempting to call Claude API...');
+      console.log('API endpoint: https://api.anthropic.com/v1/messages');
+      console.log('API key present:', !!this.claudeApiKey);
+      
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
@@ -223,7 +227,7 @@ Return this exact structure:
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-5',
+          model: 'claude-sonnet-4-20250514',
           max_tokens: 4096,
           messages: [{
             role: 'user',
@@ -232,6 +236,9 @@ Return this exact structure:
           temperature: 0.3  // Lower temperature for more consistent JSON
         })
       });
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', JSON.stringify([...response.headers.entries()]));
 
       if (!response.ok) {
         const errorBody = await response.text();
