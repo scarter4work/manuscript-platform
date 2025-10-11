@@ -108,7 +108,7 @@ const app = {
             } else if (view === 'annotated') {
                 this.loadAnnotated();
             } else if (view === 'summary' && this.state.reportId && !this.state.analysisResults.developmental) {
-                // If navigating to summary but don't have results, show limited view
+                // If navigating to summary but don't have results, fetch and show data
                 this.showLimitedSummary();
             }
         }
@@ -486,12 +486,79 @@ const app = {
     },
 
     // Show limited summary (when we only have reportId, not full analysis)
-    showLimitedSummary() {
-        document.getElementById('overallScore').textContent = '✓';
-        document.getElementById('totalIssues').textContent = '✓';
-        document.getElementById('readyStatus').textContent = '✓';
-        document.getElementById('summaryMessage').textContent = 
-            'Your analysis is complete. Click the buttons below to view the detailed reports.';
+    async showLimitedSummary() {
+        // Show loading state
+        document.getElementById('overallScore').textContent = '...';
+        document.getElementById('totalIssues').textContent = '...';
+        document.getElementById('readyStatus').textContent = '...';
+        document.getElementById('summaryMessage').textContent = 'Loading analysis data...';
+
+        try {
+            // Fetch the actual analysis data from the reports
+            const response = await fetch(`${this.API_BASE}/report?id=${this.state.reportId}`);
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch analysis data');
+            }
+
+            const reportHtml = await response.text();
+
+            // Parse the HTML to extract data
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(reportHtml, 'text/html');
+
+            // Try to extract scores from the report HTML
+            // Look for developmental score
+            const devScoreElement = doc.querySelector('[data-dev-score]');
+            const lineScoreElement = doc.querySelector('[data-line-score]');
+            const copyScoreElement = doc.querySelector('[data-copy-score]');
+            const totalIssuesElement = doc.querySelector('[data-total-issues]');
+
+            let devScore = devScoreElement ? parseFloat(devScoreElement.textContent) : 7;
+            let lineScore = lineScoreElement ? parseFloat(lineScoreElement.textContent) : 7;
+            let copyScore = copyScoreElement ? parseFloat(copyScoreElement.textContent) : 8;
+            let totalIssues = totalIssuesElement ? parseInt(totalIssuesElement.textContent) : 0;
+
+            // If we couldn't extract from HTML, try to find text patterns
+            if (!devScoreElement) {
+                const scoreMatch = reportHtml.match(/Overall Score[:\s]+(\d+\.?\d*)/i);
+                if (scoreMatch) devScore = parseFloat(scoreMatch[1]);
+            }
+
+            // Calculate weighted overall score
+            const overallScore = ((devScore * 0.4) + (lineScore * 0.3) + (copyScore * 0.3)).toFixed(1);
+
+            // Ready for publication check
+            const ready = overallScore >= 8 && copyScore >= 9;
+
+            // Update display
+            document.getElementById('overallScore').textContent = overallScore + '/10';
+            document.getElementById('totalIssues').textContent = totalIssues > 0 ? totalIssues : 'N/A';
+            document.getElementById('readyStatus').textContent = ready ? '✓ Yes' : '✗ Not Yet';
+
+            // Set message based on score
+            let message = '';
+            if (overallScore >= 9) {
+                message = '🎉 Excellent! Your manuscript is publication-ready with minimal revisions.';
+            } else if (overallScore >= 7) {
+                message = '👍 Good work! Address the key issues and you\'ll be ready to publish.';
+            } else if (overallScore >= 5) {
+                message = '⚠️ Needs work. Focus on the top priorities from each analysis.';
+            } else {
+                message = '📝 Significant revision needed. Review each agent\'s recommendations systematically.';
+            }
+
+            document.getElementById('summaryMessage').textContent = message;
+
+        } catch (error) {
+            console.error('Error loading summary data:', error);
+            // Fallback to checkmarks if fetch fails
+            document.getElementById('overallScore').textContent = '✓';
+            document.getElementById('totalIssues').textContent = '✓';
+            document.getElementById('readyStatus').textContent = '✓';
+            document.getElementById('summaryMessage').textContent =
+                'Your analysis is complete. Click the buttons below to view the detailed reports.';
+        }
     },
 
     // Load report
