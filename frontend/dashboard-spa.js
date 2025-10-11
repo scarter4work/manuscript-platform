@@ -298,10 +298,37 @@ const app = {
                     this.updateAgentStatus('dev', 'complete', 'Complete');
                     this.updateAgentStatus('line', 'complete', 'Complete');
                     this.updateAgentStatus('copy', 'complete', 'Complete');
-                    
-                    // Navigate to summary
+
+                    // Check if status includes the results
+                    if (status.results) {
+                        console.log('Got results from status:', status.results);
+                        this.state.analysisResults.developmental = status.results.developmental;
+                        this.state.analysisResults.lineEditing = status.results.lineEditing;
+                        this.state.analysisResults.copyEditing = status.results.copyEditing;
+
+                        // Display in agent cards
+                        if (status.results.developmental) {
+                            this.displayDevelopmentalResults(status.results.developmental);
+                        }
+                        if (status.results.lineEditing) {
+                            this.displayLineEditingResults(status.results.lineEditing);
+                        }
+                        if (status.results.copyEditing) {
+                            this.displayCopyEditingResults(status.results.copyEditing);
+                        }
+                    } else {
+                        // Try fetching results separately
+                        await this.fetchAnalysisResults();
+                    }
+
+                    // Show summary with data
                     setTimeout(() => {
-                        this.navigate('summary');
+                        if (this.state.analysisResults.developmental) {
+                            this.showSummary();
+                        } else {
+                            // Fall back to limited summary if no data
+                            this.navigate('summary');
+                        }
                     }, 1000);
                     return; // Stop polling
                 } else if (status.status === 'error') {
@@ -337,10 +364,45 @@ const app = {
     updateAgentStatus(agent, status, text) {
         const agentCard = document.getElementById(agent + 'Agent');
         const statusSpan = document.getElementById(agent + 'Status');
-        
+
         agentCard.className = 'agent-card ' + status;
         statusSpan.className = 'agent-status status-' + status;
         statusSpan.textContent = text;
+    },
+
+    // Fetch analysis results from API
+    async fetchAnalysisResults() {
+        try {
+            console.log('Fetching analysis results for reportId:', this.state.reportId);
+
+            // Fetch all three analysis results
+            const [devResponse, lineResponse, copyResponse] = await Promise.all([
+                fetch(`${this.API_BASE}/analyze/developmental/result?reportId=${this.state.reportId}`),
+                fetch(`${this.API_BASE}/analyze/line-editing/result?reportId=${this.state.reportId}`),
+                fetch(`${this.API_BASE}/analyze/copy-editing/result?reportId=${this.state.reportId}`)
+            ]);
+
+            if (devResponse.ok) {
+                this.state.analysisResults.developmental = await devResponse.json();
+                this.displayDevelopmentalResults(this.state.analysisResults.developmental);
+            }
+
+            if (lineResponse.ok) {
+                this.state.analysisResults.lineEditing = await lineResponse.json();
+                this.displayLineEditingResults(this.state.analysisResults.lineEditing);
+            }
+
+            if (copyResponse.ok) {
+                this.state.analysisResults.copyEditing = await copyResponse.json();
+                this.displayCopyEditingResults(this.state.analysisResults.copyEditing);
+            }
+
+            console.log('Analysis results fetched successfully');
+
+        } catch (error) {
+            console.error('Error fetching analysis results:', error);
+            // Continue anyway - showLimitedSummary will handle missing data
+        }
     },
 
     // Display results
