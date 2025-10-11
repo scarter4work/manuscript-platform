@@ -375,29 +375,35 @@ const app = {
         try {
             console.log('Fetching analysis results for reportId:', this.state.reportId);
 
-            // Fetch all three analysis results
-            const [devResponse, lineResponse, copyResponse] = await Promise.all([
-                fetch(`${this.API_BASE}/analyze/developmental/result?reportId=${this.state.reportId}`),
-                fetch(`${this.API_BASE}/analyze/line-editing/result?reportId=${this.state.reportId}`),
-                fetch(`${this.API_BASE}/analyze/copy-editing/result?reportId=${this.state.reportId}`)
-            ]);
+            // Fetch all results using the new /results endpoint
+            const response = await fetch(`${this.API_BASE}/results?id=${this.state.reportId}`);
 
-            if (devResponse.ok) {
-                this.state.analysisResults.developmental = await devResponse.json();
-                this.displayDevelopmentalResults(this.state.analysisResults.developmental);
+            if (!response.ok) {
+                throw new Error('Failed to fetch results');
             }
 
-            if (lineResponse.ok) {
-                this.state.analysisResults.lineEditing = await lineResponse.json();
-                this.displayLineEditingResults(this.state.analysisResults.lineEditing);
-            }
+            const data = await response.json();
+            console.log('Results fetched:', data);
 
-            if (copyResponse.ok) {
-                this.state.analysisResults.copyEditing = await copyResponse.json();
-                this.displayCopyEditingResults(this.state.analysisResults.copyEditing);
-            }
+            if (data.success && data.results) {
+                // Store results
+                this.state.analysisResults.developmental = data.results.developmental;
+                this.state.analysisResults.lineEditing = data.results.lineEditing;
+                this.state.analysisResults.copyEditing = data.results.copyEditing;
 
-            console.log('Analysis results fetched successfully');
+                // Display in agent cards
+                if (data.results.developmental) {
+                    this.displayDevelopmentalResults(data.results.developmental);
+                }
+                if (data.results.lineEditing) {
+                    this.displayLineEditingResults(data.results.lineEditing);
+                }
+                if (data.results.copyEditing) {
+                    this.displayCopyEditingResults(data.results.copyEditing);
+                }
+
+                console.log('Analysis results fetched and displayed successfully');
+            }
 
         } catch (error) {
             console.error('Error fetching analysis results:', error);

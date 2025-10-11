@@ -125,6 +125,11 @@ export default {
         return await handleGetAnalysis(request, env, corsHeaders);
       }
 
+      // Route: Get analysis results as JSON by reportId
+      if (path === '/results' && request.method === 'GET') {
+        return await handleGetAnalysisResults(request, env, corsHeaders);
+      }
+
       // Route: Generate formatted report
       if (path === '/report' && request.method === 'GET') {
         return await handleGenerateReport(request, env, corsHeaders);
@@ -872,6 +877,64 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
     return new Response(JSON.stringify({ 
       error: error.message,
       stack: error.stack
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Get analysis results as JSON by reportId
+async function handleGetAnalysisResults(request, env, corsHeaders) {
+  const url = new URL(request.url);
+  const reportId = url.searchParams.get('id');
+
+  if (!reportId) {
+    return new Response(JSON.stringify({ error: 'Report ID required' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  try {
+    // Get manuscript key from mapping
+    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+
+    if (!mappingObject) {
+      return new Response(JSON.stringify({
+        error: 'Report not found',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const manuscriptKey = await mappingObject.text();
+
+    // Fetch all three analyses
+    const [devAnalysis, lineAnalysis, copyAnalysis] = await Promise.all([
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`).then(r => r?.json()).catch(() => null),
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(() => null),
+      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(() => null)
+    ]);
+
+    return new Response(JSON.stringify({
+      success: true,
+      results: {
+        developmental: devAnalysis,
+        lineEditing: lineAnalysis,
+        copyEditing: copyAnalysis
+      }
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error fetching results:', error);
+    return new Response(JSON.stringify({
+      error: error.message
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
