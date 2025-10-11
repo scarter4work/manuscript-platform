@@ -7,6 +7,11 @@ import { CopyEditingAgent } from './copy-editing-agent.js';
 import { ReportGenerator } from './report-generator.js';
 import { AnnotatedManuscriptGenerator } from './annotated-manuscript-generator.js';
 import { Auth } from './auth.js';
+import { BookDescriptionAgent } from './book-description-agent.js';
+import { KeywordAgent } from './keyword-agent.js';
+import { CategoryAgent } from './category-agent.js';
+import { AuthorBioAgent } from './author-bio-agent.js';
+import { BackMatterAgent } from './back-matter-agent.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -118,6 +123,16 @@ export default {
       // NEW: Check analysis status
       if (path === '/analyze/status' && request.method === 'GET') {
         return await handleAnalysisStatus(request, env, corsHeaders);
+      }
+
+      // Route: Generate marketing assets (book description, keywords, categories)
+      if (path === '/generate-assets' && request.method === 'POST') {
+        return await handleGenerateAssets(request, env, corsHeaders);
+      }
+
+      // Route: Get generated assets
+      if (path === '/assets' && request.method === 'GET') {
+        return await handleGetAssets(request, env, corsHeaders);
       }
 
       // Route: Get analysis results
@@ -1033,8 +1048,224 @@ async function handleAnalysisStatus(request, env, corsHeaders) {
 
   } catch (error) {
     console.error('Error checking status:', error);
-    return new Response(JSON.stringify({ 
-      error: error.message 
+    return new Response(JSON.stringify({
+      error: error.message
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// ASSET GENERATION HANDLERS
+
+// Generate marketing assets (book description, keywords, categories)
+async function handleGenerateAssets(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { reportId } = body;
+
+    if (!reportId) {
+      return new Response(JSON.stringify({ error: 'reportId is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    console.log('Generating assets for report:', reportId);
+
+    // Get manuscript key from mapping
+    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+
+    if (!mappingObject) {
+      return new Response(JSON.stringify({
+        error: 'Report not found',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const manuscriptKey = await mappingObject.text();
+    console.log('Found manuscript key:', manuscriptKey);
+
+    // Fetch developmental analysis (required for asset generation)
+    const devAnalysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`);
+
+    if (!devAnalysisObj) {
+      return new Response(JSON.stringify({
+        error: 'Developmental analysis not found. Please complete manuscript analysis first.',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const devAnalysis = await devAnalysisObj.json();
+    const genre = body.genre || 'general';
+
+    // Extract optional author data from request
+    const authorData = body.authorData || {};
+
+    // Initialize all 5 agents
+    const bookDescAgent = new BookDescriptionAgent(env);
+    const keywordAgent = new KeywordAgent(env);
+    const categoryAgent = new CategoryAgent(env);
+    const authorBioAgent = new AuthorBioAgent(env);
+    const backMatterAgent = new BackMatterAgent(env);
+
+    console.log('Running all five asset generation agents in parallel...');
+
+    // Run all agents in parallel
+    const [bookDescription, keywords, categories, authorBio, backMatter] = await Promise.all([
+      bookDescAgent.generate(manuscriptKey, devAnalysis, genre)
+        .catch(e => ({ error: e.message, type: 'bookDescription' })),
+      keywordAgent.generate(manuscriptKey, devAnalysis, genre)
+        .catch(e => ({ error: e.message, type: 'keywords' })),
+      categoryAgent.generate(manuscriptKey, devAnalysis, genre)
+        .catch(e => ({ error: e.message, type: 'categories' })),
+      authorBioAgent.generate(manuscriptKey, devAnalysis, genre, authorData)
+        .catch(e => ({ error: e.message, type: 'authorBio' })),
+      backMatterAgent.generate(manuscriptKey, devAnalysis, genre, authorData)
+        .catch(e => ({ error: e.message, type: 'backMatter' }))
+    ]);
+
+    // Check for errors
+    const errors = [];
+    if (bookDescription.error) errors.push(bookDescription);
+    if (keywords.error) errors.push(keywords);
+    if (categories.error) errors.push(categories);
+    if (authorBio.error) errors.push(authorBio);
+    if (backMatter.error) errors.push(backMatter);
+
+    if (errors.length > 0) {
+      console.error('Asset generation errors:', errors);
+      return new Response(JSON.stringify({
+        success: false,
+        partialSuccess: errors.length < 5,
+        errors: errors,
+        results: {
+          bookDescription: bookDescription.error ? null : bookDescription.description,
+          keywords: keywords.error ? null : keywords.keywords,
+          categories: categories.error ? null : categories.categories,
+          authorBio: authorBio.error ? null : authorBio.bio,
+          backMatter: backMatter.error ? null : backMatter.backMatter
+        }
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Store combined assets
+    const combinedAssets = {
+      manuscriptKey,
+      reportId,
+      generated: new Date().toISOString(),
+      bookDescription: bookDescription.description,
+      keywords: keywords.keywords,
+      categories: categories.categories,
+      authorBio: authorBio.bio,
+      backMatter: backMatter.backMatter
+    };
+
+    await env.MANUSCRIPTS_PROCESSED.put(
+      `${manuscriptKey}-assets.json`,
+      JSON.stringify(combinedAssets, null, 2),
+      {
+        customMetadata: {
+          reportId: reportId,
+          timestamp: new Date().toISOString()
+        },
+        httpMetadata: {
+          contentType: 'application/json'
+        }
+      }
+    );
+
+    console.log('Assets generated and stored successfully');
+
+    return new Response(JSON.stringify({
+      success: true,
+      reportId: reportId,
+      assets: combinedAssets
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error generating assets:', error);
+    console.error('Error stack:', error.stack);
+    return new Response(JSON.stringify({
+      error: error.message,
+      stack: error.stack
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Get generated assets by reportId
+async function handleGetAssets(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const reportId = url.searchParams.get('id');
+
+    if (!reportId) {
+      return new Response(JSON.stringify({ error: 'id parameter required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    console.log('Fetching assets for report:', reportId);
+
+    // Get manuscript key from mapping
+    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+
+    if (!mappingObject) {
+      return new Response(JSON.stringify({
+        error: 'Report not found',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const manuscriptKey = await mappingObject.text();
+
+    // Fetch combined assets
+    const assetsObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-assets.json`);
+
+    if (!assetsObj) {
+      return new Response(JSON.stringify({
+        error: 'Assets not found. Please generate assets first.',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const assets = await assetsObj.json();
+
+    return new Response(JSON.stringify({
+      success: true,
+      assets: assets
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error fetching assets:', error);
+    return new Response(JSON.stringify({
+      error: error.message
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

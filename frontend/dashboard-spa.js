@@ -15,7 +15,8 @@ const app = {
             developmental: null,
             lineEditing: null,
             copyEditing: null
-        }
+        },
+        generatedAssets: null
     },
 
     // Initialize app
@@ -151,8 +152,20 @@ const app = {
                 <span class="breadcrumb-separator">›</span>
                 <span class="breadcrumb-current">Annotated Manuscript</span>
             `;
+        } else if (view === 'assetGeneration') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Generating Assets</span>
+            `;
+        } else if (view === 'assets') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Marketing Assets</span>
+            `;
         }
-        
+
         breadcrumbContent.innerHTML = content;
     },
 
@@ -767,6 +780,405 @@ const app = {
         a.href = url;
         a.download = `manuscript-analysis-${Date.now()}.json`;
         a.click();
+    },
+
+    // ASSET GENERATION FUNCTIONS
+
+    // Generate marketing assets
+    async generateAssets() {
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        console.log('Starting asset generation for report:', this.state.reportId);
+
+        // Navigate to asset generation view
+        this.navigate('assetGeneration');
+
+        // Reset agent statuses
+        this.updateAssetAgentStatus('bookDesc', 'running', 'Running...');
+        this.updateAssetAgentStatus('keyword', 'running', 'Running...');
+        this.updateAssetAgentStatus('category', 'running', 'Running...');
+        this.updateAssetAgentStatus('authorBio', 'running', 'Running...');
+        this.updateAssetAgentStatus('backMatter', 'running', 'Running...');
+
+        try {
+            // Call the generate-assets endpoint
+            const response = await fetch(`${this.API_BASE}/generate-assets`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reportId: this.state.reportId,
+                    genre: document.getElementById('genre')?.value || 'general'
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to generate assets');
+            }
+
+            const result = await response.json();
+            console.log('Assets generated:', result);
+
+            // Mark all agents as complete
+            this.updateAssetAgentStatus('bookDesc', 'complete', 'Complete');
+            this.updateAssetAgentStatus('keyword', 'complete', 'Complete');
+            this.updateAssetAgentStatus('category', 'complete', 'Complete');
+            this.updateAssetAgentStatus('authorBio', 'complete', 'Complete');
+            this.updateAssetAgentStatus('backMatter', 'complete', 'Complete');
+
+            // Store assets in state
+            this.state.generatedAssets = result.assets;
+
+            // Wait a moment then show assets view
+            setTimeout(() => {
+                this.populateAssetsView(result.assets);
+                this.navigate('assets');
+            }, 1000);
+
+        } catch (error) {
+            console.error('Error generating assets:', error);
+            alert('Failed to generate assets: ' + error.message);
+
+            // Mark agents as failed
+            this.updateAssetAgentStatus('bookDesc', 'pending', 'Failed');
+            this.updateAssetAgentStatus('keyword', 'pending', 'Failed');
+            this.updateAssetAgentStatus('category', 'pending', 'Failed');
+            this.updateAssetAgentStatus('authorBio', 'pending', 'Failed');
+            this.updateAssetAgentStatus('backMatter', 'pending', 'Failed');
+
+            this.navigate('summary');
+        }
+    },
+
+    // Update asset agent status
+    updateAssetAgentStatus(agent, status, text) {
+        const agentCard = document.getElementById(agent + 'Agent');
+        const statusSpan = document.getElementById(agent + 'Status');
+
+        if (agentCard && statusSpan) {
+            agentCard.className = 'agent-card ' + status;
+            statusSpan.className = 'agent-status status-' + status;
+            statusSpan.textContent = text;
+        }
+    },
+
+    // Populate assets view with generated data
+    populateAssetsView(assets) {
+        console.log('Populating assets view:', assets);
+
+        // Book Description
+        const bookDesc = assets.bookDescription;
+        if (bookDesc) {
+            const textarea = document.getElementById('bookDescription');
+            textarea.value = bookDesc.medium;
+            this.updateCharCount();
+
+            // Add event listener for character count
+            textarea.addEventListener('input', () => this.updateCharCount());
+
+            // Store all versions for switching
+            textarea.dataset.short = bookDesc.short;
+            textarea.dataset.medium = bookDesc.medium;
+            textarea.dataset.long = bookDesc.long;
+        }
+
+        // Keywords
+        const keywords = assets.keywords;
+        if (keywords && keywords.keywords) {
+            const keywordsList = document.getElementById('keywordsList');
+            keywordsList.innerHTML = keywords.keywords.map((kw, i) => `
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span style="font-weight: 600; min-width: 30px;">${i + 1}.</span>
+                    <input type="text"
+                           value="${kw}"
+                           maxlength="50"
+                           style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 16px;"
+                           onchange="app.validateKeyword(this)" />
+                    <span style="font-size: 14px; color: #666; min-width: 60px;">${kw.length}/50</span>
+                </div>
+            `).join('');
+        }
+
+        // Categories
+        const categories = assets.categories;
+        if (categories) {
+            const categoriesList = document.getElementById('categoriesList');
+
+            let html = '';
+
+            if (categories.primary && categories.primary.length > 0) {
+                html += '<h4 style="color: #4caf50; margin-top: 20px; margin-bottom: 10px;">Primary Categories</h4>';
+                html += categories.primary.map(cat => `
+                    <div style="padding: 15px; background: #f0f7f0; border-left: 4px solid #4caf50; margin-bottom: 10px; border-radius: 6px;">
+                        <div style="font-weight: 600; margin-bottom: 5px;">${cat.code} - ${cat.name}</div>
+                        <div style="font-size: 14px; color: #666;">${cat.rationale}</div>
+                        <div style="font-size: 13px; color: #888; margin-top: 5px;">
+                            Competition: ${cat.competitionLevel} | Potential: ${cat.estimatedRanking}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if (categories.secondary && categories.secondary.length > 0) {
+                html += '<h4 style="color: #2196f3; margin-top: 20px; margin-bottom: 10px;">Secondary Categories</h4>';
+                html += categories.secondary.map(cat => `
+                    <div style="padding: 15px; background: #f0f5ff; border-left: 4px solid #2196f3; margin-bottom: 10px; border-radius: 6px;">
+                        <div style="font-weight: 600; margin-bottom: 5px;">${cat.code} - ${cat.name}</div>
+                        <div style="font-size: 14px; color: #666;">${cat.rationale}</div>
+                        <div style="font-size: 13px; color: #888; margin-top: 5px;">
+                            Competition: ${cat.competitionLevel} | Potential: ${cat.estimatedRanking}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if (categories.alternative && categories.alternative.length > 0) {
+                html += '<h4 style="color: #ff9800; margin-top: 20px; margin-bottom: 10px;">Alternative Categories</h4>';
+                html += categories.alternative.map(cat => `
+                    <div style="padding: 15px; background: #fff8f0; border-left: 4px solid #ff9800; margin-bottom: 10px; border-radius: 6px;">
+                        <div style="font-weight: 600; margin-bottom: 5px;">${cat.code} - ${cat.name}</div>
+                        <div style="font-size: 14px; color: #666;">${cat.rationale}</div>
+                        <div style="font-size: 13px; color: #888; margin-top: 5px;">
+                            Competition: ${cat.competitionLevel} | Potential: ${cat.estimatedRanking}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            categoriesList.innerHTML = html;
+        }
+
+        // Author Bio
+        const authorBio = assets.authorBio;
+        if (authorBio) {
+            const textarea = document.getElementById('authorBio');
+            textarea.value = authorBio.medium;
+            this.updateBioCharCount();
+
+            // Add event listener for character count
+            textarea.addEventListener('input', () => this.updateBioCharCount());
+
+            // Store all versions for switching
+            textarea.dataset.short = authorBio.short;
+            textarea.dataset.medium = authorBio.medium;
+            textarea.dataset.long = authorBio.long;
+            textarea.dataset.socialMediaBio = authorBio.socialMediaBio;
+        }
+
+        // Back Matter
+        const backMatter = assets.backMatter;
+        if (backMatter) {
+            // Store back matter data for switching formats
+            const backMatterPreview = document.getElementById('backMatterPreview');
+            backMatterPreview.dataset.plainText = backMatter.formatted.plainText;
+            backMatterPreview.dataset.html = backMatter.formatted.html;
+
+            // Display plain text by default
+            backMatterPreview.textContent = backMatter.formatted.plainText;
+
+            // Store raw data
+            document.getElementById('backMatterRaw').textContent = JSON.stringify(backMatter, null, 2);
+        }
+    },
+
+    // Switch description version
+    switchDescriptionVersion() {
+        const select = document.getElementById('descriptionVersion');
+        const textarea = document.getElementById('bookDescription');
+        const version = select.value;
+
+        if (textarea.dataset[version]) {
+            textarea.value = textarea.dataset[version];
+            this.updateCharCount();
+        }
+    },
+
+    // Switch bio version
+    switchBioVersion() {
+        const select = document.getElementById('bioVersion');
+        const textarea = document.getElementById('authorBio');
+        const version = select.value;
+
+        if (textarea.dataset[version]) {
+            textarea.value = textarea.dataset[version];
+            this.updateBioCharCount();
+        }
+    },
+
+    // Switch back matter format
+    switchBackMatterFormat() {
+        const select = document.getElementById('backMatterFormat');
+        const preview = document.getElementById('backMatterPreview');
+        const format = select.value;
+
+        if (format === 'plainText' && preview.dataset.plainText) {
+            preview.textContent = preview.dataset.plainText;
+            preview.style.whiteSpace = 'pre-wrap';
+        } else if (format === 'html' && preview.dataset.html) {
+            preview.innerHTML = preview.dataset.html;
+            preview.style.whiteSpace = 'normal';
+        }
+    },
+
+    // Update character count
+    updateCharCount() {
+        const textarea = document.getElementById('bookDescription');
+        const countSpan = document.getElementById('descCharCount');
+
+        if (textarea && countSpan) {
+            const length = textarea.value.length;
+            countSpan.textContent = length;
+
+            // Warn if over limit
+            if (length > 4000) {
+                countSpan.style.color = '#f44336';
+                countSpan.style.fontWeight = 'bold';
+            } else if (length > 3800) {
+                countSpan.style.color = '#ff9800';
+                countSpan.style.fontWeight = '600';
+            } else {
+                countSpan.style.color = '#666';
+                countSpan.style.fontWeight = 'normal';
+            }
+        }
+    },
+
+    // Update bio character count
+    updateBioCharCount() {
+        const textarea = document.getElementById('authorBio');
+        const countSpan = document.getElementById('bioCharCount');
+
+        if (textarea && countSpan) {
+            const length = textarea.value.length;
+            countSpan.textContent = length;
+        }
+    },
+
+    // Validate keyword length
+    validateKeyword(input) {
+        const parent = input.parentElement;
+        const charCount = parent.querySelector('span:last-child');
+        const length = input.value.length;
+
+        charCount.textContent = `${length}/50`;
+
+        if (length > 50) {
+            input.value = input.value.substring(0, 50);
+            charCount.textContent = '50/50';
+            charCount.style.color = '#f44336';
+        } else if (length > 45) {
+            charCount.style.color = '#ff9800';
+        } else {
+            charCount.style.color = '#666';
+        }
+    },
+
+    // Download assets as JSON
+    downloadAssets() {
+        if (!this.state.generatedAssets) {
+            alert('No assets available to download');
+            return;
+        }
+
+        // Get current values from the UI (in case user edited them)
+        const currentAssets = {
+            ...this.state.generatedAssets,
+            bookDescription: {
+                ...this.state.generatedAssets.bookDescription,
+                selected: document.getElementById('descriptionVersion').value,
+                current: document.getElementById('bookDescription').value
+            },
+            keywords: {
+                ...this.state.generatedAssets.keywords,
+                keywords: Array.from(document.querySelectorAll('#keywordsList input')).map(input => input.value)
+            },
+            authorBio: {
+                ...this.state.generatedAssets.authorBio,
+                selected: document.getElementById('bioVersion').value,
+                current: document.getElementById('authorBio').value
+            },
+            backMatter: this.state.generatedAssets.backMatter
+        };
+
+        const blob = new Blob([JSON.stringify(currentAssets, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `marketing-assets-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    },
+
+    // Download assets as text files
+    downloadAssetsText() {
+        if (!this.state.generatedAssets) {
+            alert('No assets available to download');
+            return;
+        }
+
+        // Get current values
+        const description = document.getElementById('bookDescription').value;
+        const keywords = Array.from(document.querySelectorAll('#keywordsList input')).map(input => input.value);
+        const categories = this.state.generatedAssets.categories;
+
+        // Create text content
+        let textContent = '=== BOOK DESCRIPTION ===\n\n';
+        textContent += description + '\n\n\n';
+
+        textContent += '=== KEYWORDS (7) ===\n\n';
+        keywords.forEach((kw, i) => {
+            textContent += `${i + 1}. ${kw}\n`;
+        });
+        textContent += '\n\n';
+
+        textContent += '=== CATEGORIES ===\n\n';
+        textContent += 'PRIMARY:\n';
+        if (categories.primary) {
+            categories.primary.forEach(cat => {
+                textContent += `- ${cat.code}: ${cat.name}\n`;
+                textContent += `  ${cat.rationale}\n\n`;
+            });
+        }
+
+        textContent += '\nSECONDARY:\n';
+        if (categories.secondary) {
+            categories.secondary.forEach(cat => {
+                textContent += `- ${cat.code}: ${cat.name}\n`;
+                textContent += `  ${cat.rationale}\n\n`;
+            });
+        }
+
+        if (categories.alternative && categories.alternative.length > 0) {
+            textContent += '\nALTERNATIVE:\n';
+            categories.alternative.forEach(cat => {
+                textContent += `- ${cat.code}: ${cat.name}\n`;
+                textContent += `  ${cat.rationale}\n\n`;
+            });
+        }
+
+        // Author Bio
+        textContent += '\n\n=== AUTHOR BIO ===\n\n';
+        const authorBio = document.getElementById('authorBio').value;
+        textContent += authorBio + '\n';
+
+        // Back Matter
+        const backMatter = this.state.generatedAssets.backMatter;
+        if (backMatter) {
+            textContent += '\n\n=== BACK MATTER (Plain Text) ===\n';
+            textContent += backMatter.formatted.plainText;
+        }
+
+        // Download
+        const blob = new Blob([textContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `marketing-assets-${Date.now()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
     }
 };
 

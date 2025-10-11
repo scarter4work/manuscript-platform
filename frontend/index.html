@@ -551,6 +551,9 @@
                 <button class="btn btn-secondary" onclick="app.navigate('annotated')">
                     ✏️ View Annotated Manuscript
                 </button>
+                <button class="btn btn-secondary" onclick="app.generateAssets()">
+                    🎯 Generate Marketing Assets
+                </button>
                 <button class="btn" onclick="app.downloadReports()">
                     📥 Download JSON Data
                 </button>
@@ -579,6 +582,175 @@
             </div>
             <div class="report-view" id="annotatedContent" style="display: none;">
                 <!-- Annotated manuscript HTML injected here -->
+            </div>
+        </div>
+
+        <!-- VIEW: Asset Generation Progress -->
+        <div id="viewAssetGeneration" class="view">
+            <div class="card">
+                <h2>Generating Marketing Assets</h2>
+                <p style="color: #666; margin-bottom: 20px;">
+                    AI is analyzing your manuscript to create Amazon KDP-optimized marketing materials...
+                </p>
+
+                <!-- Asset Agent Cards -->
+                <div class="agent-card" id="bookDescAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">📚 Book Description</div>
+                        <span class="agent-status status-pending" id="bookDescStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Creating compelling book descriptions optimized for Amazon
+                    </div>
+                </div>
+
+                <div class="agent-card" id="keywordAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">🔍 Keywords</div>
+                        <span class="agent-status status-pending" id="keywordStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Generating 7 SEO keyword phrases for discoverability
+                    </div>
+                </div>
+
+                <div class="agent-card" id="categoryAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">📑 Categories</div>
+                        <span class="agent-status status-pending" id="categoryStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Recommending BISAC categories for Amazon listing
+                    </div>
+                </div>
+
+                <div class="agent-card" id="authorBioAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">👤 Author Bio</div>
+                        <span class="agent-status status-pending" id="authorBioStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Creating professional author biographies in multiple lengths
+                    </div>
+                </div>
+
+                <div class="agent-card" id="backMatterAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">📖 Back Matter</div>
+                        <span class="agent-status status-pending" id="backMatterStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Generating book back matter with CTAs and social links
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Assets Review -->
+        <div id="viewAssets" class="view">
+            <div class="card">
+                <h2>📦 Marketing Assets</h2>
+                <p style="color: #666; margin-bottom: 30px;">
+                    Review and customize your AI-generated marketing materials for Amazon KDP.
+                </p>
+
+                <!-- Book Description Section -->
+                <div class="asset-section" style="margin-bottom: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📚 Book Description</h3>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: 600; display: block; margin-bottom: 10px;">
+                            Version:
+                        </label>
+                        <select id="descriptionVersion" style="padding: 10px; border-radius: 6px; border: 2px solid #e0e0e0; font-size: 16px;" onchange="app.switchDescriptionVersion()">
+                            <option value="medium">Medium (250 words)</option>
+                            <option value="short">Short (150 words)</option>
+                            <option value="long">Long (350 words)</option>
+                        </select>
+                    </div>
+
+                    <textarea id="bookDescription" style="width: 100%; min-height: 200px; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; font-family: inherit; resize: vertical;"></textarea>
+                    <div style="text-align: right; font-size: 14px; color: #666; margin-top: 5px;">
+                        <span id="descCharCount">0</span> / 4000 characters
+                    </div>
+                </div>
+
+                <!-- Keywords Section -->
+                <div class="asset-section" style="margin-bottom: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">🔍 Keywords (7 required)</h3>
+                    <div id="keywordsList" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Keywords populated here -->
+                    </div>
+                </div>
+
+                <!-- Categories Section -->
+                <div class="asset-section" style="margin-bottom: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📑 Categories</h3>
+                    <div id="categoriesList">
+                        <!-- Categories populated here -->
+                    </div>
+                </div>
+
+                <!-- Author Bio Section -->
+                <div class="asset-section" style="margin-bottom: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">👤 Author Bio</h3>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: 600; display: block; margin-bottom: 10px;">
+                            Bio Version:
+                        </label>
+                        <select id="bioVersion" style="padding: 10px; border-radius: 6px; border: 2px solid #e0e0e0; font-size: 16px;" onchange="app.switchBioVersion()">
+                            <option value="medium">Medium (100 words - Amazon)</option>
+                            <option value="short">Short (50 words - Brief)</option>
+                            <option value="long">Long (200 words - Website)</option>
+                            <option value="socialMediaBio">Social Media (160 chars)</option>
+                        </select>
+                    </div>
+
+                    <textarea id="authorBio" style="width: 100%; min-height: 150px; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; font-family: inherit; resize: vertical;"></textarea>
+                    <div style="text-align: right; font-size: 14px; color: #666; margin-top: 5px;">
+                        <span id="bioCharCount">0</span> characters
+                    </div>
+                </div>
+
+                <!-- Back Matter Section -->
+                <div class="asset-section" style="margin-bottom: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📖 Back Matter</h3>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: 600; display: block; margin-bottom: 10px;">
+                            Format:
+                        </label>
+                        <select id="backMatterFormat" style="padding: 10px; border-radius: 6px; border: 2px solid #e0e0e0; font-size: 16px;" onchange="app.switchBackMatterFormat()">
+                            <option value="plainText">Plain Text (for print books)</option>
+                            <option value="html">HTML (for ebooks)</option>
+                        </select>
+                    </div>
+
+                    <div id="backMatterPreview" style="padding: 20px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f9f9f9; max-height: 400px; overflow-y: auto; font-family: Georgia, serif; white-space: pre-wrap;">
+                        <!-- Back matter preview populated here -->
+                    </div>
+
+                    <details style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 8px;">
+                        <summary style="cursor: pointer; font-weight: 600; color: #667eea;">View Raw Back Matter Data</summary>
+                        <pre id="backMatterRaw" style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; overflow-x: auto; font-size: 14px;">
+                            <!-- Raw back matter data here -->
+                        </pre>
+                    </details>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="btn btn-secondary" onclick="app.downloadAssets()">
+                        📥 Download Assets (JSON)
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.downloadAssetsText()">
+                        📄 Download Assets (Text)
+                    </button>
+                    <button class="btn" onclick="app.navigate('summary')">
+                        ← Back to Summary
+                    </button>
+                </div>
             </div>
         </div>
     </div>
