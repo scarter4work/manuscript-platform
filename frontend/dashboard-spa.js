@@ -188,6 +188,30 @@ const app = {
                 <span class="breadcrumb-separator">›</span>
                 <span class="breadcrumb-current">Formatting Complete</span>
             `;
+        } else if (view === 'marketAnalysis') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Market Analysis</span>
+            `;
+        } else if (view === 'marketAnalysisProgress') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Analyzing Market</span>
+            `;
+        } else if (view === 'marketAnalysisResults') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Market Analysis Results</span>
+            `;
         }
 
         breadcrumbContent.innerHTML = content;
@@ -1445,6 +1469,351 @@ const app = {
             console.error('Download error:', error);
             alert(`Failed to download ${format.toUpperCase()}: ` + error.message);
         }
+    },
+
+    // ====================
+    // MARKET ANALYSIS (Phase 2)
+    // ====================
+
+    // Start market analysis
+    async startMarketAnalysis() {
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        console.log('Starting market analysis for report:', this.state.reportId);
+
+        // Navigate to progress view
+        this.navigate('marketAnalysisProgress');
+
+        // Update progress
+        document.getElementById('marketAnalysisProgressBar').style.width = '10%';
+        document.getElementById('marketAnalysisProgressText').textContent = 'Initializing market analysis...';
+
+        try {
+            // Call market analysis API
+            const response = await fetch(`${this.API_BASE}/analyze-market`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    reportId: this.state.reportId,
+                    metadata: {
+                        isSeries: false,
+                        authorPlatform: 'New author',
+                        previousBooks: 0
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Market analysis failed');
+            }
+
+            const result = await response.json();
+            console.log('Market analysis initiated:', result);
+
+            // Simulate progress for each component
+            const components = [
+                { id: 'genreAnalysis', name: 'Genre & Positioning', progress: 20 },
+                { id: 'pricingAnalysis', name: 'Pricing Strategy', progress: 35 },
+                { id: 'categoryAnalysis', name: 'Categories', progress: 50 },
+                { id: 'keywordAnalysis', name: 'Keywords', progress: 65 },
+                { id: 'audienceAnalysis', name: 'Target Audience', progress: 80 },
+                { id: 'positioningAnalysis', name: 'Competitive Positioning', progress: 95 }
+            ];
+
+            for (const component of components) {
+                document.getElementById(`${component.id}Status`).textContent = 'Running';
+                document.getElementById(`${component.id}Status`).className = 'agent-status status-running';
+                document.getElementById(`${component.id}Card`).className = 'agent-card running';
+                document.getElementById('marketAnalysisProgressBar').style.width = `${component.progress}%`;
+                document.getElementById('marketAnalysisProgressText').textContent = `Analyzing ${component.name}...`;
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                document.getElementById(`${component.id}Status`).textContent = 'Complete';
+                document.getElementById(`${component.id}Status`).className = 'agent-status status-complete';
+                document.getElementById(`${component.id}Card`).className = 'agent-card complete';
+            }
+
+            // Set progress to 100%
+            document.getElementById('marketAnalysisProgressBar').style.width = '100%';
+            document.getElementById('marketAnalysisProgressText').textContent = 'Market analysis complete!';
+
+            // Wait a moment, then fetch and display results
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            await this.loadMarketAnalysisResults();
+
+        } catch (error) {
+            console.error('Market analysis error:', error);
+            alert('Market analysis failed: ' + error.message);
+            this.navigate('assets');
+        }
+    },
+
+    // Load and display market analysis results
+    async loadMarketAnalysisResults() {
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        console.log('Loading market analysis results...');
+
+        try {
+            // Fetch market analysis results
+            const response = await fetch(
+                `${this.API_BASE}/market-analysis?reportId=${this.state.reportId}`
+            );
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to load market analysis');
+            }
+
+            const data = await response.json();
+            console.log('Market analysis results:', data);
+
+            // Store in state
+            this.state.marketAnalysis = data;
+
+            // Display results
+            this.displayMarketAnalysisResults(data);
+
+            // Navigate to results view
+            this.navigate('marketAnalysisResults');
+
+        } catch (error) {
+            console.error('Error loading market analysis:', error);
+            alert('Failed to load market analysis results: ' + error.message);
+            this.navigate('assets');
+        }
+    },
+
+    // Display market analysis results
+    displayMarketAnalysisResults(data) {
+        const { report, analysis } = data;
+
+        // Display summary cards
+        const summaryCards = document.getElementById('marketSummaryCards');
+        summaryCards.innerHTML = `
+            <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">📚</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">${report.summary.primaryGenre}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Primary Genre</div>
+            </div>
+            <div style="background: #fff8e1; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">💰</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #ffa726;">$${report.summary.recommendedEbookPrice}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Ebook Price</div>
+            </div>
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">📄</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #4caf50;">$${report.summary.recommendedPaperbackPrice}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Paperback Price</div>
+            </div>
+            <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">👥</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #9c27b0;">${report.summary.targetDemographic}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Target Age</div>
+            </div>
+        `;
+
+        // Display detailed analysis
+        const details = document.getElementById('marketAnalysisDetails');
+        let detailsHtml = '';
+
+        // Genre Analysis
+        if (analysis.genreAnalysis) {
+            const genre = analysis.genreAnalysis;
+            detailsHtml += `
+                <div style="background: #f8f9ff; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">🎯 Genre & Market Position</h3>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Primary Genre:</strong> ${genre.primaryGenre}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Sub-genres:</strong> ${genre.subGenres.join(', ')}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Market Position:</strong> ${genre.marketPosition}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Market Size:</strong> ${genre.marketSize} | <strong>Competition:</strong> ${genre.competition}
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Tone:</strong> ${genre.tone} | <strong>Pacing:</strong> ${genre.pacing}
+                    </div>
+                    ${genre.comparableTitles && genre.comparableTitles.length > 0 ? `
+                        <div>
+                            <strong>Comparable Titles:</strong>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                ${genre.comparableTitles.slice(0, 5).map(title => `<li>${title}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Pricing Strategy
+        if (analysis.pricingStrategy) {
+            const pricing = analysis.pricingStrategy;
+            detailsHtml += `
+                <div style="background: #fff8e1; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #ffa726; margin-bottom: 20px;">💰 Pricing Strategy</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h4 style="margin-bottom: 10px;">Ebook Pricing</h4>
+                            <div style="font-size: 2em; font-weight: bold; color: #ffa726;">$${pricing.ebook.recommended}</div>
+                            <div style="margin-top: 10px; color: #666;">
+                                Range: $${pricing.ebook.range.min} - $${pricing.ebook.range.max}
+                            </div>
+                            <div style="margin-top: 10px; font-size: 0.9em;">
+                                ${pricing.ebook.reasoning}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 10px;">Paperback Pricing</h4>
+                            <div style="font-size: 2em; font-weight: bold; color: #ffa726;">$${pricing.paperback.recommended}</div>
+                            <div style="margin-top: 10px; color: #666;">
+                                Range: $${pricing.paperback.range.min} - $${pricing.paperback.range.max}
+                            </div>
+                            <div style="margin-top: 10px; font-size: 0.9em;">
+                                ${pricing.paperback.reasoning}
+                            </div>
+                        </div>
+                    </div>
+                    ${pricing.launchStrategy ? `
+                        <div style="margin-top: 20px; padding: 15px; background: white; border-radius: 8px;">
+                            <strong>Launch Strategy:</strong> Start at $${pricing.launchStrategy.initialPrice} for ${pricing.launchStrategy.duration}, then $${pricing.launchStrategy.normalPrice}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Categories
+        if (analysis.categoryRecommendations && analysis.categoryRecommendations.primary) {
+            const categories = analysis.categoryRecommendations;
+            detailsHtml += `
+                <div style="background: #e8f5e9; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #4caf50; margin-bottom: 20px;">📁 Recommended Categories</h3>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Top Categories:</strong>
+                    </div>
+                    ${categories.primary.slice(0, 5).map((cat, i) => `
+                        <div style="padding: 15px; background: white; border-radius: 8px; margin-bottom: 10px;">
+                            <div style="font-weight: bold; color: #4caf50;">${i + 1}. ${cat.name}</div>
+                            <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
+                                BISAC: ${cat.bisac} | Competition: ${cat.competitiveness}
+                            </div>
+                            <div style="font-size: 0.85em; margin-top: 5px;">${cat.reasoning}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Keywords
+        if (analysis.keywordStrategy && analysis.keywordStrategy.keywords) {
+            const keywords = analysis.keywordStrategy;
+            detailsHtml += `
+                <div style="background: #f3e5f5; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #9c27b0; margin-bottom: 20px;">🔍 Keyword Strategy</h3>
+                    <div style="margin-bottom: 15px;">
+                        <strong>7 Recommended Keywords:</strong>
+                    </div>
+                    ${keywords.keywords.slice(0, 7).map((kw, i) => `
+                        <div style="padding: 15px; background: white; border-radius: 8px; margin-bottom: 10px;">
+                            <div style="font-weight: bold; color: #9c27b0;">${i + 1}. "${kw.phrase}"</div>
+                            <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
+                                Search Volume: ${kw.searchVolume} | Competition: ${kw.competition} | Relevance: ${kw.relevance}
+                            </div>
+                            <div style="font-size: 0.85em; margin-top: 5px;">${kw.reasoning}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Target Audience
+        if (analysis.audienceProfile && analysis.audienceProfile.primaryAudience) {
+            const audience = analysis.audienceProfile;
+            detailsHtml += `
+                <div style="background: #e1f5fe; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #0288d1; margin-bottom: 20px;">👥 Target Audience</h3>
+                    <div style="margin-bottom: 15px;">
+                        <strong>Primary Audience:</strong>
+                    </div>
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                        <div><strong>Age Range:</strong> ${audience.primaryAudience.ageRange}</div>
+                        <div style="margin-top: 10px;"><strong>Gender:</strong> ${audience.primaryAudience.gender}</div>
+                        <div style="margin-top: 10px;"><strong>Demographics:</strong> ${audience.primaryAudience.demographics}</div>
+                        <div style="margin-top: 10px;"><strong>Reading Habits:</strong> ${audience.primaryAudience.readingHabits}</div>
+                    </div>
+                    ${audience.readerMotivations && audience.readerMotivations.length > 0 ? `
+                        <div style="margin-top: 15px;">
+                            <strong>Reader Motivations:</strong>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                ${audience.readerMotivations.map(m => `<li>${m}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Competitive Positioning
+        if (analysis.competitivePositioning) {
+            const positioning = analysis.competitivePositioning;
+            detailsHtml += `
+                <div style="background: #fce4ec; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #c2185b; margin-bottom: 20px;">🎯 Competitive Positioning</h3>
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #c2185b; margin-bottom: 10px;">Positioning Statement:</div>
+                        <div style="font-size: 1.1em;">"${positioning.positioningStatement}"</div>
+                    </div>
+                    ${positioning.marketGap ? `
+                        <div style="padding: 15px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                            <div style="font-weight: bold; margin-bottom: 10px;">Market Gap:</div>
+                            <div>${positioning.marketGap.description}</div>
+                        </div>
+                    ` : ''}
+                    ${positioning.launchStrategy ? `
+                        <div style="padding: 15px; background: white; border-radius: 8px;">
+                            <div style="font-weight: bold; margin-bottom: 10px;">Launch Strategy:</div>
+                            <div><strong>Approach:</strong> ${positioning.launchStrategy.approach}</div>
+                            <div style="margin-top: 10px;">${positioning.launchStrategy.reasoning}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        details.innerHTML = detailsHtml;
+    },
+
+    // Download market analysis
+    async downloadMarketAnalysis() {
+        if (!this.state.marketAnalysis) {
+            alert('No market analysis data available');
+            return;
+        }
+
+        const dataStr = JSON.stringify(this.state.marketAnalysis, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `market-analysis-${this.state.reportId}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
     }
 };
 

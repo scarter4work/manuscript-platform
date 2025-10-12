@@ -747,6 +747,9 @@
                     <button class="btn btn-secondary" onclick="app.downloadAssetsText()">
                         📄 Download Assets (Text)
                     </button>
+                    <button class="btn" onclick="app.navigate('marketAnalysis')">
+                        📊 Analyze Market
+                    </button>
                     <button class="btn" onclick="app.formatManuscript()">
                         📖 Format for Amazon KDP
                     </button>
@@ -1004,6 +1007,195 @@
                     </button>
                     <button class="btn" onclick="app.navigate('upload', true)">
                         🔄 Format Another Manuscript
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Market Analysis -->
+        <div id="viewMarketAnalysis" class="view">
+            <div class="card">
+                <div style="text-align: center;">
+                    <div style="font-size: 5em; margin-bottom: 20px;">📊</div>
+                    <h2 style="color: #667eea; margin-bottom: 15px;">Amazon KDP Market Analysis</h2>
+                    <p style="color: #666; font-size: 1.1em; margin-bottom: 30px;">
+                        Get strategic insights to optimize your book's positioning and maximize sales potential on Amazon.
+                    </p>
+                </div>
+
+                <!-- Analysis Info Cards -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 40px 0;">
+                    <div style="background: #f8f9ff; padding: 25px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">🎯</div>
+                        <h4 style="color: #667eea; margin-bottom: 10px;">Genre & Positioning</h4>
+                        <p style="font-size: 0.9em; color: #666;">
+                            Identify your book's genre, sub-genres, and market position
+                        </p>
+                    </div>
+                    <div style="background: #fff8e1; padding: 25px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">💰</div>
+                        <h4 style="color: #ffa726; margin-bottom: 10px;">Pricing Strategy</h4>
+                        <p style="font-size: 0.9em; color: #666;">
+                            Get optimal ebook and paperback pricing recommendations
+                        </p>
+                    </div>
+                    <div style="background: #e8f5e9; padding: 25px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">📁</div>
+                        <h4 style="color: #4caf50; margin-bottom: 10px;">Categories & Keywords</h4>
+                        <p style="font-size: 0.9em; color: #666;">
+                            Amazon BISAC categories and SEO keyword phrases
+                        </p>
+                    </div>
+                </div>
+
+                <!-- What You'll Get -->
+                <div style="background: #f0f0f0; padding: 25px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 20px;">📈 Complete Market Analysis Includes:</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <ul style="padding-left: 20px; line-height: 2;">
+                            <li><strong>Genre Analysis</strong> - Primary/secondary genres & tropes</li>
+                            <li><strong>Pricing Strategy</strong> - Ebook & paperback pricing</li>
+                            <li><strong>BISAC Categories</strong> - Up to 10 category recommendations</li>
+                        </ul>
+                        <ul style="padding-left: 20px; line-height: 2;">
+                            <li><strong>SEO Keywords</strong> - 7 optimized keyword phrases</li>
+                            <li><strong>Target Audience</strong> - Demographics & psychographics</li>
+                            <li><strong>Competitive Positioning</strong> - Market gaps & launch strategy</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Analysis Note -->
+                <div style="background: #fffde7; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107; margin-bottom: 30px;">
+                    <p style="margin: 0; color: #666;">
+                        <strong>⏱️ Analysis Time:</strong> This comprehensive analysis takes 30-60 seconds to complete.
+                        Our AI will analyze your manuscript to provide data-driven recommendations for Amazon KDP success.
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="app.startMarketAnalysis()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 18px; padding: 18px 50px;">
+                        📊 Analyze Market
+                    </button>
+                    <br>
+                    <button class="btn" onclick="app.navigate('assets')" style="background: transparent; color: #667eea; box-shadow: none; border: 2px solid #667eea;">
+                        ← Back to Assets
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Market Analysis Progress -->
+        <div id="viewMarketAnalysisProgress" class="view">
+            <div class="card">
+                <h2>🔄 Analyzing Market...</h2>
+                <p style="color: #666; margin-bottom: 20px;">
+                    Our AI is analyzing your manuscript and market trends to provide strategic recommendations...
+                </p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="marketAnalysisProgressBar" style="width: 0%"></div>
+                </div>
+                <p id="marketAnalysisProgressText" style="text-align: center; margin-top: 15px; color: #666; font-size: 1.1em;">
+                    Initializing market analysis...
+                </p>
+
+                <div style="margin-top: 40px;">
+                    <div class="agent-card" id="genreAnalysisCard">
+                        <div class="agent-header">
+                            <div class="agent-name">🎯 Genre & Positioning</div>
+                            <span class="agent-status status-pending" id="genreAnalysisStatus">Pending</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9em;">
+                            Identifying primary genre, sub-genres, and market position
+                        </div>
+                    </div>
+
+                    <div class="agent-card" id="pricingAnalysisCard">
+                        <div class="agent-header">
+                            <div class="agent-name">💰 Pricing Strategy</div>
+                            <span class="agent-status status-pending" id="pricingAnalysisStatus">Pending</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9em;">
+                            Analyzing optimal pricing for ebook and paperback
+                        </div>
+                    </div>
+
+                    <div class="agent-card" id="categoryAnalysisCard">
+                        <div class="agent-header">
+                            <div class="agent-name">📁 Categories</div>
+                            <span class="agent-status status-pending" id="categoryAnalysisStatus">Pending</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9em;">
+                            Recommending best BISAC categories for visibility
+                        </div>
+                    </div>
+
+                    <div class="agent-card" id="keywordAnalysisCard">
+                        <div class="agent-header">
+                            <div class="agent-name">🔍 Keywords</div>
+                            <span class="agent-status status-pending" id="keywordAnalysisStatus">Pending</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9em;">
+                            Generating SEO-optimized Amazon keyword phrases
+                        </div>
+                    </div>
+
+                    <div class="agent-card" id="audienceAnalysisCard">
+                        <div class="agent-header">
+                            <div class="agent-name">👥 Target Audience</div>
+                            <span class="agent-status status-pending" id="audienceAnalysisStatus">Pending</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9em;">
+                            Profiling ideal readers and demographics
+                        </div>
+                    </div>
+
+                    <div class="agent-card" id="positioningAnalysisCard">
+                        <div class="agent-header">
+                            <div class="agent-name">🎯 Competitive Positioning</div>
+                            <span class="agent-status status-pending" id="positioningAnalysisStatus">Pending</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9em;">
+                            Analyzing market gaps and launch strategy
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Market Analysis Results -->
+        <div id="viewMarketAnalysisResults" class="view">
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 5em; margin-bottom: 20px;">📊</div>
+                    <h2 style="color: #667eea; margin-bottom: 15px;">Market Analysis Complete!</h2>
+                    <p style="color: #666; font-size: 1.1em;">
+                        Strategic recommendations for your Amazon KDP publishing success
+                    </p>
+                </div>
+
+                <!-- Quick Summary Cards -->
+                <div id="marketSummaryCards" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 30px 0;">
+                    <!-- Summary cards populated here -->
+                </div>
+
+                <!-- Detailed Analysis Sections -->
+                <div id="marketAnalysisDetails">
+                    <!-- Detailed analysis populated here -->
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="btn btn-secondary" onclick="app.downloadMarketAnalysis()">
+                        📥 Download Analysis (JSON)
+                    </button>
+                    <button class="btn" onclick="app.navigate('assets')">
+                        ← Back to Marketing Assets
+                    </button>
+                    <button class="btn" onclick="app.navigate('summary')">
+                        📊 Back to Summary
                     </button>
                 </div>
             </div>
