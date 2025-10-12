@@ -16,7 +16,9 @@ const app = {
             lineEditing: null,
             copyEditing: null
         },
-        generatedAssets: null
+        generatedAssets: null,
+        marketAnalysis: null,
+        socialMedia: null
     },
 
     // Initialize app
@@ -211,6 +213,30 @@ const app = {
                 <a onclick="app.navigate('assets')">Marketing Assets</a>
                 <span class="breadcrumb-separator">›</span>
                 <span class="breadcrumb-current">Market Analysis Results</span>
+            `;
+        } else if (view === 'socialMedia') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Social Media Marketing</span>
+            `;
+        } else if (view === 'socialMediaProgress') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Generating Marketing Kit</span>
+            `;
+        } else if (view === 'socialMediaResults') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Marketing Kit</span>
             `;
         }
 
@@ -1812,6 +1838,555 @@ const app = {
         const a = document.createElement('a');
         a.href = url;
         a.download = `market-analysis-${this.state.reportId}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    },
+
+    // ====================
+    // SOCIAL MEDIA MARKETING (Phase 5)
+    // ====================
+
+    // Start social media marketing generation
+    async startSocialMediaGeneration() {
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        console.log('Starting social media marketing generation for report:', this.state.reportId);
+
+        // Navigate to progress view
+        this.navigate('socialMediaProgress');
+
+        // Reset progress
+        document.getElementById('socialMediaProgressBar').style.width = '0%';
+        document.getElementById('socialMediaProgressText').textContent = 'Initializing marketing kit generation...';
+
+        // Reset all agent cards
+        const agentIds = ['socialPosts', 'emails', 'calendar', 'trailer', 'magnets'];
+        agentIds.forEach(id => {
+            document.getElementById(`${id}Card`).className = 'agent-card';
+            document.getElementById(`${id}Status`).className = 'agent-status status-pending';
+            document.getElementById(`${id}Status`).textContent = 'Pending';
+        });
+
+        try {
+            // Update progress
+            document.getElementById('socialMediaProgressBar').style.width = '10%';
+            document.getElementById('socialMediaProgressText').textContent = 'Generating marketing materials...';
+
+            // Call the API
+            const response = await fetch(`${this.API_BASE}/generate-social-media`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    reportId: this.state.reportId,
+                    metadata: {
+                        title: 'Your Book',
+                        author: 'Author Name'
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Social media generation failed');
+            }
+
+            const result = await response.json();
+            console.log('Social media generation initiated:', result);
+
+            // Simulate progress for each component (5 agents running in parallel)
+            const components = [
+                { id: 'socialPosts', name: 'Social Media Posts', progress: 20 },
+                { id: 'emails', name: 'Launch Emails', progress: 40 },
+                { id: 'calendar', name: 'Content Calendar', progress: 60 },
+                { id: 'trailer', name: 'Book Trailer Script', progress: 80 },
+                { id: 'magnets', name: 'Reader Magnets', progress: 95 }
+            ];
+
+            for (const component of components) {
+                document.getElementById(`${component.id}Status`).textContent = 'Running';
+                document.getElementById(`${component.id}Status`).className = 'agent-status status-running';
+                document.getElementById(`${component.id}Card`).className = 'agent-card running';
+                document.getElementById('socialMediaProgressBar').style.width = `${component.progress}%`;
+                document.getElementById('socialMediaProgressText').textContent = `Generating ${component.name}...`;
+
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                document.getElementById(`${component.id}Status`).textContent = 'Complete';
+                document.getElementById(`${component.id}Status`).className = 'agent-status status-complete';
+                document.getElementById(`${component.id}Card`).className = 'agent-card complete';
+            }
+
+            // Set progress to 100%
+            document.getElementById('socialMediaProgressBar').style.width = '100%';
+            document.getElementById('socialMediaProgressText').textContent = 'Marketing kit complete!';
+
+            // Wait a moment, then load and display results
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            await this.loadSocialMediaResults();
+
+        } catch (error) {
+            console.error('Social media generation error:', error);
+            alert('Marketing kit generation failed: ' + error.message);
+
+            // Mark agents as failed
+            agentIds.forEach(id => {
+                document.getElementById(`${id}Status`).textContent = 'Failed';
+                document.getElementById(`${id}Status`).className = 'agent-status status-pending';
+            });
+
+            this.navigate('assets');
+        }
+    },
+
+    // Load and display social media marketing results
+    async loadSocialMediaResults() {
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        console.log('Loading social media marketing results...');
+
+        try {
+            // Fetch social media results
+            const response = await fetch(
+                `${this.API_BASE}/social-media?reportId=${this.state.reportId}`
+            );
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to load social media marketing');
+            }
+
+            const data = await response.json();
+            console.log('Social media marketing results:', data);
+
+            // Store in state
+            this.state.socialMedia = data;
+
+            // Display results
+            this.displaySocialMediaResults(data);
+
+            // Navigate to results view
+            this.navigate('socialMediaResults');
+
+        } catch (error) {
+            console.error('Error loading social media marketing:', error);
+            alert('Failed to load marketing kit: ' + error.message);
+            this.navigate('assets');
+        }
+    },
+
+    // Display social media marketing results
+    displaySocialMediaResults(data) {
+        const { marketingPackage } = data;
+
+        // Display summary cards
+        const summaryCards = document.getElementById('socialMediaSummaryCards');
+
+        const totalPosts = this.countSocialMediaPosts(marketingPackage.socialMediaPosts);
+        const emailCount = Object.keys(marketingPackage.launchEmails || {}).length;
+        const calendarDays = marketingPackage.contentCalendar?.calendar?.length || 30;
+        const trailerDuration = marketingPackage.bookTrailerScript?.duration || '60 seconds';
+        const magnetIdeas = this.countReaderMagnetIdeas(marketingPackage.readerMagnets);
+
+        summaryCards.innerHTML = `
+            <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">📱</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">${totalPosts}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Social Posts</div>
+            </div>
+            <div style="background: #fff8e1; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">📧</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #ffa726;">${emailCount}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Email Templates</div>
+            </div>
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">📅</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #4caf50;">${calendarDays}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Days Planned</div>
+            </div>
+            <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">🎬</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #9c27b0;">${trailerDuration}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Trailer Script</div>
+            </div>
+            <div style="background: #fce4ec; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2em; margin-bottom: 10px;">🎁</div>
+                <div style="font-size: 1.5em; font-weight: bold; color: #c2185b;">${magnetIdeas}</div>
+                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">Magnet Ideas</div>
+            </div>
+        `;
+
+        // Display detailed results
+        const details = document.getElementById('socialMediaDetails');
+        let detailsHtml = '';
+
+        // Social Media Posts
+        if (marketingPackage.socialMediaPosts) {
+            const posts = marketingPackage.socialMediaPosts;
+            detailsHtml += `
+                <div style="background: #f8f9ff; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">📱 Social Media Posts</h3>
+                    ${this.renderSocialPosts(posts)}
+                </div>
+            `;
+        }
+
+        // Launch Emails
+        if (marketingPackage.launchEmails) {
+            const emails = marketingPackage.launchEmails;
+            detailsHtml += `
+                <div style="background: #fff8e1; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #ffa726; margin-bottom: 20px;">📧 Launch Email Templates</h3>
+                    ${this.renderLaunchEmails(emails)}
+                </div>
+            `;
+        }
+
+        // Content Calendar
+        if (marketingPackage.contentCalendar) {
+            const calendar = marketingPackage.contentCalendar;
+            detailsHtml += `
+                <div style="background: #e8f5e9; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #4caf50; margin-bottom: 20px;">📅 30-Day Content Calendar</h3>
+                    ${this.renderContentCalendar(calendar)}
+                </div>
+            `;
+        }
+
+        // Book Trailer Script
+        if (marketingPackage.bookTrailerScript) {
+            const trailer = marketingPackage.bookTrailerScript;
+            detailsHtml += `
+                <div style="background: #f3e5f5; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #9c27b0; margin-bottom: 20px;">🎬 Book Trailer Script (${trailer.duration})</h3>
+                    ${this.renderBookTrailer(trailer)}
+                </div>
+            `;
+        }
+
+        // Reader Magnets
+        if (marketingPackage.readerMagnets) {
+            const magnets = marketingPackage.readerMagnets;
+            detailsHtml += `
+                <div style="background: #fce4ec; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                    <h3 style="color: #c2185b; margin-bottom: 20px;">🎁 Reader Magnet Ideas</h3>
+                    ${this.renderReaderMagnets(magnets)}
+                </div>
+            `;
+        }
+
+        details.innerHTML = detailsHtml;
+    },
+
+    // Helper: Count social media posts
+    countSocialMediaPosts(posts) {
+        let count = 0;
+        for (const platform in posts) {
+            if (Array.isArray(posts[platform])) {
+                count += posts[platform].length;
+            }
+        }
+        return count;
+    },
+
+    // Helper: Count reader magnet ideas
+    countReaderMagnetIdeas(magnets) {
+        let count = 0;
+        for (const category in magnets) {
+            if (Array.isArray(magnets[category])) {
+                count += magnets[category].length;
+            } else if (typeof magnets[category] === 'object') {
+                count += 1;
+            }
+        }
+        return count;
+    },
+
+    // Helper: Render social media posts
+    renderSocialPosts(posts) {
+        let html = '';
+
+        if (posts.twitter && posts.twitter.length > 0) {
+            html += '<h4 style="color: #1da1f2; margin-top: 20px;">Twitter/X</h4>';
+            posts.twitter.forEach(post => {
+                html += `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0; border-left: 4px solid #1da1f2;">
+                        <div style="margin-bottom: 10px;"><strong>${post.type || 'Post'}</strong> (${post.timing || 'Launch day'})</div>
+                        <div style="font-size: 1.1em; margin-bottom: 10px;">${post.content}</div>
+                        ${post.hashtags ? `<div style="color: #1da1f2; font-size: 0.9em;">${post.hashtags.map(h => '#' + h).join(' ')}</div>` : ''}
+                        ${post.engagement_tip ? `<div style="margin-top: 10px; font-size: 0.85em; color: #666;"><strong>Tip:</strong> ${post.engagement_tip}</div>` : ''}
+                        <button onclick="navigator.clipboard.writeText('${post.content.replace(/'/g, "\\'")}'); alert('Copied to clipboard!')"
+                                style="margin-top: 10px; padding: 5px 15px; background: #1da1f2; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            📋 Copy
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        if (posts.facebook && posts.facebook.length > 0) {
+            html += '<h4 style="color: #4267B2; margin-top: 20px;">Facebook</h4>';
+            posts.facebook.forEach(post => {
+                html += `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0; border-left: 4px solid #4267B2;">
+                        <div style="margin-bottom: 10px;"><strong>${post.type || 'Post'}</strong> (${post.timing || 'Launch day'})</div>
+                        <div style="font-size: 1.1em; margin-bottom: 10px; white-space: pre-wrap;">${post.content}</div>
+                        ${post.cta ? `<div style="margin-top: 10px; padding: 10px; background: #f0f2f5; border-radius: 4px;"><strong>CTA:</strong> ${post.cta}</div>` : ''}
+                        <button onclick="navigator.clipboard.writeText(\`${post.content.replace(/`/g, '\\`')}\`); alert('Copied to clipboard!')"
+                                style="margin-top: 10px; padding: 5px 15px; background: #4267B2; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            📋 Copy
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        if (posts.instagram && posts.instagram.length > 0) {
+            html += '<h4 style="color: #E1306C; margin-top: 20px;">Instagram</h4>';
+            posts.instagram.forEach(post => {
+                html += `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0; border-left: 4px solid #E1306C;">
+                        <div style="margin-bottom: 10px;"><strong>${post.type || 'Post'}</strong> (${post.timing || 'Launch day'})</div>
+                        ${post.imageIdea ? `<div style="padding: 10px; background: #fce4ec; border-radius: 4px; margin-bottom: 10px;"><strong>Image Idea:</strong> ${post.imageIdea}</div>` : ''}
+                        <div style="font-size: 1.1em; margin-bottom: 10px; white-space: pre-wrap;">${post.caption}</div>
+                        ${post.hashtags ? `<div style="color: #E1306C; font-size: 0.9em;">${post.hashtags.map(h => '#' + h).join(' ')}</div>` : ''}
+                        <button onclick="navigator.clipboard.writeText(\`${post.caption.replace(/`/g, '\\`')}\`); alert('Copied to clipboard!')"
+                                style="margin-top: 10px; padding: 5px 15px; background: #E1306C; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            📋 Copy
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        if (posts.tiktok && posts.tiktok.length > 0) {
+            html += '<h4 style="color: #000000; margin-top: 20px;">TikTok</h4>';
+            posts.tiktok.forEach(post => {
+                html += `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0; border-left: 4px solid #000000;">
+                        <div style="margin-bottom: 10px;"><strong>${post.type || 'Video'}</strong> (${post.timing || 'Launch day'})</div>
+                        <div style="font-size: 1.1em; margin-bottom: 10px; white-space: pre-wrap;"><strong>Script:</strong><br>${post.script}</div>
+                        ${post.visualCues ? `<div style="padding: 10px; background: #f5f5f5; border-radius: 4px; margin: 10px 0;"><strong>Visual Cues:</strong> ${post.visualCues}</div>` : ''}
+                        ${post.soundSuggestion ? `<div style="font-size: 0.9em; color: #666;"><strong>Sound:</strong> ${post.soundSuggestion}</div>` : ''}
+                        <button onclick="navigator.clipboard.writeText(\`${post.script.replace(/`/g, '\\`')}\`); alert('Copied to clipboard!')"
+                                style="margin-top: 10px; padding: 5px 15px; background: #000000; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            📋 Copy
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        return html || '<p>No social media posts generated.</p>';
+    },
+
+    // Helper: Render launch emails
+    renderLaunchEmails(emails) {
+        let html = '';
+
+        for (const emailType in emails) {
+            const email = emails[emailType];
+            const titles = {
+                preLaunchTeaser: 'Pre-Launch Teaser',
+                launchAnnouncement: 'Launch Day Announcement',
+                postLaunchThankYou: 'Post-Launch Thank You',
+                newsletterSignup: 'Newsletter Welcome'
+            };
+
+            html += `
+                <div style="padding: 20px; background: white; border-radius: 8px; margin: 15px 0;">
+                    <h4 style="color: #ffa726; margin-bottom: 15px;">${titles[emailType] || emailType}</h4>
+                    ${email.subjectLines ? `
+                        <div style="margin-bottom: 15px;">
+                            <strong>Subject Line Options:</strong>
+                            <ul style="margin-top: 5px; padding-left: 20px;">
+                                ${email.subjectLines.map(s => `<li>${s}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    ${email.subject ? `<div style="margin-bottom: 10px;"><strong>Subject:</strong> ${email.subject}</div>` : ''}
+                    ${email.preheader ? `<div style="margin-bottom: 15px; font-style: italic; color: #666;"><strong>Preview:</strong> ${email.preheader}</div>` : ''}
+                    ${email.bodyPlainText ? `
+                        <div style="padding: 15px; background: #f5f5f5; border-radius: 4px; margin: 10px 0; white-space: pre-wrap; font-family: monospace;">
+                            ${email.bodyPlainText}
+                        </div>
+                    ` : ''}
+                    ${email.body ? `
+                        <div style="padding: 15px; background: #f5f5f5; border-radius: 4px; margin: 10px 0; white-space: pre-wrap;">
+                            ${email.body}
+                        </div>
+                    ` : ''}
+                    ${email.cta ? `
+                        <div style="margin-top: 15px; padding: 15px; background: #fff8e1; border-radius: 4px;">
+                            <strong>Call to Action:</strong> ${email.cta.text}
+                        </div>
+                    ` : ''}
+                    ${email.timing ? `<div style="margin-top: 10px; font-size: 0.9em; color: #666;"><strong>Timing:</strong> ${email.timing}</div>` : ''}
+                    ${email.incentive ? `<div style="margin-top: 10px;"><strong>Incentive:</strong> ${email.incentive}</div>` : ''}
+                    <button onclick="navigator.clipboard.writeText(\`${(email.bodyPlainText || email.body || '').replace(/`/g, '\\`')}\`); alert('Copied to clipboard!')"
+                            style="margin-top: 10px; padding: 5px 15px; background: #ffa726; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        📋 Copy Email
+                    </button>
+                </div>
+            `;
+        }
+
+        return html || '<p>No email templates generated.</p>';
+    },
+
+    // Helper: Render content calendar
+    renderContentCalendar(calendar) {
+        let html = '';
+
+        if (calendar.overview) {
+            html += `
+                <div style="padding: 15px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                    <h4>Overview</h4>
+                    <p><strong>Total Posts:</strong> ${calendar.overview.totalPosts || 'N/A'}</p>
+                    <p><strong>Platforms:</strong> ${(calendar.overview.platforms || []).join(', ')}</p>
+                    <p><strong>Strategy:</strong> ${calendar.overview.strategy || 'Build anticipation, launch, maintain momentum'}</p>
+                </div>
+            `;
+        }
+
+        if (calendar.calendar && calendar.calendar.length > 0) {
+            html += '<h4 style="margin-top: 20px;">Daily Schedule</h4>';
+            calendar.calendar.slice(0, 10).forEach(day => {
+                html += `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0; border-left: 4px solid #4caf50;">
+                        <div style="font-weight: bold; color: #4caf50;">Day ${day.day} (${day.date || 'relative to launch'})</div>
+                        <div style="margin-top: 10px;"><strong>Platform:</strong> ${day.platform}</div>
+                        <div><strong>Content Type:</strong> ${day.contentType}</div>
+                        <div style="margin-top: 10px;">${day.postIdea}</div>
+                        ${day.hashtags ? `<div style="margin-top: 5px; color: #4caf50; font-size: 0.9em;">${day.hashtags.join(' ')}</div>` : ''}
+                        ${day.timing ? `<div style="font-size: 0.85em; color: #666; margin-top: 5px;"><strong>Best time:</strong> ${day.timing}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            if (calendar.calendar.length > 10) {
+                html += `<p style="text-align: center; color: #666; margin-top: 15px;">... and ${calendar.calendar.length - 10} more days</p>`;
+            }
+        }
+
+        return html || '<p>No content calendar generated.</p>';
+    },
+
+    // Helper: Render book trailer
+    renderBookTrailer(trailer) {
+        let html = '';
+
+        if (trailer.script && trailer.script.length > 0) {
+            html += '<h4>Script Timeline</h4>';
+            trailer.script.forEach(scene => {
+                html += `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0;">
+                        <div style="font-weight: bold; color: #9c27b0;">${scene.timestamp}</div>
+                        ${scene.narration ? `<div style="margin-top: 10px;"><strong>Narration:</strong> "${scene.narration}"</div>` : ''}
+                        ${scene.visual ? `<div style="margin-top: 5px; padding: 10px; background: #f5f5f5; border-radius: 4px;"><strong>Visual:</strong> ${scene.visual}</div>` : ''}
+                        ${scene.text_overlay ? `<div style="margin-top: 5px;"><strong>Text Overlay:</strong> "${scene.text_overlay}"</div>` : ''}
+                        ${scene.music ? `<div style="margin-top: 5px; font-size: 0.9em; color: #666;"><strong>Music:</strong> ${scene.music}</div>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        if (trailer.callToAction) {
+            html += `
+                <div style="padding: 15px; background: #f3e5f5; border-radius: 8px; margin: 15px 0;">
+                    <h4 style="color: #9c27b0;">Call to Action</h4>
+                    <div style="margin-top: 10px;"><strong>${trailer.callToAction.text}</strong></div>
+                    ${trailer.callToAction.visual ? `<div style="margin-top: 5px; color: #666;">${trailer.callToAction.visual}</div>` : ''}
+                </div>
+            `;
+        }
+
+        if (trailer.productionTips) {
+            html += `
+                <div style="padding: 15px; background: white; border-radius: 8px; margin: 15px 0;">
+                    <h4>Production Tips</h4>
+                    <p><strong>Budget:</strong> ${trailer.productionTips.budget || 'Flexible'}</p>
+                    <p><strong>DIY Feasibility:</strong> ${trailer.productionTips.diyFeasibility || 'Depends on resources'}</p>
+                    ${trailer.productionTips.estimatedCost ? `<p><strong>Estimated Cost:</strong> ${trailer.productionTips.estimatedCost}</p>` : ''}
+                    ${trailer.productionTips.toolsNeeded ? `<p><strong>Tools:</strong> ${trailer.productionTips.toolsNeeded.join(', ')}</p>` : ''}
+                </div>
+            `;
+        }
+
+        return html || '<p>No book trailer script generated.</p>';
+    },
+
+    // Helper: Render reader magnets
+    renderReaderMagnets(magnets) {
+        let html = '';
+
+        if (magnets.bonusContent && magnets.bonusContent.length > 0) {
+            html += '<h4 style="margin-top: 20px;">Bonus Content Ideas</h4>';
+            magnets.bonusContent.forEach(item => {
+                html += `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0;">
+                        <div style="font-weight: bold; color: #c2185b;">${item.title || item.type}</div>
+                        <div style="margin-top: 10px;">${item.description}</div>
+                        ${item.format ? `<div style="margin-top: 5px; font-size: 0.9em; color: #666;"><strong>Format:</strong> ${item.format}</div>` : ''}
+                        ${item.creationEffort ? `<div style="font-size: 0.9em; color: #666;"><strong>Effort:</strong> ${item.creationEffort}</div>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        if (magnets.arcProgram) {
+            const arc = magnets.arcProgram;
+            html += `
+                <h4 style="margin-top: 20px;">ARC (Advance Reader Copy) Program</h4>
+                <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0;">
+                    <p><strong>Concept:</strong> ${arc.concept || 'Build early buzz with advance readers'}</p>
+                    <p style="margin-top: 10px;"><strong>Benefits:</strong> ${arc.benefits}</p>
+                    <p style="margin-top: 10px;"><strong>Requirements:</strong> ${arc.requirements}</p>
+                    ${arc.platform ? `<p style="margin-top: 10px;"><strong>Platform:</strong> ${arc.platform}</p>` : ''}
+                    ${arc.timeline ? `<p style="margin-top: 10px;"><strong>Timeline:</strong> ${arc.timeline}</p>` : ''}
+                </div>
+            `;
+        }
+
+        if (magnets.contestIdeas && magnets.contestIdeas.length > 0) {
+            html += '<h4 style="margin-top: 20px;">Contest Ideas</h4>';
+            magnets.contestIdeas.forEach(contest => {
+                html += `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin: 10px 0;">
+                        <div style="font-weight: bold; color: #c2185b;">${contest.type}</div>
+                        <div style="margin-top: 10px;"><strong>Entry Method:</strong> ${contest.entryMethod}</div>
+                        <div style="margin-top: 5px;"><strong>Prize:</strong> ${contest.prize}</div>
+                        ${contest.duration ? `<div style="margin-top: 5px;"><strong>Duration:</strong> ${contest.duration}</div>` : ''}
+                        ${contest.viralPotential ? `<div style="margin-top: 5px; font-size: 0.9em; color: #666;"><strong>Viral Potential:</strong> ${contest.viralPotential}</div>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        return html || '<p>No reader magnet ideas generated.</p>';
+    },
+
+    // Download social media marketing kit
+    async downloadSocialMedia() {
+        if (!this.state.socialMedia) {
+            alert('No social media marketing data available');
+            return;
+        }
+
+        const dataStr = JSON.stringify(this.state.socialMedia, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `marketing-kit-${this.state.reportId}.json`;
         a.click();
         URL.revokeObjectURL(url);
     }

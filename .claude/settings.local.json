@@ -16,7 +16,9 @@
       "WebSearch",
       "WebFetch(domain:kdp.amazon.com)",
       "Bash(cat:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(python:*)",
+      "Bash(npx wrangler pages project create:*)"
     ],
     "deny": [],
     "ask": []
