@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(wrangler dev:*)",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(wrangler deploy:*)",
+      "Bash(npx wrangler pages deploy:*)",
+      "Bash(npm update:*)",
+      "Bash(wrangler:*)",
+      "Bash(npm install:*)",
+      "Bash(awk:*)",
+      "WebSearch",
+      "WebFetch(domain:kdp.amazon.com)",
+      "Bash(cat:*)",
+      "Bash(npm uninstall:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

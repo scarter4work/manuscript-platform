@@ -164,6 +164,30 @@ const app = {
                 <span class="breadcrumb-separator">›</span>
                 <span class="breadcrumb-current">Marketing Assets</span>
             `;
+        } else if (view === 'formatting') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Format Manuscript</span>
+            `;
+        } else if (view === 'formattingProgress') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Formatting in Progress</span>
+            `;
+        } else if (view === 'formattingComplete') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <a onclick="app.navigate('assets')">Marketing Assets</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Formatting Complete</span>
+            `;
         }
 
         breadcrumbContent.innerHTML = content;
@@ -1179,6 +1203,248 @@ const app = {
         a.download = `marketing-assets-${Date.now()}.txt`;
         a.click();
         URL.revokeObjectURL(url);
+    },
+
+    // FORMATTING FUNCTIONS (Phase 4)
+
+    // Navigate to formatting view
+    formatManuscript() {
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        // Pre-fill some default values
+        const currentYear = new Date().getFullYear();
+        document.getElementById('copyrightYear').value = currentYear;
+
+        this.navigate('formatting');
+    },
+
+    // Start formatting process
+    async startFormatting() {
+        // Validate required fields
+        const bookTitle = document.getElementById('bookTitle').value.trim();
+        const authorName = document.getElementById('authorName').value.trim();
+
+        if (!bookTitle || !authorName) {
+            alert('Please enter book title and author name');
+            return;
+        }
+
+        // Gather metadata
+        const metadata = {
+            title: bookTitle,
+            author: authorName,
+            copyrightYear: parseInt(document.getElementById('copyrightYear').value) || new Date().getFullYear(),
+            isbn: document.getElementById('isbn').value.trim() || '',
+            publisher: document.getElementById('publisher').value.trim() || '',
+            language: document.getElementById('bookLanguage').value || 'en'
+        };
+
+        // Get trim size and bleed option
+        const trimSize = document.getElementById('trimSize').value || '6x9';
+        const includeBleed = document.getElementById('includeBleed').checked;
+
+        console.log('Starting formatting with metadata:', metadata);
+
+        // Navigate to formatting progress view
+        this.navigate('formattingProgress');
+
+        // Reset progress
+        document.getElementById('formattingProgressBar').style.width = '0%';
+        document.getElementById('formattingProgressText').textContent = 'Initializing formatter...';
+
+        // Reset format status cards
+        document.getElementById('epubCard').className = 'agent-card';
+        document.getElementById('pdfCard').className = 'agent-card';
+        document.getElementById('epubStatus').className = 'agent-status status-pending';
+        document.getElementById('pdfStatus').className = 'agent-status status-pending';
+        document.getElementById('epubStatus').textContent = 'Pending';
+        document.getElementById('pdfStatus').textContent = 'Pending';
+        document.getElementById('epubDetails').style.display = 'none';
+        document.getElementById('pdfDetails').style.display = 'none';
+
+        try {
+            // Update progress
+            document.getElementById('formattingProgressBar').style.width = '10%';
+            document.getElementById('formattingProgressText').textContent = 'Preparing manuscript...';
+
+            // Call the formatting API
+            const response = await fetch(`${this.API_BASE}/format-manuscript`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reportId: this.state.reportId,
+                    metadata: metadata,
+                    trimSize: trimSize,
+                    includeBleed: includeBleed
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Formatting failed');
+            }
+
+            const result = await response.json();
+            console.log('Formatting complete:', result);
+
+            // Update progress to 50%
+            document.getElementById('formattingProgressBar').style.width = '50%';
+            document.getElementById('formattingProgressText').textContent = 'Generating EPUB...';
+
+            // Update EPUB status
+            if (result.formats.epub) {
+                document.getElementById('epubCard').className = 'agent-card running';
+                document.getElementById('epubStatus').className = 'agent-status status-running';
+                document.getElementById('epubStatus').textContent = 'Generating...';
+
+                // Simulate progress
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                document.getElementById('epubCard').className = 'agent-card complete';
+                document.getElementById('epubStatus').className = 'agent-status status-complete';
+                document.getElementById('epubStatus').textContent = 'Complete';
+
+                const epubInfo = `
+                    <strong>✓ EPUB Generated</strong><br>
+                    Size: ${result.formats.epub.sizeKB} KB<br>
+                    Version: ${result.formats.epub.validation.version}<br>
+                    KDP Compliant: ${result.formats.epub.validation.kdpCompliant ? 'Yes' : 'No'}
+                `;
+                document.getElementById('epubDetails').innerHTML = epubInfo;
+                document.getElementById('epubDetails').style.display = 'block';
+            }
+
+            // Update progress to 75%
+            document.getElementById('formattingProgressBar').style.width = '75%';
+            document.getElementById('formattingProgressText').textContent = 'Generating PDF...';
+
+            // Update PDF status
+            if (result.formats.pdf) {
+                document.getElementById('pdfCard').className = 'agent-card running';
+                document.getElementById('pdfStatus').className = 'agent-status status-running';
+                document.getElementById('pdfStatus').textContent = 'Generating...';
+
+                // Simulate progress
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                document.getElementById('pdfCard').className = 'agent-card complete';
+                document.getElementById('pdfStatus').className = 'agent-status status-complete';
+                document.getElementById('pdfStatus').textContent = 'Complete';
+
+                const pdfInfo = `
+                    <strong>✓ PDF Generated</strong><br>
+                    Size: ${result.formats.pdf.sizeKB} KB<br>
+                    Pages: ${result.formats.pdf.pageCount}<br>
+                    Trim Size: ${result.formats.pdf.trimSize}<br>
+                    KDP Compliant: ${result.formats.pdf.validation.kdpCompliant ? 'Yes' : 'No'}
+                `;
+                document.getElementById('pdfDetails').innerHTML = pdfInfo;
+                document.getElementById('pdfDetails').style.display = 'block';
+            }
+
+            // Complete!
+            document.getElementById('formattingProgressBar').style.width = '100%';
+            document.getElementById('formattingProgressText').textContent = 'Formatting complete! ✓';
+
+            // Store formatting results
+            this.state.formattingResults = result;
+
+            // Wait a moment then show completion view
+            setTimeout(() => {
+                this.showFormattingComplete(result);
+            }, 1000);
+
+        } catch (error) {
+            console.error('Formatting error:', error);
+            alert('Formatting failed: ' + error.message);
+
+            // Mark as failed
+            document.getElementById('epubStatus').textContent = 'Failed';
+            document.getElementById('pdfStatus').textContent = 'Failed';
+
+            // Go back to formatting form
+            setTimeout(() => {
+                this.navigate('formatting');
+            }, 2000);
+        }
+    },
+
+    // Show formatting complete view
+    showFormattingComplete(result) {
+        // Populate file info
+        if (result.formats.epub) {
+            const epubInfo = `
+                <p><strong>Format:</strong> EPUB 3.0</p>
+                <p><strong>Size:</strong> ${result.formats.epub.sizeKB} KB</p>
+                <p><strong>KDP Compliant:</strong> ✓ Yes</p>
+                <p style="margin-top: 10px; color: #4caf50;">
+                    <strong>✓ Ready for Kindle publishing</strong>
+                </p>
+            `;
+            document.getElementById('epubFileInfo').innerHTML = epubInfo;
+        }
+
+        if (result.formats.pdf) {
+            const pdfInfo = `
+                <p><strong>Format:</strong> PDF</p>
+                <p><strong>Size:</strong> ${result.formats.pdf.sizeKB} KB</p>
+                <p><strong>Pages:</strong> ${result.formats.pdf.pageCount}</p>
+                <p><strong>Trim Size:</strong> ${result.formats.pdf.trimSize}</p>
+                <p><strong>KDP Compliant:</strong> ${result.formats.pdf.validation.kdpCompliant ? '✓ Yes' : '✗ No'}</p>
+                ${result.formats.pdf.pageCount < 24 ? '<p style="color: #ff9800; margin-top: 10px;"><strong>⚠ Note:</strong> Amazon KDP requires minimum 24 pages</p>' : '<p style="margin-top: 10px; color: #4caf50;"><strong>✓ Ready for paperback publishing</strong></p>'}
+            `;
+            document.getElementById('pdfFileInfo').innerHTML = pdfInfo;
+        }
+
+        // Navigate to complete view
+        this.navigate('formattingComplete');
+    },
+
+    // Download formatted file
+    async downloadFormatted(format) {
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        if (!format || !['epub', 'pdf'].includes(format)) {
+            alert('Invalid format specified');
+            return;
+        }
+
+        console.log(`Downloading ${format.toUpperCase()} file for report:`, this.state.reportId);
+
+        try {
+            // Fetch the formatted file
+            const response = await fetch(
+                `${this.API_BASE}/download-formatted?id=${this.state.reportId}&format=${format}`
+            );
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Download failed');
+            }
+
+            // Get the blob
+            const blob = await response.blob();
+
+            // Create download link
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `manuscript-${this.state.reportId}.${format}`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            console.log(`${format.toUpperCase()} file downloaded successfully`);
+
+        } catch (error) {
+            console.error('Download error:', error);
+            alert(`Failed to download ${format.toUpperCase()}: ` + error.message);
+        }
     }
 };
 

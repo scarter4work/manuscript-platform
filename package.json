@@ -9,5 +9,10 @@
   },
   "devDependencies": {
     "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2",
+    "formdata-node": "^6.0.3",
+    "pdf-lib": "^1.17.1"
   }
 }
