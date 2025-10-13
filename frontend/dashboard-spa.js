@@ -518,7 +518,7 @@ const app = {
         const fileInput = document.getElementById('fileInput');
         const genre = document.getElementById('genre').value;
         const styleGuide = document.getElementById('styleGuide').value;
-        
+
         if (!fileInput.files[0]) {
             alert('Please select a manuscript file');
             return;
@@ -529,10 +529,11 @@ const app = {
         this.updateProgress(10, 'Uploading manuscript...');
 
         try {
-            // Upload manuscript
+            // Upload manuscript (Phase C: analysis is automatically queued on upload)
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
-            formData.append('manuscriptId', `ms-${Date.now()}`);
+            formData.append('title', fileInput.files[0].name.replace(/\.[^/.]+$/, "")); // Remove extension
+            formData.append('genre', genre);
 
             const uploadResponse = await fetch(`${this.API_BASE}/upload/manuscript`, {
                 credentials: 'include',
@@ -541,46 +542,43 @@ const app = {
             });
 
             if (!uploadResponse.ok) {
-                throw new Error('Upload failed');
+                const error = await uploadResponse.text();
+                throw new Error(`Upload failed: ${error}`);
             }
 
             const uploadResult = await uploadResponse.json();
-            this.state.manuscriptKey = uploadResult.key;
-            this.state.reportId = uploadResult.reportId;
-            
-            this.updateProgress(20, 'Upload complete! Starting analysis...');
 
-            // Start async analysis
-            const startResponse = await fetch(`${this.API_BASE}/analyze/start`, {
-                credentials: 'include',
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    manuscriptKey: this.state.manuscriptKey,
-                    reportId: this.state.reportId,
-                    genre: genre,
-                    styleGuide: styleGuide
-                })
-            });
-
-            if (!startResponse.ok) {
-                throw new Error('Failed to start analysis');
+            // Phase C returns: { manuscript: { id, reportId, status: 'queued', ... } }
+            if (!uploadResult.manuscript || !uploadResult.manuscript.reportId) {
+                throw new Error('Invalid upload response - no reportId');
             }
 
-            // Poll for status updates
+            this.state.manuscriptKey = uploadResult.manuscript.r2_key;
+            this.state.reportId = uploadResult.manuscript.reportId;
+            this.state.manuscriptId = uploadResult.manuscript.id;
+
+            console.log('Upload complete:', {
+                manuscriptId: this.state.manuscriptId,
+                reportId: this.state.reportId,
+                status: uploadResult.manuscript.status
+            });
+
+            this.updateProgress(15, 'Upload complete! Analysis queued...');
+
+            // Phase C: Analysis is automatically queued, start polling for status
             await this.pollAnalysisStatus();
 
         } catch (error) {
-            console.error('Error:', error);
-            alert('Analysis failed: ' + error.message);
+            console.error('Upload error:', error);
+            alert('Upload/Analysis failed: ' + error.message);
             this.navigate('upload', true);
         }
     },
 
-    // Poll for analysis status
+    // Poll for analysis status (Phase C - with automatic queueing)
     async pollAnalysisStatus() {
         const pollInterval = 2000; // Poll every 2 seconds
-        const maxPolls = 300; // Max 10 minutes (300 * 2 seconds)
+        const maxPolls = 600; // Max 20 minutes (600 * 2 seconds) - increased for real AI analysis
         let pollCount = 0;
 
         const poll = async () => {
@@ -595,61 +593,50 @@ const app = {
                 }
 
                 const status = await response.json();
-                console.log('Status:', status);
+                console.log('Phase C Status:', status);
 
-                // Update UI based on status
+                // Update UI based on Phase C status
                 if (status.status === 'queued') {
-                    this.updateProgress(25, 'Analysis queued...');
+                    this.updateProgress(20, status.message || 'Analysis queued...');
                     this.updateAgentStatus('dev', 'pending', 'Queued');
                     this.updateAgentStatus('line', 'pending', 'Queued');
                     this.updateAgentStatus('copy', 'pending', 'Queued');
-                } else if (status.status === 'running') {
-                    // Update progress based on percentage
-                    const progress = 25 + (status.progress * 0.75); // Scale from 25-100
-                    this.updateProgress(progress, status.message || 'Running analysis...');
+                }
+                else if (status.status === 'processing') {
+                    // Update progress based on percentage (20-100 range to leave room for upload at 15%)
+                    const progress = 20 + (status.progress * 0.80); // Scale from 20-100
+                    this.updateProgress(progress, status.message || 'Processing analysis...');
 
-                    // Update agent statuses based on progress
-                    if (status.progress < 33) {
-                        this.updateAgentStatus('dev', 'running', 'Running...');
-                        this.updateAgentStatus('line', 'pending', 'Pending');
-                        this.updateAgentStatus('copy', 'pending', 'Pending');
-                    } else if (status.progress < 66) {
-                        this.updateAgentStatus('dev', 'complete', 'Complete');
-                        this.updateAgentStatus('line', 'running', 'Running...');
-                        this.updateAgentStatus('copy', 'pending', 'Pending');
-                    } else {
-                        this.updateAgentStatus('dev', 'complete', 'Complete');
-                        this.updateAgentStatus('line', 'complete', 'Complete');
-                        this.updateAgentStatus('copy', 'running', 'Running...');
+                    // Update agent statuses based on currentStep
+                    const currentStep = status.currentStep || '';
+
+                    if (currentStep === 'initialization' || currentStep === 'developmental' || status.progress <= 33) {
+                        this.updateAgentStatus('dev', 'running', 'Analyzing...');
+                        this.updateAgentStatus('line', 'pending', 'Waiting');
+                        this.updateAgentStatus('copy', 'pending', 'Waiting');
                     }
-                } else if (status.status === 'complete') {
+                    else if (currentStep === 'line-editing' || (status.progress > 33 && status.progress <= 66)) {
+                        this.updateAgentStatus('dev', 'complete', 'Complete ✓');
+                        this.updateAgentStatus('line', 'running', 'Analyzing...');
+                        this.updateAgentStatus('copy', 'pending', 'Waiting');
+                    }
+                    else if (currentStep === 'copy-editing' || status.progress > 66) {
+                        this.updateAgentStatus('dev', 'complete', 'Complete ✓');
+                        this.updateAgentStatus('line', 'complete', 'Complete ✓');
+                        this.updateAgentStatus('copy', 'running', 'Analyzing...');
+                    }
+                }
+                else if (status.status === 'complete') {
                     // All done!
-                    this.updateProgress(100, 'All analyses complete!');
-                    this.updateAgentStatus('dev', 'complete', 'Complete');
-                    this.updateAgentStatus('line', 'complete', 'Complete');
-                    this.updateAgentStatus('copy', 'complete', 'Complete');
+                    this.updateProgress(100, 'All analyses complete! ✨');
+                    this.updateAgentStatus('dev', 'complete', 'Complete ✓');
+                    this.updateAgentStatus('line', 'complete', 'Complete ✓');
+                    this.updateAgentStatus('copy', 'complete', 'Complete ✓');
 
-                    // Check if status includes the results
-                    if (status.results) {
-                        console.log('Got results from status:', status.results);
-                        this.state.analysisResults.developmental = status.results.developmental;
-                        this.state.analysisResults.lineEditing = status.results.lineEditing;
-                        this.state.analysisResults.copyEditing = status.results.copyEditing;
+                    console.log('Analysis complete! Fetching results...');
 
-                        // Display in agent cards
-                        if (status.results.developmental) {
-                            this.displayDevelopmentalResults(status.results.developmental);
-                        }
-                        if (status.results.lineEditing) {
-                            this.displayLineEditingResults(status.results.lineEditing);
-                        }
-                        if (status.results.copyEditing) {
-                            this.displayCopyEditingResults(status.results.copyEditing);
-                        }
-                    } else {
-                        // Try fetching results separately
-                        await this.fetchAnalysisResults();
-                    }
+                    // Fetch the analysis results from R2
+                    await this.fetchAnalysisResults();
 
                     // Show summary with data
                     setTimeout(() => {
@@ -659,10 +646,11 @@ const app = {
                             // Fall back to limited summary if no data
                             this.navigate('summary');
                         }
-                    }, 1000);
+                    }, 1500);
                     return; // Stop polling
-                } else if (status.status === 'error') {
-                    throw new Error(status.message || 'Analysis failed');
+                }
+                else if (status.status === 'failed' || status.status === 'error') {
+                    throw new Error(status.message || status.error || 'Analysis failed');
                 }
 
                 // Continue polling if not complete
@@ -670,13 +658,13 @@ const app = {
                 if (pollCount < maxPolls) {
                     setTimeout(poll, pollInterval);
                 } else {
-                    throw new Error('Analysis timeout - please try again');
+                    throw new Error('Analysis timeout - taking longer than expected. Please check back later.');
                 }
 
             } catch (error) {
                 console.error('Polling error:', error);
                 alert('Analysis error: ' + error.message);
-                this.navigate('upload', true);
+                this.navigate('library');
             }
         };
 
