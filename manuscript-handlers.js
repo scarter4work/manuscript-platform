@@ -12,7 +12,6 @@
  */
 
 import { getUserFromRequest } from './auth-utils.js';
-import crypto from 'crypto';
 
 export const manuscriptHandlers = {
   /**

@@ -18,6 +18,7 @@ import { MarketAnalysisAgent } from './market-analysis-agent.js';
 import { SocialMediaAgent } from './social-media-agent.js';
 import { authHandlers } from './auth-handlers.js';
 import { manuscriptHandlers } from './manuscript-handlers.js';
+import queueConsumer from './queue-consumer.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -354,6 +355,11 @@ export default {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
+  },
+
+  // Queue consumer for manuscript analysis (Phase C)
+  async queue(batch, env) {
+    return await queueConsumer.queue(batch, env);
   }
 };
 
@@ -479,6 +485,43 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
       JSON.stringify({ title, fileSize: file.size, wordCount })
     ).run();
 
+    // Phase C: Queue analysis automatically after successful upload
+    console.log('[Upload] Queueing analysis for manuscript:', manuscriptId);
+
+    try {
+      // Initialize status tracking
+      await env.MANUSCRIPTS_RAW.put(
+        `status:${reportId}`,
+        JSON.stringify({
+          status: 'queued',
+          progress: 0,
+          message: 'Analysis queued',
+          currentStep: 'queued',
+          timestamp: new Date().toISOString()
+        }),
+        { expirationTtl: 60 * 60 * 24 * 7 } // 7 days
+      );
+
+      // Queue the analysis job
+      await env.ANALYSIS_QUEUE.send({
+        manuscriptKey: r2Key,
+        genre: genre,
+        styleGuide: 'chicago', // Default style guide
+        reportId: reportId
+      });
+
+      // Update manuscript status to 'queued' (will change to 'analyzing' when queue consumer starts)
+      await env.DB.prepare(
+        'UPDATE manuscripts SET status = ?, updated_at = ? WHERE id = ?'
+      ).bind('queued', Math.floor(Date.now() / 1000), manuscriptId).run();
+
+      console.log('[Upload] Analysis queued successfully for report:', reportId);
+    } catch (queueError) {
+      console.error('[Upload] Failed to queue analysis:', queueError);
+      // Don't fail the upload if queueing fails - manuscript is still uploaded
+      // The user can manually trigger analysis later
+    }
+
     return new Response(JSON.stringify({
       success: true,
       manuscript: {
@@ -487,7 +530,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
         reportId,
         wordCount,
         fileSize: file.size,
-        status: 'draft'
+        status: 'queued'
       }
     }), {
       status: 200,
