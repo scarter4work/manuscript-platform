@@ -336,7 +336,7 @@ export async function getUserFromRequest(request, env) {
 export function createSessionCookie(sessionId, rememberMe = false) {
   const maxAge = rememberMe ? AUTH_CONFIG.SESSION_DURATION_REMEMBER : AUTH_CONFIG.SESSION_DURATION;
 
-  return `session_id=${sessionId}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${maxAge}`;
+  return `session_id=${sessionId}; Path=/; Domain=.scarter4workmanuscripthub.com; HttpOnly; Secure; SameSite=None; Max-Age=${maxAge}`;
 }
 
 /**
@@ -345,7 +345,7 @@ export function createSessionCookie(sessionId, rememberMe = false) {
  * @returns {string} Set-Cookie header value
  */
 export function clearSessionCookie() {
-  return 'session_id=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0';
+  return 'session_id=; Path=/; Domain=.scarter4workmanuscripthub.com; HttpOnly; Secure; SameSite=None; Max-Age=0';
 }
 
 // ============================================================================
