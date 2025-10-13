@@ -4,7 +4,7 @@ const app = {
     // Configuration
     API_BASE: window.location.hostname === 'localhost' || window.location.protocol === 'file:'
         ? 'http://localhost:8787'
-        : 'https://manuscript-upload-api.scarter4work.workers.dev',
+        : 'https://api.scarter4workmanuscripthub.com',
     
     // State
     state: {
