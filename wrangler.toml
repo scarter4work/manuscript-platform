@@ -20,6 +20,19 @@ max_batch_timeout = 60  # Wait up to 60 seconds before processing
 max_retries = 3  # Retry failed jobs up to 3 times
 dead_letter_queue = "manuscript-analysis-dlq"  # Failed jobs go here
 
+# Queue for async asset generation
+[[queues.producers]]
+queue = "asset-generation-queue"
+binding = "ASSET_QUEUE"
+
+# Queue consumer for processing asset generation jobs
+[[queues.consumers]]
+queue = "asset-generation-queue"
+max_batch_size = 1  # Process one manuscript at a time
+max_batch_timeout = 60  # Wait up to 60 seconds before processing
+max_retries = 2  # Retry failed jobs up to 2 times
+dead_letter_queue = "asset-generation-dlq"  # Failed jobs go here
+
 # R2 Bucket bindings
 [[r2_buckets]]
 binding = "MANUSCRIPTS_RAW"

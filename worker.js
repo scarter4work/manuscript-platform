@@ -19,6 +19,7 @@ import { SocialMediaAgent } from './social-media-agent.js';
 import { authHandlers } from './auth-handlers.js';
 import { manuscriptHandlers } from './manuscript-handlers.js';
 import queueConsumer from './queue-consumer.js';
+import assetConsumer from './asset-generation-consumer.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -182,6 +183,11 @@ export default {
       // NEW: Check analysis status
       if (path === '/analyze/status' && request.method === 'GET') {
         return await handleAnalysisStatus(request, env, corsHeaders);
+      }
+
+      // Phase D: Check asset generation status
+      if (path === '/assets/status' && request.method === 'GET') {
+        return await handleAssetStatus(request, env, corsHeaders);
       }
 
       // Route: Generate marketing assets (book description, keywords, categories)
@@ -357,9 +363,24 @@ export default {
     }
   },
 
-  // Queue consumer for manuscript analysis (Phase C)
+  // Queue consumer router for multiple queues (Phase C & D)
   async queue(batch, env) {
-    return await queueConsumer.queue(batch, env);
+    // Route to the correct consumer based on queue name
+    const queueName = batch.queue;
+
+    console.log(`[Queue Router] Processing batch from queue: ${queueName}`);
+
+    if (queueName === 'manuscript-analysis-queue') {
+      return await queueConsumer.queue(batch, env);
+    } else if (queueName === 'asset-generation-queue') {
+      return await assetConsumer.queue(batch, env);
+    } else {
+      console.error(`[Queue Router] Unknown queue: ${queueName}`);
+      // Acknowledge messages from unknown queues to prevent infinite retries
+      for (const message of batch.messages) {
+        message.ack();
+      }
+    }
   }
 };
 
@@ -1270,6 +1291,54 @@ async function handleAnalysisStatus(request, env, corsHeaders) {
 
   } catch (error) {
     console.error('Error checking status:', error);
+    return new Response(JSON.stringify({
+      error: error.message
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+/**
+ * Check asset generation status (Phase D)
+ *
+ * GET /assets/status?reportId={reportId}
+ * Returns the current status of asset generation for a given report
+ */
+async function handleAssetStatus(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const reportId = url.searchParams.get('reportId');
+
+    if (!reportId) {
+      return new Response(JSON.stringify({ error: 'reportId is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const statusObj = await env.MANUSCRIPTS_RAW.get(`asset-status:${reportId}`);
+
+    if (!statusObj) {
+      return new Response(JSON.stringify({
+        error: 'Asset status not found',
+        status: 'not_started'
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const status = await statusObj.json();
+
+    return new Response(JSON.stringify(status), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error checking asset status:', error);
     return new Response(JSON.stringify({
       error: error.message
     }), {

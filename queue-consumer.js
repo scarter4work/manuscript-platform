@@ -116,6 +116,23 @@ export default {
 
         console.log(`[Queue Consumer] Analysis complete for ${reportId}`);
 
+        // Phase D: Automatically queue asset generation after analysis completes
+        console.log(`[Queue Consumer] Queueing asset generation for ${reportId}...`);
+        try {
+          await env.ASSET_QUEUE.send({
+            manuscriptKey,
+            reportId,
+            genre: genre || 'general',
+            authorData: {}, // TODO: Extract from manuscript metadata if available
+            seriesData: {}  // TODO: Extract from manuscript metadata if available
+          });
+
+          console.log(`[Queue Consumer] Asset generation queued successfully for ${reportId}`);
+        } catch (assetQueueError) {
+          console.error(`[Queue Consumer] Failed to queue asset generation:`, assetQueueError);
+          // Don't fail the analysis if asset queueing fails - analysis still succeeded
+        }
+
         // Acknowledge successful processing
         message.ack();
 

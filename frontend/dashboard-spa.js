@@ -17,6 +17,16 @@ const app = {
             lineEditing: null,
             copyEditing: null
         },
+        assetResults: {
+            bookDescription: null,
+            keywords: null,
+            categories: null,
+            authorBio: null,
+            backMatter: null,
+            coverBrief: null,
+            seriesDescription: null,
+            errors: null
+        },
         generatedAssets: null,
         marketAnalysis: null,
         socialMedia: null
@@ -627,27 +637,22 @@ const app = {
                     }
                 }
                 else if (status.status === 'complete') {
-                    // All done!
-                    this.updateProgress(100, 'All analyses complete! ✨');
+                    // Analysis complete! Now start asset generation polling
+                    this.updateProgress(100, 'Analysis complete! Generating marketing assets... ✨');
                     this.updateAgentStatus('dev', 'complete', 'Complete ✓');
                     this.updateAgentStatus('line', 'complete', 'Complete ✓');
                     this.updateAgentStatus('copy', 'complete', 'Complete ✓');
 
-                    console.log('Analysis complete! Fetching results...');
+                    console.log('Analysis complete! Fetching results and starting asset generation...');
 
                     // Fetch the analysis results from R2
                     await this.fetchAnalysisResults();
 
-                    // Show summary with data
+                    // Phase D: Start polling for asset generation status
                     setTimeout(() => {
-                        if (this.state.analysisResults.developmental) {
-                            this.showSummary();
-                        } else {
-                            // Fall back to limited summary if no data
-                            this.navigate('summary');
-                        }
-                    }, 1500);
-                    return; // Stop polling
+                        this.pollAssetStatus();
+                    }, 1000);
+                    return; // Stop polling analysis
                 }
                 else if (status.status === 'failed' || status.status === 'error') {
                     throw new Error(status.message || status.error || 'Analysis failed');
@@ -670,6 +675,108 @@ const app = {
 
         // Start polling
         poll();
+    },
+
+    // Phase D: Poll for asset generation status
+    async pollAssetStatus() {
+        const pollInterval = 2000; // Poll every 2 seconds
+        const maxPolls = 300; // Max 10 minutes (300 * 2 seconds)
+        let pollCount = 0;
+
+        const poll = async () => {
+            try {
+                const response = await fetch(
+                    `${this.API_BASE}/assets/status?reportId=${this.state.reportId}`,
+                    { credentials: 'include' }
+                );
+
+                if (!response.ok) {
+                    // Asset status not found yet - assets might not have been queued yet
+                    if (response.status === 404) {
+                        console.log('Asset status not found, waiting...');
+                        pollCount++;
+                        if (pollCount < maxPolls) {
+                            setTimeout(poll, pollInterval);
+                        } else {
+                            console.warn('Asset generation timeout');
+                            this.showSummaryWithoutAssets();
+                        }
+                        return;
+                    }
+                    throw new Error('Failed to get asset status');
+                }
+
+                const status = await response.json();
+                console.log('Phase D Asset Status:', status);
+
+                // Update progress message based on status
+                if (status.status === 'processing') {
+                    const assetProgress = status.progress || 0;
+                    this.updateProgress(100, `Generating marketing assets... ${assetProgress}%`);
+                } else if (status.status === 'complete' || status.status === 'partial') {
+                    // Assets complete!
+                    this.updateProgress(100, 'All assets generated! ✨');
+
+                    // Store asset results in state
+                    this.state.assetResults = {
+                        bookDescription: status.bookDescription,
+                        keywords: status.keywords,
+                        categories: status.categories,
+                        authorBio: status.authorBio,
+                        backMatter: status.backMatter,
+                        coverBrief: status.coverBrief,
+                        seriesDescription: status.seriesDescription,
+                        errors: status.errors
+                    };
+
+                    console.log('Assets complete!', this.state.assetResults);
+
+                    // Show summary after a brief pause
+                    setTimeout(() => {
+                        if (this.state.analysisResults.developmental) {
+                            this.showSummary();
+                        } else {
+                            this.navigate('summary');
+                        }
+                    }, 1500);
+                    return; // Stop polling
+                } else if (status.status === 'failed') {
+                    console.error('Asset generation failed:', status.error);
+                    // Show summary anyway, but without assets
+                    this.showSummaryWithoutAssets();
+                    return;
+                }
+
+                // Continue polling if not complete
+                pollCount++;
+                if (pollCount < maxPolls) {
+                    setTimeout(poll, pollInterval);
+                } else {
+                    console.warn('Asset generation timeout');
+                    this.showSummaryWithoutAssets();
+                }
+
+            } catch (error) {
+                console.error('Asset polling error:', error);
+                // Show summary without assets if there's an error
+                this.showSummaryWithoutAssets();
+            }
+        };
+
+        // Start polling
+        poll();
+    },
+
+    // Show summary without waiting for assets (fallback)
+    showSummaryWithoutAssets() {
+        console.log('Showing summary without assets');
+        setTimeout(() => {
+            if (this.state.analysisResults.developmental) {
+                this.showSummary();
+            } else {
+                this.navigate('summary');
+            }
+        }, 500);
     },
 
     // Update progress bar
