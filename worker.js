@@ -36,6 +36,7 @@ export default {
       'https://manuscript-platform.pages.dev', // Custom domain (if configured)
       'http://localhost:8000', // for local testing
       'http://localhost:3000', // for local React dev
+      'http://localhost:8787', // for local wrangler dev
     ];
     
     const origin = request.headers.get('Origin');
