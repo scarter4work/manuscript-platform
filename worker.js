@@ -25,7 +25,7 @@ import { handleStripeWebhook } from './webhook-handlers.js';
 export default {
   async fetch(request, env, ctx) {
     console.log('Incoming request:', request.method, request.url);
-    
+
     // CORS headers - Update with your actual domain
     const allowedOrigins = [
       'https://scarter4workmanuscripthub.com',
@@ -38,7 +38,7 @@ export default {
       'http://localhost:3000', // for local React dev
       'http://localhost:8787', // for local wrangler dev
     ];
-    
+
     const origin = request.headers.get('Origin');
     const corsHeaders = {
       'Access-Control-Allow-Origin': origin && allowedOrigins.includes(origin) ? origin : '*', // Allow all for dev
@@ -46,6 +46,19 @@ export default {
       'Access-Control-Allow-Headers': 'Content-Type, X-Filename, X-Author-Id, X-File-Type',
       'Access-Control-Allow-Credentials': 'true', // Important for cookie-based auth
       'Access-Control-Max-Age': '86400',
+    };
+
+    // Helper function to add CORS headers to any response
+    const addCorsHeaders = (response) => {
+      const newHeaders = new Headers(response.headers);
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        newHeaders.set(key, value);
+      });
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: newHeaders
+      });
     };
 
     // Handle CORS preflight
@@ -103,36 +116,36 @@ export default {
 
       // GET /manuscripts - List user's manuscripts
       if (path === '/manuscripts' && request.method === 'GET') {
-        return await manuscriptHandlers.listManuscripts(request, env);
+        return addCorsHeaders(await manuscriptHandlers.listManuscripts(request, env));
       }
 
       // GET /manuscripts/stats - Get user's manuscript statistics
       if (path === '/manuscripts/stats' && request.method === 'GET') {
-        return await manuscriptHandlers.getManuscriptStats(request, env);
+        return addCorsHeaders(await manuscriptHandlers.getManuscriptStats(request, env));
       }
 
       // GET /manuscripts/:id - Get specific manuscript details
       if (path.startsWith('/manuscripts/') && request.method === 'GET' && !path.includes('stats')) {
         const manuscriptId = path.replace('/manuscripts/', '');
-        return await manuscriptHandlers.getManuscript(request, env, manuscriptId);
+        return addCorsHeaders(await manuscriptHandlers.getManuscript(request, env, manuscriptId));
       }
 
       // PUT /manuscripts/:id - Update manuscript metadata
       if (path.startsWith('/manuscripts/') && request.method === 'PUT') {
         const manuscriptId = path.replace('/manuscripts/', '');
-        return await manuscriptHandlers.updateManuscript(request, env, manuscriptId);
+        return addCorsHeaders(await manuscriptHandlers.updateManuscript(request, env, manuscriptId));
       }
 
       // DELETE /manuscripts/:id - Delete manuscript
       if (path.startsWith('/manuscripts/') && request.method === 'DELETE') {
         const manuscriptId = path.replace('/manuscripts/', '');
-        return await manuscriptHandlers.deleteManuscript(request, env, manuscriptId);
+        return addCorsHeaders(await manuscriptHandlers.deleteManuscript(request, env, manuscriptId));
       }
 
       // POST /manuscripts/:id/reanalyze - Re-run analysis
       if (path.match(/^\/manuscripts\/.+\/reanalyze$/) && request.method === 'POST') {
         const manuscriptId = path.match(/^\/manuscripts\/(.+)\/reanalyze$/)[1];
-        return await manuscriptHandlers.reanalyzeManuscript(request, env, manuscriptId);
+        return addCorsHeaders(await manuscriptHandlers.reanalyzeManuscript(request, env, manuscriptId));
       }
 
       // ========================================================================
