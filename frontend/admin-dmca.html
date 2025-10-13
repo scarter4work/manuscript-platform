@@ -398,23 +398,51 @@
         });
 
         async function loadDMCARequests() {
-            // TODO: Implement API endpoint to fetch DMCA requests
-            // For now, show placeholder message
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('emptyState').style.display = 'block';
+            try {
+                document.getElementById('loadingState').style.display = 'block';
+                document.getElementById('requestsContainer').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
 
-            // Update stats
-            document.getElementById('statPending').textContent = '0';
-            document.getElementById('statReviewing').textContent = '0';
-            document.getElementById('statResolved').textContent = '0';
-            document.getElementById('statRejected').textContent = '0';
+                // Fetch DMCA requests and stats in parallel
+                const [requestsResponse, statsResponse] = await Promise.all([
+                    fetch(`${API_BASE}/admin/dmca/requests?status=${document.getElementById('statusFilter').value}`, {
+                        credentials: 'include'
+                    }),
+                    fetch(`${API_BASE}/admin/dmca/stats`, {
+                        credentials: 'include'
+                    })
+                ]);
 
-            // TODO: Replace with actual API call
-            // const response = await fetch(`${API_BASE}/admin/dmca/requests`);
-            // const data = await response.json();
-            // currentRequests = data.requests;
-            // renderRequests(currentRequests);
-            // updateStats(data.stats);
+                if (!requestsResponse.ok) {
+                    const error = await requestsResponse.json();
+                    throw new Error(error.error || 'Failed to load DMCA requests');
+                }
+
+                if (!statsResponse.ok) {
+                    const error = await statsResponse.json();
+                    throw new Error(error.error || 'Failed to load statistics');
+                }
+
+                const requestsData = await requestsResponse.json();
+                const statsData = await statsResponse.json();
+
+                currentRequests = requestsData.requests || [];
+
+                document.getElementById('loadingState').style.display = 'none';
+
+                renderRequests(currentRequests);
+                updateStats(statsData.stats);
+
+            } catch (error) {
+                console.error('Error loading DMCA requests:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('emptyState').innerHTML = `
+                    <h3>Error Loading Requests</h3>
+                    <p>${error.message}</p>
+                    <p style="color: #999; font-size: 0.9em;">Please check that you are logged in as an admin.</p>
+                `;
+            }
         }
 
         function renderRequests(requests) {
@@ -517,15 +545,9 @@
             `).join('');
         }
 
-        function filterRequests() {
-            const filter = document.getElementById('statusFilter').value;
-
-            if (filter === 'all') {
-                renderRequests(currentRequests);
-            } else {
-                const filtered = currentRequests.filter(req => req.status === filter);
-                renderRequests(filtered);
-            }
+        async function filterRequests() {
+            // Reload requests with new filter instead of client-side filtering
+            await loadDMCARequests();
         }
 
         function updateStats(stats) {
@@ -536,8 +558,34 @@
         }
 
         async function markAsReviewing(requestId) {
-            // TODO: Implement API call to update status
-            alert('This will mark request as "reviewing" - API endpoint pending');
+            try {
+                const response = await fetch(`${API_BASE}/admin/dmca/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        requestId: requestId,
+                        status: 'reviewing'
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to update status');
+                }
+
+                const data = await response.json();
+                console.log('Status updated:', data);
+
+                // Reload requests to show updated status
+                await loadDMCARequests();
+
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert(`Error: ${error.message}`);
+            }
         }
 
         function openResolutionModal(requestId, action) {
@@ -576,9 +624,40 @@
                 return;
             }
 
-            // TODO: Implement API call to resolve DMCA request
-            alert(`This will ${modalAction} request ${modalRequestId} - API endpoint pending\n\nNotes: ${notes}`);
-            closeModal();
+            try {
+                const response = await fetch(`${API_BASE}/admin/dmca/resolve`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        requestId: modalRequestId,
+                        action: modalAction,
+                        resolutionNotes: notes
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to resolve DMCA request');
+                }
+
+                const data = await response.json();
+                console.log('DMCA request resolved:', data);
+
+                closeModal();
+
+                // Show success message
+                alert(`DMCA request ${modalAction === 'approve' ? 'approved' : 'rejected'} successfully!`);
+
+                // Reload requests to show updated status
+                await loadDMCARequests();
+
+            } catch (error) {
+                console.error('Error resolving DMCA request:', error);
+                alert(`Error: ${error.message}`);
+            }
         }
     </script>
 </body>

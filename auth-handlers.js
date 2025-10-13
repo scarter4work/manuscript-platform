@@ -35,12 +35,26 @@ import {
 // CORS HEADERS
 // ============================================================================
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json'
-};
+const ALLOWED_ORIGINS = [
+  'https://scarter4workmanuscripthub.com',
+  'https://www.scarter4workmanuscripthub.com',
+  'https://api.scarter4workmanuscripthub.com',
+  'https://dashboard.scarter4workmanuscripthub.com',
+  'https://dce046dd.manuscript-platform.pages.dev',
+  'https://manuscript-platform.pages.dev',
+  'http://localhost:8000',
+  'http://localhost:3000',
+];
+
+function getCorsHeaders(origin) {
+  return {
+    'Access-Control-Allow-Origin': origin && ALLOWED_ORIGINS.includes(origin) ? origin : '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
+    'Content-Type': 'application/json'
+  };
+}
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -52,12 +66,14 @@ const CORS_HEADERS = {
  * @param {Object} data - Response data
  * @param {number} status - HTTP status code
  * @param {Object} additionalHeaders - Additional headers (e.g., Set-Cookie)
+ * @param {string} origin - Request origin for CORS
  * @returns {Response}
  */
-function jsonResponse(data, status = 200, additionalHeaders = {}) {
+function jsonResponse(data, status = 200, additionalHeaders = {}, origin = null) {
+  const corsHeaders = getCorsHeaders(origin);
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...CORS_HEADERS, ...additionalHeaders }
+    headers: { ...corsHeaders, ...additionalHeaders }
   });
 }
 
@@ -66,10 +82,11 @@ function jsonResponse(data, status = 200, additionalHeaders = {}) {
  *
  * @param {string} message - Error message
  * @param {number} status - HTTP status code
+ * @param {string} origin - Request origin for CORS
  * @returns {Response}
  */
-function errorResponse(message, status = 400) {
-  return jsonResponse({ error: message }, status);
+function errorResponse(message, status = 400, origin = null) {
+  return jsonResponse({ error: message }, status, {}, origin);
 }
 
 // ============================================================================
@@ -195,12 +212,15 @@ export async function handleRegister(request, env) {
  */
 export async function handleLogin(request, env) {
   try {
+    // Get origin for CORS
+    const origin = request.headers.get('Origin');
+
     // Get IP address for rate limiting
     const ipAddress = request.headers.get('CF-Connecting-IP') || 'unknown';
 
     // Check rate limiting
     if (await isRateLimited(ipAddress, env)) {
-      return errorResponse('Too many login attempts. Try again in 5 minutes.', 429);
+      return errorResponse('Too many login attempts. Try again in 5 minutes.', 429, origin);
     }
 
     // Parse request body
@@ -208,7 +228,7 @@ export async function handleLogin(request, env) {
 
     // Validate input
     if (!email || !password) {
-      return errorResponse('Email and password are required');
+      return errorResponse('Email and password are required', 400, origin);
     }
 
     // Normalize email
@@ -230,7 +250,7 @@ export async function handleLogin(request, env) {
         reason: 'invalid_credentials'
       });
 
-      return errorResponse('Invalid credentials', 400);
+      return errorResponse('Invalid credentials', 400, origin);
     }
 
     // Check if email is verified
@@ -239,7 +259,7 @@ export async function handleLogin(request, env) {
         reason: 'email_not_verified'
       });
 
-      return errorResponse('Email not verified. Please check your email for verification link.', 403);
+      return errorResponse('Email not verified. Please check your email for verification link.', 403, origin);
     }
 
     // Clear rate limit on successful login
@@ -267,11 +287,11 @@ export async function handleLogin(request, env) {
       message: 'Login successful'
     }, 200, {
       'Set-Cookie': createSessionCookie(sessionId, rememberMe)
-    });
+    }, origin);
 
   } catch (error) {
     console.error('Login error:', error);
-    return errorResponse('Internal server error', 500);
+    return errorResponse('Internal server error', 500, origin);
   }
 }
 
@@ -334,11 +354,14 @@ export async function handleLogout(request, env) {
  */
 export async function handleGetMe(request, env) {
   try {
+    // Get origin for CORS
+    const origin = request.headers.get('Origin');
+
     // Get user ID from session
     const userId = await getUserFromRequest(request, env);
 
     if (!userId) {
-      return errorResponse('Not authenticated', 401);
+      return errorResponse('Not authenticated', 401, origin);
     }
 
     // Fetch user details from database
@@ -349,7 +372,7 @@ export async function handleGetMe(request, env) {
     `).bind(userId).first();
 
     if (!user) {
-      return errorResponse('User not found', 404);
+      return errorResponse('User not found', 404, origin);
     }
 
     // Return user info
@@ -360,11 +383,11 @@ export async function handleGetMe(request, env) {
       createdAt: user.created_at,
       lastLogin: user.last_login,
       emailVerified: user.email_verified === 1
-    });
+    }, 200, {}, origin);
 
   } catch (error) {
     console.error('Get user error:', error);
-    return errorResponse('Internal server error', 500);
+    return errorResponse('Internal server error', 500, origin);
   }
 }
 

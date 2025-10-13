@@ -31,6 +31,7 @@ export default {
       'https://scarter4workmanuscripthub.com',
       'https://www.scarter4workmanuscripthub.com',
       'https://api.scarter4workmanuscripthub.com',
+      'https://dashboard.scarter4workmanuscripthub.com', // Custom domain for dashboard
       'https://dce046dd.manuscript-platform.pages.dev', // Cloudflare Pages deployment
       'https://manuscript-platform.pages.dev', // Custom domain (if configured)
       'http://localhost:8000', // for local testing
@@ -194,6 +195,27 @@ export default {
       // Phase E: DMCA Takedown Request Submission
       if (path === '/dmca/submit' && request.method === 'POST') {
         return await handleDMCASubmission(request, env, corsHeaders);
+      }
+
+      // Phase E: Admin DMCA Management Routes
+      if (path === '/admin/dmca/requests' && request.method === 'GET') {
+        const { getDMCARequests } = await import('./dmca-admin-handlers.js');
+        return await getDMCARequests(request, env, corsHeaders);
+      }
+
+      if (path === '/admin/dmca/stats' && request.method === 'GET') {
+        const { getDMCAStats } = await import('./dmca-admin-handlers.js');
+        return await getDMCAStats(request, env, corsHeaders);
+      }
+
+      if (path === '/admin/dmca/status' && request.method === 'PATCH') {
+        const { updateDMCAStatus } = await import('./dmca-admin-handlers.js');
+        return await updateDMCAStatus(request, env, corsHeaders);
+      }
+
+      if (path === '/admin/dmca/resolve' && request.method === 'POST') {
+        const { resolveDMCARequest } = await import('./dmca-admin-handlers.js');
+        return await resolveDMCARequest(request, env, corsHeaders);
       }
 
       // ========================================================================
@@ -2471,6 +2493,39 @@ async function handleDMCASubmission(request, env, corsHeaders) {
 
     console.log('[DMCA] Request submitted successfully:', dmcaRequestId);
     console.log('[DMCA] Manuscript flagged for review:', actualManuscriptId);
+
+    // Send email notifications (don't block the response)
+    try {
+      const { sendDMCARequestNotification, sendDMCAOwnerNotification } = await import('./email-service.js');
+
+      // Get manuscript owner email
+      const owner = await env.DB.prepare('SELECT email FROM users WHERE id = ?')
+        .bind(manuscriptResult.user_id).first();
+
+      // Send notification to admin
+      sendDMCARequestNotification({
+        requestId: dmcaRequestId,
+        manuscriptId: actualManuscriptId,
+        manuscriptTitle: manuscriptResult.title,
+        requesterName,
+        requesterEmail,
+        claimDetails
+      }, env).catch(err => console.error('[Email] Failed to send admin notification:', err));
+
+      // Send notification to manuscript owner
+      if (owner && owner.email) {
+        sendDMCAOwnerNotification({
+          ownerEmail: owner.email,
+          manuscriptTitle: manuscriptResult.title,
+          manuscriptId: actualManuscriptId,
+          requestId: dmcaRequestId,
+          action: 'flagged'
+        }, env).catch(err => console.error('[Email] Failed to send owner notification:', err));
+      }
+    } catch (emailError) {
+      console.error('[Email] Email service error:', emailError);
+      // Don't fail the request if email fails
+    }
 
     // Return success response
     return new Response(JSON.stringify({

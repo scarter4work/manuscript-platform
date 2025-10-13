@@ -74,3 +74,9 @@ MAX_FILE_SIZE = 52428800  # 50MB in bytes
 SESSION_DURATION = 86400  # 24 hours in seconds
 STRIPE_PUBLISHABLE_KEY = "pk_test_..."  # Replace with actual Stripe publishable key (safe to commit)
 FRONTEND_URL = "https://scarter4workmanuscripthub.com"  # Your frontend URL for payment redirects
+
+# Email configuration (MailChannels - free for Cloudflare Workers)
+EMAIL_FROM_ADDRESS = "noreply@scarter4workmanuscripthub.com"
+EMAIL_FROM_NAME = "ManuscriptHub"
+EMAIL_ADMIN_ADDRESS = "scarter4work@yahoo.com"
+EMAIL_REPLY_TO_ADDRESS = "support@scarter4workmanuscripthub.com"
