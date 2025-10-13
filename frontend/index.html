@@ -563,6 +563,23 @@
                     </select>
                 </div>
 
+                <!-- Copyright Attestation (Phase E: DMCA Compliance) -->
+                <div class="input-group" style="text-align: left; margin-top: 30px; padding: 20px; background: #fff8e1; border-left: 4px solid #ffa726; border-radius: 8px;">
+                    <label style="display: flex; align-items: start; cursor: pointer; font-weight: normal;">
+                        <input type="checkbox" id="copyrightAttestation" style="width: auto; margin-right: 12px; margin-top: 3px; cursor: pointer;" required>
+                        <span style="flex: 1; line-height: 1.6;">
+                            <strong style="display: block; margin-bottom: 8px; color: #f57c00;">Copyright Attestation Required</strong>
+                            I certify that I am the copyright owner of this manuscript, or I have obtained all necessary permissions
+                            to upload and analyze this work. I understand that uploading copyrighted material without permission is
+                            illegal and may result in account termination and legal action.
+                        </span>
+                    </label>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 12px; margin-left: 28px;">
+                        <strong>Note:</strong> By checking this box, you agree to our Terms of Service and DMCA policy.
+                        False attestation may result in penalties under the Digital Millennium Copyright Act (DMCA).
+                    </p>
+                </div>
+
                 <button class="btn" onclick="app.uploadAndAnalyze()">
                     Upload & Start Analysis
                 </button>
