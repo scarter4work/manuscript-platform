@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - ManuscriptHub</title>
+    <title>Register - ManuscriptHub</title>
+    <link rel="stylesheet" href="login.html">
     <style>
         * {
             margin: 0;
@@ -63,7 +64,7 @@
             font-size: 14px;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px 16px;
             border: 2px solid #e0e0e0;
@@ -72,7 +73,7 @@
             transition: all 0.2s;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -82,16 +83,33 @@
             color: #999;
         }
 
-        .remember-me {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .password-requirements {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .password-requirements ul {
+            margin: 5px 0 0 20px;
+            padding: 0;
+        }
+
+        .password-requirements li {
+            margin: 3px 0;
             color: #666;
         }
 
-        .remember-me input[type="checkbox"] {
-            width: auto;
-            margin-right: 8px;
+        .password-requirements li.valid {
+            color: #4caf50;
         }
 
         .btn {
@@ -112,14 +130,9 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
         }
 
         .switch-mode {
@@ -158,12 +171,6 @@
             border: 1px solid #cfc;
         }
 
-        .alert-info {
-            background: #e7f3ff;
-            color: #0066cc;
-            border: 1px solid #b3d9ff;
-        }
-
         .password-toggle {
             position: relative;
         }
@@ -198,40 +205,24 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
-        .forgot-password {
-            text-align: right;
-            margin-top: 8px;
-        }
-
-        .forgot-password a {
-            color: #667eea;
-            font-size: 13px;
-            text-decoration: none;
-        }
-
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-header">
             <h1>📚 ManuscriptHub</h1>
-            <p>AI-Powered Manuscript Analysis & Publishing</p>
+            <p>Create Your Account</p>
         </div>
 
         <div class="auth-form">
             <div id="alertBox" style="display: none;"></div>
 
-            <!-- Login Form -->
-            <form id="loginForm">
+            <form id="registerForm">
                 <div class="form-group">
-                    <label for="loginEmail">Email Address</label>
+                    <label for="email">Email Address</label>
                     <input
                         type="email"
-                        id="loginEmail"
+                        id="email"
                         placeholder="you@example.com"
                         required
                         autocomplete="email"
@@ -239,36 +230,44 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="loginPassword">Password</label>
+                    <label for="password">Password</label>
                     <div class="password-toggle">
                         <input
                             type="password"
-                            id="loginPassword"
-                            placeholder="Enter your password"
+                            id="password"
+                            placeholder="Create a strong password"
                             required
-                            autocomplete="current-password"
+                            autocomplete="new-password"
+                            minlength="8"
                         >
-                        <button type="button" onclick="togglePassword('loginPassword')">Show</button>
+                        <button type="button" onclick="togglePassword('password')">Show</button>
+                    </div>
+                    <div class="password-requirements">
+                        <strong>Password must contain:</strong>
+                        <ul id="passwordChecklist">
+                            <li id="check-length">At least 8 characters</li>
+                            <li id="check-uppercase">One uppercase letter</li>
+                            <li id="check-lowercase">One lowercase letter</li>
+                            <li id="check-number">One number</li>
+                            <li id="check-special">One special character (!@#$%^&*)</li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="form-group remember-me">
-                    <input type="checkbox" id="rememberMe">
-                    <label for="rememberMe" style="font-weight: normal; margin-bottom: 0;">
-                        Remember me for 30 days
-                    </label>
+                <div class="form-group">
+                    <label for="role">I am a...</label>
+                    <select id="role" required>
+                        <option value="author">Author</option>
+                        <option value="publisher">Publisher</option>
+                    </select>
                 </div>
 
-                <button type="submit" class="btn" id="loginBtn">
-                    Sign In
+                <button type="submit" class="btn" id="registerBtn">
+                    Create Account
                 </button>
 
-                <div class="forgot-password" style="text-align: center; margin-top: 15px;">
-                    <a href="password-reset-request.html">Forgot password?</a>
-                </div>
-
                 <div class="switch-mode">
-                    Don't have an account? <a href="register.html">Sign up</a>
+                    Already have an account? <a href="login.html">Sign in</a>
                 </div>
             </form>
         </div>
@@ -279,55 +278,65 @@
             ? 'http://localhost:8787'
             : 'https://api.scarter4workmanuscripthub.com';
 
-        // Handle login
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        // Password validation
+        const passwordInput = document.getElementById('password');
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+
+            document.getElementById('check-length').classList.toggle('valid', password.length >= 8);
+            document.getElementById('check-uppercase').classList.toggle('valid', /[A-Z]/.test(password));
+            document.getElementById('check-lowercase').classList.toggle('valid', /[a-z]/.test(password));
+            document.getElementById('check-number').classList.toggle('valid', /[0-9]/.test(password));
+            document.getElementById('check-special').classList.toggle('valid', /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password));
+        });
+
+        // Handle registration
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
-            const btn = document.getElementById('loginBtn');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            const btn = document.getElementById('registerBtn');
 
             btn.disabled = true;
-            btn.innerHTML = '<span class="loading"></span> Signing in...';
+            btn.innerHTML = '<span class="loading"></span> Creating account...';
 
             try {
-                const response = await fetch(`${API_BASE}/auth/login`, {
+                const response = await fetch(`${API_BASE}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include', // Important: send/receive cookies
-                    body: JSON.stringify({ email, password, rememberMe })
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password, role })
                 });
 
                 const data = await response.json();
 
-                if (response.ok && data.message === 'Login successful') {
-                    showAlert('Login successful! Redirecting...', 'success');
+                if (response.ok && data.userId) {
+                    showAlert('Account created! Please check your email to verify your account.', 'success');
 
-                    // Redirect to dashboard
+                    // Show verification token in development
+                    if (data.verificationToken) {
+                        console.log('Verification token (dev only):', data.verificationToken);
+                        setTimeout(() => {
+                            alert(`DEVELOPMENT: Verification link:\nverify-email.html?token=${data.verificationToken}`);
+                        }, 1000);
+                    }
+
+                    // Redirect to login after 3 seconds
                     setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 500);
-                } else if (response.status === 403) {
-                    // Email not verified
-                    showAlert(data.error || 'Please verify your email before logging in.', 'info');
-                    btn.disabled = false;
-                    btn.textContent = 'Sign In';
-                } else if (response.status === 429) {
-                    // Rate limited
-                    showAlert('Too many login attempts. Please try again in 5 minutes.', 'error');
-                    btn.disabled = false;
-                    btn.textContent = 'Sign In';
+                        window.location.href = 'login.html';
+                    }, 3000);
                 } else {
-                    showAlert(data.error || 'Login failed. Please check your credentials.', 'error');
+                    showAlert(data.error || 'Registration failed', 'error');
                     btn.disabled = false;
-                    btn.textContent = 'Sign In';
+                    btn.textContent = 'Create Account';
                 }
             } catch (error) {
-                console.error('Login error:', error);
-                showAlert('Login failed. Please try again.', 'error');
+                console.error('Registration error:', error);
+                showAlert('Registration failed. Please try again.', 'error');
                 btn.disabled = false;
-                btn.textContent = 'Sign In';
+                btn.textContent = 'Create Account';
             }
         });
 
@@ -351,15 +360,11 @@
             alertBox.style.display = 'block';
         }
 
-        function hideAlert() {
-            document.getElementById('alertBox').style.display = 'none';
-        }
-
         // Check if already logged in
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch(`${API_BASE}/auth/me`, {
-                    credentials: 'include' // Send cookies
+                    credentials: 'include'
                 });
 
                 if (response.ok) {
@@ -370,8 +375,7 @@
                     }
                 }
             } catch (error) {
-                // Not logged in, stay on login page
-                console.log('Not logged in');
+                // Not logged in, stay on register page
             }
         });
     </script>

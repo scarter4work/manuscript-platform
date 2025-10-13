@@ -29,8 +29,21 @@ bucket_name = "marketing-assets"
 # Go to Workers & Pages > manuscript-upload-api > Custom Domains
 # Add: api.scarter4workmanuscripthub.com
 
+# D1 Database - User and manuscript management
+[[d1_databases]]
+binding = "DB"
+database_name = "manuscript-platform"
+database_id = "3d9000ef-95fb-4561-bb84-192b395eadd2"
+
+# KV Namespace - Session storage and rate limiting
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "48959d60fe25478db01651f3eef4daff"
+
 # Environment variables (set via Cloudflare Dashboard for production)
 # For local development, create a .dev.vars file with:
 # ANTHROPIC_API_KEY=your_key_here
 [vars]
 # ANTHROPIC_API_KEY will be set via dashboard secrets for production
+MAX_FILE_SIZE = 52428800  # 50MB in bytes
+SESSION_DURATION = 86400  # 24 hours in seconds

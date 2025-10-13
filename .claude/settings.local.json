@@ -18,7 +18,9 @@
       "Bash(cat:*)",
       "Bash(npm uninstall:*)",
       "Bash(python:*)",
-      "Bash(npx wrangler pages project create:*)"
+      "Bash(npx wrangler pages project create:*)",
+      "Bash(npx wrangler dev:*)",
+      "Bash(npx wrangler:*)"
     ],
     "deny": [],
     "ask": []

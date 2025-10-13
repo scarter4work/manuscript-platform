@@ -25,9 +25,6 @@ const app = {
     async init() {
         console.log('Initializing SPA...');
         
-        // Load user info
-        await this.loadUserInfo();
-        
         // Set up file input handler
         document.getElementById('fileInput').addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -64,7 +61,7 @@ const app = {
     // Load user info
     async loadUserInfo() {
         try {
-            const response = await fetch(`${this.API_BASE}/auth/me`);
+            const response = await fetch(`${this.API_BASE}/auth/me`, { credentials: 'include' });
             const data = await response.json();
             
             if (data.authenticated) {
@@ -295,6 +292,7 @@ const app = {
             formData.append('manuscriptId', `ms-${Date.now()}`);
 
             const uploadResponse = await fetch(`${this.API_BASE}/upload/manuscript`, {
+                credentials: 'include',
                 method: 'POST',
                 body: formData
             });
@@ -311,6 +309,7 @@ const app = {
 
             // Start async analysis
             const startResponse = await fetch(`${this.API_BASE}/analyze/start`, {
+                credentials: 'include',
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -344,7 +343,8 @@ const app = {
         const poll = async () => {
             try {
                 const response = await fetch(
-                    `${this.API_BASE}/analyze/status?reportId=${this.state.reportId}`
+                    `${this.API_BASE}/analyze/status?reportId=${this.state.reportId}`,
+                    { credentials: 'include' }
                 );
 
                 if (!response.ok) {
@@ -463,7 +463,7 @@ const app = {
             console.log('Fetching analysis results for reportId:', this.state.reportId);
 
             // Fetch all results using the new /results endpoint
-            const response = await fetch(`${this.API_BASE}/results?id=${this.state.reportId}`);
+            const response = await fetch(`${this.API_BASE}/results?id=${this.state.reportId}`, { credentials: 'include' });
 
             if (!response.ok) {
                 throw new Error('Failed to fetch results');
@@ -650,7 +650,7 @@ const app = {
 
         try {
             // Fetch the actual analysis data from the reports
-            const response = await fetch(`${this.API_BASE}/report?id=${this.state.reportId}`);
+            const response = await fetch(`${this.API_BASE}/report?id=${this.state.reportId}`, { credentials: 'include' });
 
             if (!response.ok) {
                 throw new Error('Failed to fetch analysis data');
@@ -725,9 +725,9 @@ const app = {
         
         document.getElementById('reportLoading').style.display = 'block';
         document.getElementById('reportContent').style.display = 'none';
-        
+
         try {
-            const response = await fetch(`${this.API_BASE}/report?id=${this.state.reportId}`);
+            const response = await fetch(`${this.API_BASE}/report?id=${this.state.reportId}`, { credentials: 'include' });
             
             if (!response.ok) throw new Error('Failed to load report');
             
@@ -785,9 +785,9 @@ const app = {
         
         document.getElementById('annotatedLoading').style.display = 'block';
         document.getElementById('annotatedContent').style.display = 'none';
-        
+
         try {
-            const response = await fetch(`${this.API_BASE}/annotated?id=${this.state.reportId}`);
+            const response = await fetch(`${this.API_BASE}/annotated?id=${this.state.reportId}`, { credentials: 'include' });
             
             if (!response.ok) throw new Error('Failed to load annotated manuscript');
             
@@ -876,10 +876,13 @@ const app = {
         this.updateAssetAgentStatus('category', 'running', 'Running...');
         this.updateAssetAgentStatus('authorBio', 'running', 'Running...');
         this.updateAssetAgentStatus('backMatter', 'running', 'Running...');
+        this.updateAssetAgentStatus('coverDesign', 'running', 'Running...');
+        this.updateAssetAgentStatus('seriesDescription', 'running', 'Running...');
 
         try {
             // Call the generate-assets endpoint
             const response = await fetch(`${this.API_BASE}/generate-assets`, {
+                credentials: 'include',
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -902,6 +905,8 @@ const app = {
             this.updateAssetAgentStatus('category', 'complete', 'Complete');
             this.updateAssetAgentStatus('authorBio', 'complete', 'Complete');
             this.updateAssetAgentStatus('backMatter', 'complete', 'Complete');
+            this.updateAssetAgentStatus('coverDesign', 'complete', 'Complete');
+            this.updateAssetAgentStatus('seriesDescription', 'complete', 'Complete');
 
             // Store assets in state
             this.state.generatedAssets = result.assets;
@@ -922,6 +927,8 @@ const app = {
             this.updateAssetAgentStatus('category', 'pending', 'Failed');
             this.updateAssetAgentStatus('authorBio', 'pending', 'Failed');
             this.updateAssetAgentStatus('backMatter', 'pending', 'Failed');
+            this.updateAssetAgentStatus('coverDesign', 'pending', 'Failed');
+            this.updateAssetAgentStatus('seriesDescription', 'pending', 'Failed');
 
             this.navigate('summary');
         }
@@ -1056,6 +1063,80 @@ const app = {
             // Store raw data
             document.getElementById('backMatterRaw').textContent = JSON.stringify(backMatter, null, 2);
         }
+
+        // ============================================================================
+        // Cover Design Brief - Using RenderHelpers for clean, maintainable code
+        // ============================================================================
+        const coverBrief = assets.coverBrief;
+        if (coverBrief && window.RenderHelpers) {
+            const helpers = window.RenderHelpers;
+
+            // Visual Concept - Shows main imagery, composition, and focal point
+            const coverVisualConcept = document.getElementById('coverVisualConcept');
+            if (coverVisualConcept && coverBrief.visualConcept) {
+                coverVisualConcept.innerHTML = helpers.renderCoverVisualConcept(coverBrief.visualConcept);
+            }
+
+            // Color Palette - Primary, secondary, accent colors with hex codes
+            const coverColorPalette = document.getElementById('coverColorPalette');
+            if (coverColorPalette && coverBrief.colorPalette) {
+                coverColorPalette.innerHTML = helpers.renderCoverColorPalette(coverBrief.colorPalette);
+            }
+
+            // Typography - Font recommendations for title, author name, etc.
+            const coverTypography = document.getElementById('coverTypography');
+            if (coverTypography && coverBrief.typography) {
+                coverTypography.innerHTML = helpers.renderCoverTypography(coverBrief.typography);
+            }
+
+            // AI Art Prompts - Ready-to-use prompts for Midjourney, DALL-E, Stable Diffusion
+            const coverAIPrompts = document.getElementById('coverAIPrompts');
+            if (coverAIPrompts && coverBrief.aiArtPrompts) {
+                coverAIPrompts.innerHTML = helpers.renderCoverAIPrompts(coverBrief.aiArtPrompts);
+            }
+
+            // Full Design Brief - Complete specifications for designers
+            const coverDesignBriefFull = document.getElementById('coverDesignBriefFull');
+            if (coverDesignBriefFull) {
+                coverDesignBriefFull.innerHTML = helpers.renderFullCoverBrief(coverBrief);
+            }
+        }
+
+        // ============================================================================
+        // Series Description - Using RenderHelpers for clean, maintainable code
+        // ============================================================================
+        const seriesDescription = assets.seriesDescription;
+        if (seriesDescription && window.RenderHelpers) {
+            const helpers = window.RenderHelpers;
+
+            // Series Tagline - One-sentence hook for the entire series
+            const seriesTagline = document.getElementById('seriesTagline');
+            if (seriesTagline && seriesDescription.seriesTagline) {
+                seriesTagline.textContent = seriesDescription.seriesTagline;
+            }
+
+            // Series Description (short/long) - Store both versions for switching
+            const seriesDescriptionText = document.getElementById('seriesDescriptionText');
+            if (seriesDescriptionText) {
+                seriesDescriptionText.dataset.short = seriesDescription.shortSeriesDescription || '';
+                seriesDescriptionText.dataset.long = seriesDescription.longSeriesDescription || '';
+
+                // Display short version by default
+                seriesDescriptionText.textContent = seriesDescription.shortSeriesDescription || 'N/A';
+            }
+
+            // Book-by-Book Arc - Shows each book's purpose, cliffhanger, resolution
+            const seriesBookArc = document.getElementById('seriesBookArc');
+            if (seriesBookArc && seriesDescription.bookByBookArc) {
+                seriesBookArc.innerHTML = helpers.renderSeriesBookArc(seriesDescription.bookByBookArc);
+            }
+
+            // Complete Series Strategy - Full multi-book planning details
+            const seriesStrategyFull = document.getElementById('seriesStrategyFull');
+            if (seriesStrategyFull) {
+                seriesStrategyFull.innerHTML = helpers.renderSeriesStrategy(seriesDescription);
+            }
+        }
     },
 
     // Switch description version
@@ -1094,6 +1175,17 @@ const app = {
         } else if (format === 'html' && preview.dataset.html) {
             preview.innerHTML = preview.dataset.html;
             preview.style.whiteSpace = 'normal';
+        }
+    },
+
+    // Switch series description length
+    switchSeriesDescLength() {
+        const select = document.getElementById('seriesDescLength');
+        const descDiv = document.getElementById('seriesDescriptionText');
+        const length = select.value;
+
+        if (descDiv.dataset[length]) {
+            descDiv.textContent = descDiv.dataset[length];
         }
     },
 
@@ -1322,6 +1414,7 @@ const app = {
 
             // Call the formatting API
             const response = await fetch(`${this.API_BASE}/format-manuscript`, {
+                credentials: 'include',
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1470,7 +1563,8 @@ const app = {
         try {
             // Fetch the formatted file
             const response = await fetch(
-                `${this.API_BASE}/download-formatted?id=${this.state.reportId}&format=${format}`
+                `${this.API_BASE}/download-formatted?id=${this.state.reportId}&format=${format}`,
+                { credentials: 'include' }
             );
 
             if (!response.ok) {
@@ -1520,6 +1614,7 @@ const app = {
         try {
             // Call market analysis API
             const response = await fetch(`${this.API_BASE}/analyze-market`, {
+                credentials: 'include',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1594,7 +1689,8 @@ const app = {
         try {
             // Fetch market analysis results
             const response = await fetch(
-                `${this.API_BASE}/market-analysis?reportId=${this.state.reportId}`
+                `${this.API_BASE}/market-analysis?reportId=${this.state.reportId}`,
+                { credentials: 'include' }
             );
 
             if (!response.ok) {
@@ -1877,6 +1973,7 @@ const app = {
 
             // Call the API
             const response = await fetch(`${this.API_BASE}/generate-social-media`, {
+                credentials: 'include',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1956,7 +2053,8 @@ const app = {
         try {
             // Fetch social media results
             const response = await fetch(
-                `${this.API_BASE}/social-media?reportId=${this.state.reportId}`
+                `${this.API_BASE}/social-media?reportId=${this.state.reportId}`,
+                { credentials: 'include' }
             );
 
             if (!response.ok) {

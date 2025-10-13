@@ -48,6 +48,33 @@
             font-size: 14px;
         }
 
+        .user-info .user-email {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-info .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 16px;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+        }
+
         /* Breadcrumb - Always visible when navigating */
         .breadcrumb {
             background: white;
@@ -643,6 +670,26 @@
                         Generating book back matter with CTAs and social links
                     </div>
                 </div>
+
+                <div class="agent-card" id="coverDesignAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">🎨 Cover Design Brief</div>
+                        <span class="agent-status status-pending" id="coverDesignStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Creating comprehensive cover design brief with AI art prompts
+                    </div>
+                </div>
+
+                <div class="agent-card" id="seriesDescriptionAgent">
+                    <div class="agent-header">
+                        <div class="agent-name">📚 Series Description</div>
+                        <span class="agent-status status-pending" id="seriesDescriptionStatus">Pending</span>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        Generating series descriptions and multi-book arc planning
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -736,6 +783,91 @@
                         <pre id="backMatterRaw" style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; overflow-x: auto; font-size: 14px;">
                             <!-- Raw back matter data here -->
                         </pre>
+                    </details>
+                </div>
+
+                <!-- Cover Design Brief Section -->
+                <div class="asset-section" style="margin-bottom: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">🎨 Cover Design Brief</h3>
+
+                    <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">Visual Concept</h4>
+                        <div id="coverVisualConcept" style="white-space: pre-wrap;">
+                            <!-- Visual concept populated here -->
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div style="background: #fff8e1; padding: 20px; border-radius: 8px;">
+                            <h4 style="color: #ffa726; margin-bottom: 10px;">🎨 Color Palette</h4>
+                            <div id="coverColorPalette">
+                                <!-- Color palette populated here -->
+                            </div>
+                        </div>
+
+                        <div style="background: #e8f5e9; padding: 20px; border-radius: 8px;">
+                            <h4 style="color: #4caf50; margin-bottom: 10px;">✒️ Typography</h4>
+                            <div id="coverTypography">
+                                <!-- Typography details populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <h4 style="color: #9c27b0; margin-bottom: 10px;">🤖 AI Art Prompts</h4>
+                        <div id="coverAIPrompts">
+                            <!-- AI art prompts populated here -->
+                        </div>
+                    </div>
+
+                    <details style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 8px;">
+                        <summary style="cursor: pointer; font-weight: 600; color: #667eea;">View Complete Design Brief</summary>
+                        <div id="coverDesignBriefFull" style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; white-space: pre-wrap;">
+                            <!-- Full design brief populated here -->
+                        </div>
+                    </details>
+                </div>
+
+                <!-- Series Description Section -->
+                <div class="asset-section" style="margin-bottom: 40px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📚 Series Description</h3>
+                    <p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">
+                        <em>If your book is part of a series, use these descriptions and marketing materials</em>
+                    </p>
+
+                    <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">✨ Series Tagline</h4>
+                        <div id="seriesTagline" style="font-size: 1.2em; font-weight: 600; font-style: italic;">
+                            <!-- Series tagline populated here -->
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: 600; display: block; margin-bottom: 10px;">
+                            Description Length:
+                        </label>
+                        <select id="seriesDescLength" style="padding: 10px; border-radius: 6px; border: 2px solid #e0e0e0; font-size: 16px;" onchange="app.switchSeriesDescLength()">
+                            <option value="short">Short (100-150 words)</option>
+                            <option value="long">Long (300-400 words)</option>
+                        </select>
+                    </div>
+
+                    <div style="padding: 20px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f9f9f9; min-height: 200px; white-space: pre-wrap;" id="seriesDescriptionText">
+                        <!-- Series description populated here -->
+                    </div>
+
+                    <div style="background: #fff8e1; padding: 20px; border-radius: 8px; margin-top: 15px;">
+                        <h4 style="color: #ffa726; margin-bottom: 10px;">📖 Book-by-Book Arc</h4>
+                        <div id="seriesBookArc">
+                            <!-- Book arc populated here -->
+                        </div>
+                    </div>
+
+                    <details style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 8px;">
+                        <summary style="cursor: pointer; font-weight: 600; color: #667eea;">View Complete Series Strategy</summary>
+                        <div id="seriesStrategyFull" style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px;">
+                            <!-- Full series strategy populated here -->
+                        </div>
                     </details>
                 </div>
 
@@ -1384,6 +1516,57 @@
         </div>
     </div>
 
+    <!-- Render helpers must load BEFORE dashboard-spa.js -->
+    <script src="render-helpers.js"></script>
     <script src="dashboard-spa.js"></script>
+
+    <!-- Authentication check and user info display -->
+    <script>
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:8787'
+            : 'https://api.scarter4workmanuscripthub.com';
+
+        // Check authentication on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`, {
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayUserInfo(data);
+                } else {
+                    // Not authenticated, redirect to login
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = 'login.html';
+            }
+        });
+
+        function displayUserInfo(user) {
+            const userInfoDiv = document.getElementById('userInfo');
+            userInfoDiv.innerHTML = `
+                <div class="user-email">${user.email}</div>
+                <div class="user-role">${user.role.toUpperCase()}</div>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            `;
+        }
+
+        async function handleLogout() {
+            try {
+                await fetch(`${API_BASE}/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+            // Always redirect to login after logout attempt
+            window.location.href = 'login.html';
+        }
+    </script>
 </body>
 </html>

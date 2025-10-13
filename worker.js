@@ -6,15 +6,17 @@ import { LineEditingAgent } from './line-editing-agent.js';
 import { CopyEditingAgent } from './copy-editing-agent.js';
 import { ReportGenerator } from './report-generator.js';
 import { AnnotatedManuscriptGenerator } from './annotated-manuscript-generator.js';
-import { Auth } from './auth.js';
 import { BookDescriptionAgent } from './book-description-agent.js';
 import { KeywordAgent } from './keyword-agent.js';
 import { CategoryAgent } from './category-agent.js';
 import { AuthorBioAgent } from './author-bio-agent.js';
 import { BackMatterAgent } from './back-matter-agent.js';
+import { CoverDesignAgent } from './cover-design-agent.js';
+import { SeriesDescriptionAgent } from './series-description-agent.js';
 import { FormattingAgent } from './formatting-agent.js';
 import { MarketAnalysisAgent } from './market-analysis-agent.js';
 import { SocialMediaAgent } from './social-media-agent.js';
+import { authHandlers } from './auth-handlers.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -47,37 +49,48 @@ export default {
     console.log('Request path:', path);
 
     try {
-      // Auth routes (no auth required)
+      // ========================================================================
+      // AUTHENTICATION ROUTES (Phase A)
+      // ========================================================================
+
+      // POST /auth/register - User registration with email verification
       if (path === '/auth/register' && request.method === 'POST') {
-        return await handleRegister(request, env, corsHeaders);
+        return await authHandlers.register(request, env);
       }
 
+      // POST /auth/login - User login with rate limiting
       if (path === '/auth/login' && request.method === 'POST') {
-        return await handleLogin(request, env, corsHeaders);
+        return await authHandlers.login(request, env);
       }
 
-      // Route: Get current user (from Cloudflare Access)
-      if (path === '/auth/me' && request.method === 'GET') {
-        // Cloudflare Access adds user info to headers
-        const userEmail = request.headers.get('Cf-Access-Authenticated-User-Email');
-        const userName = request.headers.get('Cf-Access-Authenticated-User-Name') || userEmail;
-        
-        if (userEmail) {
-          return new Response(JSON.stringify({
-            authenticated: true,
-            email: userEmail,
-            name: userName
-          }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          });
-        } else {
-          return new Response(JSON.stringify({
-            authenticated: false
-          }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          });
-        }
+      // POST /auth/logout - User logout (destroy session)
+      if (path === '/auth/logout' && request.method === 'POST') {
+        return await authHandlers.logout(request, env);
       }
+
+      // GET /auth/me - Get current authenticated user info
+      if (path === '/auth/me' && request.method === 'GET') {
+        return await authHandlers.getMe(request, env);
+      }
+
+      // GET /auth/verify-email - Email verification with token
+      if (path === '/auth/verify-email' && request.method === 'GET') {
+        return await authHandlers.verifyEmail(request, env);
+      }
+
+      // POST /auth/password-reset-request - Request password reset
+      if (path === '/auth/password-reset-request' && request.method === 'POST') {
+        return await authHandlers.passwordResetRequest(request, env);
+      }
+
+      // POST /auth/password-reset - Reset password with token
+      if (path === '/auth/password-reset' && request.method === 'POST') {
+        return await authHandlers.passwordReset(request, env);
+      }
+
+      // ========================================================================
+      // MANUSCRIPT MANAGEMENT ROUTES
+      // ========================================================================
       // Route: Upload raw manuscript
       if (path === '/upload/manuscript' && request.method === 'POST') {
         return await handleManuscriptUpload(request, env, corsHeaders);
@@ -229,17 +242,56 @@ export default {
       if (path === '/' && request.method === 'GET') {
         return new Response(JSON.stringify({
           message: 'Manuscript Upload API is running!',
-          version: '1.0.0',
-          endpoints: [
-            'POST /upload/manuscript',
-            'POST /upload/marketing',
-            'GET /list/{authorId}',
-            'GET /get/{key}',
-            'DELETE /delete/{key}',
-            'POST /analyze/developmental',
-            'POST /analyze/line-editing',
-            'POST /analyze/copy-editing'
+          version: '2.0.0',
+          features: [
+            'Multi-user authentication system',
+            'AI-powered manuscript analysis',
+            'Marketing asset generation',
+            'Market analysis and social media marketing',
+            'EPUB/PDF formatting'
           ],
+          endpoints: {
+            authentication: [
+              'POST /auth/register',
+              'POST /auth/login',
+              'POST /auth/logout',
+              'GET /auth/me',
+              'GET /auth/verify-email',
+              'POST /auth/password-reset-request',
+              'POST /auth/password-reset'
+            ],
+            manuscripts: [
+              'POST /upload/manuscript',
+              'POST /upload/marketing',
+              'GET /list/{authorId}',
+              'GET /get/{key}',
+              'DELETE /delete/{key}'
+            ],
+            analysis: [
+              'POST /analyze/developmental',
+              'POST /analyze/line-editing',
+              'POST /analyze/copy-editing',
+              'POST /analyze/start',
+              'GET /analyze/status'
+            ],
+            assets: [
+              'POST /generate-assets',
+              'GET /assets',
+              'POST /format-manuscript',
+              'GET /download-formatted'
+            ],
+            marketing: [
+              'POST /analyze-market',
+              'GET /market-analysis',
+              'POST /generate-social-media',
+              'GET /social-media'
+            ],
+            reports: [
+              'GET /report',
+              'GET /annotated',
+              'GET /results'
+            ]
+          },
           dashboard: 'Visit https://scarter4workmanuscripthub.com for the dashboard'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -1090,14 +1142,43 @@ async function handleAnalysisStatus(request, env, corsHeaders) {
   }
 }
 
-// ASSET GENERATION HANDLERS
+// ============================================================================
+// ASSET GENERATION HANDLERS (Phase 3)
+// ============================================================================
 
-// Generate marketing assets (book description, keywords, categories)
+/**
+ * Generate all marketing and publishing assets for a manuscript
+ *
+ * This endpoint runs 7 AI agents in parallel to generate:
+ * 1. Book Description - Multiple lengths (elevator pitch, short, long, retailer-optimized)
+ * 2. Keywords - Amazon search keywords for discoverability
+ * 3. Categories - Amazon category recommendations (BISAC codes)
+ * 4. Author Bio - Professional author biographies (multiple lengths)
+ * 5. Back Matter - "Also by" section, newsletter signup, social links
+ * 6. Cover Design Brief - Visual concepts, color palettes, AI art prompts
+ * 7. Series Description - Multi-book arc planning and series marketing
+ *
+ * Why parallel execution?
+ * All 7 agents are independent and can run simultaneously, reducing total
+ * generation time from ~70 seconds (sequential) to ~10 seconds (parallel).
+ *
+ * Request body:
+ * - reportId: Required - The manuscript report ID
+ * - genre: Optional - Genre for better targeting (default: 'general')
+ * - authorData: Optional - { name, bio, website, social } for author bio agent
+ * - seriesData: Optional - { seriesTitle, bookNumber, totalBooks } for series planning
+ *
+ * @param {Request} request - HTTP request
+ * @param {Object} env - Cloudflare environment variables (R2 buckets, API keys)
+ * @param {Object} corsHeaders - CORS headers for response
+ * @returns {Response} JSON response with all generated assets
+ */
 async function handleGenerateAssets(request, env, corsHeaders) {
   try {
     const body = await request.json();
     const { reportId } = body;
 
+    // Validate required parameters
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
@@ -1107,7 +1188,8 @@ async function handleGenerateAssets(request, env, corsHeaders) {
 
     console.log('Generating assets for report:', reportId);
 
-    // Get manuscript key from mapping
+    // Look up the manuscript key from the short report ID
+    // Report IDs are 8-character UUIDs that map to full manuscript storage keys
     const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
 
     if (!mappingObject) {
@@ -1123,7 +1205,9 @@ async function handleGenerateAssets(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
     console.log('Found manuscript key:', manuscriptKey);
 
-    // Fetch developmental analysis (required for asset generation)
+    // Fetch developmental analysis (required input for all asset generators)
+    // The developmental analysis contains plot, character, pacing, and theme insights
+    // that inform all marketing materials
     const devAnalysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`);
 
     if (!devAnalysisObj) {
@@ -1139,20 +1223,32 @@ async function handleGenerateAssets(request, env, corsHeaders) {
     const devAnalysis = await devAnalysisObj.json();
     const genre = body.genre || 'general';
 
-    // Extract optional author data from request
+    // Extract optional data from request body
+    // authorData: Used by author bio and back matter agents
+    //   Example: { name: "Jane Doe", bio: "...", website: "...", social: {...} }
     const authorData = body.authorData || {};
 
-    // Initialize all 5 agents
+    // seriesData: Used by series description agent for multi-book planning
+    //   Example: { seriesTitle: "The Dragon Chronicles", bookNumber: 1, totalBooks: 3 }
+    //   If not provided, agent generates generic 3-book series plan
+    const seriesData = body.seriesData || {};
+
+    // Initialize all 7 asset generation agents
+    // Each agent is independent and uses the developmental analysis as input
     const bookDescAgent = new BookDescriptionAgent(env);
     const keywordAgent = new KeywordAgent(env);
     const categoryAgent = new CategoryAgent(env);
     const authorBioAgent = new AuthorBioAgent(env);
     const backMatterAgent = new BackMatterAgent(env);
+    const coverDesignAgent = new CoverDesignAgent(env);
+    const seriesDescriptionAgent = new SeriesDescriptionAgent(env);
 
-    console.log('Running all five asset generation agents in parallel...');
+    console.log('Running all 7 asset generation agents in parallel...');
 
-    // Run all agents in parallel
-    const [bookDescription, keywords, categories, authorBio, backMatter] = await Promise.all([
+    // Execute all agents in parallel using Promise.all
+    // Each agent call is wrapped in .catch() to prevent one failure from stopping others
+    // This allows partial success - if 6 of 7 agents succeed, we still return those results
+    const [bookDescription, keywords, categories, authorBio, backMatter, coverBrief, seriesDescription] = await Promise.all([
       bookDescAgent.generate(manuscriptKey, devAnalysis, genre)
         .catch(e => ({ error: e.message, type: 'bookDescription' })),
       keywordAgent.generate(manuscriptKey, devAnalysis, genre)
@@ -1162,29 +1258,38 @@ async function handleGenerateAssets(request, env, corsHeaders) {
       authorBioAgent.generate(manuscriptKey, devAnalysis, genre, authorData)
         .catch(e => ({ error: e.message, type: 'authorBio' })),
       backMatterAgent.generate(manuscriptKey, devAnalysis, genre, authorData)
-        .catch(e => ({ error: e.message, type: 'backMatter' }))
+        .catch(e => ({ error: e.message, type: 'backMatter' })),
+      coverDesignAgent.generate(manuscriptKey, devAnalysis, genre)
+        .catch(e => ({ error: e.message, type: 'coverBrief' })),
+      seriesDescriptionAgent.generate(manuscriptKey, devAnalysis, genre, seriesData)
+        .catch(e => ({ error: e.message, type: 'seriesDescription' }))
     ]);
 
-    // Check for errors
+    // Collect any errors that occurred during generation
     const errors = [];
     if (bookDescription.error) errors.push(bookDescription);
     if (keywords.error) errors.push(keywords);
     if (categories.error) errors.push(categories);
     if (authorBio.error) errors.push(authorBio);
     if (backMatter.error) errors.push(backMatter);
+    if (coverBrief.error) errors.push(coverBrief);
+    if (seriesDescription.error) errors.push(seriesDescription);
 
+    // If any errors occurred, return partial results with error details
     if (errors.length > 0) {
       console.error('Asset generation errors:', errors);
       return new Response(JSON.stringify({
         success: false,
-        partialSuccess: errors.length < 5,
+        partialSuccess: errors.length < 7, // True if at least one agent succeeded
         errors: errors,
         results: {
           bookDescription: bookDescription.error ? null : bookDescription.description,
           keywords: keywords.error ? null : keywords.keywords,
           categories: categories.error ? null : categories.categories,
           authorBio: authorBio.error ? null : authorBio.bio,
-          backMatter: backMatter.error ? null : backMatter.backMatter
+          backMatter: backMatter.error ? null : backMatter.backMatter,
+          coverBrief: coverBrief.error ? null : coverBrief.coverBrief,
+          seriesDescription: seriesDescription.error ? null : seriesDescription.seriesDescription
         }
       }), {
         status: 500,
@@ -1192,7 +1297,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
       });
     }
 
-    // Store combined assets
+    // All agents succeeded - combine results into a single asset package
     const combinedAssets = {
       manuscriptKey,
       reportId,
@@ -1201,9 +1306,13 @@ async function handleGenerateAssets(request, env, corsHeaders) {
       keywords: keywords.keywords,
       categories: categories.categories,
       authorBio: authorBio.bio,
-      backMatter: backMatter.backMatter
+      backMatter: backMatter.backMatter,
+      coverBrief: coverBrief.coverBrief,
+      seriesDescription: seriesDescription.seriesDescription
     };
 
+    // Store the combined assets in R2 for later retrieval
+    // This allows the /assets endpoint to fetch all assets in one request
     await env.MANUSCRIPTS_PROCESSED.put(
       `${manuscriptKey}-assets.json`,
       JSON.stringify(combinedAssets, null, 2),
