@@ -35,7 +35,10 @@ const app = {
     // Initialize app
     async init() {
         console.log('Initializing SPA...');
-        
+
+        // Load user info and setup admin navigation
+        await this.loadUserInfo();
+
         // Set up file input handler
         document.getElementById('fileInput').addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -44,12 +47,12 @@ const app = {
                 document.getElementById('fileLabel').classList.add('has-file');
             }
         });
-        
+
         // Check for initial route from URL
         const hash = window.location.hash.slice(1); // Remove #
         const params = new URLSearchParams(window.location.search);
         const reportId = params.get('loadReport');
-        
+
         if (reportId) {
             this.state.reportId = reportId;
             this.navigate('summary');
@@ -61,7 +64,7 @@ const app = {
             // Default to library view
             this.navigate('library');
         }
-        
+
         // Handle browser back/forward
         window.addEventListener('hashchange', () => {
             const newHash = window.location.hash.slice(1);
@@ -79,10 +82,21 @@ const app = {
             const data = await response.json();
 
             if (data.authenticated) {
+                // Update user info display
                 document.getElementById('userInfo').innerHTML = `
                     <div style="opacity: 0.9;">👤 ${data.name || data.email}</div>
                     <div style="font-size: 12px; opacity: 0.7;">${data.email}</div>
                 `;
+
+                // Add admin navigation items if user is admin
+                if (data.role === 'admin') {
+                    const mainNav = document.getElementById('mainNav');
+                    const adminNav = `
+                        <a href="/admin-dashboard.html" class="main-nav-item">🎯 Admin Dashboard</a>
+                        <a href="/admin-dmca.html" class="main-nav-item">🔒 DMCA Review</a>
+                    `;
+                    mainNav.innerHTML += adminNav;
+                }
             }
         } catch (error) {
             console.error('Failed to load user info:', error);

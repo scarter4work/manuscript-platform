@@ -219,6 +219,105 @@ export default {
       }
 
       // ========================================================================
+      // ADMIN MANAGEMENT ROUTES (Phase G)
+      // ========================================================================
+
+      // GET /admin/users - List all users
+      if (path === '/admin/users' && request.method === 'GET') {
+        const { listUsers } = await import('./admin-handlers.js');
+        return await listUsers(request, env, corsHeaders);
+      }
+
+      // GET /admin/users/:userId - Get user details
+      if (path.match(/^\/admin\/users\/[^\/]+$/) && request.method === 'GET') {
+        const userId = path.split('/')[3];
+        const { getUserDetails } = await import('./admin-handlers.js');
+        return await getUserDetails(request, env, corsHeaders, userId);
+      }
+
+      // PATCH /admin/users/:userId - Update user
+      if (path.match(/^\/admin\/users\/[^\/]+$/) && request.method === 'PATCH') {
+        const userId = path.split('/')[3];
+        const { updateUser } = await import('./admin-handlers.js');
+        return await updateUser(request, env, corsHeaders, userId);
+      }
+
+      // POST /admin/users/:userId/subscription - Adjust subscription
+      if (path.match(/^\/admin\/users\/[^\/]+\/subscription$/) && request.method === 'POST') {
+        const userId = path.split('/')[3];
+        const { adjustUserSubscription } = await import('./admin-handlers.js');
+        return await adjustUserSubscription(request, env, corsHeaders, userId);
+      }
+
+      // GET /admin/manuscripts - List all manuscripts
+      if (path === '/admin/manuscripts' && request.method === 'GET') {
+        const { listAllManuscripts } = await import('./admin-handlers.js');
+        return await listAllManuscripts(request, env, corsHeaders);
+      }
+
+      // DELETE /admin/manuscripts/:manuscriptId - Admin delete manuscript
+      if (path.match(/^\/admin\/manuscripts\/[^\/]+$/) && request.method === 'DELETE') {
+        const manuscriptId = path.split('/')[3];
+        const { adminDeleteManuscript } = await import('./admin-handlers.js');
+        return await adminDeleteManuscript(request, env, corsHeaders, manuscriptId);
+      }
+
+      // GET /admin/analytics/overview - Platform analytics
+      if (path === '/admin/analytics/overview' && request.method === 'GET') {
+        const { getAnalyticsOverview } = await import('./admin-handlers.js');
+        return await getAnalyticsOverview(request, env, corsHeaders);
+      }
+
+      // GET /admin/analytics/activity - Recent activity
+      if (path === '/admin/analytics/activity' && request.method === 'GET') {
+        const { getRecentActivity } = await import('./admin-handlers.js');
+        return await getRecentActivity(request, env, corsHeaders);
+      }
+
+      // GET /admin/billing/transactions - List payment transactions
+      if (path === '/admin/billing/transactions' && request.method === 'GET') {
+        const { listPaymentTransactions } = await import('./admin-billing-handlers.js');
+        return await listPaymentTransactions(request, env, corsHeaders);
+      }
+
+      // GET /admin/billing/transactions/:transactionId - Get transaction details
+      if (path.match(/^\/admin\/billing\/transactions\/[^\/]+$/) && request.method === 'GET') {
+        const transactionId = path.split('/')[4];
+        const { getTransactionDetails } = await import('./admin-billing-handlers.js');
+        return await getTransactionDetails(request, env, corsHeaders, transactionId);
+      }
+
+      // GET /admin/billing/subscriptions/stats - Get subscription statistics
+      if (path === '/admin/billing/subscriptions/stats' && request.method === 'GET') {
+        const { getSubscriptionStats } = await import('./admin-billing-handlers.js');
+        return await getSubscriptionStats(request, env, corsHeaders);
+      }
+
+      // GET /admin/billing/revenue - Get revenue analytics
+      if (path === '/admin/billing/revenue' && request.method === 'GET') {
+        const { getRevenueAnalytics } = await import('./admin-billing-handlers.js');
+        return await getRevenueAnalytics(request, env, corsHeaders);
+      }
+
+      // GET /admin/billing/failed-payments - Get failed payments
+      if (path === '/admin/billing/failed-payments' && request.method === 'GET') {
+        const { getFailedPayments } = await import('./admin-billing-handlers.js');
+        return await getFailedPayments(request, env, corsHeaders);
+      }
+
+      // POST /admin/billing/refund - Issue refund
+      if (path === '/admin/billing/refund' && request.method === 'POST') {
+        const { issueRefund } = await import('./admin-billing-handlers.js');
+        return await issueRefund(request, env, corsHeaders);
+      }
+
+      // POST /admin/billing/cancel-subscription - Cancel subscription
+      if (path === '/admin/billing/cancel-subscription' && request.method === 'POST') {
+        const { cancelSubscription } = await import('./admin-billing-handlers.js');
+        return await cancelSubscription(request, env, corsHeaders);
+      }
+
+      // ========================================================================
       // PAYMENT ROUTES (Phase F)
       // ========================================================================
 

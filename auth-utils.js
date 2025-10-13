@@ -17,7 +17,7 @@
 // ============================================================================
 
 export const AUTH_CONFIG = {
-  SESSION_DURATION: 24 * 60 * 60,           // 24 hours in seconds
+  SESSION_DURATION: 30 * 60,                // 30 minutes in seconds (inactivity timeout)
   SESSION_DURATION_REMEMBER: 30 * 24 * 60 * 60, // 30 days for "remember me"
   PASSWORD_MIN_LENGTH: 8,
   PASSWORD_REQUIREMENTS: {
@@ -264,6 +264,17 @@ export async function validateSession(sessionId, env) {
       await env.SESSIONS.delete(`session:${sessionId}`);
       return null;
     }
+
+    // Refresh session on activity (extend expiration)
+    const duration = session.rememberMe ? AUTH_CONFIG.SESSION_DURATION_REMEMBER : AUTH_CONFIG.SESSION_DURATION;
+    session.expiresAt = Date.now() + (duration * 1000);
+
+    // Update session in KV with refreshed TTL
+    await env.SESSIONS.put(
+      `session:${sessionId}`,
+      JSON.stringify(session),
+      { expirationTtl: duration }
+    );
 
     return session.userId;
   } catch (error) {

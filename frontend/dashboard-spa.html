@@ -409,6 +409,46 @@
         .hidden {
             display: none;
         }
+
+        /* Main Navigation Menu */
+        .main-nav {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 0;
+        }
+
+        .main-nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+        }
+
+        .main-nav-item {
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-nav-item:hover {
+            background: #f8f9fa;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .main-nav-item.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
     </style>
 </head>
 <body>
@@ -424,6 +464,15 @@
             </div>
         </div>
     </div>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="main-nav-content" id="mainNav">
+            <a href="/dashboard-spa.html" class="main-nav-item active">📚 My Manuscripts</a>
+            <a href="/billing.html" class="main-nav-item">💳 Billing</a>
+            <!-- Admin links populated by JavaScript -->
+        </div>
+    </nav>
 
     <!-- Breadcrumb navigation -->
     <nav class="breadcrumb" id="breadcrumb" style="display: none;">

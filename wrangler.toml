@@ -3,6 +3,11 @@ main = "worker.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+# Serve frontend files as static assets
+[assets]
+directory = "./frontend"
+binding = "ASSETS"
+
 # Enable logging
 logpush = false
 observability = { enabled = true }
@@ -71,7 +76,7 @@ id = "48959d60fe25478db01651f3eef4daff"
 # STRIPE_SECRET_KEY will be set via dashboard secrets for production
 # STRIPE_WEBHOOK_SECRET will be set via dashboard secrets for production
 MAX_FILE_SIZE = 52428800  # 50MB in bytes
-SESSION_DURATION = 86400  # 24 hours in seconds
+SESSION_DURATION = 1800  # 30 minutes in seconds (inactivity timeout)
 STRIPE_PUBLISHABLE_KEY = "pk_test_..."  # Replace with actual Stripe publishable key (safe to commit)
 FRONTEND_URL = "https://scarter4workmanuscripthub.com"  # Your frontend URL for payment redirects
 

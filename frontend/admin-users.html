@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .nav-menu {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+            border-bottom-color: #667eea;
+        }
+
+        .nav-item.active {
+            border-bottom-color: #667eea;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .stats-mini {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-mini {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stat-mini-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-mini-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .users-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-admin {
+            background: #dc3545;
+            color: white;
+        }
+
+        .badge-author {
+            background: #667eea;
+            color: white;
+        }
+
+        .badge-publisher {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-verified {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-unverified {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85em;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8em;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination span {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .modal-header .user-id {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section h3 {
+            font-size: 1.1em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-field {
+            margin-bottom: 10px;
+        }
+
+        .info-field label {
+            display: block;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+
+        .info-field .value {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .manuscripts-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .manuscript-item {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .manuscript-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .manuscript-meta {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .activity-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 10px;
+            border-left: 3px solid #667eea;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .activity-action {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .activity-time {
+            font-size: 0.85em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>👥 User Management</h1>
+            <p>Manage users, roles, and subscriptions</p>
+        </div>
+    </div>
+
+    <nav class="nav-menu">
+        <div class="nav-content">
+            <a href="/dashboard-spa.html" class="nav-item">← My Manuscripts</a>
+            <a href="/admin-dashboard.html" class="nav-item">Dashboard</a>
+            <a href="/admin-users.html" class="nav-item active">Users</a>
+            <a href="/admin-manuscripts.html" class="nav-item">Manuscripts</a>
+            <a href="/admin-dmca.html" class="nav-item">DMCA</a>
+            <a href="/admin-billing.html" class="nav-item">Billing</a>
+            <a href="/admin-analytics.html" class="nav-item">Analytics</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Statistics -->
+        <div class="stats-mini">
+            <div class="stat-mini">
+                <div class="stat-mini-label">Total Users</div>
+                <div class="stat-mini-value" id="totalUsersCount">0</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-label">This Page</div>
+                <div class="stat-mini-value" id="pageUsersCount">0</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label>Search</label>
+                <input type="text" id="searchInput" placeholder="Search by email...">
+            </div>
+            <div class="filter-group">
+                <label>Role</label>
+                <select id="roleFilter">
+                    <option value="">All Roles</option>
+                    <option value="author">Author</option>
+                    <option value="publisher">Publisher</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Sort By</label>
+                <select id="sortFilter">
+                    <option value="created_at">Date Created</option>
+                    <option value="last_login">Last Login</option>
+                    <option value="manuscript_count">Manuscript Count</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            Loading users...
+        </div>
+
+        <!-- Users Table -->
+        <div id="usersTable" style="display: none;">
+            <div class="users-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Manuscripts</th>
+                            <th>Subscription</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Users will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button id="prevPageBtn" onclick="changePage(-1)">← Previous</button>
+                <span id="pageInfo">Page 1 of 1</span>
+                <button id="nextPageBtn" onclick="changePage(1)">Next →</button>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h3>No users found</h3>
+            <p>Try adjusting your filters</p>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalUserEmail">User Details</h2>
+                <div class="user-id" id="modalUserId"></div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Account Information</h3>
+                <div class="info-grid">
+                    <div class="info-field">
+                        <label>Email</label>
+                        <div class="value" id="detailEmail"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>Role</label>
+                        <div class="value" id="detailRole"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>Email Verified</label>
+                        <div class="value" id="detailVerified"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>Created At</label>
+                        <div class="value" id="detailCreated"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>Last Login</label>
+                        <div class="value" id="detailLastLogin"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Subscription Details</h3>
+                <div class="info-grid">
+                    <div class="info-field">
+                        <label>Plan Type</label>
+                        <div class="value" id="detailPlanType"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>Status</label>
+                        <div class="value" id="detailSubStatus"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>Monthly Limit</label>
+                        <div class="value" id="detailMonthlyLimit"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>Current Usage</label>
+                        <div class="value" id="detailCurrentUsage"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Manuscripts (<span id="manuscriptCount">0</span>)</h3>
+                <div class="manuscripts-list" id="manuscriptsList"></div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Recent Activity</h3>
+                <div class="activity-list" id="activityList"></div>
+            </div>
+
+            <div class="modal-section">
+                <h3>Edit User</h3>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="editRole">
+                        <option value="author">Author</option>
+                        <option value="publisher">Publisher</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Email Verification Status</label>
+                    <select id="editVerified">
+                        <option value="1">Verified</option>
+                        <option value="0">Not Verified</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal()">Close</button>
+                <button class="btn btn-primary" onclick="saveUserChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8787'
+            : 'https://manuscript-upload-api.scarter4work.workers.dev';
+
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentUserId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUsers();
+        });
+
+        async function loadUsers() {
+            try {
+                document.getElementById('loadingState').style.display = 'block';
+                document.getElementById('usersTable').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+
+                const role = document.getElementById('roleFilter').value;
+                const search = document.getElementById('searchInput').value;
+                const sortBy = document.getElementById('sortFilter').value;
+
+                let url = `${API_BASE}/admin/users?page=${currentPage}&limit=50`;
+                if (role) url += `&role=${role}`;
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                if (sortBy) url += `&sortBy=${sortBy}`;
+
+                const response = await fetch(url, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to load users');
+                }
+
+                const data = await response.json();
+                const users = data.users || [];
+                const pagination = data.pagination || {};
+
+                document.getElementById('loadingState').style.display = 'none';
+
+                if (users.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('usersTable').style.display = 'block';
+                renderUsers(users);
+                updatePagination(pagination);
+                updateStats(pagination);
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('emptyState').innerHTML = `
+                    <h3>Error Loading Users</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.email}</td>
+                    <td>
+                        <span class="badge badge-${user.role}">
+                            ${user.role}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-${user.email_verified ? 'verified' : 'unverified'}">
+                            ${user.email_verified ? 'Verified' : 'Unverified'}
+                        </span>
+                    </td>
+                    <td>${user.manuscript_count || 0}</td>
+                    <td>${user.plan_type || 'free'}</td>
+                    <td>${new Date(user.created_at * 1000).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="viewUser('${user.id}')">
+                            View Details
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updatePagination(pagination) {
+            currentPage = pagination.page || 1;
+            totalPages = pagination.totalPages || 1;
+
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = currentPage === 1;
+            document.getElementById('nextPageBtn').disabled = currentPage === totalPages;
+        }
+
+        function updateStats(pagination) {
+            document.getElementById('totalUsersCount').textContent = pagination.total || 0;
+            document.getElementById('pageUsersCount').textContent = pagination.limit || 0;
+        }
+
+        function changePage(delta) {
+            currentPage += delta;
+            loadUsers();
+        }
+
+        function applyFilters() {
+            currentPage = 1;
+            loadUsers();
+        }
+
+        async function viewUser(userId) {
+            try {
+                currentUserId = userId;
+
+                const response = await fetch(`${API_BASE}/admin/users/${userId}`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to load user details');
+                }
+
+                const data = await response.json();
+                displayUserDetails(data);
+                document.getElementById('userModal').classList.add('active');
+
+            } catch (error) {
+                console.error('Error loading user details:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        function displayUserDetails(data) {
+            const { user, subscription, manuscripts, activity } = data;
+
+            // Header
+            document.getElementById('modalUserEmail').textContent = user.email;
+            document.getElementById('modalUserId').textContent = `User ID: ${user.id}`;
+
+            // Account info
+            document.getElementById('detailEmail').textContent = user.email;
+            document.getElementById('detailRole').innerHTML = `<span class="badge badge-${user.role}">${user.role}</span>`;
+            document.getElementById('detailVerified').innerHTML = `<span class="badge badge-${user.email_verified ? 'verified' : 'unverified'}">${user.email_verified ? 'Yes' : 'No'}</span>`;
+            document.getElementById('detailCreated').textContent = new Date(user.created_at * 1000).toLocaleString();
+            document.getElementById('detailLastLogin').textContent = user.last_login ? new Date(user.last_login * 1000).toLocaleString() : 'Never';
+
+            // Subscription
+            if (subscription) {
+                document.getElementById('detailPlanType').textContent = subscription.plan_type || 'free';
+                document.getElementById('detailSubStatus').textContent = subscription.status || 'N/A';
+                document.getElementById('detailMonthlyLimit').textContent = subscription.monthly_limit || 0;
+                document.getElementById('detailCurrentUsage').textContent = subscription.current_usage || 0;
+            } else {
+                document.getElementById('detailPlanType').textContent = 'free';
+                document.getElementById('detailSubStatus').textContent = 'N/A';
+                document.getElementById('detailMonthlyLimit').textContent = '0';
+                document.getElementById('detailCurrentUsage').textContent = '0';
+            }
+
+            // Manuscripts
+            document.getElementById('manuscriptCount').textContent = manuscripts.length;
+            const manuscriptsList = document.getElementById('manuscriptsList');
+            if (manuscripts.length === 0) {
+                manuscriptsList.innerHTML = '<p style="color: #666;">No manuscripts yet</p>';
+            } else {
+                manuscriptsList.innerHTML = manuscripts.map(m => `
+                    <div class="manuscript-item">
+                        <div class="manuscript-title">${m.title}</div>
+                        <div class="manuscript-meta">
+                            Status: ${m.status} | Genre: ${m.genre || 'N/A'} | Words: ${m.word_count || 0}
+                            ${m.flagged_for_review ? '<span style="color: red;">⚠️ Flagged</span>' : ''}
+                        </div>
+                        <div class="manuscript-meta">Uploaded: ${new Date(m.uploaded_at * 1000).toLocaleDateString()}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Activity
+            const activityList = document.getElementById('activityList');
+            if (activity.length === 0) {
+                activityList.innerHTML = '<p style="color: #666;">No recent activity</p>';
+            } else {
+                activityList.innerHTML = activity.map(a => `
+                    <div class="activity-item">
+                        <div class="activity-action">${a.action.replace(/_/g, ' ')}</div>
+                        <div class="activity-time">${new Date(a.timestamp * 1000).toLocaleString()}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Edit form
+            document.getElementById('editRole').value = user.role;
+            document.getElementById('editVerified').value = user.email_verified ? '1' : '0';
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').classList.remove('active');
+            currentUserId = null;
+        }
+
+        async function saveUserChanges() {
+            if (!currentUserId) return;
+
+            try {
+                const role = document.getElementById('editRole').value;
+                const emailVerified = parseInt(document.getElementById('editVerified').value);
+
+                const response = await fetch(`${API_BASE}/admin/users/${currentUserId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        role,
+                        email_verified: emailVerified
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to update user');
+                }
+
+                alert('User updated successfully!');
+                closeModal();
+                await loadUsers();
+
+            } catch (error) {
+                console.error('Error updating user:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>
