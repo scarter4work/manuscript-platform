@@ -27,6 +27,8 @@ export default {
       'https://scarter4workmanuscripthub.com',
       'https://www.scarter4workmanuscripthub.com',
       'https://api.scarter4workmanuscripthub.com',
+      'https://dce046dd.manuscript-platform.pages.dev', // Cloudflare Pages deployment
+      'https://manuscript-platform.pages.dev', // Custom domain (if configured)
       'http://localhost:8000', // for local testing
       'http://localhost:3000', // for local React dev
     ];
@@ -36,6 +38,7 @@ export default {
       'Access-Control-Allow-Origin': origin && allowedOrigins.includes(origin) ? origin : '*', // Allow all for dev
       'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, X-Filename, X-Author-Id, X-File-Type',
+      'Access-Control-Allow-Credentials': 'true', // Important for cookie-based auth
       'Access-Control-Max-Age': '86400',
     };
 
