@@ -473,6 +473,23 @@
                     </select>
                 </div>
 
+                <!-- Copyright Attestation (Phase E: DMCA Compliance) -->
+                <div class="input-group" style="text-align: left; margin-top: 30px; padding: 20px; background: #fff8e1; border-left: 4px solid #ffa726; border-radius: 8px;">
+                    <label style="display: flex; align-items: start; cursor: pointer; font-weight: normal;">
+                        <input type="checkbox" id="copyrightAttestation" style="width: auto; margin-right: 12px; margin-top: 3px; cursor: pointer;" required>
+                        <span style="flex: 1; line-height: 1.6;">
+                            <strong style="display: block; margin-bottom: 8px; color: #f57c00;">Copyright Attestation Required</strong>
+                            I certify that I am the copyright owner of this manuscript, or I have obtained all necessary permissions
+                            to upload and analyze this work. I understand that uploading copyrighted material without permission is
+                            illegal and may result in account termination and legal action.
+                        </span>
+                    </label>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 12px; margin-left: 28px;">
+                        <strong>Note:</strong> By checking this box, you agree to our Terms of Service and DMCA policy.
+                        False attestation may result in penalties under the Digital Millennium Copyright Act (DMCA).
+                    </p>
+                </div>
+
                 <button class="btn" onclick="app.uploadAndAnalyze()">
                     Upload & Start Analysis
                 </button>
@@ -595,6 +612,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Footer with DMCA Contact Info (Phase E) -->
+    <footer style="background: white; margin-top: 40px; padding: 30px 20px; border-top: 3px solid #667eea;">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <p style="color: #666; margin-bottom: 15px;">
+                <strong>Copyright & DMCA Notice:</strong> All uploaded manuscripts remain the property of their respective authors.
+            </p>
+            <p style="color: #666; margin-bottom: 15px;">
+                If you believe your copyrighted work has been uploaded without permission, please submit a
+                <a href="/dmca-request.html" style="color: #667eea; text-decoration: none; font-weight: 600;">DMCA Takedown Request</a>.
+            </p>
+            <p style="color: #999; font-size: 0.9em;">
+                DMCA Agent: <a href="mailto:dmca@manuscript-platform.com" style="color: #667eea; text-decoration: none;">dmca@manuscript-platform.com</a>
+                | <a href="/dmca-policy.html" style="color: #667eea; text-decoration: none;">DMCA Policy</a>
+            </p>
+        </div>
+    </footer>
 
     <script src="dashboard-spa.js"></script>
 </body>

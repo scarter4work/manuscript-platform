@@ -20,6 +20,7 @@ import { authHandlers } from './auth-handlers.js';
 import { manuscriptHandlers } from './manuscript-handlers.js';
 import queueConsumer from './queue-consumer.js';
 import assetConsumer from './asset-generation-consumer.js';
+import { handleStripeWebhook } from './webhook-handlers.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -188,6 +189,56 @@ export default {
       // Phase D: Check asset generation status
       if (path === '/assets/status' && request.method === 'GET') {
         return await handleAssetStatus(request, env, corsHeaders);
+      }
+
+      // Phase E: DMCA Takedown Request Submission
+      if (path === '/dmca/submit' && request.method === 'POST') {
+        return await handleDMCASubmission(request, env, corsHeaders);
+      }
+
+      // ========================================================================
+      // PAYMENT ROUTES (Phase F)
+      // ========================================================================
+
+      // POST /payments/create-checkout-session - Create Stripe checkout for subscription
+      if (path === '/payments/create-checkout-session' && request.method === 'POST') {
+        const { createCheckoutSession } = await import('./payment-handlers.js');
+        return await createCheckoutSession(request, env, corsHeaders);
+      }
+
+      // POST /payments/create-payment-intent - Create payment intent for one-time purchase
+      if (path === '/payments/create-payment-intent' && request.method === 'POST') {
+        const { createPaymentIntent } = await import('./payment-handlers.js');
+        return await createPaymentIntent(request, env, corsHeaders);
+      }
+
+      // POST /payments/create-portal-session - Create Stripe customer portal session
+      if (path === '/payments/create-portal-session' && request.method === 'POST') {
+        const { createPortalSession } = await import('./payment-handlers.js');
+        return await createPortalSession(request, env, corsHeaders);
+      }
+
+      // GET /payments/subscription - Get current subscription details
+      if (path === '/payments/subscription' && request.method === 'GET') {
+        const { getSubscription } = await import('./payment-handlers.js');
+        return await getSubscription(request, env, corsHeaders);
+      }
+
+      // GET /payments/history - Get payment history
+      if (path === '/payments/history' && request.method === 'GET') {
+        const { getPaymentHistory } = await import('./payment-handlers.js');
+        return await getPaymentHistory(request, env, corsHeaders);
+      }
+
+      // GET /payments/can-upload - Check if user can upload (usage limits)
+      if (path === '/payments/can-upload' && request.method === 'GET') {
+        const { checkCanUpload } = await import('./payment-handlers.js');
+        return await checkCanUpload(request, env, corsHeaders);
+      }
+
+      // POST /payments/webhook - Stripe webhook handler (coming soon)
+      if (path === '/payments/webhook' && request.method === 'POST') {
+        return await handleStripeWebhook(request, env, corsHeaders);
       }
 
       // Route: Generate marketing assets (book description, keywords, categories)
@@ -401,6 +452,27 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
       });
     }
 
+    // Phase F: Check usage limits before allowing upload
+    const subscription = await env.DB.prepare(`
+      SELECT * FROM user_subscriptions_with_usage WHERE user_id = ?
+    `).bind(userId).first();
+
+    const canUpload = !subscription || subscription.manuscripts_this_period < subscription.monthly_limit;
+
+    if (!canUpload) {
+      return new Response(JSON.stringify({
+        error: 'Upload limit reached',
+        planType: subscription.plan_type,
+        manuscriptsUsed: subscription.manuscripts_this_period,
+        monthlyLimit: subscription.monthly_limit,
+        upgradeRequired: true,
+        message: 'You have reached your monthly manuscript limit. Please upgrade your plan or wait for your billing period to reset.'
+      }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const formData = await request.formData();
     const file = formData.get('file');
     const title = formData.get('title') || file.name.replace(/\.[^/.]+$/, '');
@@ -541,6 +613,16 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
       console.error('[Upload] Failed to queue analysis:', queueError);
       // Don't fail the upload if queueing fails - manuscript is still uploaded
       // The user can manually trigger analysis later
+    }
+
+    // Phase F: Track usage for billing
+    try {
+      const { trackUsage } = await import('./payment-handlers.js');
+      await trackUsage(env, userId, manuscriptId, 'full', false);
+      console.log('[Upload] Usage tracked for manuscript:', manuscriptId);
+    } catch (usageError) {
+      console.error('[Upload] Failed to track usage:', usageError);
+      // Don't fail the upload if usage tracking fails
     }
 
     return new Response(JSON.stringify({
@@ -2224,6 +2306,191 @@ async function handleGetSocialMedia(request, env, corsHeaders) {
     console.error('Error fetching social media marketing:', error);
     return new Response(JSON.stringify({
       error: error.message
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// ============================================================================
+// DMCA & COPYRIGHT HANDLERS (Phase E)
+// ============================================================================
+
+/**
+ * Handle DMCA takedown request submission (Phase E)
+ *
+ * POST /dmca/submit
+ * Accepts DMCA takedown requests from copyright holders
+ *
+ * Required fields:
+ * - requesterName: Full name of copyright owner or authorized agent
+ * - requesterEmail: Contact email address
+ * - manuscriptId: ID or URL of the infringing manuscript
+ * - claimDetails: Description of copyrighted work and infringement
+ * - goodFaithAttestation: Boolean - good faith belief statement
+ * - accuracyAttestation: Boolean - accuracy under penalty of perjury
+ * - digitalSignature: Typed name as digital signature
+ *
+ * Optional fields:
+ * - requesterCompany: Company/organization name
+ * - originalWorkUrl: URL where original work can be found
+ *
+ * @param {Request} request - HTTP request with DMCA form data
+ * @param {Object} env - Cloudflare environment (D1 database, R2 buckets)
+ * @param {Object} corsHeaders - CORS headers for response
+ * @returns {Response} JSON response with DMCA request ID or error
+ */
+async function handleDMCASubmission(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+
+    // Extract and validate required fields
+    const {
+      requesterName,
+      requesterEmail,
+      requesterCompany,
+      manuscriptId,
+      claimDetails,
+      originalWorkUrl,
+      goodFaithAttestation,
+      accuracyAttestation,
+      digitalSignature
+    } = body;
+
+    // Validate required fields
+    if (!requesterName || !requesterEmail || !manuscriptId || !claimDetails ||
+        !goodFaithAttestation || !accuracyAttestation || !digitalSignature) {
+      return new Response(JSON.stringify({
+        error: 'Missing required fields. Please complete all required fields including attestations and digital signature.'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(requesterEmail)) {
+      return new Response(JSON.stringify({
+        error: 'Invalid email address format'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Validate attestations are true
+    if (goodFaithAttestation !== true || accuracyAttestation !== true) {
+      return new Response(JSON.stringify({
+        error: 'Both attestations must be confirmed to submit a DMCA request'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    console.log('[DMCA] Processing takedown request for manuscript:', manuscriptId);
+
+    // Look up manuscript in database
+    // manuscriptId could be either a UUID or a URL containing the manuscript ID
+    let actualManuscriptId = manuscriptId;
+
+    // If it's a URL, try to extract the manuscript ID from it
+    if (manuscriptId.includes('http') || manuscriptId.includes('/')) {
+      const urlMatch = manuscriptId.match(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i);
+      if (urlMatch) {
+        actualManuscriptId = urlMatch[0];
+      }
+    }
+
+    // Verify manuscript exists in database
+    const manuscriptResult = await env.DB.prepare(
+      'SELECT id, user_id, title FROM manuscripts WHERE id = ?'
+    ).bind(actualManuscriptId).first();
+
+    if (!manuscriptResult) {
+      return new Response(JSON.stringify({
+        error: 'Manuscript not found. Please verify the manuscript ID or URL.',
+        providedId: manuscriptId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Generate unique DMCA request ID
+    const dmcaRequestId = crypto.randomUUID();
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    // Insert DMCA request into database
+    await env.DB.prepare(`
+      INSERT INTO dmca_requests (
+        id, manuscript_id, requester_name, requester_email, requester_company,
+        claim_details, original_work_url, good_faith_attestation, accuracy_attestation,
+        digital_signature, submitted_at, status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+    `).bind(
+      dmcaRequestId,
+      actualManuscriptId,
+      requesterName,
+      requesterEmail,
+      requesterCompany || null,
+      claimDetails,
+      originalWorkUrl || null,
+      goodFaithAttestation ? 1 : 0,
+      accuracyAttestation ? 1 : 0,
+      digitalSignature,
+      timestamp
+    ).run();
+
+    // Flag the manuscript for review
+    await env.DB.prepare(`
+      UPDATE manuscripts
+      SET flagged_for_review = 1,
+          updated_at = ?
+      WHERE id = ?
+    `).bind(timestamp, actualManuscriptId).run();
+
+    // Log DMCA submission to audit log
+    await env.DB.prepare(`
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
+      VALUES (?, ?, 'dmca_request', 'manuscript', ?, ?, ?)
+    `).bind(
+      crypto.randomUUID(),
+      manuscriptResult.user_id, // Log against manuscript owner's user ID
+      actualManuscriptId,
+      timestamp,
+      JSON.stringify({
+        dmcaRequestId,
+        requesterEmail,
+        requesterName,
+        manuscriptTitle: manuscriptResult.title
+      })
+    ).run();
+
+    console.log('[DMCA] Request submitted successfully:', dmcaRequestId);
+    console.log('[DMCA] Manuscript flagged for review:', actualManuscriptId);
+
+    // Return success response
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'DMCA takedown request submitted successfully',
+      dmcaRequestId,
+      manuscriptId: actualManuscriptId,
+      status: 'pending',
+      reviewInfo: 'Your request will be reviewed within 24 hours. You will receive an email confirmation shortly.'
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('[DMCA] Submission error:', error);
+    console.error('[DMCA] Error stack:', error.stack);
+    return new Response(JSON.stringify({
+      error: 'Failed to submit DMCA request',
+      details: error.message
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

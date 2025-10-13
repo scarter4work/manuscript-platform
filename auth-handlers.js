@@ -138,6 +138,15 @@ export async function handleRegister(request, env) {
       VALUES (?, ?, ?, ?, ?, 0)
     `).bind(userId, normalizedEmail, passwordHash, role, now).run();
 
+    // Create free subscription for new user
+    try {
+      const { createFreeSubscription } = await import('./payment-handlers.js');
+      await createFreeSubscription(env, userId);
+    } catch (error) {
+      console.error('Failed to create free subscription:', error);
+      // Don't fail registration if subscription creation fails
+    }
+
     // Generate email verification token
     const verificationToken = await generateVerificationToken(userId, 'email_verification', env);
 

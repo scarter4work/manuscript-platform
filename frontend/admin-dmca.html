@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMCA Review Dashboard - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filters label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filters select {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .requests-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .request-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .request-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .request-id {
+            font-family: monospace;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-reviewing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-resolved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .request-body {
+            padding: 20px;
+        }
+
+        .request-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-field {
+            margin-bottom: 15px;
+        }
+
+        .info-field label {
+            display: block;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .info-field .value {
+            color: #333;
+        }
+
+        .claim-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .manuscript-info {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .manuscript-info h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #218838;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+        }
+
+        .btn-review {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-review:hover {
+            background: #138496;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔒 DMCA Review Dashboard</h1>
+        <p>Review and manage copyright takedown requests</p>
+    </div>
+
+    <div class="container">
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Pending Requests</h3>
+                <div class="number" id="statPending">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Under Review</h3>
+                <div class="number" id="statReviewing">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Resolved</h3>
+                <div class="number" id="statResolved">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Rejected</h3>
+                <div class="number" id="statRejected">0</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <label>Filter by status:</label>
+            <select id="statusFilter">
+                <option value="all">All Requests</option>
+                <option value="pending" selected>Pending</option>
+                <option value="reviewing">Under Review</option>
+                <option value="resolved">Resolved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            Loading DMCA requests...
+        </div>
+
+        <!-- Requests List -->
+        <div id="requestsContainer" class="requests-container" style="display: none;">
+            <!-- Requests will be dynamically inserted here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h3>No DMCA requests found</h3>
+            <p>There are currently no DMCA requests matching your filter criteria.</p>
+        </div>
+    </div>
+
+    <!-- Resolution Modal -->
+    <div id="resolutionModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Resolve DMCA Request</h2>
+            <p style="margin-bottom: 20px; color: #666;">Add resolution notes for this DMCA request:</p>
+            <textarea id="resolutionNotes" placeholder="Enter resolution notes, counter-notice details, or reason for decision..."></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn" id="modalConfirmBtn" onclick="confirmResolution()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8787'
+            : 'https://manuscript-upload-api.scarter4work.workers.dev';
+
+        let currentRequests = [];
+        let modalAction = null;
+        let modalRequestId = null;
+
+        // Load DMCA requests on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadDMCARequests();
+
+            // Filter change handler
+            document.getElementById('statusFilter').addEventListener('change', filterRequests);
+        });
+
+        async function loadDMCARequests() {
+            // TODO: Implement API endpoint to fetch DMCA requests
+            // For now, show placeholder message
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+
+            // Update stats
+            document.getElementById('statPending').textContent = '0';
+            document.getElementById('statReviewing').textContent = '0';
+            document.getElementById('statResolved').textContent = '0';
+            document.getElementById('statRejected').textContent = '0';
+
+            // TODO: Replace with actual API call
+            // const response = await fetch(`${API_BASE}/admin/dmca/requests`);
+            // const data = await response.json();
+            // currentRequests = data.requests;
+            // renderRequests(currentRequests);
+            // updateStats(data.stats);
+        }
+
+        function renderRequests(requests) {
+            const container = document.getElementById('requestsContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (requests.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            container.innerHTML = requests.map(req => `
+                <div class="request-card">
+                    <div class="request-header">
+                        <div>
+                            <div class="request-id">Request ID: ${req.id}</div>
+                            <div style="margin-top: 5px; color: #999; font-size: 0.9em;">
+                                Submitted: ${new Date(req.submitted_at * 1000).toLocaleString()}
+                            </div>
+                        </div>
+                        <span class="status-badge status-${req.status}">${req.status}</span>
+                    </div>
+
+                    <div class="request-body">
+                        <div class="request-grid">
+                            <div>
+                                <div class="info-field">
+                                    <label>Requester Name</label>
+                                    <div class="value">${req.requester_name}</div>
+                                </div>
+                                <div class="info-field">
+                                    <label>Requester Email</label>
+                                    <div class="value">${req.requester_email}</div>
+                                </div>
+                                ${req.requester_company ? `
+                                <div class="info-field">
+                                    <label>Company/Organization</label>
+                                    <div class="value">${req.requester_company}</div>
+                                </div>
+                                ` : ''}
+                            </div>
+                            <div>
+                                <div class="info-field">
+                                    <label>Digital Signature</label>
+                                    <div class="value">${req.digital_signature}</div>
+                                </div>
+                                <div class="info-field">
+                                    <label>Attestations</label>
+                                    <div class="value">
+                                        ${req.good_faith_attestation ? '✅ Good Faith' : '❌ Good Faith'}<br>
+                                        ${req.accuracy_attestation ? '✅ Accuracy' : '❌ Accuracy'}
+                                    </div>
+                                </div>
+                                ${req.original_work_url ? `
+                                <div class="info-field">
+                                    <label>Original Work URL</label>
+                                    <div class="value"><a href="${req.original_work_url}" target="_blank">${req.original_work_url}</a></div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <div class="manuscript-info">
+                            <h4>Reported Manuscript</h4>
+                            <div><strong>ID:</strong> ${req.manuscript_id}</div>
+                            <div><strong>Title:</strong> ${req.manuscript_title || 'Unknown'}</div>
+                            <div><strong>Owner:</strong> ${req.manuscript_owner_email || 'Unknown'}</div>
+                        </div>
+
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 10px; display: block;">Claim Details:</label>
+                            <div class="claim-details">${req.claim_details}</div>
+                        </div>
+
+                        ${req.resolution_notes ? `
+                        <div>
+                            <label style="font-weight: 600; margin-bottom: 10px; display: block;">Resolution Notes:</label>
+                            <div class="claim-details">${req.resolution_notes}</div>
+                            <div style="color: #666; font-size: 0.9em; margin-top: 10px;">
+                                Resolved by: ${req.resolved_by} on ${new Date(req.resolved_at * 1000).toLocaleString()}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    ${req.status === 'pending' || req.status === 'reviewing' ? `
+                    <div class="action-buttons">
+                        ${req.status === 'pending' ? `
+                        <button class="btn btn-review" onclick="markAsReviewing('${req.id}')">Mark as Reviewing</button>
+                        ` : ''}
+                        <button class="btn btn-approve" onclick="openResolutionModal('${req.id}', 'approve')">Approve Takedown</button>
+                        <button class="btn btn-reject" onclick="openResolutionModal('${req.id}', 'reject')">Reject Request</button>
+                    </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function filterRequests() {
+            const filter = document.getElementById('statusFilter').value;
+
+            if (filter === 'all') {
+                renderRequests(currentRequests);
+            } else {
+                const filtered = currentRequests.filter(req => req.status === filter);
+                renderRequests(filtered);
+            }
+        }
+
+        function updateStats(stats) {
+            document.getElementById('statPending').textContent = stats.pending || 0;
+            document.getElementById('statReviewing').textContent = stats.reviewing || 0;
+            document.getElementById('statResolved').textContent = stats.resolved || 0;
+            document.getElementById('statRejected').textContent = stats.rejected || 0;
+        }
+
+        async function markAsReviewing(requestId) {
+            // TODO: Implement API call to update status
+            alert('This will mark request as "reviewing" - API endpoint pending');
+        }
+
+        function openResolutionModal(requestId, action) {
+            modalRequestId = requestId;
+            modalAction = action;
+
+            const modal = document.getElementById('resolutionModal');
+            const title = document.getElementById('modalTitle');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+
+            if (action === 'approve') {
+                title.textContent = 'Approve Takedown Request';
+                confirmBtn.textContent = 'Approve & Remove Content';
+                confirmBtn.className = 'btn btn-approve';
+            } else {
+                title.textContent = 'Reject Takedown Request';
+                confirmBtn.textContent = 'Reject Request';
+                confirmBtn.className = 'btn btn-reject';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('resolutionModal').classList.remove('active');
+            document.getElementById('resolutionNotes').value = '';
+            modalRequestId = null;
+            modalAction = null;
+        }
+
+        async function confirmResolution() {
+            const notes = document.getElementById('resolutionNotes').value.trim();
+
+            if (!notes) {
+                alert('Please enter resolution notes before proceeding.');
+                return;
+            }
+
+            // TODO: Implement API call to resolve DMCA request
+            alert(`This will ${modalAction} request ${modalRequestId} - API endpoint pending\n\nNotes: ${notes}`);
+            closeModal();
+        }
+    </script>
+</body>
+</html>

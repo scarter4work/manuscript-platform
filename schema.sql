@@ -101,6 +101,10 @@ CREATE TABLE IF NOT EXISTS dmca_requests (
   requester_email TEXT NOT NULL,          -- Contact email
   requester_company TEXT,                 -- Company name (optional)
   claim_details TEXT NOT NULL,            -- Description of copyright claim
+  original_work_url TEXT,                 -- URL where original work can be found
+  good_faith_attestation INTEGER DEFAULT 0, -- Good faith belief statement
+  accuracy_attestation INTEGER DEFAULT 0,   -- Accuracy under penalty of perjury
+  digital_signature TEXT,                 -- Typed name as digital signature
   submitted_at INTEGER NOT NULL,          -- Unix timestamp
   status TEXT DEFAULT 'pending',          -- pending/reviewing/resolved/rejected
   resolution_notes TEXT,                  -- Admin notes on resolution

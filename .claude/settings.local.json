@@ -20,7 +20,9 @@
       "Bash(python:*)",
       "Bash(npx wrangler pages project create:*)",
       "Bash(npx wrangler dev:*)",
-      "Bash(npx wrangler:*)"
+      "Bash(npx wrangler:*)",
+      "Read(//c/**)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []

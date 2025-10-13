@@ -64,7 +64,13 @@ id = "48959d60fe25478db01651f3eef4daff"
 # Environment variables (set via Cloudflare Dashboard for production)
 # For local development, create a .dev.vars file with:
 # ANTHROPIC_API_KEY=your_key_here
+# STRIPE_SECRET_KEY=sk_test_...
+# STRIPE_WEBHOOK_SECRET=whsec_...
 [vars]
 # ANTHROPIC_API_KEY will be set via dashboard secrets for production
+# STRIPE_SECRET_KEY will be set via dashboard secrets for production
+# STRIPE_WEBHOOK_SECRET will be set via dashboard secrets for production
 MAX_FILE_SIZE = 52428800  # 50MB in bytes
 SESSION_DURATION = 86400  # 24 hours in seconds
+STRIPE_PUBLISHABLE_KEY = "pk_test_..."  # Replace with actual Stripe publishable key (safe to commit)
+FRONTEND_URL = "https://scarter4workmanuscripthub.com"  # Your frontend URL for payment redirects

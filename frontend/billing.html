@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing & Subscription - Manuscript Analysis Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 28px;
+    }
+
+    .back-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h2 {
+      color: #333;
+      font-size: 20px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .plan-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .plan-free {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .plan-pro {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .plan-enterprise {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .usage-bar {
+      width: 100%;
+      height: 30px;
+      background: #f0f0f0;
+      border-radius: 15px;
+      overflow: hidden;
+      margin: 15px 0;
+      position: relative;
+    }
+
+    .usage-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .usage-text {
+      color: #666;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      color: #333;
+      font-weight: 600;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      font-size: 14px;
+      transition: all 0.3s;
+      margin-top: 15px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #fee;
+      color: #c00;
+      border: 2px solid #c00;
+    }
+
+    .btn-danger:hover {
+      background: #c00;
+      color: white;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .pricing-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 25px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .pricing-card.current {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    }
+
+    .pricing-card.current::before {
+      content: 'Current Plan';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #667eea;
+      color: white;
+      padding: 4px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .pricing-tier {
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .pricing-amount {
+      font-size: 32px;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+
+    .pricing-period {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .pricing-features li {
+      padding: 8px 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: #667eea;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .payment-history {
+      margin-top: 20px;
+    }
+
+    .payment-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .payment-table th {
+      background: #f8f9fa;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .payment-table td {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #666;
+    }
+
+    .payment-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-succeeded {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-failed {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    .loading::after {
+      content: '...';
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    .error {
+      background: #fee;
+      color: #c00;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid #fcc;
+    }
+
+    .success {
+      background: #efe;
+      color: #060;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid #cfc;
+    }
+
+    .alert {
+      background: #fff3cd;
+      color: #856404;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid #ffeeba;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>💳 Billing & Subscription</h1>
+      <a href="dashboard-spa.html" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer"></div>
+
+    <!-- Current Subscription -->
+    <div class="card">
+      <h2>Current Subscription</h2>
+      <div id="currentSubscription" class="loading">Loading subscription details</div>
+    </div>
+
+    <!-- Available Plans -->
+    <div class="card">
+      <h2>Available Plans</h2>
+      <div id="pricingPlans" class="loading">Loading plans</div>
+    </div>
+
+    <!-- Payment History -->
+    <div class="card">
+      <h2>Payment History</h2>
+      <div id="paymentHistory" class="loading">Loading payment history</div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://api.scarter4workmanuscripthub.com';
+
+    // Check for success/cancel messages from Stripe redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+      showMessage('Payment successful! Your subscription has been activated.', 'success');
+    } else if (urlParams.get('canceled') === 'true') {
+      showMessage('Payment canceled. You can try again anytime.', 'alert');
+    }
+
+    // Pricing configuration (matches backend)
+    const PRICING = {
+      free: {
+        name: 'Free',
+        monthlyLimit: 1,
+        price: 0,
+        features: ['Basic analysis', '1 manuscript/month', '30 days storage']
+      },
+      pro: {
+        name: 'Pro',
+        monthlyLimit: 10,
+        price: 29,
+        features: ['Full analysis', '10 manuscripts/month', '1 year storage', 'Asset generation', 'Priority support']
+      },
+      enterprise: {
+        name: 'Enterprise',
+        monthlyLimit: 999999,
+        price: 99,
+        features: ['Unlimited manuscripts', 'Team features (5 members)', 'API access', 'Dedicated support', 'Custom branding']
+      }
+    };
+
+    // Show message
+    function showMessage(message, type = 'error') {
+      const container = document.getElementById('messageContainer');
+      container.innerHTML = `<div class="${type}">${message}</div>`;
+      setTimeout(() => container.innerHTML = '', 5000);
+    }
+
+    // Load current subscription
+    async function loadSubscription() {
+      try {
+        const response = await fetch(`${API_BASE}/payments/subscription`, {
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            window.location.href = 'index.html';
+            return;
+          }
+          throw new Error('Failed to load subscription');
+        }
+
+        const data = await response.json();
+        renderSubscription(data);
+      } catch (error) {
+        document.getElementById('currentSubscription').innerHTML =
+          `<div class="error">Failed to load subscription: ${error.message}</div>`;
+      }
+    }
+
+    // Render subscription details
+    function renderSubscription(data) {
+      const planType = data.planType || 'free';
+      const status = data.status || 'active';
+      const used = data.manuscriptsThisPeriod || 0;
+      const limit = data.monthlyLimit || 1;
+      const percentage = Math.min((used / limit) * 100, 100);
+
+      const periodEnd = data.periodEnd ? new Date(data.periodEnd).toLocaleDateString() : 'N/A';
+
+      let statusText = status === 'active' ? '✓ Active' : '⚠ ' + status.charAt(0).toUpperCase() + status.slice(1);
+
+      const html = `
+        <span class="plan-badge plan-${planType}">${PRICING[planType]?.name || planType.toUpperCase()}</span>
+
+        <div class="stat-row">
+          <span class="stat-label">Status</span>
+          <span class="stat-value">${statusText}</span>
+        </div>
+
+        <div class="stat-row">
+          <span class="stat-label">Manuscripts This Period</span>
+          <span class="stat-value">${used} / ${limit === 999999 ? '∞' : limit}</span>
+        </div>
+
+        <div class="usage-bar">
+          <div class="usage-fill" style="width: ${percentage}%">
+            ${percentage > 15 ? Math.round(percentage) + '%' : ''}
+          </div>
+        </div>
+        <div class="usage-text">
+          ${limit - used} manuscript${(limit - used) !== 1 ? 's' : ''} remaining
+        </div>
+
+        <div class="stat-row">
+          <span class="stat-label">Period Ends</span>
+          <span class="stat-value">${periodEnd}</span>
+        </div>
+
+        ${data.cancelAtPeriodEnd ? '<div class="alert">Your subscription will be canceled at the end of the current period.</div>' : ''}
+
+        ${planType !== 'free' && !data.cancelAtPeriodEnd ? `
+          <button class="btn btn-secondary btn-full" onclick="openCustomerPortal()">
+            Manage Subscription
+          </button>
+        ` : ''}
+      `;
+
+      document.getElementById('currentSubscription').innerHTML = html;
+    }
+
+    // Load and render pricing plans
+    async function loadPricingPlans() {
+      try {
+        const response = await fetch(`${API_BASE}/payments/subscription`, {
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+        const currentPlan = data.planType || 'free';
+
+        renderPricingPlans(currentPlan);
+      } catch (error) {
+        document.getElementById('pricingPlans').innerHTML =
+          `<div class="error">Failed to load plans: ${error.message}</div>`;
+      }
+    }
+
+    // Render pricing plans
+    function renderPricingPlans(currentPlan) {
+      const plans = Object.entries(PRICING).map(([key, plan]) => {
+        const isCurrent = key === currentPlan;
+        const canUpgrade = (currentPlan === 'free' && key !== 'free') ||
+                           (currentPlan === 'pro' && key === 'enterprise');
+
+        return `
+          <div class="pricing-card ${isCurrent ? 'current' : ''}">
+            <div class="pricing-tier">${plan.name}</div>
+            <div class="pricing-amount">$${plan.price}</div>
+            <div class="pricing-period">${plan.price > 0 ? 'per month' : 'forever'}</div>
+
+            <ul class="pricing-features">
+              ${plan.features.map(f => `<li>${f}</li>`).join('')}
+            </ul>
+
+            ${!isCurrent && canUpgrade ? `
+              <button class="btn btn-primary btn-full" onclick="subscribeToPlan('${key}')">
+                Upgrade to ${plan.name}
+              </button>
+            ` : isCurrent ? `
+              <button class="btn btn-secondary btn-full" disabled>
+                Current Plan
+              </button>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('pricingPlans').innerHTML = `
+        <div class="pricing-cards">
+          ${plans}
+        </div>
+      `;
+    }
+
+    // Subscribe to a plan
+    async function subscribeToPlan(plan) {
+      if (plan === 'free') {
+        showMessage('You are already on the free plan.', 'alert');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/payments/create-checkout-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ plan })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create checkout session');
+        }
+
+        const data = await response.json();
+
+        if (data.url) {
+          // Redirect to Stripe Checkout
+          window.location.href = data.url;
+        } else {
+          throw new Error('No checkout URL received');
+        }
+      } catch (error) {
+        showMessage(`Failed to start checkout: ${error.message}`, 'error');
+      }
+    }
+
+    // Open Stripe Customer Portal
+    async function openCustomerPortal() {
+      try {
+        const response = await fetch(`${API_BASE}/payments/create-portal-session`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create portal session');
+        }
+
+        const data = await response.json();
+
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error('No portal URL received');
+        }
+      } catch (error) {
+        showMessage(`Failed to open billing portal: ${error.message}`, 'error');
+      }
+    }
+
+    // Load payment history
+    async function loadPaymentHistory() {
+      try {
+        const response = await fetch(`${API_BASE}/payments/history`, {
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load payment history');
+        }
+
+        const data = await response.json();
+        renderPaymentHistory(data.payments || []);
+      } catch (error) {
+        document.getElementById('paymentHistory').innerHTML =
+          `<div class="error">Failed to load payment history: ${error.message}</div>`;
+      }
+    }
+
+    // Render payment history
+    function renderPaymentHistory(payments) {
+      if (payments.length === 0) {
+        document.getElementById('paymentHistory').innerHTML =
+          '<p style="color: #666; text-align: center; padding: 20px;">No payment history yet</p>';
+        return;
+      }
+
+      const rows = payments.map(payment => {
+        const date = new Date(payment.createdAt).toLocaleDateString();
+        const amount = `$${payment.amount.toFixed(2)}`;
+        const statusClass = `status-${payment.status}`;
+
+        return `
+          <tr>
+            <td>${date}</td>
+            <td>${payment.description || payment.payment_type}</td>
+            <td>${amount}</td>
+            <td><span class="status-badge ${statusClass}">${payment.status}</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('paymentHistory').innerHTML = `
+        <table class="payment-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSubscription();
+      loadPricingPlans();
+      loadPaymentHistory();
+    });
+  </script>
+</body>
+</html>

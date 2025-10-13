@@ -528,9 +528,16 @@ const app = {
         const fileInput = document.getElementById('fileInput');
         const genre = document.getElementById('genre').value;
         const styleGuide = document.getElementById('styleGuide').value;
+        const copyrightAttestation = document.getElementById('copyrightAttestation');
 
         if (!fileInput.files[0]) {
             alert('Please select a manuscript file');
+            return;
+        }
+
+        // Phase E: Copyright attestation required
+        if (!copyrightAttestation.checked) {
+            alert('Please confirm that you own the copyright or have permission to upload this manuscript.\n\nThis attestation is required to comply with copyright law and the Digital Millennium Copyright Act (DMCA).');
             return;
         }
 

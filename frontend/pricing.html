@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Plans - Manuscript Analysis Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 50px;
+    }
+
+    .header h1 {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .header p {
+      font-size: 20px;
+      opacity: 0.9;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .pricing-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .pricing-card.featured {
+      border: 3px solid #667eea;
+      transform: scale(1.05);
+    }
+
+    .pricing-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: 20px;
+      right: -35px;
+      background: #667eea;
+      color: white;
+      padding: 5px 40px;
+      transform: rotate(45deg);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .plan-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .plan-price {
+      font-size: 56px;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+
+    .plan-price sup {
+      font-size: 24px;
+    }
+
+    .plan-period {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .plan-description {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+
+    .plan-features li {
+      padding: 12px 0;
+      color: #555;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .plan-features li::before {
+      content: '✓';
+      color: #667eea;
+      font-weight: bold;
+      margin-right: 12px;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+      background: #f8f9ff;
+    }
+
+    .comparison-section {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+    }
+
+    .comparison-section h2 {
+      text-align: center;
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .comparison-table th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .comparison-table td {
+      color: #666;
+    }
+
+    .comparison-table .check {
+      color: #667eea;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .faq-section {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+    }
+
+    .faq-section h2 {
+      text-align: center;
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .faq-item {
+      margin-bottom: 25px;
+    }
+
+    .faq-question {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .faq-answer {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 12px 24px;
+      border: 2px solid white;
+      border-radius: 8px;
+      transition: all 0.3s;
+      margin-bottom: 20px;
+    }
+
+    .back-link:hover {
+      background: white;
+      color: #667eea;
+    }
+
+    .one-time-option {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .one-time-option h3 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .one-time-option p {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .one-time-price {
+      font-size: 48px;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 36px;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-card.featured {
+        transform: scale(1);
+      }
+
+      .comparison-table {
+        font-size: 14px;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 10px 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="dashboard-spa.html" class="back-link">← Back to Dashboard</a>
+
+    <div class="header">
+      <h1>💎 Choose Your Plan</h1>
+      <p>Start analyzing manuscripts with powerful AI-driven insights</p>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="pricing-grid">
+      <!-- Free Plan -->
+      <div class="pricing-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price"><sup>$</sup>0</div>
+        <div class="plan-period">forever</div>
+        <div class="plan-description">
+          Perfect for trying out our manuscript analysis platform
+        </div>
+        <ul class="plan-features">
+          <li>1 manuscript per month</li>
+          <li>Basic analysis (3 agents)</li>
+          <li>30 days storage</li>
+          <li>Email support</li>
+        </ul>
+        <a href="index.html" class="btn btn-secondary">Get Started Free</a>
+      </div>
+
+      <!-- Pro Plan (Featured) -->
+      <div class="pricing-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><sup>$</sup>29</div>
+        <div class="plan-period">per month</div>
+        <div class="plan-description">
+          Ideal for serious authors and small publishers
+        </div>
+        <ul class="plan-features">
+          <li>10 manuscripts per month</li>
+          <li>Full analysis + all agents</li>
+          <li>Asset generation (7 agents)</li>
+          <li>1 year storage</li>
+          <li>Priority support</li>
+          <li>Advanced reports</li>
+        </ul>
+        <button class="btn btn-primary" onclick="upgradeToPlan('pro')">Upgrade to Pro</button>
+      </div>
+
+      <!-- Enterprise Plan -->
+      <div class="pricing-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price"><sup>$</sup>99</div>
+        <div class="plan-period">per month</div>
+        <div class="plan-description">
+          For publishers and agencies with high volume needs
+        </div>
+        <ul class="plan-features">
+          <li>Unlimited manuscripts</li>
+          <li>Everything in Pro</li>
+          <li>Team features (5 members)</li>
+          <li>API access</li>
+          <li>Custom branding</li>
+          <li>Dedicated support</li>
+        </ul>
+        <button class="btn btn-primary" onclick="upgradeToPlan('enterprise')">Upgrade to Enterprise</button>
+      </div>
+    </div>
+
+    <!-- One-Time Option -->
+    <div class="one-time-option">
+      <h3>🎯 Pay Per Analysis</h3>
+      <p>Not ready for a subscription? Analyze individual manuscripts as needed</p>
+      <div class="one-time-price">$10</div>
+      <p style="margin-bottom: 15px;">per manuscript • Full analysis + assets • 90 days storage</p>
+      <p style="font-size: 14px; color: #888;">Available during manuscript upload for free tier users</p>
+    </div>
+
+    <!-- Feature Comparison -->
+    <div class="comparison-section">
+      <h2>Feature Comparison</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th>Pro</th>
+            <th>Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Manuscripts per month</td>
+            <td>1</td>
+            <td>10</td>
+            <td>Unlimited</td>
+          </tr>
+          <tr>
+            <td>Developmental editing analysis</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Line editing analysis</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Copy editing analysis</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Asset generation (7 agents)</td>
+            <td>—</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Market analysis</td>
+            <td>—</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Storage duration</td>
+            <td>30 days</td>
+            <td>1 year</td>
+            <td>Unlimited</td>
+          </tr>
+          <tr>
+            <td>Team members</td>
+            <td>1</td>
+            <td>1</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>API access</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Custom branding</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Support</td>
+            <td>Email</td>
+            <td>Priority</td>
+            <td>Dedicated</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq-item">
+        <div class="faq-question">Can I upgrade or downgrade my plan?</div>
+        <div class="faq-answer">
+          Yes! You can upgrade or downgrade your plan at any time. When you upgrade, you'll be charged the prorated difference immediately. When you downgrade, the change takes effect at the end of your current billing period.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">What happens if I exceed my monthly limit?</div>
+        <div class="faq-answer">
+          If you reach your manuscript limit on the Free or Pro plan, you'll be prompted to either upgrade your plan or purchase a one-time analysis for $10. Your existing manuscripts and analyses remain accessible.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Can I cancel my subscription?</div>
+        <div class="faq-answer">
+          Absolutely. You can cancel your subscription at any time from the billing dashboard. You'll continue to have access to your plan features until the end of your current billing period.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">What payment methods do you accept?</div>
+        <div class="faq-answer">
+          We accept all major credit cards (Visa, MasterCard, American Express, Discover) and debit cards through our secure payment processor, Stripe.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Is there a free trial for paid plans?</div>
+        <div class="faq-answer">
+          The Free plan allows you to analyze 1 manuscript per month at no cost, which serves as an unlimited trial. You can upgrade to a paid plan at any time to access more features and higher limits.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">What's included in asset generation?</div>
+        <div class="faq-answer">
+          Asset generation includes 7 AI-powered agents that create: book descriptions (multiple lengths), keywords, categories, author bio, back matter, cover design brief, and series description. These are professional-quality marketing materials based on your manuscript.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Do unused manuscripts roll over?</div>
+        <div class="faq-answer">
+          No, manuscript limits reset at the beginning of each billing period and do not roll over. However, all your previous analyses remain accessible according to your plan's storage duration.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://api.scarter4workmanuscripthub.com';
+
+    async function upgradeToPlan(plan) {
+      // Check if user is logged in
+      try {
+        const response = await fetch(`${API_BASE}/auth/me`, {
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          // Not logged in, redirect to login
+          alert('Please log in or create an account first');
+          window.location.href = 'index.html';
+          return;
+        }
+
+        // User is logged in, proceed to billing
+        window.location.href = `billing.html?upgrade=${plan}`;
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        alert('Please log in to upgrade your plan');
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Handle upgrade parameter if coming from another page
+    const urlParams = new URLSearchParams(window.location.search);
+    const upgradePlan = urlParams.get('upgrade');
+    if (upgradePlan) {
+      // Scroll to pricing cards
+      document.querySelector('.pricing-grid').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
