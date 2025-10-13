@@ -1678,6 +1678,11 @@
                 if (response.ok) {
                     const data = await response.json();
                     displayUserInfo(data);
+
+                    // Initialize the app (loads admin navigation, etc.)
+                    if (window.app && typeof window.app.init === 'function') {
+                        await app.init();
+                    }
                 } else {
                     // Not authenticated, redirect to login
                     window.location.href = 'login.html';
