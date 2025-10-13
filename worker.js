@@ -17,6 +17,7 @@ import { FormattingAgent } from './formatting-agent.js';
 import { MarketAnalysisAgent } from './market-analysis-agent.js';
 import { SocialMediaAgent } from './social-media-agent.js';
 import { authHandlers } from './auth-handlers.js';
+import { manuscriptHandlers } from './manuscript-handlers.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -89,6 +90,44 @@ export default {
       // POST /auth/password-reset - Reset password with token
       if (path === '/auth/password-reset' && request.method === 'POST') {
         return await authHandlers.passwordReset(request, env);
+      }
+
+      // ========================================================================
+      // MANUSCRIPT LIBRARY ROUTES (Phase B)
+      // ========================================================================
+
+      // GET /manuscripts - List user's manuscripts
+      if (path === '/manuscripts' && request.method === 'GET') {
+        return await manuscriptHandlers.listManuscripts(request, env);
+      }
+
+      // GET /manuscripts/stats - Get user's manuscript statistics
+      if (path === '/manuscripts/stats' && request.method === 'GET') {
+        return await manuscriptHandlers.getManuscriptStats(request, env);
+      }
+
+      // GET /manuscripts/:id - Get specific manuscript details
+      if (path.startsWith('/manuscripts/') && request.method === 'GET' && !path.includes('stats')) {
+        const manuscriptId = path.replace('/manuscripts/', '');
+        return await manuscriptHandlers.getManuscript(request, env, manuscriptId);
+      }
+
+      // PUT /manuscripts/:id - Update manuscript metadata
+      if (path.startsWith('/manuscripts/') && request.method === 'PUT') {
+        const manuscriptId = path.replace('/manuscripts/', '');
+        return await manuscriptHandlers.updateManuscript(request, env, manuscriptId);
+      }
+
+      // DELETE /manuscripts/:id - Delete manuscript
+      if (path.startsWith('/manuscripts/') && request.method === 'DELETE') {
+        const manuscriptId = path.replace('/manuscripts/', '');
+        return await manuscriptHandlers.deleteManuscript(request, env, manuscriptId);
+      }
+
+      // POST /manuscripts/:id/reanalyze - Re-run analysis
+      if (path.match(/^\/manuscripts\/.+\/reanalyze$/) && request.method === 'POST') {
+        const manuscriptId = path.match(/^\/manuscripts\/(.+)\/reanalyze$/)[1];
+        return await manuscriptHandlers.reanalyzeManuscript(request, env, manuscriptId);
       }
 
       // ========================================================================
@@ -264,7 +303,13 @@ export default {
               'POST /auth/password-reset'
             ],
             manuscripts: [
-              'POST /upload/manuscript',
+              'GET /manuscripts - List user manuscripts',
+              'GET /manuscripts/stats - Get statistics',
+              'GET /manuscripts/:id - Get manuscript details',
+              'PUT /manuscripts/:id - Update manuscript',
+              'DELETE /manuscripts/:id - Delete manuscript',
+              'POST /manuscripts/:id/reanalyze - Re-run analysis',
+              'POST /upload/manuscript - Upload new manuscript',
               'POST /upload/marketing',
               'GET /list/{authorId}',
               'GET /get/{key}',
@@ -316,15 +361,24 @@ export default {
 async function handleManuscriptUpload(request, env, corsHeaders) {
   try {
     console.log('Processing manuscript upload...');
-    
-    // Get authenticated user from Cloudflare Access headers
-    const userEmail = request.headers.get('Cf-Access-Authenticated-User-Email');
-    const authorId = userEmail || 'anonymous'; // Use email as author ID
-    
+
+    // Import auth utilities
+    const { getUserFromRequest } = await import('./auth-utils.js');
+
+    // Get authenticated user (REQUIRED)
+    const userId = await getUserFromRequest(request, env);
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Unauthorized - please log in' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const formData = await request.formData();
     const file = formData.get('file');
-    const manuscriptId = formData.get('manuscriptId') || crypto.randomUUID();
-    
+    const title = formData.get('title') || file.name.replace(/\.[^/.]+$/, '');
+    const genre = formData.get('genre') || 'general';
+
     if (!file) {
       return new Response(JSON.stringify({ error: 'No file provided' }), {
         status: 400,
@@ -332,8 +386,8 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
       });
     }
 
-    // Validate file size (e.g., 50MB limit for manuscripts)
-    const maxSize = 50 * 1024 * 1024; // 50MB
+    // Validate file size (50MB limit)
+    const maxSize = 50 * 1024 * 1024;
     if (file.size > maxSize) {
       return new Response(JSON.stringify({ error: 'File too large. Maximum size is 50MB' }), {
         status: 400,
@@ -344,60 +398,97 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     // Validate file type
     const allowedTypes = [
       'application/pdf',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-      'application/msword', // .doc
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword',
       'text/plain',
       'application/epub+zip'
     ];
-    
+
     if (!allowedTypes.includes(file.type)) {
-      return new Response(JSON.stringify({ error: 'Invalid file type' }), {
+      return new Response(JSON.stringify({ error: 'Invalid file type. Allowed: PDF, DOCX, DOC, TXT, EPUB' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    // Generate storage key with metadata
+    // Generate IDs
+    const manuscriptId = crypto.randomUUID();
+    const reportId = crypto.randomUUID().substring(0, 8);
     const timestamp = new Date().toISOString();
     const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const key = `${authorId}/${manuscriptId}/${timestamp}_${sanitizedFilename}`;
+    const r2Key = `${userId}/${manuscriptId}/${timestamp}_${sanitizedFilename}`;
 
-    // Create metadata object
-    const metadata = {
-      authorId: authorId,
-      manuscriptId: manuscriptId,
-      originalName: file.name,
-      uploadTime: timestamp,
-      fileType: file.type,
-      fileSize: file.size,
-      version: formData.get('version') || '1.0'
-    };
+    // Calculate file hash for duplicate detection
+    const fileBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', fileBuffer);
+    const fileHash = Array.from(new Uint8Array(hashBuffer))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
 
-    console.log('Uploading to R2:', key);
-    
-    // Generate a short report ID (8 characters)
-    const reportId = crypto.randomUUID().substring(0, 8);
-    
-    // Upload to R2 with metadata
-    await env.MANUSCRIPTS_RAW.put(key, file.stream(), {
-      customMetadata: metadata,
+    // Count words (approximate)
+    const fileText = new TextDecoder().decode(fileBuffer);
+    const wordCount = fileText.split(/\s+/).filter(w => w.length > 0).length;
+
+    // Upload to R2
+    await env.MANUSCRIPTS_RAW.put(r2Key, new Uint8Array(fileBuffer), {
+      customMetadata: {
+        manuscriptId,
+        userId: userId,
+        originalName: file.name,
+        uploadTime: timestamp,
+        fileType: file.type,
+        fileSize: file.size.toString()
+      },
       httpMetadata: {
         contentType: file.type,
       }
     });
-    
-    // Store report ID mapping (for clean URLs)
-    await env.MANUSCRIPTS_RAW.put(`report-id:${reportId}`, key, {
+
+    // Store report ID mapping
+    await env.MANUSCRIPTS_RAW.put(`report-id:${reportId}`, r2Key, {
       expirationTtl: 60 * 60 * 24 * 30 // 30 days
     });
 
-    // Return success response with file details
+    // Save to database
+    await env.DB.prepare(`
+      INSERT INTO manuscripts (id, user_id, title, r2_key, file_hash, status, genre, word_count, file_type, metadata, uploaded_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?)
+    `).bind(
+      manuscriptId,
+      userId,
+      title,
+      r2Key,
+      fileHash,
+      genre,
+      wordCount,
+      file.type,
+      JSON.stringify({ reportId, originalName: file.name }),
+      Math.floor(Date.now() / 1000),
+      Math.floor(Date.now() / 1000)
+    ).run();
+
+    // Log audit event
+    await env.DB.prepare(`
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
+      VALUES (?, ?, 'upload', 'manuscript', ?, ?, ?)
+    `).bind(
+      crypto.randomUUID(),
+      userId,
+      manuscriptId,
+      Math.floor(Date.now() / 1000),
+      JSON.stringify({ title, fileSize: file.size, wordCount })
+    ).run();
+
     return new Response(JSON.stringify({
       success: true,
-      manuscriptId: manuscriptId,
-      key: key,
-      reportId: reportId,
-      metadata: metadata
+      manuscript: {
+        id: manuscriptId,
+        title,
+        reportId,
+        wordCount,
+        fileSize: file.size,
+        status: 'draft'
+      }
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

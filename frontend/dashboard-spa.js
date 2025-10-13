@@ -8,7 +8,8 @@ const app = {
     
     // State
     state: {
-        currentView: 'upload',
+        currentView: 'library',
+        manuscripts: [],
         manuscriptKey: null,
         reportId: null,
         analysisResults: {
@@ -45,7 +46,10 @@ const app = {
         } else if (hash) {
             const [view, id] = hash.split('/');
             if (id) this.state.reportId = id;
-            this.navigate(view || 'upload');
+            this.navigate(view || 'library');
+        } else {
+            // Default to library view
+            this.navigate('library');
         }
         
         // Handle browser back/forward
@@ -63,7 +67,7 @@ const app = {
         try {
             const response = await fetch(`${this.API_BASE}/auth/me`, { credentials: 'include' });
             const data = await response.json();
-            
+
             if (data.authenticated) {
                 document.getElementById('userInfo').innerHTML = `
                     <div style="opacity: 0.9;">👤 ${data.name || data.email}</div>
@@ -72,6 +76,243 @@ const app = {
             }
         } catch (error) {
             console.error('Failed to load user info:', error);
+        }
+    },
+
+    // ====================
+    // MANUSCRIPT LIBRARY
+    // ====================
+
+    // Load manuscript library
+    async loadLibrary() {
+        console.log('Loading manuscript library...');
+
+        try {
+            // Show loading state
+            document.getElementById('libraryLoading').style.display = 'block';
+            document.getElementById('libraryEmpty').style.display = 'none';
+            document.getElementById('manuscriptsList').style.display = 'none';
+
+            // Fetch manuscripts and stats in parallel
+            const [manuscriptsResponse, statsResponse] = await Promise.all([
+                fetch(`${this.API_BASE}/manuscripts`, { credentials: 'include' }),
+                fetch(`${this.API_BASE}/manuscripts/stats`, { credentials: 'include' })
+            ]);
+
+            if (!manuscriptsResponse.ok || !statsResponse.ok) {
+                throw new Error('Failed to load manuscripts');
+            }
+
+            const manuscriptsData = await manuscriptsResponse.json();
+            const statsData = await statsResponse.json();
+
+            // Update state
+            this.state.manuscripts = manuscriptsData.manuscripts || [];
+
+            // Update stats display
+            this.displayStats(statsData.stats);
+
+            // Display manuscripts
+            if (this.state.manuscripts.length === 0) {
+                document.getElementById('libraryLoading').style.display = 'none';
+                document.getElementById('libraryEmpty').style.display = 'block';
+            } else {
+                document.getElementById('libraryLoading').style.display = 'none';
+                this.displayManuscripts(this.state.manuscripts);
+            }
+
+        } catch (error) {
+            console.error('Failed to load library:', error);
+            document.getElementById('libraryLoading').style.display = 'none';
+            document.getElementById('libraryEmpty').innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <div style="font-size: 5em; margin-bottom: 20px;">⚠️</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">Error Loading Manuscripts</h3>
+                    <p style="color: #999; margin-bottom: 30px;">${error.message}</p>
+                    <button class="btn" onclick="app.loadLibrary()">Try Again</button>
+                </div>
+            `;
+            document.getElementById('libraryEmpty').style.display = 'block';
+        }
+    },
+
+    // Display stats
+    displayStats(stats) {
+        document.getElementById('statTotal').textContent = stats.total || 0;
+        document.getElementById('statAnalyzing').textContent = stats.byStatus?.analyzing || 0;
+        document.getElementById('statComplete').textContent = stats.byStatus?.complete || 0;
+
+        // Format word count
+        const totalWords = stats.totalWordCount || 0;
+        const formattedWords = totalWords >= 1000
+            ? (totalWords / 1000).toFixed(1) + 'K'
+            : totalWords.toString();
+        document.getElementById('statWords').textContent = formattedWords;
+    },
+
+    // Display manuscripts
+    displayManuscripts(manuscripts) {
+        const listContainer = document.getElementById('manuscriptsList');
+
+        if (!manuscripts || manuscripts.length === 0) {
+            listContainer.style.display = 'none';
+            return;
+        }
+
+        // Sort by upload date (newest first)
+        manuscripts.sort((a, b) => b.uploaded_at - a.uploaded_at);
+
+        const manuscriptCards = manuscripts.map(ms => {
+            const uploadDate = new Date(ms.uploaded_at * 1000).toLocaleDateString();
+            const statusColors = {
+                draft: '#999',
+                analyzing: '#ffa726',
+                complete: '#4caf50'
+            };
+            const statusColor = statusColors[ms.status] || '#999';
+
+            const reportId = ms.metadata?.reportId || '';
+
+            return `
+                <div class="manuscript-card" style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)';">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0 0 10px 0; color: #333; font-size: 1.3em;">${ms.title || 'Untitled Manuscript'}</h3>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap; font-size: 0.9em; color: #666;">
+                                <span style="display: flex; align-items: center; gap: 5px;">
+                                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${statusColor};"></span>
+                                    ${ms.status.charAt(0).toUpperCase() + ms.status.slice(1)}
+                                </span>
+                                ${ms.genre ? `<span>📚 ${ms.genre.charAt(0).toUpperCase() + ms.genre.slice(1)}</span>` : ''}
+                                ${ms.word_count ? `<span>📝 ${ms.word_count.toLocaleString()} words</span>` : ''}
+                                <span>📅 ${uploadDate}</span>
+                            </div>
+                        </div>
+                        <div style="background: ${statusColor}22; color: ${statusColor}; padding: 6px 16px; border-radius: 20px; font-size: 0.85em; font-weight: 600; white-space: nowrap;">
+                            ${ms.status.toUpperCase()}
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
+                        ${ms.status === 'complete' && reportId ? `
+                            <button class="btn" onclick="app.viewManuscript('${ms.id}', '${reportId}')" style="padding: 10px 20px; font-size: 14px; margin: 0;">
+                                📊 View Report
+                            </button>
+                        ` : ''}
+                        ${ms.status === 'analyzing' && reportId ? `
+                            <button class="btn" onclick="app.checkAnalysisStatus('${reportId}')" style="padding: 10px 20px; font-size: 14px; margin: 0; background: #ffa726;">
+                                🔄 Check Progress
+                            </button>
+                        ` : ''}
+                        ${ms.status === 'draft' || ms.status === 'complete' ? `
+                            <button class="btn-secondary btn" onclick="app.reanalyzeManuscript('${ms.id}')" style="padding: 10px 20px; font-size: 14px; margin: 0; background: #667eea;">
+                                🔄 ${ms.status === 'draft' ? 'Start Analysis' : 'Reanalyze'}
+                            </button>
+                        ` : ''}
+                        <button class="btn" onclick="app.deleteManuscript('${ms.id}', '${ms.title}')" style="padding: 10px 20px; font-size: 14px; margin: 0; background: #f44336;">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        listContainer.innerHTML = manuscriptCards;
+        listContainer.style.display = 'block';
+    },
+
+    // Filter manuscripts
+    filterManuscripts() {
+        const statusFilter = document.getElementById('filterStatus').value;
+        const genreFilter = document.getElementById('filterGenre').value;
+
+        let filtered = [...this.state.manuscripts];
+
+        if (statusFilter) {
+            filtered = filtered.filter(ms => ms.status === statusFilter);
+        }
+
+        if (genreFilter) {
+            filtered = filtered.filter(ms => ms.genre === genreFilter);
+        }
+
+        this.displayManuscripts(filtered);
+    },
+
+    // View manuscript report
+    viewManuscript(manuscriptId, reportId) {
+        console.log('Viewing manuscript:', manuscriptId, reportId);
+        this.state.reportId = reportId;
+        this.navigate('summary');
+    },
+
+    // Check analysis status
+    async checkAnalysisStatus(reportId) {
+        console.log('Checking analysis status:', reportId);
+        this.state.reportId = reportId;
+        this.navigate('analysis');
+        // Start polling for status
+        await this.pollAnalysisStatus();
+    },
+
+    // Reanalyze manuscript
+    async reanalyzeManuscript(manuscriptId) {
+        if (!confirm('Are you sure you want to (re)analyze this manuscript? This will start a new analysis process.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.API_BASE}/manuscripts/${manuscriptId}/reanalyze`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to start analysis');
+            }
+
+            const result = await response.json();
+
+            alert('Analysis started! Redirecting to progress view...');
+
+            this.state.reportId = result.reportId;
+            this.navigate('analysis');
+            await this.pollAnalysisStatus();
+
+        } catch (error) {
+            console.error('Reanalyze error:', error);
+            alert('Failed to start analysis: ' + error.message);
+        }
+    },
+
+    // Delete manuscript
+    async deleteManuscript(manuscriptId, title) {
+        if (!confirm(`Are you sure you want to delete "${title}"? This action cannot be undone and will delete all associated analysis data.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.API_BASE}/manuscripts/${manuscriptId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to delete manuscript');
+            }
+
+            alert('Manuscript deleted successfully');
+
+            // Reload library
+            await this.loadLibrary();
+
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Failed to delete manuscript: ' + error.message);
         }
     },
 
@@ -103,7 +344,9 @@ const app = {
             this.updateBreadcrumb(view);
             
             // Load content if needed
-            if (view === 'report') {
+            if (view === 'library') {
+                this.loadLibrary();
+            } else if (view === 'report') {
                 this.loadReport();
             } else if (view === 'annotated') {
                 this.loadAnnotated();
@@ -118,8 +361,8 @@ const app = {
     updateBreadcrumb(view) {
         const breadcrumb = document.getElementById('breadcrumb');
         const breadcrumbContent = document.getElementById('breadcrumbContent');
-        
-        if (view === 'upload') {
+
+        if (view === 'upload' || view === 'library') {
             breadcrumb.style.display = 'none';
             return;
         }
