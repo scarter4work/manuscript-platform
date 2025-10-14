@@ -121,6 +121,11 @@ export class AnnotatedManuscriptGenerator {
             z-index: 100;
         }
 
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
         .header h1 {
             font-size: 24px;
             margin-bottom: 5px;
@@ -135,13 +140,15 @@ export class AnnotatedManuscriptGenerator {
             background: white;
             padding: 15px 30px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .controls-content {
+            max-width: 1600px;
+            margin: 0 auto;
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 99;
         }
 
         .filter-btn {
@@ -457,29 +464,33 @@ export class AnnotatedManuscriptGenerator {
 </head>
 <body>
     <div class="header">
-        <h1>📝 ${metadata.originalName || 'Untitled Manuscript'}</h1>
-        <p>Author: ${metadata.authorId || 'Unknown'} • Generated: ${reportDate} • ${issueStats.total} Issues Found</p>
+        <div class="header-content">
+            <h1>📝 ${metadata.originalName || 'Untitled Manuscript'}</h1>
+            <p>Author: ${metadata.authorId || 'Unknown'} • Generated: ${reportDate} • ${issueStats.total} Issues Found</p>
+        </div>
     </div>
 
     <div class="controls">
-        <button class="filter-btn active" onclick="filterIssues('all')" data-filter="all">
-            All Issues <span class="filter-count">${issueStats.total}</span>
-        </button>
-        <button class="filter-btn" onclick="filterIssues('grammar')" data-filter="grammar">
-            Grammar <span class="filter-count">${issueStats.grammar}</span>
-        </button>
-        <button class="filter-btn" onclick="filterIssues('punctuation')" data-filter="punctuation">
-            Punctuation <span class="filter-count">${issueStats.punctuation}</span>
-        </button>
-        <button class="filter-btn" onclick="filterIssues('spelling')" data-filter="spelling">
-            Spelling <span class="filter-count">${issueStats.spelling}</span>
-        </button>
-        <button class="filter-btn" onclick="filterIssues('style')" data-filter="style">
-            Style <span class="filter-count">${issueStats.style}</span>
-        </button>
-        <button class="filter-btn" onclick="filterIssues('passive_voice')" data-filter="passive_voice">
-            Passive Voice <span class="filter-count">${issueStats.passive_voice}</span>
-        </button>
+        <div class="controls-content">
+            <button class="filter-btn active" onclick="filterIssues('all')" data-filter="all">
+                All Issues <span class="filter-count">${issueStats.total}</span>
+            </button>
+            <button class="filter-btn" onclick="filterIssues('grammar')" data-filter="grammar">
+                Grammar <span class="filter-count">${issueStats.grammar}</span>
+            </button>
+            <button class="filter-btn" onclick="filterIssues('punctuation')" data-filter="punctuation">
+                Punctuation <span class="filter-count">${issueStats.punctuation}</span>
+            </button>
+            <button class="filter-btn" onclick="filterIssues('spelling')" data-filter="spelling">
+                Spelling <span class="filter-count">${issueStats.spelling}</span>
+            </button>
+            <button class="filter-btn" onclick="filterIssues('style')" data-filter="style">
+                Style <span class="filter-count">${issueStats.style}</span>
+            </button>
+            <button class="filter-btn" onclick="filterIssues('passive_voice')" data-filter="passive_voice">
+                Passive Voice <span class="filter-count">${issueStats.passive_voice}</span>
+            </button>
+        </div>
     </div>
 
     <div class="container">

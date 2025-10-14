@@ -1240,15 +1240,7 @@ const app = {
             const styledContent = `<style>${styleContent}</style>${bodyContent}`;
             
             document.getElementById('reportContent').innerHTML = styledContent;
-            
-            // Hide the report's internal breadcrumb (we use the dashboard's breadcrumb)
-            setTimeout(() => {
-                const reportBreadcrumb = document.querySelector('#reportContent .breadcrumb');
-                if (reportBreadcrumb) {
-                    reportBreadcrumb.style.display = 'none';
-                }
-            }, 100);
-            
+
             // Extract and execute scripts
             const scripts = doc.querySelectorAll('script');
             scripts.forEach(script => {
@@ -1302,15 +1294,7 @@ const app = {
             const styledContent = `<style>${styleContent}</style>${bodyContent}`;
             
             document.getElementById('annotatedContent').innerHTML = styledContent;
-            
-            // Hide the annotated manuscript's internal breadcrumb (we use the dashboard's breadcrumb)
-            setTimeout(() => {
-                const annotatedBreadcrumb = document.querySelector('#annotatedContent .breadcrumb');
-                if (annotatedBreadcrumb) {
-                    annotatedBreadcrumb.style.display = 'none';
-                }
-            }, 100);
-            
+
             // Extract and execute scripts
             const scripts = doc.querySelectorAll('script');
             scripts.forEach(script => {
