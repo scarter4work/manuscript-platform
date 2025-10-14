@@ -35,7 +35,8 @@ export class ReportGenerator {
             font-family: 'Georgia', 'Times New Roman', serif;
             line-height: 1.6;
             color: #2c3e50;
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
         }
         
@@ -336,56 +337,9 @@ export class ReportGenerator {
         .score-fair { color: #f39c12; }
         .score-poor { color: #e74c3c; }
         
-        /* Breadcrumb */
-        .breadcrumb {
-            background: white;
-            padding: 15px 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        
-        .breadcrumb a {
-            color: #667eea;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: color 0.2s;
-        }
-        
-        .breadcrumb a:hover {
-            color: #5568d3;
-            text-decoration: underline;
-        }
-        
-        .breadcrumb-separator {
-            color: #999;
-            user-select: none;
-        }
-        
-        .breadcrumb-current {
-            color: #666;
-            font-weight: 500;
-        }
     </style>
 </head>
 <body>
-    <nav class="breadcrumb">
-        <a href="https://dashboard.scarter4workmanuscripthub.com${reportId ? '/?loadReport=' + reportId : ''}">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0L0 6v10h6V10h4v6h6V6L8 0z"/>
-            </svg>
-            Dashboard
-        </a>
-        <span class="breadcrumb-separator">›</span>
-        ${reportId ? `<a href="https://dashboard.scarter4workmanuscripthub.com/?loadReport=${reportId}">Analysis Results</a>` : '<span class="breadcrumb-current">Analysis Results</span>'}
-        <span class="breadcrumb-separator">›</span>
-        <span class="breadcrumb-current">Summary Report</span>
-    </nav>
     <div class="report-container">
         <div class="page">
             <!-- Header -->

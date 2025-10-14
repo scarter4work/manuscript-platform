@@ -306,7 +306,7 @@
 
                     // Redirect to dashboard
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = 'dashboard-spa.html';
                     }, 500);
                 } else if (response.status === 403) {
                     // Email not verified
@@ -366,7 +366,7 @@
                     const data = await response.json();
                     if (data.userId) {
                         // Already logged in, redirect to dashboard
-                        window.location.href = 'index.html';
+                        window.location.href = 'dashboard-spa.html';
                     }
                 }
             } catch (error) {

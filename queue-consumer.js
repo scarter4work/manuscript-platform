@@ -66,7 +66,17 @@ export default {
 
         console.log('[Queue Consumer] Starting developmental analysis...');
         const devAgent = new DevelopmentalAgent(env);
-        const devAnalysis = await devAgent.analyze(manuscriptKey, genre);
+
+        const devAnalysis = await runWithProgress(
+          devAgent.analyze(manuscriptKey, genre),
+          env,
+          reportId,
+          5,  // start progress
+          30, // end progress
+          'Analyzing plot, characters, and pacing...',
+          'developmental'
+        );
+
         console.log('[Queue Consumer] Developmental analysis complete');
 
         await updateStatus(env, reportId, {
@@ -80,7 +90,17 @@ export default {
         // Step 2: Line Editing Analysis (33% of work)
         console.log('[Queue Consumer] Starting line editing analysis...');
         const lineAgent = new LineEditingAgent(env);
-        const lineAnalysis = await lineAgent.analyze(manuscriptKey, genre);
+
+        const lineAnalysis = await runWithProgress(
+          lineAgent.analyze(manuscriptKey, genre),
+          env,
+          reportId,
+          33, // start progress
+          63, // end progress
+          'Reviewing prose quality and sentence structure...',
+          'line-editing'
+        );
+
         console.log('[Queue Consumer] Line editing analysis complete');
 
         await updateStatus(env, reportId, {
@@ -94,7 +114,17 @@ export default {
         // Step 3: Copy Editing Analysis (33% of work)
         console.log('[Queue Consumer] Starting copy editing analysis...');
         const copyAgent = new CopyEditingAgent(env);
-        const copyAnalysis = await copyAgent.analyze(manuscriptKey, styleGuide);
+
+        const copyAnalysis = await runWithProgress(
+          copyAgent.analyze(manuscriptKey, styleGuide),
+          env,
+          reportId,
+          66, // start progress
+          98, // end progress
+          'Checking grammar, punctuation, and style consistency...',
+          'copy-editing'
+        );
+
         console.log('[Queue Consumer] Copy editing analysis complete');
 
         // Update status: Complete
@@ -170,6 +200,51 @@ export default {
     }
   }
 };
+
+/**
+ * Run analysis with progress updates by actively polling
+ */
+async function runWithProgress(analysisPromise, env, reportId, startProgress, endProgress, message, currentStep) {
+  const startTime = Date.now();
+  let completed = false;
+  let currentProgress = startProgress;
+
+  // Start the analysis
+  const analysisTask = analysisPromise.then(result => {
+    completed = true;
+    return result;
+  });
+
+  // Poll for progress updates every 2 seconds
+  const progressTask = (async () => {
+    while (!completed) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      if (!completed) {
+        // Increment progress gradually
+        currentProgress = Math.min(currentProgress + 2, endProgress - 1);
+        console.log(`[Queue Consumer] Progress update: ${currentProgress}%`);
+
+        await updateStatus(env, reportId, {
+          status: 'processing',
+          progress: currentProgress,
+          message,
+          currentStep,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+  })();
+
+  // Wait for analysis to complete
+  const result = await analysisTask;
+
+  // Signal progress updater to stop and wait a bit for it to finish
+  completed = true;
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  return result;
+}
 
 /**
  * Update status in R2 for frontend polling

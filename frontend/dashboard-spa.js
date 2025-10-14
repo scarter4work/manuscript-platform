@@ -1,4 +1,5 @@
 // Single Page Application Logic for Manuscript Dashboard
+// Version: 2025-10-14-02 - Fixed immediate report display
 
 const app = {
     // Configuration
@@ -8,7 +9,7 @@ const app = {
     
     // State
     state: {
-        currentView: 'upload',
+        currentView: 'library',
         manuscripts: [],
         manuscriptKey: null,
         reportId: null,
@@ -88,15 +89,21 @@ const app = {
     async loadUserInfo() {
         try {
             const response = await fetch(`${this.API_BASE}/auth/me`, { credentials: 'include' });
+
+            if (!response.ok) {
+                console.error('Not authenticated');
+                return;
+            }
+
             const data = await response.json();
 
-            if (data.authenticated) {
+            if (data.userId) {
                 // Update user info display with logout button
                 document.getElementById('userInfo').innerHTML = `
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div style="text-align: right;">
-                            <div style="opacity: 0.9;">👤 ${data.name || data.email}</div>
-                            <div style="font-size: 12px; opacity: 0.7;">${data.email} (${data.role})</div>
+                            <div style="opacity: 0.9;">👤 ${data.email}</div>
+                            <div style="font-size: 12px; opacity: 0.7;">${data.role.toUpperCase()}</div>
                         </div>
                         <button onclick="app.handleLogout()" style="
                             background: white;
@@ -672,7 +679,7 @@ const app = {
                     this.updateAgentStatus('line', 'pending', 'Queued');
                     this.updateAgentStatus('copy', 'pending', 'Queued');
                 }
-                else if (status.status === 'processing') {
+                else if (status.status === 'processing' || status.status === 'running') {
                     // Update progress based on percentage (20-100 range to leave room for upload at 15%)
                     const progress = 20 + (status.progress * 0.80); // Scale from 20-100
                     this.updateProgress(progress, status.message || 'Processing analysis...');
@@ -703,15 +710,26 @@ const app = {
                     this.updateAgentStatus('line', 'complete', 'Complete ✓');
                     this.updateAgentStatus('copy', 'complete', 'Complete ✓');
 
-                    console.log('Analysis complete! Fetching results and starting asset generation...');
+                    console.log('Analysis complete! Fetching results...');
 
                     // Fetch the analysis results from R2
                     await this.fetchAnalysisResults();
 
-                    // Phase D: Start polling for asset generation status
+                    // Show summary immediately with analysis results
                     setTimeout(() => {
-                        this.pollAssetStatus();
-                    }, 1000);
+                        if (this.state.analysisResults.developmental) {
+                            this.showSummary();
+                        } else {
+                            this.navigate('summary');
+                        }
+
+                        // Phase D: Start polling for asset generation in background
+                        // This won't block showing the report
+                        setTimeout(() => {
+                            this.pollAssetStatus();
+                        }, 2000);
+                    }, 500);
+
                     return; // Stop polling analysis
                 }
                 else if (status.status === 'failed' || status.status === 'error') {
@@ -739,8 +757,8 @@ const app = {
 
     // Phase D: Poll for asset generation status
     async pollAssetStatus() {
-        const pollInterval = 2000; // Poll every 2 seconds
-        const maxPolls = 15; // Max 30 seconds (15 * 2 seconds) - reduced for better UX when assets aren't queued
+        const pollInterval = 3000; // Poll every 3 seconds
+        const maxPolls = 20; // Max 60 seconds (20 * 3 seconds) - assets generate in background
         let pollCount = 0;
 
         const poll = async () => {
@@ -775,7 +793,7 @@ const app = {
                     this.updateProgress(100, `Generating marketing assets... ${assetProgress}%`);
                 } else if (status.status === 'complete' || status.status === 'partial') {
                     // Assets complete!
-                    this.updateProgress(100, 'All assets generated! ✨');
+                    console.log('Assets generated!', status);
 
                     // Store asset results in state
                     this.state.assetResults = {
@@ -789,21 +807,16 @@ const app = {
                         errors: status.errors
                     };
 
-                    console.log('Assets complete!', this.state.assetResults);
+                    // If we're already on the summary page, refresh it to show assets
+                    if (this.state.currentView === 'summary' && this.state.analysisResults.developmental) {
+                        console.log('Refreshing summary with new assets...');
+                        this.showSummary();
+                    }
 
-                    // Show summary after a brief pause
-                    setTimeout(() => {
-                        if (this.state.analysisResults.developmental) {
-                            this.showSummary();
-                        } else {
-                            this.navigate('summary');
-                        }
-                    }, 1500);
                     return; // Stop polling
                 } else if (status.status === 'failed') {
                     console.error('Asset generation failed:', status.error);
-                    // Show summary anyway, but without assets
-                    this.showSummaryWithoutAssets();
+                    // Summary is already showing - just stop polling
                     return;
                 }
 
@@ -818,8 +831,7 @@ const app = {
 
             } catch (error) {
                 console.error('Asset polling error:', error);
-                // Show summary without assets if there's an error
-                this.showSummaryWithoutAssets();
+                // Summary is already showing - just stop polling
             }
         };
 
@@ -829,20 +841,24 @@ const app = {
 
     // Show summary without waiting for assets (fallback)
     showSummaryWithoutAssets() {
-        console.log('Showing summary without assets');
-        setTimeout(() => {
-            if (this.state.analysisResults.developmental) {
-                this.showSummary();
-            } else {
-                this.navigate('summary');
-            }
-        }, 500);
+        console.log('Asset polling timed out - summary already visible');
+        // No need to navigate - summary is already showing
+        // Assets will be marked as unavailable in the UI
     },
 
     // Update progress bar
     updateProgress(percent, text) {
-        document.getElementById('progressBar').style.width = percent + '%';
-        document.getElementById('progressText').textContent = text;
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
+        if (!progressBar || !progressText) {
+            console.error('Progress elements not found!', { progressBar, progressText });
+            return;
+        }
+
+        console.log('Updating progress:', percent + '%', text);
+        progressBar.style.width = percent + '%';
+        progressText.textContent = text;
     },
 
     // Update agent status
@@ -850,6 +866,12 @@ const app = {
         const agentCard = document.getElementById(agent + 'Agent');
         const statusSpan = document.getElementById(agent + 'Status');
 
+        if (!agentCard || !statusSpan) {
+            console.error('Agent elements not found!', { agent, agentCard, statusSpan });
+            return;
+        }
+
+        console.log('Updating agent:', agent, status, text);
         agentCard.className = 'agent-card ' + status;
         statusSpan.className = 'agent-status status-' + status;
         statusSpan.textContent = text;
