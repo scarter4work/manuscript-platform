@@ -8,7 +8,7 @@ const app = {
     
     // State
     state: {
-        currentView: 'library',
+        currentView: 'upload',
         manuscripts: [],
         manuscriptKey: null,
         reportId: null,
@@ -59,10 +59,10 @@ const app = {
         } else if (hash) {
             const [view, id] = hash.split('/');
             if (id) this.state.reportId = id;
-            this.navigate(view || 'library');
+            this.navigate(view || 'upload');
         } else {
-            // Default to library view
-            this.navigate('library');
+            // Default to upload view
+            this.navigate('upload');
         }
 
         // Handle browser back/forward
@@ -690,7 +690,7 @@ const app = {
             } catch (error) {
                 console.error('Polling error:', error);
                 alert('Analysis error: ' + error.message);
-                this.navigate('library');
+                this.navigate('upload', true);
             }
         };
 
