@@ -32,13 +32,6 @@ const app = {
         socialMedia: null
     },
 
-    // Get default view based on which page we're on
-    getDefaultView() {
-        // Check if we have a library view (index.html has it, dashboard-spa.html doesn't)
-        const hasLibrary = document.getElementById('viewLibrary');
-        return hasLibrary ? 'library' : 'upload';
-    },
-
     // Initialize app
     async init() {
         console.log('Initializing SPA...');
@@ -66,10 +59,10 @@ const app = {
         } else if (hash) {
             const [view, id] = hash.split('/');
             if (id) this.state.reportId = id;
-            this.navigate(view || this.getDefaultView());
+            this.navigate(view || 'upload');
         } else {
-            // Default view based on which page we're on
-            this.navigate(this.getDefaultView());
+            // Default to upload view
+            this.navigate('upload');
         }
 
         // Handle browser back/forward
