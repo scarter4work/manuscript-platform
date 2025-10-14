@@ -570,6 +570,7 @@
                     <label for="fileInput" class="file-input-label" id="fileLabel">
                         <div style="font-size: 3em; margin-bottom: 10px;">📄</div>
                         <div id="fileName">Click or drag to upload manuscript</div>
+                        <div id="fileSize" style="font-size: 0.9em; color: #4caf50; margin-top: 5px; font-weight: 600; display: none;"></div>
                         <div style="font-size: 0.9em; color: #666; margin-top: 10px;">
                             Supports .txt, .pdf, .docx (up to 50MB)
                         </div>
@@ -616,7 +617,7 @@
                     </p>
                 </div>
 
-                <button class="btn" onclick="app.uploadAndAnalyze()">
+                <button class="btn" id="uploadBtn" onclick="app.uploadAndAnalyze()">
                     Upload & Start Analysis
                 </button>
             </div>

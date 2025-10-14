@@ -48,8 +48,16 @@ const app = {
                 if (file) {
                     const fileNameEl = document.getElementById('fileName');
                     const fileLabelEl = document.getElementById('fileLabel');
+                    const fileSizeEl = document.getElementById('fileSize');
                     if (fileNameEl) fileNameEl.textContent = file.name;
                     if (fileLabelEl) fileLabelEl.classList.add('has-file');
+
+                    // Display file size
+                    if (fileSizeEl) {
+                        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                        fileSizeEl.textContent = `📊 ${sizeMB} MB`;
+                        fileSizeEl.style.display = 'block';
+                    }
                 }
             });
         }
@@ -603,7 +611,14 @@ const app = {
 
         // Navigate to analysis view
         this.navigate('analysis');
-        this.updateProgress(10, 'Uploading manuscript...');
+        this.updateProgress(0, 'Preparing upload...');
+
+        // Disable upload button
+        const uploadBtn = document.getElementById('uploadBtn');
+        if (uploadBtn) {
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+        }
 
         try {
             // Upload manuscript (Phase C: analysis is automatically queued on upload)
@@ -612,18 +627,52 @@ const app = {
             formData.append('title', fileInput.files[0].name.replace(/\.[^/.]+$/, "")); // Remove extension
             formData.append('genre', genre);
 
-            const uploadResponse = await fetch(`${this.API_BASE}/upload/manuscript`, {
-                credentials: 'include',
-                method: 'POST',
-                body: formData
+            // Use XMLHttpRequest for upload progress tracking
+            const uploadResult = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+
+                // Track upload progress
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        const uploadProgress = Math.min(percentComplete * 0.15, 15); // Scale to 0-15%
+                        const mbLoaded = (e.loaded / (1024 * 1024)).toFixed(2);
+                        const mbTotal = (e.total / (1024 * 1024)).toFixed(2);
+                        this.updateProgress(
+                            uploadProgress,
+                            `Uploading: ${mbLoaded}MB / ${mbTotal}MB (${percentComplete.toFixed(0)}%)`
+                        );
+                    }
+                });
+
+                // Handle completion
+                xhr.addEventListener('load', () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const result = JSON.parse(xhr.responseText);
+                            resolve(result);
+                        } catch (error) {
+                            reject(new Error('Invalid response format'));
+                        }
+                    } else {
+                        reject(new Error(`Upload failed: ${xhr.responseText}`));
+                    }
+                });
+
+                // Handle errors
+                xhr.addEventListener('error', () => {
+                    reject(new Error('Network error during upload'));
+                });
+
+                xhr.addEventListener('abort', () => {
+                    reject(new Error('Upload cancelled'));
+                });
+
+                // Open and send request
+                xhr.open('POST', `${this.API_BASE}/upload/manuscript`);
+                xhr.withCredentials = true;
+                xhr.send(formData);
             });
-
-            if (!uploadResponse.ok) {
-                const error = await uploadResponse.text();
-                throw new Error(`Upload failed: ${error}`);
-            }
-
-            const uploadResult = await uploadResponse.json();
 
             // Phase C returns: { manuscript: { id, reportId, status: 'queued', ... } }
             if (!uploadResult.manuscript || !uploadResult.manuscript.reportId) {
@@ -648,6 +697,14 @@ const app = {
         } catch (error) {
             console.error('Upload error:', error);
             alert('Upload/Analysis failed: ' + error.message);
+
+            // Re-enable upload button
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload & Start Analysis';
+            }
+
             this.navigate('upload', true);
         }
     },
