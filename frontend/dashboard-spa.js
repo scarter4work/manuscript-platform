@@ -39,19 +39,28 @@ const app = {
         // Load user info and setup admin navigation
         await this.loadUserInfo();
 
-        // Set up file input handler
-        document.getElementById('fileInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                document.getElementById('fileName').textContent = file.name;
-                document.getElementById('fileLabel').classList.add('has-file');
-            }
-        });
+        // Set up file input handler (only if element exists)
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const fileNameEl = document.getElementById('fileName');
+                    const fileLabelEl = document.getElementById('fileLabel');
+                    if (fileNameEl) fileNameEl.textContent = file.name;
+                    if (fileLabelEl) fileLabelEl.classList.add('has-file');
+                }
+            });
+        }
 
         // Check for initial route from URL
         const hash = window.location.hash.slice(1); // Remove #
         const params = new URLSearchParams(window.location.search);
         const reportId = params.get('loadReport');
+
+        // Determine default view based on which page we're on
+        const hasLibrary = document.getElementById('viewLibrary');
+        const defaultView = hasLibrary ? 'library' : 'upload';
 
         if (reportId) {
             this.state.reportId = reportId;
@@ -59,10 +68,10 @@ const app = {
         } else if (hash) {
             const [view, id] = hash.split('/');
             if (id) this.state.reportId = id;
-            this.navigate(view || 'upload');
+            this.navigate(view || defaultView);
         } else {
-            // Default to upload view
-            this.navigate('upload');
+            // Default view based on which page we're on
+            this.navigate(defaultView);
         }
 
         // Handle browser back/forward
