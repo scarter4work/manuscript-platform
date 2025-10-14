@@ -82,10 +82,26 @@ const app = {
             const data = await response.json();
 
             if (data.authenticated) {
-                // Update user info display
+                // Update user info display with logout button
                 document.getElementById('userInfo').innerHTML = `
-                    <div style="opacity: 0.9;">👤 ${data.name || data.email}</div>
-                    <div style="font-size: 12px; opacity: 0.7;">${data.email}</div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="text-align: right;">
+                            <div style="opacity: 0.9;">👤 ${data.name || data.email}</div>
+                            <div style="font-size: 12px; opacity: 0.7;">${data.email} (${data.role})</div>
+                        </div>
+                        <button onclick="app.handleLogout()" style="
+                            background: white;
+                            color: #667eea;
+                            border: 2px solid white;
+                            padding: 8px 16px;
+                            border-radius: 6px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.background='rgba(255,255,255,0.9)'" onmouseout="this.style.background='white'">
+                            Logout
+                        </button>
+                    </div>
                 `;
 
                 // Add admin navigation items if user is admin
@@ -101,6 +117,20 @@ const app = {
         } catch (error) {
             console.error('Failed to load user info:', error);
         }
+    },
+
+    // Handle logout
+    async handleLogout() {
+        try {
+            await fetch(`${this.API_BASE}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+        // Redirect to login page
+        window.location.href = '/login.html';
     },
 
     // ====================
