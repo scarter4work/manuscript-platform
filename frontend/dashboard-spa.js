@@ -43,14 +43,31 @@ const app = {
         // Set up file input handler (only if element exists)
         const fileInput = document.getElementById('fileInput');
         if (fileInput) {
-            fileInput.addEventListener('change', (e) => {
+            fileInput.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if (file) {
                     const fileNameEl = document.getElementById('fileName');
                     const fileLabelEl = document.getElementById('fileLabel');
                     const fileSizeEl = document.getElementById('fileSize');
-                    if (fileNameEl) fileNameEl.textContent = file.name;
-                    if (fileLabelEl) fileLabelEl.classList.add('has-file');
+
+                    // Show loading state immediately
+                    if (fileLabelEl) {
+                        fileLabelEl.classList.remove('has-file');
+                        fileLabelEl.classList.add('loading');
+                    }
+                    if (fileNameEl) fileNameEl.innerHTML = '⏳ Processing file...';
+                    if (fileSizeEl) fileSizeEl.style.display = 'none';
+
+                    // Simulate small delay to ensure loading state is visible
+                    // (for large files this happens naturally, for small files we show it briefly)
+                    await new Promise(resolve => setTimeout(resolve, 300));
+
+                    // Update to success state
+                    if (fileLabelEl) {
+                        fileLabelEl.classList.remove('loading');
+                        fileLabelEl.classList.add('has-file');
+                    }
+                    if (fileNameEl) fileNameEl.textContent = `✓ ${file.name}`;
 
                     // Display file size
                     if (fileSizeEl) {

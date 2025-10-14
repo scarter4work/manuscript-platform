@@ -221,9 +221,20 @@
             border-color: #764ba2;
         }
 
+        .file-input-label.loading {
+            border-color: #ffa726;
+            background: #fff8e1;
+            animation: pulse-border 1.5s ease-in-out infinite;
+        }
+
         .file-input-label.has-file {
             border-color: #4caf50;
             background: #e8f5e9;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: #ffa726; }
+            50% { border-color: #ff9800; }
         }
 
         .input-group {
