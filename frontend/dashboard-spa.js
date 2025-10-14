@@ -731,7 +731,7 @@ const app = {
     // Phase D: Poll for asset generation status
     async pollAssetStatus() {
         const pollInterval = 2000; // Poll every 2 seconds
-        const maxPolls = 300; // Max 10 minutes (300 * 2 seconds)
+        const maxPolls = 15; // Max 30 seconds (15 * 2 seconds) - reduced for better UX when assets aren't queued
         let pollCount = 0;
 
         const poll = async () => {
