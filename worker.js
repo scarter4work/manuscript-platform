@@ -21,6 +21,8 @@ import { manuscriptHandlers } from './manuscript-handlers.js';
 import queueConsumer from './queue-consumer.js';
 import assetConsumer from './asset-generation-consumer.js';
 import { handleStripeWebhook } from './webhook-handlers.js';
+import { initSentry, captureError } from './sentry-config.js';
+import { logError, logInfo, logWarning, logRequest, logSecurity } from './logging.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -94,6 +96,9 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
     console.log('Request path:', path);
+
+    // Track request start time for monitoring
+    const requestStartTime = Date.now();
 
     try {
       // ========================================================================
@@ -572,6 +577,20 @@ export default {
       return new Response('Not Found', { status: 404, headers: allHeaders });
 
     } catch (error) {
+      // Log error with structured logging
+      logError('request_error', error, {
+        path,
+        method: request.method,
+        url: request.url
+      });
+
+      // Capture error in Sentry
+      captureError(error, {
+        path,
+        method: request.method,
+        url: request.url
+      }, env);
+
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
         headers: { ...allHeaders, 'Content-Type': 'application/json' }

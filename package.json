@@ -11,6 +11,8 @@
     "wrangler": "^4.42.2"
   },
   "dependencies": {
+    "@sentry/browser": "^10.22.0",
+    "@sentry/node": "^10.22.0",
     "dotenv": "^17.2.3",
     "fflate": "^0.8.2",
     "formdata-node": "^6.0.3",
