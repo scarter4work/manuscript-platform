@@ -308,8 +308,13 @@ export async function applyRateLimit(request, env, userId = null, userTier = nul
     return createRateLimitResponse(endpointLimit, 'Endpoint');
   }
 
-  // No rate limit exceeded
-  return null;
+  // No rate limit exceeded - return the most restrictive limit info for headers
+  // Use IP limit as it's the most restrictive for general requests
+  return {
+    response: null,
+    headers: createRateLimitHeaders(ipLimit),
+    limitInfo: ipLimit
+  };
 }
 
 /**
@@ -334,7 +339,7 @@ function createRateLimitResponse(limitInfo, limitType) {
   const headers = createRateLimitHeaders(limitInfo);
   const retryAfter = Math.ceil((limitInfo.reset - Date.now()) / 1000);
 
-  return new Response(JSON.stringify({
+  const response = new Response(JSON.stringify({
     error: 'Rate limit exceeded',
     message: `Too many requests. ${limitType} rate limit exceeded.`,
     limit: limitInfo.limit,
@@ -348,6 +353,12 @@ function createRateLimitResponse(limitInfo, limitType) {
       ...headers,
     },
   });
+
+  return {
+    response: response,
+    headers: headers,
+    limitInfo: limitInfo
+  };
 }
 
 // ============================================================================

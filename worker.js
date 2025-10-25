@@ -77,10 +77,10 @@ export default {
     // Combine CORS and security headers
     const allHeaders = { ...corsHeaders, ...securityHeaders };
 
-    // Helper function to add CORS and security headers to any response
-    const addCorsHeaders = (response) => {
+    // Helper function to add CORS, security, and rate limit headers to any response
+    const addCorsHeaders = (response, extraHeaders = {}) => {
       const newHeaders = new Headers(response.headers);
-      Object.entries(allHeaders).forEach(([key, value]) => {
+      Object.entries({ ...allHeaders, ...extraHeaders }).forEach(([key, value]) => {
         newHeaders.set(key, value);
       });
       return new Response(response.body, {
@@ -137,13 +137,17 @@ export default {
       }
 
       // Apply rate limiting (skip for webhooks and static assets)
+      let rateLimitHeaders = {};
       if (!path.startsWith('/webhooks/') && !path.startsWith('/assets/')) {
-        const rateLimitResponse = await applyRateLimit(request, env, userId, userTier);
+        const rateLimitResult = await applyRateLimit(request, env, userId, userTier);
 
-        if (rateLimitResponse) {
+        if (rateLimitResult.response) {
           // Rate limit exceeded - return 429 response
-          return addCorsHeaders(rateLimitResponse);
+          return addCorsHeaders(rateLimitResult.response, rateLimitHeaders);
         }
+
+        // Store rate limit headers to add to successful responses
+        rateLimitHeaders = rateLimitResult.headers;
       }
 
       // ========================================================================
@@ -152,42 +156,42 @@ export default {
 
       // POST /auth/register - User registration with email verification
       if (path === '/auth/register' && request.method === 'POST') {
-        return addCorsHeaders(await authHandlers.register(request, env));
+        return addCorsHeaders(await authHandlers.register(request, env), rateLimitHeaders);
       }
 
       // POST /auth/login - User login with rate limiting
       if (path === '/auth/login' && request.method === 'POST') {
-        return addCorsHeaders(await authHandlers.login(request, env));
+        return addCorsHeaders(await authHandlers.login(request, env), rateLimitHeaders);
       }
 
       // POST /auth/logout - User logout (destroy session)
       if (path === '/auth/logout' && request.method === 'POST') {
-        return addCorsHeaders(await authHandlers.logout(request, env));
+        return addCorsHeaders(await authHandlers.logout(request, env), rateLimitHeaders);
       }
 
       // GET /auth/me - Get current authenticated user info
       if (path === '/auth/me' && request.method === 'GET') {
-        return addCorsHeaders(await authHandlers.getMe(request, env));
+        return addCorsHeaders(await authHandlers.getMe(request, env), rateLimitHeaders);
       }
 
       // GET /auth/verify-email - Email verification with token
       if (path === '/auth/verify-email' && request.method === 'GET') {
-        return addCorsHeaders(await authHandlers.verifyEmail(request, env));
+        return addCorsHeaders(await authHandlers.verifyEmail(request, env), rateLimitHeaders);
       }
 
       // POST /auth/password-reset-request - Request password reset
       if (path === '/auth/password-reset-request' && request.method === 'POST') {
-        return addCorsHeaders(await authHandlers.passwordResetRequest(request, env));
+        return addCorsHeaders(await authHandlers.passwordResetRequest(request, env), rateLimitHeaders);
       }
 
       // POST /auth/password-reset - Reset password with token
       if (path === '/auth/password-reset' && request.method === 'POST') {
-        return addCorsHeaders(await authHandlers.passwordReset(request, env));
+        return addCorsHeaders(await authHandlers.passwordReset(request, env), rateLimitHeaders);
       }
 
       // GET /auth/verify-reset-token - Verify reset token validity
       if (path === '/auth/verify-reset-token' && request.method === 'GET') {
-        return addCorsHeaders(await authHandlers.verifyResetToken(request, env));
+        return addCorsHeaders(await authHandlers.verifyResetToken(request, env), rateLimitHeaders);
       }
 
       // ========================================================================
@@ -196,36 +200,36 @@ export default {
 
       // GET /manuscripts - List user's manuscripts
       if (path === '/manuscripts' && request.method === 'GET') {
-        return addCorsHeaders(await manuscriptHandlers.listManuscripts(request, env));
+        return addCorsHeaders(await manuscriptHandlers.listManuscripts(request, env), rateLimitHeaders);
       }
 
       // GET /manuscripts/stats - Get user's manuscript statistics
       if (path === '/manuscripts/stats' && request.method === 'GET') {
-        return addCorsHeaders(await manuscriptHandlers.getManuscriptStats(request, env));
+        return addCorsHeaders(await manuscriptHandlers.getManuscriptStats(request, env), rateLimitHeaders);
       }
 
       // GET /manuscripts/:id - Get specific manuscript details
       if (path.startsWith('/manuscripts/') && request.method === 'GET' && !path.includes('stats')) {
         const manuscriptId = path.replace('/manuscripts/', '');
-        return addCorsHeaders(await manuscriptHandlers.getManuscript(request, env, manuscriptId));
+        return addCorsHeaders(await manuscriptHandlers.getManuscript(request, env, manuscriptId), rateLimitHeaders);
       }
 
       // PUT /manuscripts/:id - Update manuscript metadata
       if (path.startsWith('/manuscripts/') && request.method === 'PUT') {
         const manuscriptId = path.replace('/manuscripts/', '');
-        return addCorsHeaders(await manuscriptHandlers.updateManuscript(request, env, manuscriptId));
+        return addCorsHeaders(await manuscriptHandlers.updateManuscript(request, env, manuscriptId), rateLimitHeaders);
       }
 
       // DELETE /manuscripts/:id - Delete manuscript
       if (path.startsWith('/manuscripts/') && request.method === 'DELETE') {
         const manuscriptId = path.replace('/manuscripts/', '');
-        return addCorsHeaders(await manuscriptHandlers.deleteManuscript(request, env, manuscriptId));
+        return addCorsHeaders(await manuscriptHandlers.deleteManuscript(request, env, manuscriptId), rateLimitHeaders);
       }
 
       // POST /manuscripts/:id/reanalyze - Re-run analysis
       if (path.match(/^\/manuscripts\/.+\/reanalyze$/) && request.method === 'POST') {
         const manuscriptId = path.match(/^\/manuscripts\/(.+)\/reanalyze$/)[1];
-        return addCorsHeaders(await manuscriptHandlers.reanalyzeManuscript(request, env, manuscriptId));
+        return addCorsHeaders(await manuscriptHandlers.reanalyzeManuscript(request, env, manuscriptId), rateLimitHeaders);
       }
 
       // ========================================================================
