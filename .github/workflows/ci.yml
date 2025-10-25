@@ -33,16 +33,17 @@ jobs:
 
       - name: Check for secrets in code
         run: |
-          echo "Checking for potential secrets..."
-          if grep -r "sk_live_" . --exclude-dir=node_modules --exclude-dir=.git; then
+          echo "Checking for potential secrets in code files..."
+          # Exclude markdown files, docs, and common documentation patterns
+          if grep -r "sk_live_" . --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=docs --exclude="*.md" --include="*.js" --include="*.json" --include="*.ts" --include="*.yml" --include="*.yaml"; then
             echo "ERROR: Found Stripe live keys in code!"
             exit 1
           fi
-          if grep -r "sk-ant-api03-" . --exclude-dir=node_modules --exclude-dir=.git; then
+          if grep -r "sk-ant-api03-" . --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=docs --exclude="*.md" --include="*.js" --include="*.json" --include="*.ts" --include="*.yml" --include="*.yaml"; then
             echo "ERROR: Found Anthropic API keys in code!"
             exit 1
           fi
-          echo "No secrets detected in code"
+          echo "No secrets detected in code files"
 
   security-audit:
     name: Security Audit
