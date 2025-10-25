@@ -23,6 +23,8 @@ import assetConsumer from './asset-generation-consumer.js';
 import { handleStripeWebhook } from './webhook-handlers.js';
 import { initSentry, captureError } from './sentry-config.js';
 import { logError, logInfo, logWarning, logRequest, logSecurity } from './logging.js';
+import { applyRateLimit, createRateLimitHeaders } from './rate-limiter.js';
+import { getUserFromRequest } from './auth-utils.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -101,6 +103,49 @@ export default {
     const requestStartTime = Date.now();
 
     try {
+      // ========================================================================
+      // RATE LIMITING (MAN-25)
+      // ========================================================================
+
+      // Get user info if authenticated (for user-specific rate limits)
+      let userId = null;
+      let userTier = null;
+
+      // Try to get user from session (don't fail if not authenticated)
+      try {
+        userId = await getUserFromRequest(request, env);
+        if (userId) {
+          // Get user tier from database
+          const user = await env.DB.prepare(
+            'SELECT role, subscription_tier FROM users WHERE id = ?'
+          ).bind(userId).first();
+
+          if (user) {
+            // Map role to tier for rate limiting
+            if (user.role === 'admin') {
+              userTier = 'ADMIN';
+            } else if (user.subscription_tier) {
+              userTier = user.subscription_tier.toUpperCase();
+            } else {
+              userTier = 'FREE';
+            }
+          }
+        }
+      } catch (authError) {
+        // Not authenticated or session invalid - continue with IP-only rate limiting
+        console.log('[RateLimit] No valid session, applying IP-only limits');
+      }
+
+      // Apply rate limiting (skip for webhooks and static assets)
+      if (!path.startsWith('/webhooks/') && !path.startsWith('/assets/')) {
+        const rateLimitResponse = await applyRateLimit(request, env, userId, userTier);
+
+        if (rateLimitResponse) {
+          // Rate limit exceeded - return 429 response
+          return addCorsHeaders(rateLimitResponse);
+        }
+      }
+
       // ========================================================================
       // AUTHENTICATION ROUTES (Phase A)
       // ========================================================================

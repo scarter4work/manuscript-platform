@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT UNIQUE NOT NULL,             -- Unique email address
   password_hash TEXT NOT NULL,            -- bcrypt hashed password
   role TEXT DEFAULT 'author',             -- author/publisher/admin
+  subscription_tier TEXT DEFAULT 'FREE',  -- FREE/PRO/ENTERPRISE (for rate limiting)
   created_at INTEGER NOT NULL,            -- Unix timestamp
   last_login INTEGER,                     -- Unix timestamp of last login
   email_verified INTEGER DEFAULT 0       -- 0 = not verified, 1 = verified
