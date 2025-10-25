@@ -53,7 +53,8 @@
       "mcp__linear__create_comment",
       "mcp__linear__get_issue",
       "WebFetch(domain:github.com)",
-      "Bash(gh --version:*)"
+      "Bash(gh --version:*)",
+      "mcp__linear__update_issue"
     ],
     "deny": [],
     "ask": []

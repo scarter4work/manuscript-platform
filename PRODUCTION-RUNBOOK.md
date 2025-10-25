@@ -629,6 +629,166 @@ npx wrangler tail --format pretty | grep "\[Webhook\]"
 
 ---
 
+## Backup & Disaster Recovery Operations
+
+### Checking Backup Status
+
+**Daily backup verification:**
+```bash
+# Check last backup in database log
+npx wrangler d1 execute manuscript-platform --remote --command \
+  "SELECT * FROM backup_logs WHERE status='success' ORDER BY created_at DESC LIMIT 1"
+
+# Expected: Backup from within last 24 hours (runs at 3 AM UTC)
+```
+
+**List recent backups:**
+```bash
+# List last 10 backups
+npx wrangler r2 object list manuscript-platform-backups --limit 10
+
+# Check total backup count (should be ~30-40 with retention policy)
+npx wrangler r2 object list manuscript-platform-backups | wc -l
+```
+
+### Manual Backup Trigger
+
+While backups run automatically daily at 3 AM UTC, you may need to create a manual backup before risky operations:
+
+```bash
+# Method: Temporarily adjust CRON schedule and deploy
+# 1. Edit wrangler.toml, change cron to run in next few minutes
+# 2. Deploy: npx wrangler deploy
+# 3. Wait for execution
+# 4. Revert wrangler.toml and redeploy
+
+# Alternative: Export database manually
+npx wrangler d1 export manuscript-platform --remote --output backup-manual.sql
+gzip backup-manual.sql
+# Then upload to R2 manually if needed
+```
+
+### Restoring from Backup
+
+⚠️ **WARNING: This will overwrite the current database!**
+
+**When to restore:**
+- Database corruption detected
+- Accidental data deletion
+- Need to recover to previous state
+
+**Procedure:**
+
+1. **Identify backup to restore:**
+   ```bash
+   # List backups with dates
+   npx wrangler r2 object list manuscript-platform-backups --limit 10
+   ```
+
+2. **Download backup:**
+   ```bash
+   npx wrangler r2 object get manuscript-platform-backups/backup-YYYY-MM-DD-timestamp.sql.gz \
+     --file restore.sql.gz
+   ```
+
+3. **Decompress:**
+   ```bash
+   gunzip restore.sql.gz
+   ```
+
+4. **Preview (optional):**
+   ```bash
+   head -n 100 restore.sql
+   # Verify this is the correct backup
+   ```
+
+5. **Execute restore:**
+   ```bash
+   # ⚠️ FINAL WARNING: This overwrites production database!
+   npx wrangler d1 execute manuscript-platform --remote --file=restore.sql
+   ```
+
+6. **Verify restoration:**
+   ```bash
+   # Check record counts
+   npx wrangler d1 execute manuscript-platform --remote --command \
+     "SELECT 'users' as tbl, COUNT(*) as cnt FROM users
+      UNION ALL SELECT 'manuscripts', COUNT(*) FROM manuscripts
+      UNION ALL SELECT 'subscriptions', COUNT(*) FROM subscriptions"
+
+   # Test API
+   curl https://api.scarter4workmanuscripthub.com/manuscripts
+   # Should return 401 (API working)
+   ```
+
+7. **Assess data loss:**
+   - Backup time: `YYYY-MM-DD 03:00 UTC`
+   - Current time: `YYYY-MM-DD HH:MM UTC`
+   - Lost data: Everything between backup and restore time
+   - Notify affected users if significant data loss
+
+### R2 Object Recovery (Manuscripts)
+
+**If a manuscript file is accidentally deleted:**
+
+```bash
+# Check if versioning can recover
+npx wrangler r2 object list manuscripts-raw --include-versions --prefix MANUSCRIPT_ID
+
+# Restore from specific version
+npx wrangler r2 object get manuscripts-raw/MANUSCRIPT_ID --version-id VERSION_ID \
+  --file restored-manuscript.pdf
+
+# Re-upload restored version
+npx wrangler r2 object put manuscripts-raw/MANUSCRIPT_ID --file restored-manuscript.pdf
+```
+
+### Backup Monitoring
+
+**What to monitor:**
+- Backup success/failure (daily check)
+- Backup file size trends (weekly)
+- Backup completion time (should be < 5 minutes)
+- Backup retention (should have 30-40 total backups)
+
+**Alerts to configure:**
+- ⚠️ **Critical:** Backup failed (check next day at 4 AM UTC)
+- ⚠️ **Critical:** No backup in 36 hours
+- ℹ️ **Info:** Backup size > 2x previous average
+- ℹ️ **Info:** Backup took > 10 minutes
+
+### Monthly Backup Verification Test
+
+**Procedure (first Monday of each month):**
+
+1. Download backup from one week ago (not latest)
+2. Restore to local/staging D1 instance (NOT production!)
+3. Run integrity checks:
+   ```sql
+   -- Check referential integrity
+   SELECT COUNT(*) FROM manuscripts WHERE author_id NOT IN (SELECT id FROM users);
+   -- Should return 0
+
+   -- Check NULL primary keys
+   SELECT COUNT(*) FROM users WHERE id IS NULL;
+   -- Should return 0
+   ```
+4. Document results in backup test log
+5. If issues found, investigate immediately
+
+### Disaster Recovery Scenarios
+
+For detailed disaster recovery procedures, see `DISASTER-RECOVERY-PLAN.md`.
+
+**Quick reference:**
+- **Database corruption:** Restore from last backup (~1-2 hours RTO)
+- **Accidental deletion:** Restore from backup or R2 versioning (~30 min - 2 hours)
+- **Complete platform failure:** Rollback deployment or wait for Cloudflare (1-4 hours)
+- **R2 data loss:** Contact Cloudflare support, use versioning (4-24 hours)
+- **Security breach:** Rotate secrets, restore pre-breach backup (4-8 hours)
+
+---
+
 ## Monitoring Checklist
 
 ### Daily Checks (5 minutes)

@@ -616,6 +616,26 @@ export default {
         message.ack();
       }
     }
+  },
+
+  // Scheduled handler for automated backups (MAN-29)
+  // Triggered by CRON: "0 3 * * *" (daily at 3 AM UTC)
+  async scheduled(event, env, ctx) {
+    console.log('[Scheduled] CRON trigger fired:', event.cron);
+
+    try {
+      // Import and run backup handler
+      const { handleScheduledBackup } = await import('./backup-worker.js');
+      const result = await handleScheduledBackup(env);
+
+      if (result.success) {
+        console.log('[Scheduled] Backup completed successfully:', result.filename);
+      } else {
+        console.error('[Scheduled] Backup failed:', result.error);
+      }
+    } catch (error) {
+      console.error('[Scheduled] CRON handler error:', error);
+    }
   }
 };
 

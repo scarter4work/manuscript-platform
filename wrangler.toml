@@ -51,6 +51,15 @@ bucket_name = "manuscripts-processed"
 binding = "MARKETING_ASSETS"
 bucket_name = "marketing-assets"
 
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "manuscript-platform-backups"
+
+# Scheduled CRON trigger for automated backups
+# Runs daily at 3 AM UTC
+[triggers]
+crons = ["0 3 * * *"]
+
 # Note: Custom domain is configured via Cloudflare Dashboard
 # Go to Workers & Pages > manuscript-upload-api > Custom Domains
 # Add: api.scarter4workmanuscripthub.com
