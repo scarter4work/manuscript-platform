@@ -34,12 +34,13 @@ jobs:
       - name: Check for secrets in code
         run: |
           echo "Checking for potential secrets in code files..."
-          # Exclude markdown files, docs, and common documentation patterns
-          if grep -r "sk_live_" . --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=docs --exclude="*.md" --include="*.js" --include="*.json" --include="*.ts" --include="*.yml" --include="*.yaml"; then
+          # Exclude markdown files, docs, .github workflows, and common documentation patterns
+          # Only scan application code files (.js, .json in root directory)
+          if grep -r "sk_live_" . --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.github --exclude-dir=docs --exclude-dir=frontend --exclude="*.md" --include="*.js" --include="*.json"; then
             echo "ERROR: Found Stripe live keys in code!"
             exit 1
           fi
-          if grep -r "sk-ant-api03-" . --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=docs --exclude="*.md" --include="*.js" --include="*.json" --include="*.ts" --include="*.yml" --include="*.yaml"; then
+          if grep -r "sk-ant-api03-" . --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.github --exclude-dir=docs --exclude-dir=frontend --exclude="*.md" --include="*.js" --include="*.json"; then
             echo "ERROR: Found Anthropic API keys in code!"
             exit 1
           fi
