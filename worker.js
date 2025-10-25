@@ -40,18 +40,43 @@ export default {
     ];
 
     const origin = request.headers.get('Origin');
+
+    // Determine allowed origin (reject unknown origins for security)
+    const allowedOrigin = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+
     const corsHeaders = {
-      'Access-Control-Allow-Origin': origin && allowedOrigins.includes(origin) ? origin : '*', // Allow all for dev
+      'Access-Control-Allow-Origin': allowedOrigin,
       'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Filename, X-Author-Id, X-File-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Filename, X-Author-Id, X-File-Type, Authorization',
       'Access-Control-Allow-Credentials': 'true', // Important for cookie-based auth
       'Access-Control-Max-Age': '86400',
     };
 
-    // Helper function to add CORS headers to any response
+    // Security headers (OWASP recommended)
+    const securityHeaders = {
+      // Content Security Policy - Prevents XSS attacks
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com;",
+      // Prevent clickjacking attacks
+      'X-Frame-Options': 'DENY',
+      // Prevent MIME type sniffing
+      'X-Content-Type-Options': 'nosniff',
+      // Enable browser XSS protection
+      'X-XSS-Protection': '1; mode=block',
+      // Enforce HTTPS (only add in production)
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+      // Control referrer information
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      // Control browser features and APIs
+      'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
+    };
+
+    // Combine CORS and security headers
+    const allHeaders = { ...corsHeaders, ...securityHeaders };
+
+    // Helper function to add CORS and security headers to any response
     const addCorsHeaders = (response) => {
       const newHeaders = new Headers(response.headers);
-      Object.entries(corsHeaders).forEach(([key, value]) => {
+      Object.entries(allHeaders).forEach(([key, value]) => {
         newHeaders.set(key, value);
       });
       return new Response(response.body, {
@@ -63,7 +88,7 @@ export default {
 
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: corsHeaders });
+      return new Response(null, { headers: allHeaders });
     }
 
     const url = new URL(request.url);
@@ -77,37 +102,42 @@ export default {
 
       // POST /auth/register - User registration with email verification
       if (path === '/auth/register' && request.method === 'POST') {
-        return await authHandlers.register(request, env);
+        return addCorsHeaders(await authHandlers.register(request, env));
       }
 
       // POST /auth/login - User login with rate limiting
       if (path === '/auth/login' && request.method === 'POST') {
-        return await authHandlers.login(request, env);
+        return addCorsHeaders(await authHandlers.login(request, env));
       }
 
       // POST /auth/logout - User logout (destroy session)
       if (path === '/auth/logout' && request.method === 'POST') {
-        return await authHandlers.logout(request, env);
+        return addCorsHeaders(await authHandlers.logout(request, env));
       }
 
       // GET /auth/me - Get current authenticated user info
       if (path === '/auth/me' && request.method === 'GET') {
-        return await authHandlers.getMe(request, env);
+        return addCorsHeaders(await authHandlers.getMe(request, env));
       }
 
       // GET /auth/verify-email - Email verification with token
       if (path === '/auth/verify-email' && request.method === 'GET') {
-        return await authHandlers.verifyEmail(request, env);
+        return addCorsHeaders(await authHandlers.verifyEmail(request, env));
       }
 
       // POST /auth/password-reset-request - Request password reset
       if (path === '/auth/password-reset-request' && request.method === 'POST') {
-        return await authHandlers.passwordResetRequest(request, env);
+        return addCorsHeaders(await authHandlers.passwordResetRequest(request, env));
       }
 
       // POST /auth/password-reset - Reset password with token
       if (path === '/auth/password-reset' && request.method === 'POST') {
-        return await authHandlers.passwordReset(request, env);
+        return addCorsHeaders(await authHandlers.passwordReset(request, env));
+      }
+
+      // GET /auth/verify-reset-token - Verify reset token validity
+      if (path === '/auth/verify-reset-token' && request.method === 'GET') {
+        return addCorsHeaders(await authHandlers.verifyResetToken(request, env));
       }
 
       // ========================================================================
@@ -153,83 +183,83 @@ export default {
       // ========================================================================
       // Route: Upload raw manuscript
       if (path === '/upload/manuscript' && request.method === 'POST') {
-        return await handleManuscriptUpload(request, env, corsHeaders);
+        return await handleManuscriptUpload(request, env, allHeaders);
       }
 
       // Route: Upload marketing asset
       if (path === '/upload/marketing' && request.method === 'POST') {
-        return await handleMarketingUpload(request, env, corsHeaders);
+        return await handleMarketingUpload(request, env, allHeaders);
       }
 
       // Route: Get file (with signed URL generation)
       if (path.startsWith('/get/') && request.method === 'GET') {
-        return await handleFileGet(request, env, corsHeaders);
+        return await handleFileGet(request, env, allHeaders);
       }
 
       // Route: List files for an author
       if (path.startsWith('/list/') && request.method === 'GET') {
-        return await handleFileList(request, env, corsHeaders);
+        return await handleFileList(request, env, allHeaders);
       }
 
       // Route: Delete file
       if (path.startsWith('/delete/') && request.method === 'DELETE') {
-        return await handleFileDelete(request, env, corsHeaders);
+        return await handleFileDelete(request, env, allHeaders);
       }
 
       // Route: Analyze manuscript (Developmental Agent)
       if (path === '/analyze/developmental' && request.method === 'POST') {
-        return await handleDevelopmentalAnalysis(request, env, corsHeaders);
+        return await handleDevelopmentalAnalysis(request, env, allHeaders);
       }
 
       // Route: Analyze manuscript (Line Editing Agent)
       if (path === '/analyze/line-editing' && request.method === 'POST') {
-        return await handleLineEditingAnalysis(request, env, corsHeaders);
+        return await handleLineEditingAnalysis(request, env, allHeaders);
       }
 
       // Route: Analyze manuscript (Copy Editing Agent)
       if (path === '/analyze/copy-editing' && request.method === 'POST') {
-        return await handleCopyEditingAnalysis(request, env, corsHeaders);
+        return await handleCopyEditingAnalysis(request, env, allHeaders);
       }
 
       // NEW: Start async analysis (queues the job)
       if (path === '/analyze/start' && request.method === 'POST') {
-        return await handleStartAnalysis(request, env, corsHeaders);
+        return await handleStartAnalysis(request, env, allHeaders);
       }
 
       // NEW: Check analysis status
       if (path === '/analyze/status' && request.method === 'GET') {
-        return await handleAnalysisStatus(request, env, corsHeaders);
+        return await handleAnalysisStatus(request, env, allHeaders);
       }
 
       // Phase D: Check asset generation status
       if (path === '/assets/status' && request.method === 'GET') {
-        return await handleAssetStatus(request, env, corsHeaders);
+        return await handleAssetStatus(request, env, allHeaders);
       }
 
       // Phase E: DMCA Takedown Request Submission
       if (path === '/dmca/submit' && request.method === 'POST') {
-        return await handleDMCASubmission(request, env, corsHeaders);
+        return await handleDMCASubmission(request, env, allHeaders);
       }
 
       // Phase E: Admin DMCA Management Routes
       if (path === '/admin/dmca/requests' && request.method === 'GET') {
         const { getDMCARequests } = await import('./dmca-admin-handlers.js');
-        return await getDMCARequests(request, env, corsHeaders);
+        return await getDMCARequests(request, env, allHeaders);
       }
 
       if (path === '/admin/dmca/stats' && request.method === 'GET') {
         const { getDMCAStats } = await import('./dmca-admin-handlers.js');
-        return await getDMCAStats(request, env, corsHeaders);
+        return await getDMCAStats(request, env, allHeaders);
       }
 
       if (path === '/admin/dmca/status' && request.method === 'PATCH') {
         const { updateDMCAStatus } = await import('./dmca-admin-handlers.js');
-        return await updateDMCAStatus(request, env, corsHeaders);
+        return await updateDMCAStatus(request, env, allHeaders);
       }
 
       if (path === '/admin/dmca/resolve' && request.method === 'POST') {
         const { resolveDMCARequest } = await import('./dmca-admin-handlers.js');
-        return await resolveDMCARequest(request, env, corsHeaders);
+        return await resolveDMCARequest(request, env, allHeaders);
       }
 
       // ========================================================================
@@ -239,96 +269,96 @@ export default {
       // GET /admin/users - List all users
       if (path === '/admin/users' && request.method === 'GET') {
         const { listUsers } = await import('./admin-handlers.js');
-        return await listUsers(request, env, corsHeaders);
+        return await listUsers(request, env, allHeaders);
       }
 
       // GET /admin/users/:userId - Get user details
       if (path.match(/^\/admin\/users\/[^\/]+$/) && request.method === 'GET') {
         const userId = path.split('/')[3];
         const { getUserDetails } = await import('./admin-handlers.js');
-        return await getUserDetails(request, env, corsHeaders, userId);
+        return await getUserDetails(request, env, allHeaders, userId);
       }
 
       // PATCH /admin/users/:userId - Update user
       if (path.match(/^\/admin\/users\/[^\/]+$/) && request.method === 'PATCH') {
         const userId = path.split('/')[3];
         const { updateUser } = await import('./admin-handlers.js');
-        return await updateUser(request, env, corsHeaders, userId);
+        return await updateUser(request, env, allHeaders, userId);
       }
 
       // POST /admin/users/:userId/subscription - Adjust subscription
       if (path.match(/^\/admin\/users\/[^\/]+\/subscription$/) && request.method === 'POST') {
         const userId = path.split('/')[3];
         const { adjustUserSubscription } = await import('./admin-handlers.js');
-        return await adjustUserSubscription(request, env, corsHeaders, userId);
+        return await adjustUserSubscription(request, env, allHeaders, userId);
       }
 
       // GET /admin/manuscripts - List all manuscripts
       if (path === '/admin/manuscripts' && request.method === 'GET') {
         const { listAllManuscripts } = await import('./admin-handlers.js');
-        return await listAllManuscripts(request, env, corsHeaders);
+        return await listAllManuscripts(request, env, allHeaders);
       }
 
       // DELETE /admin/manuscripts/:manuscriptId - Admin delete manuscript
       if (path.match(/^\/admin\/manuscripts\/[^\/]+$/) && request.method === 'DELETE') {
         const manuscriptId = path.split('/')[3];
         const { adminDeleteManuscript } = await import('./admin-handlers.js');
-        return await adminDeleteManuscript(request, env, corsHeaders, manuscriptId);
+        return await adminDeleteManuscript(request, env, allHeaders, manuscriptId);
       }
 
       // GET /admin/analytics/overview - Platform analytics
       if (path === '/admin/analytics/overview' && request.method === 'GET') {
         const { getAnalyticsOverview } = await import('./admin-handlers.js');
-        return await getAnalyticsOverview(request, env, corsHeaders);
+        return await getAnalyticsOverview(request, env, allHeaders);
       }
 
       // GET /admin/analytics/activity - Recent activity
       if (path === '/admin/analytics/activity' && request.method === 'GET') {
         const { getRecentActivity } = await import('./admin-handlers.js');
-        return await getRecentActivity(request, env, corsHeaders);
+        return await getRecentActivity(request, env, allHeaders);
       }
 
       // GET /admin/billing/transactions - List payment transactions
       if (path === '/admin/billing/transactions' && request.method === 'GET') {
         const { listPaymentTransactions } = await import('./admin-billing-handlers.js');
-        return await listPaymentTransactions(request, env, corsHeaders);
+        return await listPaymentTransactions(request, env, allHeaders);
       }
 
       // GET /admin/billing/transactions/:transactionId - Get transaction details
       if (path.match(/^\/admin\/billing\/transactions\/[^\/]+$/) && request.method === 'GET') {
         const transactionId = path.split('/')[4];
         const { getTransactionDetails } = await import('./admin-billing-handlers.js');
-        return await getTransactionDetails(request, env, corsHeaders, transactionId);
+        return await getTransactionDetails(request, env, allHeaders, transactionId);
       }
 
       // GET /admin/billing/subscriptions/stats - Get subscription statistics
       if (path === '/admin/billing/subscriptions/stats' && request.method === 'GET') {
         const { getSubscriptionStats } = await import('./admin-billing-handlers.js');
-        return await getSubscriptionStats(request, env, corsHeaders);
+        return await getSubscriptionStats(request, env, allHeaders);
       }
 
       // GET /admin/billing/revenue - Get revenue analytics
       if (path === '/admin/billing/revenue' && request.method === 'GET') {
         const { getRevenueAnalytics } = await import('./admin-billing-handlers.js');
-        return await getRevenueAnalytics(request, env, corsHeaders);
+        return await getRevenueAnalytics(request, env, allHeaders);
       }
 
       // GET /admin/billing/failed-payments - Get failed payments
       if (path === '/admin/billing/failed-payments' && request.method === 'GET') {
         const { getFailedPayments } = await import('./admin-billing-handlers.js');
-        return await getFailedPayments(request, env, corsHeaders);
+        return await getFailedPayments(request, env, allHeaders);
       }
 
       // POST /admin/billing/refund - Issue refund
       if (path === '/admin/billing/refund' && request.method === 'POST') {
         const { issueRefund } = await import('./admin-billing-handlers.js');
-        return await issueRefund(request, env, corsHeaders);
+        return await issueRefund(request, env, allHeaders);
       }
 
       // POST /admin/billing/cancel-subscription - Cancel subscription
       if (path === '/admin/billing/cancel-subscription' && request.method === 'POST') {
         const { cancelSubscription } = await import('./admin-billing-handlers.js');
-        return await cancelSubscription(request, env, corsHeaders);
+        return await cancelSubscription(request, env, allHeaders);
       }
 
       // ========================================================================
@@ -338,102 +368,102 @@ export default {
       // POST /payments/create-checkout-session - Create Stripe checkout for subscription
       if (path === '/payments/create-checkout-session' && request.method === 'POST') {
         const { createCheckoutSession } = await import('./payment-handlers.js');
-        return await createCheckoutSession(request, env, corsHeaders);
+        return await createCheckoutSession(request, env, allHeaders);
       }
 
       // POST /payments/create-payment-intent - Create payment intent for one-time purchase
       if (path === '/payments/create-payment-intent' && request.method === 'POST') {
         const { createPaymentIntent } = await import('./payment-handlers.js');
-        return await createPaymentIntent(request, env, corsHeaders);
+        return await createPaymentIntent(request, env, allHeaders);
       }
 
       // POST /payments/create-portal-session - Create Stripe customer portal session
       if (path === '/payments/create-portal-session' && request.method === 'POST') {
         const { createPortalSession } = await import('./payment-handlers.js');
-        return await createPortalSession(request, env, corsHeaders);
+        return await createPortalSession(request, env, allHeaders);
       }
 
       // GET /payments/subscription - Get current subscription details
       if (path === '/payments/subscription' && request.method === 'GET') {
         const { getSubscription } = await import('./payment-handlers.js');
-        return await getSubscription(request, env, corsHeaders);
+        return await getSubscription(request, env, allHeaders);
       }
 
       // GET /payments/history - Get payment history
       if (path === '/payments/history' && request.method === 'GET') {
         const { getPaymentHistory } = await import('./payment-handlers.js');
-        return await getPaymentHistory(request, env, corsHeaders);
+        return await getPaymentHistory(request, env, allHeaders);
       }
 
       // GET /payments/can-upload - Check if user can upload (usage limits)
       if (path === '/payments/can-upload' && request.method === 'GET') {
         const { checkCanUpload } = await import('./payment-handlers.js');
-        return await checkCanUpload(request, env, corsHeaders);
+        return await checkCanUpload(request, env, allHeaders);
       }
 
       // POST /payments/webhook - Stripe webhook handler (coming soon)
       if (path === '/payments/webhook' && request.method === 'POST') {
-        return await handleStripeWebhook(request, env, corsHeaders);
+        return await handleStripeWebhook(request, env, allHeaders);
       }
 
       // Route: Generate marketing assets (book description, keywords, categories)
       if (path === '/generate-assets' && request.method === 'POST') {
-        return await handleGenerateAssets(request, env, corsHeaders);
+        return await handleGenerateAssets(request, env, allHeaders);
       }
 
       // Route: Get generated assets
       if (path === '/assets' && request.method === 'GET') {
-        return await handleGetAssets(request, env, corsHeaders);
+        return await handleGetAssets(request, env, allHeaders);
       }
 
       // Route: Format manuscript (generate EPUB and PDF)
       if (path === '/format-manuscript' && request.method === 'POST') {
-        return await handleFormatManuscript(request, env, corsHeaders);
+        return await handleFormatManuscript(request, env, allHeaders);
       }
 
       // Route: Download formatted file
       if (path === '/download-formatted' && request.method === 'GET') {
-        return await handleDownloadFormatted(request, env, corsHeaders);
+        return await handleDownloadFormatted(request, env, allHeaders);
       }
 
       // Route: Analyze market (Phase 2)
       if (path === '/analyze-market' && request.method === 'POST') {
-        return await handleMarketAnalysis(request, env, corsHeaders);
+        return await handleMarketAnalysis(request, env, allHeaders);
       }
 
       // Route: Get market analysis results
       if (path === '/market-analysis' && request.method === 'GET') {
-        return await handleGetMarketAnalysis(request, env, corsHeaders);
+        return await handleGetMarketAnalysis(request, env, allHeaders);
       }
 
       // Route: Generate social media marketing (Phase 5)
       if (path === '/generate-social-media' && request.method === 'POST') {
-        return await handleGenerateSocialMedia(request, env, corsHeaders);
+        return await handleGenerateSocialMedia(request, env, allHeaders);
       }
 
       // Route: Get social media marketing results
       if (path === '/social-media' && request.method === 'GET') {
-        return await handleGetSocialMedia(request, env, corsHeaders);
+        return await handleGetSocialMedia(request, env, allHeaders);
       }
 
       // Route: Get analysis results
       if (path.startsWith('/analysis/') && request.method === 'GET') {
-        return await handleGetAnalysis(request, env, corsHeaders);
+        return await handleGetAnalysis(request, env, allHeaders);
       }
 
       // Route: Get analysis results as JSON by reportId
       if (path === '/results' && request.method === 'GET') {
-        return await handleGetAnalysisResults(request, env, corsHeaders);
+        return await handleGetAnalysisResults(request, env, allHeaders);
       }
 
       // Route: Generate formatted report
       if (path === '/report' && request.method === 'GET') {
-        return await handleGenerateReport(request, env, corsHeaders);
+        return await handleGenerateReport(request, env, allHeaders);
       }
 
       // Route: Generate annotated manuscript
       if (path === '/annotated' && request.method === 'GET') {
-        return await handleGenerateAnnotatedManuscript(request, env, corsHeaders);
+        return await handleGenerateAnnotatedManuscript(request, env, allHeaders);
       }
 
       // Debug endpoint to check report ID mapping
@@ -442,7 +472,7 @@ export default {
         if (!reportId) {
           return new Response(JSON.stringify({ error: 'id parameter required' }), {
             status: 400,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            headers: { ...allHeaders, 'Content-Type': 'application/json' }
           });
         }
         
@@ -460,7 +490,7 @@ export default {
             manuscriptExists: !!manuscript,
             manuscriptSize: manuscript?.size || 0
           }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            headers: { ...allHeaders, 'Content-Type': 'application/json' }
           });
         } else {
           return new Response(JSON.stringify({ 
@@ -468,7 +498,7 @@ export default {
             reportId: reportId,
             message: 'No mapping found for this report ID'
           }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            headers: { ...allHeaders, 'Content-Type': 'application/json' }
           });
         }
       }
@@ -535,16 +565,16 @@ export default {
           },
           dashboard: 'Visit https://scarter4workmanuscripthub.com for the dashboard'
         }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          headers: { ...allHeaders, 'Content-Type': 'application/json' }
         });
       }
 
-      return new Response('Not Found', { status: 404, headers: corsHeaders });
+      return new Response('Not Found', { status: 404, headers: allHeaders });
 
     } catch (error) {
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
   },
@@ -583,7 +613,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     if (!userId) {
       return new Response(JSON.stringify({ error: 'Unauthorized - please log in' }), {
         status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -604,7 +634,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
         message: 'You have reached your monthly manuscript limit. Please upgrade your plan or wait for your billing period to reset.'
       }), {
         status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -616,7 +646,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     if (!file) {
       return new Response(JSON.stringify({ error: 'No file provided' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -625,7 +655,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     if (file.size > maxSize) {
       return new Response(JSON.stringify({ error: 'File too large. Maximum size is 50MB' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -641,7 +671,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     if (!allowedTypes.includes(file.type)) {
       return new Response(JSON.stringify({ error: 'Invalid file type. Allowed: PDF, DOCX, DOC, TXT, EPUB' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -772,13 +802,13 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
       }
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   } catch (error) {
     console.error('Upload error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -793,7 +823,7 @@ async function handleMarketingUpload(request, env, corsHeaders) {
   if (!file) {
     return new Response(JSON.stringify({ error: 'No file provided' }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 
@@ -808,7 +838,7 @@ async function handleMarketingUpload(request, env, corsHeaders) {
   if (!allowedImageTypes.includes(file.type)) {
     return new Response(JSON.stringify({ error: 'Invalid image type' }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 
@@ -817,7 +847,7 @@ async function handleMarketingUpload(request, env, corsHeaders) {
   if (file.size > maxSize) {
     return new Response(JSON.stringify({ error: 'Image too large. Maximum size is 10MB' }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 
@@ -848,7 +878,7 @@ async function handleMarketingUpload(request, env, corsHeaders) {
     assetType: assetType
   }), {
     status: 200,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    headers: { ...allHeaders, 'Content-Type': 'application/json' }
   });
 }
 
@@ -874,7 +904,7 @@ async function handleFileGet(request, env, corsHeaders) {
     default:
       return new Response(JSON.stringify({ error: 'Invalid bucket' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
   }
 
@@ -883,7 +913,7 @@ async function handleFileGet(request, env, corsHeaders) {
   if (!object) {
     return new Response(JSON.stringify({ error: 'File not found' }), {
       status: 404,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 
@@ -899,14 +929,14 @@ async function handleFileGet(request, env, corsHeaders) {
       size: object.size,
       uploaded: object.uploaded
     }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 
   // Return the file directly
   return new Response(object.body, {
     headers: {
-      ...corsHeaders,
+      ...allHeaders,
       'Content-Type': object.httpMetadata?.contentType || 'application/octet-stream',
     }
   });
@@ -934,7 +964,7 @@ async function handleFileList(request, env, corsHeaders) {
     default:
       return new Response(JSON.stringify({ error: 'Invalid bucket' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
   }
 
@@ -956,7 +986,7 @@ async function handleFileList(request, env, corsHeaders) {
     truncated: listed.truncated,
     cursor: listed.cursor
   }), {
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    headers: { ...allHeaders, 'Content-Type': 'application/json' }
   });
 }
 
@@ -984,7 +1014,7 @@ async function handleFileDelete(request, env, corsHeaders) {
     default:
       return new Response(JSON.stringify({ error: 'Invalid bucket' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
   }
 
@@ -994,7 +1024,7 @@ async function handleFileDelete(request, env, corsHeaders) {
     success: true,
     deleted: key
   }), {
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    headers: { ...allHeaders, 'Content-Type': 'application/json' }
   });
 }
 
@@ -1014,7 +1044,7 @@ async function handleDevelopmentalAnalysis(request, env, corsHeaders) {
     if (!manuscriptKey) {
       return new Response(JSON.stringify({ error: 'manuscriptKey is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1030,7 +1060,7 @@ async function handleDevelopmentalAnalysis(request, env, corsHeaders) {
       analysis: analysis
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1040,7 +1070,7 @@ async function handleDevelopmentalAnalysis(request, env, corsHeaders) {
       stack: error.stack 
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1054,7 +1084,7 @@ async function handleLineEditingAnalysis(request, env, corsHeaders) {
     if (!manuscriptKey) {
       return new Response(JSON.stringify({ error: 'manuscriptKey is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1070,7 +1100,7 @@ async function handleLineEditingAnalysis(request, env, corsHeaders) {
       analysis: analysis
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1080,7 +1110,7 @@ async function handleLineEditingAnalysis(request, env, corsHeaders) {
       stack: error.stack 
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1094,7 +1124,7 @@ async function handleCopyEditingAnalysis(request, env, corsHeaders) {
     if (!manuscriptKey) {
       return new Response(JSON.stringify({ error: 'manuscriptKey is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1110,7 +1140,7 @@ async function handleCopyEditingAnalysis(request, env, corsHeaders) {
       analysis: analysis
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1120,7 +1150,7 @@ async function handleCopyEditingAnalysis(request, env, corsHeaders) {
       stack: error.stack 
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1137,7 +1167,7 @@ async function handleGetAnalysis(request, env, corsHeaders) {
     if (!analysis) {
       return new Response(JSON.stringify({ error: 'Analysis not found' }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1145,14 +1175,14 @@ async function handleGetAnalysis(request, env, corsHeaders) {
 
     return new Response(JSON.stringify(analysisData), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
     console.error('Error retrieving analysis:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1165,7 +1195,7 @@ async function handleGenerateReport(request, env, corsHeaders) {
   if (!reportId) {
     return new Response(JSON.stringify({ error: 'Report ID required' }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
   
@@ -1184,7 +1214,7 @@ async function handleGenerateReport(request, env, corsHeaders) {
         hint: 'The report ID may have expired or is invalid'
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
     
@@ -1207,7 +1237,7 @@ async function handleGenerateReport(request, env, corsHeaders) {
     if (!devAnalysis && !lineAnalysis && !copyAnalysis) {
       return new Response(JSON.stringify({ error: 'No analysis found for this manuscript' }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
     
@@ -1233,7 +1263,7 @@ async function handleGenerateReport(request, env, corsHeaders) {
     return new Response(reportHtml, {
       status: 200,
       headers: { 
-        ...corsHeaders, 
+        ...allHeaders, 
         'Content-Type': 'text/html; charset=utf-8',
         'Content-Disposition': `inline; filename="manuscript-report-${Date.now()}.html"`
       }
@@ -1248,7 +1278,7 @@ async function handleGenerateReport(request, env, corsHeaders) {
       manuscriptKey: manuscriptKey
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1261,7 +1291,7 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
   if (!reportId) {
     return new Response(JSON.stringify({ error: 'Report ID required' }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
   
@@ -1280,7 +1310,7 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
         hint: 'The report ID may have expired or is invalid'
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
     
@@ -1291,7 +1321,7 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
     if (!manuscript) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
     
@@ -1341,7 +1371,7 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
     return new Response(annotatedHtml, {
       status: 200,
       headers: { 
-        ...corsHeaders, 
+        ...allHeaders, 
         'Content-Type': 'text/html; charset=utf-8'
       }
     });
@@ -1354,7 +1384,7 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
       stack: error.stack
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1367,7 +1397,7 @@ async function handleGetAnalysisResults(request, env, corsHeaders) {
   if (!reportId) {
     return new Response(JSON.stringify({ error: 'Report ID required' }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 
@@ -1381,7 +1411,7 @@ async function handleGetAnalysisResults(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1403,7 +1433,7 @@ async function handleGetAnalysisResults(request, env, corsHeaders) {
       }
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1412,7 +1442,7 @@ async function handleGetAnalysisResults(request, env, corsHeaders) {
       error: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1428,7 +1458,7 @@ async function handleStartAnalysis(request, env, corsHeaders) {
     if (!manuscriptKey || !reportId) {
       return new Response(JSON.stringify({ error: 'manuscriptKey and reportId are required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1460,7 +1490,7 @@ async function handleStartAnalysis(request, env, corsHeaders) {
       message: 'Analysis started'
     }), {
       status: 202, // Accepted
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1469,7 +1499,7 @@ async function handleStartAnalysis(request, env, corsHeaders) {
       error: error.message 
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1483,7 +1513,7 @@ async function handleAnalysisStatus(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1495,7 +1525,7 @@ async function handleAnalysisStatus(request, env, corsHeaders) {
         status: 'unknown'
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1503,7 +1533,7 @@ async function handleAnalysisStatus(request, env, corsHeaders) {
 
     return new Response(JSON.stringify(status), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1512,7 +1542,7 @@ async function handleAnalysisStatus(request, env, corsHeaders) {
       error: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1531,7 +1561,7 @@ async function handleAssetStatus(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1543,7 +1573,7 @@ async function handleAssetStatus(request, env, corsHeaders) {
         status: 'not_started'
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1551,7 +1581,7 @@ async function handleAssetStatus(request, env, corsHeaders) {
 
     return new Response(JSON.stringify(status), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1560,7 +1590,7 @@ async function handleAssetStatus(request, env, corsHeaders) {
       error: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1605,7 +1635,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1621,7 +1651,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1639,7 +1669,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1716,7 +1746,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
         }
       }), {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1758,7 +1788,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
       assets: combinedAssets
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1769,7 +1799,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
       stack: error.stack
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1783,7 +1813,7 @@ async function handleGetAssets(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'id parameter required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1798,7 +1828,7 @@ async function handleGetAssets(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1813,7 +1843,7 @@ async function handleGetAssets(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1824,7 +1854,7 @@ async function handleGetAssets(request, env, corsHeaders) {
       assets: assets
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -1833,7 +1863,7 @@ async function handleGetAssets(request, env, corsHeaders) {
       error: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -1849,7 +1879,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1864,7 +1894,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1876,7 +1906,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -1930,7 +1960,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
         errors: result.errors
       }), {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2007,7 +2037,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
       metadata: result.metadata
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -2018,7 +2048,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
       stack: error.stack
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -2033,14 +2063,14 @@ async function handleDownloadFormatted(request, env, corsHeaders) {
     if (!reportId || !format) {
       return new Response(JSON.stringify({ error: 'id and format parameters required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
     if (!['epub', 'pdf'].includes(format)) {
       return new Response(JSON.stringify({ error: 'format must be epub or pdf' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2055,7 +2085,7 @@ async function handleDownloadFormatted(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2072,7 +2102,7 @@ async function handleDownloadFormatted(request, env, corsHeaders) {
         format: format
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2083,7 +2113,7 @@ async function handleDownloadFormatted(request, env, corsHeaders) {
     return new Response(formattedFile.body, {
       status: 200,
       headers: {
-        ...corsHeaders,
+        ...allHeaders,
         'Content-Type': contentType,
         'Content-Disposition': `attachment; filename="${filename}"`,
         'Content-Length': formattedFile.size.toString()
@@ -2096,7 +2126,7 @@ async function handleDownloadFormatted(request, env, corsHeaders) {
       error: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -2112,7 +2142,7 @@ async function handleMarketAnalysis(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2127,7 +2157,7 @@ async function handleMarketAnalysis(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2139,7 +2169,7 @@ async function handleMarketAnalysis(request, env, corsHeaders) {
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2185,7 +2215,7 @@ async function handleMarketAnalysis(request, env, corsHeaders) {
       duration: result.metadata.duration
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -2194,7 +2224,7 @@ async function handleMarketAnalysis(request, env, corsHeaders) {
       error: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -2210,7 +2240,7 @@ async function handleGetMarketAnalysis(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2223,7 +2253,7 @@ async function handleGetMarketAnalysis(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2238,7 +2268,7 @@ async function handleGetMarketAnalysis(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2246,7 +2276,7 @@ async function handleGetMarketAnalysis(request, env, corsHeaders) {
 
     return new Response(JSON.stringify(analysisData), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -2255,7 +2285,7 @@ async function handleGetMarketAnalysis(request, env, corsHeaders) {
       error: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -2271,7 +2301,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2286,7 +2316,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2298,7 +2328,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2371,7 +2401,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
       duration: result.metadata.duration
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -2382,7 +2412,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
       stack: error.stack
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -2398,7 +2428,7 @@ async function handleGetSocialMedia(request, env, corsHeaders) {
     if (!reportId) {
       return new Response(JSON.stringify({ error: 'reportId is required' }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2411,7 +2441,7 @@ async function handleGetSocialMedia(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2426,7 +2456,7 @@ async function handleGetSocialMedia(request, env, corsHeaders) {
         reportId: reportId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2434,7 +2464,7 @@ async function handleGetSocialMedia(request, env, corsHeaders) {
 
     return new Response(JSON.stringify(socialMediaData), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -2443,7 +2473,7 @@ async function handleGetSocialMedia(request, env, corsHeaders) {
       error: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
@@ -2500,7 +2530,7 @@ async function handleDMCASubmission(request, env, corsHeaders) {
         error: 'Missing required fields. Please complete all required fields including attestations and digital signature.'
       }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2511,7 +2541,7 @@ async function handleDMCASubmission(request, env, corsHeaders) {
         error: 'Invalid email address format'
       }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2521,7 +2551,7 @@ async function handleDMCASubmission(request, env, corsHeaders) {
         error: 'Both attestations must be confirmed to submit a DMCA request'
       }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2550,7 +2580,7 @@ async function handleDMCASubmission(request, env, corsHeaders) {
         providedId: manuscriptId
       }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -2650,7 +2680,7 @@ async function handleDMCASubmission(request, env, corsHeaders) {
       reviewInfo: 'Your request will be reviewed within 24 hours. You will receive an email confirmation shortly.'
     }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
 
   } catch (error) {
@@ -2661,7 +2691,7 @@ async function handleDMCASubmission(request, env, corsHeaders) {
       details: error.message
     }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      headers: { ...allHeaders, 'Content-Type': 'application/json' }
     });
   }
 }

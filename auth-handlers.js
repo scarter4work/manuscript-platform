@@ -487,15 +487,23 @@ export async function handlePasswordResetRequest(request, env) {
       email: normalizedEmail
     });
 
-    // TODO: Send password reset email
-    // In production, integrate with Cloudflare Email Routing or SendGrid
-    // For now, return the token in the response (development only)
+    // Get user details for email
+    const userDetails = await env.DB.prepare(
+      'SELECT full_name FROM users WHERE id = ?'
+    ).bind(user.id).first();
+
+    // Send password reset email via MailChannels
+    const resetUrl = `${env.FRONTEND_URL}/reset-password.html?token=${resetToken}`;
+    try {
+      await sendPasswordResetEmail(env, normalizedEmail, userDetails?.full_name, resetUrl);
+      console.log('Password reset email sent to:', normalizedEmail);
+    } catch (emailError) {
+      console.error('Failed to send password reset email:', emailError);
+      // Don't fail the request if email fails - still return success
+    }
 
     return jsonResponse({
-      message: 'If the email exists, a password reset link has been sent',
-      // DEVELOPMENT ONLY: Include reset token in response
-      // Remove this in production and send via email
-      resetToken: resetToken
+      message: 'If the email exists, a password reset link has been sent'
     });
 
   } catch (error) {
@@ -561,6 +569,20 @@ export async function handlePasswordReset(request, env) {
     // Log password reset event
     await logAuthEvent(env, userId, 'password_reset', request, {});
 
+    // Send confirmation email
+    const user = await env.DB.prepare(
+      'SELECT email FROM users WHERE id = ?'
+    ).bind(userId).first();
+
+    if (user) {
+      try {
+        await sendPasswordResetConfirmationEmail(env, user.email);
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Don't fail if email fails
+      }
+    }
+
     return jsonResponse({
       message: 'Password reset successful. Please login with your new password.'
     });
@@ -569,6 +591,162 @@ export async function handlePasswordReset(request, env) {
     console.error('Password reset error:', error);
     return errorResponse('Internal server error', 500);
   }
+}
+
+/**
+ * GET /auth/verify-reset-token
+ * Verify if reset token is valid (before showing reset form)
+ *
+ * Query param: token
+ * Returns: { valid: boolean, error?: string }
+ */
+export async function handleVerifyResetToken(request, env) {
+  try {
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token');
+
+    if (!token) {
+      return jsonResponse({ valid: false, error: 'Token is required' });
+    }
+
+    // Validate token (doesn't consume it, just checks if valid)
+    const userId = await validateVerificationToken(token, 'password_reset', env);
+
+    if (!userId) {
+      return jsonResponse({ valid: false, error: 'Invalid or expired token' });
+    }
+
+    return jsonResponse({ valid: true });
+
+  } catch (error) {
+    console.error('Verify reset token error:', error);
+    return jsonResponse({ valid: false, error: 'Failed to verify token' }, 500);
+  }
+}
+
+// ============================================================================
+// EMAIL FUNCTIONS
+// ============================================================================
+
+/**
+ * Send password reset email via MailChannels
+ */
+async function sendPasswordResetEmail(env, toEmail, fullName, resetUrl) {
+  const emailContent = {
+    personalizations: [{
+      to: [{ email: toEmail, name: fullName || toEmail }],
+    }],
+    from: {
+      email: env.EMAIL_FROM_ADDRESS,
+      name: env.EMAIL_FROM_NAME
+    },
+    subject: 'Reset Your Password - ManuscriptHub',
+    content: [{
+      type: 'text/html',
+      value: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px;">
+            <h2 style="color: #007bff; margin-top: 0;">Password Reset Request</h2>
+            <p>Hi${fullName ? ' ' + fullName : ''},</p>
+            <p>We received a request to reset your password for your ManuscriptHub account. If you didn't make this request, you can safely ignore this email.</p>
+            <p>To reset your password, click the button below:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                Reset Password
+              </a>
+            </div>
+            <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; color: #007bff; font-size: 14px;">${resetUrl}</p>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+              <p style="color: #666; font-size: 12px; margin: 5px 0;">
+                <strong>Security Notice:</strong> This link will expire in 1 hour.
+              </p>
+              <p style="color: #666; font-size: 12px; margin: 5px 0;">
+                If you didn't request a password reset, please contact support at ${env.EMAIL_ADMIN_ADDRESS}.
+              </p>
+            </div>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 12px;">
+              <p>© 2025 ManuscriptHub. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    }]
+  };
+
+  const response = await fetch('https://api.mailchannels.net/tx/v1/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(emailContent)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to send email: ${await response.text()}`);
+  }
+}
+
+/**
+ * Send password reset confirmation email
+ */
+async function sendPasswordResetConfirmationEmail(env, toEmail) {
+  const emailContent = {
+    personalizations: [{
+      to: [{ email: toEmail }],
+    }],
+    from: {
+      email: env.EMAIL_FROM_ADDRESS,
+      name: env.EMAIL_FROM_NAME
+    },
+    subject: 'Password Reset Successful - ManuscriptHub',
+    content: [{
+      type: 'text/html',
+      value: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px;">
+            <h2 style="color: #28a745; margin-top: 0;">✓ Password Reset Successful</h2>
+            <p>Your ManuscriptHub password has been successfully reset.</p>
+            <p>You can now log in to your account using your new password.</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${env.FRONTEND_URL}/login.html" style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                Log In Now
+              </a>
+            </div>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+              <p style="color: #666; font-size: 12px; margin: 5px 0;">
+                <strong>Security Alert:</strong> If you didn't make this change, your account may be compromised.
+              </p>
+              <p style="color: #666; font-size: 12px; margin: 5px 0;">
+                Please contact support immediately at ${env.EMAIL_ADMIN_ADDRESS}.
+              </p>
+            </div>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 12px;">
+              <p>© 2025 ManuscriptHub. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    }]
+  };
+
+  await fetch('https://api.mailchannels.net/tx/v1/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(emailContent)
+  });
 }
 
 // ============================================================================
@@ -582,5 +760,6 @@ export const authHandlers = {
   getMe: handleGetMe,
   verifyEmail: handleVerifyEmail,
   passwordResetRequest: handlePasswordResetRequest,
-  passwordReset: handlePasswordReset
+  passwordReset: handlePasswordReset,
+  verifyResetToken: handleVerifyResetToken
 };

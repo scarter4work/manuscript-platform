@@ -2,6 +2,11 @@
 # Copy this file to .dev.vars and fill in your actual values
 # DO NOT commit .dev.vars to version control!
 
+# JWT Secret for authentication tokens (REQUIRED)
+# Generate a secure random string: openssl rand -base64 32
+# CRITICAL: This must be set or the application will not start
+JWT_SECRET=your_secure_random_jwt_secret_here_minimum_32_characters
+
 # Anthropic API Key for AI analysis agents
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 

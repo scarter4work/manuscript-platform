@@ -4,27 +4,130 @@
 export class Auth {
   constructor(env) {
     this.env = env;
-    this.jwtSecret = env.JWT_SECRET || 'your-super-secret-jwt-key-change-this';
+
+    // CRITICAL: JWT_SECRET must be set in production environment
+    // This prevents token forgery and unauthorized access
+    if (!env.JWT_SECRET) {
+      throw new Error('CRITICAL SECURITY ERROR: JWT_SECRET environment variable is required');
+    }
+    this.jwtSecret = env.JWT_SECRET;
   }
 
   /**
-   * Hash password using Web Crypto API
+   * Hash password using PBKDF2 (secure password hashing)
+   * Uses 100,000 iterations as recommended by NIST
+   * Generates random salt per password
+   * Returns: "salt:hash" format
    */
   async hashPassword(password) {
+    // Generate random 16-byte salt
+    const saltBuffer = crypto.getRandomValues(new Uint8Array(16));
+
+    // Convert password to bytes
     const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hash = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hash))
+    const passwordBuffer = encoder.encode(password);
+
+    // Import password as key material
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw',
+      passwordBuffer,
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits']
+    );
+
+    // Derive hash using PBKDF2 with 100,000 iterations
+    const hashBuffer = await crypto.subtle.deriveBits(
+      {
+        name: 'PBKDF2',
+        salt: saltBuffer,
+        iterations: 100000,
+        hash: 'SHA-256'
+      },
+      keyMaterial,
+      256 // 256 bits = 32 bytes
+    );
+
+    // Convert to hex strings
+    const saltHex = Array.from(saltBuffer)
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
+    const hashHex = Array.from(new Uint8Array(hashBuffer))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    // Return salt:hash format for storage
+    return `${saltHex}:${hashHex}`;
   }
 
   /**
-   * Verify password against hash
+   * Verify password against stored hash
+   * Extracts salt from stored hash and recomputes to compare
    */
-  async verifyPassword(password, hash) {
-    const passwordHash = await this.hashPassword(password);
-    return passwordHash === hash;
+  async verifyPassword(password, storedHash) {
+    try {
+      // Parse stored hash format: "salt:hash"
+      const [saltHex, originalHashHex] = storedHash.split(':');
+      if (!saltHex || !originalHashHex) {
+        console.error('Invalid stored hash format');
+        return false;
+      }
+
+      // Convert salt from hex to bytes
+      const saltBuffer = new Uint8Array(
+        saltHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16))
+      );
+
+      // Convert password to bytes
+      const encoder = new TextEncoder();
+      const passwordBuffer = encoder.encode(password);
+
+      // Import password as key material
+      const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        passwordBuffer,
+        { name: 'PBKDF2' },
+        false,
+        ['deriveBits']
+      );
+
+      // Derive hash with same salt and iterations
+      const hashBuffer = await crypto.subtle.deriveBits(
+        {
+          name: 'PBKDF2',
+          salt: saltBuffer,
+          iterations: 100000,
+          hash: 'SHA-256'
+        },
+        keyMaterial,
+        256
+      );
+
+      // Convert to hex string
+      const computedHashHex = Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+
+      // Constant-time comparison to prevent timing attacks
+      return this.constantTimeCompare(computedHashHex, originalHashHex);
+    } catch (error) {
+      console.error('Password verification error:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Constant-time string comparison to prevent timing attacks
+   */
+  constantTimeCompare(a, b) {
+    if (a.length !== b.length) {
+      return false;
+    }
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return result === 0;
   }
 
   /**
