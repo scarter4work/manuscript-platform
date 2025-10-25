@@ -487,15 +487,13 @@ export async function handlePasswordResetRequest(request, env) {
       email: normalizedEmail
     });
 
-    // Get user details for email
-    const userDetails = await env.DB.prepare(
-      'SELECT full_name FROM users WHERE id = ?'
-    ).bind(user.id).first();
+    // Use email username as fallback for display name (since full_name column doesn't exist yet)
+    const displayName = normalizedEmail.split('@')[0] || 'User';
 
     // Send password reset email via MailChannels
     const resetUrl = `${env.FRONTEND_URL}/reset-password.html?token=${resetToken}`;
     try {
-      await sendPasswordResetEmail(env, normalizedEmail, userDetails?.full_name, resetUrl);
+      await sendPasswordResetEmail(env, normalizedEmail, displayName, resetUrl);
       console.log('Password reset email sent to:', normalizedEmail);
     } catch (emailError) {
       console.error('Failed to send password reset email:', emailError);
