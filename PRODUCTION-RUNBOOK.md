@@ -298,6 +298,108 @@ npx wrangler deploy
 
 ---
 
+### 🟡 Issue 7: Stripe Webhooks Failing
+
+**Symptoms:**
+- Stripe webhook deliveries show failures in Stripe Dashboard
+- Payments successful but subscriptions not activated
+- 400 "Invalid signature" errors in logs
+
+**Diagnosis:**
+```bash
+# Check webhook secret is set
+npx wrangler secret list | grep STRIPE_WEBHOOK_SECRET
+
+# Monitor webhook attempts
+npx wrangler tail --format pretty | grep "\[Webhook\]"
+
+# Check Stripe Dashboard
+# Developers → Webhooks → View endpoint → Recent deliveries
+```
+
+**Common Causes:**
+1. **Wrong webhook secret** → Misconfigured STRIPE_WEBHOOK_SECRET
+2. **Body parsing issue** → Code modification broke signature verification
+3. **Endpoint timeout** → Worker taking too long to respond
+4. **Disabled endpoint** → Webhook endpoint turned off in Stripe
+
+**Resolution:**
+```bash
+# Step 1: Verify webhook secret matches Stripe Dashboard
+# Stripe Dashboard → Developers → Webhooks → Endpoint → Signing secret
+
+# Step 2: Update secret in Cloudflare
+echo "whsec_CORRECT_SECRET" | npx wrangler secret put STRIPE_WEBHOOK_SECRET
+
+# Step 3: Test webhook from Stripe Dashboard
+# Send test webhook: checkout.session.completed
+# Should return 200 OK with {"received":true}
+
+# Step 4: If still failing, check logs
+npx wrangler tail --format pretty
+# Look for error details
+```
+
+**Impact:** 🟡 High - Subscriptions not activating, users charged but no access
+
+**Prevention:**
+- Document webhook secret during initial setup
+- Test webhooks after every deployment
+- Monitor webhook delivery success rate in Stripe Dashboard
+
+---
+
+### 🔵 Issue 8: Payment Successful but Subscription Not Created
+
+**Symptoms:**
+- Payment shows as successful in Stripe
+- User charged but has no active subscription
+- No subscription record in database
+- Webhook delivered successfully (200 OK)
+
+**Diagnosis:**
+```bash
+# Check if webhook was received
+npx wrangler tail --format pretty | grep "\[Webhook\]"
+
+# Check for subscription in database
+npx wrangler d1 execute manuscript-platform --remote --command \
+  "SELECT * FROM subscriptions WHERE stripe_customer_id='cus_xxxxx'"
+
+# Check Stripe Dashboard for subscription status
+# Customers → Find customer → Subscriptions tab
+```
+
+**Common Causes:**
+1. **Missing metadata** → Stripe session missing `user_id` in metadata
+2. **Database error** → Subscription insert failed silently
+3. **User doesn't exist** → user_id in metadata points to non-existent user
+4. **Webhook timing** → Webhook arrived before checkout page loaded
+
+**Resolution:**
+```bash
+# Step 1: Find Stripe subscription ID
+# Stripe Dashboard → Customers → Find customer → Copy subscription ID
+
+# Step 2: Manually create subscription record
+npx wrangler d1 execute manuscript-platform --remote --command \
+  "INSERT INTO subscriptions (id, user_id, stripe_subscription_id, stripe_customer_id, plan_id, status, current_period_start, current_period_end, cancel_at_period_end, created_at, updated_at) \
+   VALUES ('sub_' || hex(randomblob(16)), 'USER_ID_HERE', 'sub_xxxxx', 'cus_xxxxx', 'basic', 'active', unixepoch(), unixepoch() + 2592000, 0, unixepoch(), unixepoch())"
+
+# Step 3: Verify user now has access
+curl -H "Authorization: Bearer USER_TOKEN" \
+  https://api.scarter4workmanuscripthub.com/subscription/status
+```
+
+**Impact:** 🔵 Low - Rare occurrence, manually fixable
+
+**Prevention:**
+- Always include `metadata: {user_id: userId}` in Stripe checkout sessions
+- Add database transaction logging
+- Monitor subscription creation success rate
+
+---
+
 ## Deployment Procedures
 
 ### Standard Deployment
@@ -391,6 +493,138 @@ npx wrangler d1 execute manuscript-platform --remote --command \
 # BE CAREFUL - verify user first
 npx wrangler d1 execute manuscript-platform --remote --command \
   "DELETE FROM users WHERE email LIKE 'prodtest%@example.com'"
+```
+
+---
+
+## Stripe Operations
+
+### Viewing Subscriptions
+
+**Check all active subscriptions:**
+```bash
+npx wrangler d1 execute manuscript-platform --remote --command \
+  "SELECT s.id, s.stripe_subscription_id, u.email, s.plan_id, s.status, \
+   datetime(s.current_period_end, 'unixepoch') as period_ends \
+   FROM subscriptions s \
+   JOIN users u ON s.user_id = u.id \
+   WHERE s.status = 'active' \
+   ORDER BY s.created_at DESC"
+```
+
+**Check specific user's subscription:**
+```bash
+npx wrangler d1 execute manuscript-platform --remote --command \
+  "SELECT * FROM subscriptions WHERE user_id='USER_ID_HERE'"
+```
+
+### Refunding Payments
+
+**Process:**
+1. Go to Stripe Dashboard → Payments
+2. Find the payment intent
+3. Click **Refund** → Full or Partial
+4. Add reason (shows on customer statement)
+5. Confirm refund
+
+**Or via API (if needed):**
+```bash
+# Use Stripe CLI (requires installation)
+stripe refunds create --payment-intent=pi_xxxxx --amount=1000
+```
+
+### Canceling Subscriptions
+
+**User-initiated (normal flow):**
+- User cancels via dashboard
+- Subscription marked `cancel_at_period_end = 1`
+- Access continues until period ends
+- Stripe webhook updates database
+
+**Admin-initiated (support request):**
+```bash
+# Option 1: Cancel immediately (via Stripe Dashboard)
+# Customers → Find customer → Subscriptions → Cancel subscription → Cancel immediately
+
+# Option 2: Cancel at period end (via Stripe Dashboard)
+# Customers → Find customer → Subscriptions → Cancel subscription → At period end
+
+# Update database to match
+npx wrangler d1 execute manuscript-platform --remote --command \
+  "UPDATE subscriptions SET cancel_at_period_end=1, updated_at=unixepoch() \
+   WHERE stripe_subscription_id='sub_xxxxx'"
+```
+
+### Webhook Monitoring
+
+**Check recent webhook deliveries:**
+1. Stripe Dashboard → Developers → Webhooks
+2. Click on production endpoint
+3. View **Recent deliveries** tab
+4. Look for failures (red)
+
+**Common webhook events to monitor:**
+- `checkout.session.completed` - New subscriptions
+- `invoice.payment_succeeded` - Successful renewals
+- `invoice.payment_failed` - Failed payments (card expired, insufficient funds)
+- `customer.subscription.deleted` - Canceled subscriptions
+
+**Resend failed webhook:**
+1. Click on failed event
+2. Click **Resend event**
+3. Monitor worker logs
+
+### Handling Failed Payments
+
+**When invoice.payment_failed webhook received:**
+
+1. **Check Stripe Dashboard:**
+   - Customers → Find customer
+   - View subscription status (past_due, unpaid)
+   - Check payment method (expired card?)
+
+2. **Notify user:**
+   - Email sent automatically by Stripe (if configured)
+   - Check email logs in Stripe Dashboard
+
+3. **Grace period:**
+   - Subscription remains active for 3 days
+   - Stripe retries payment automatically
+   - After 3 failed attempts → subscription canceled
+
+4. **Manual intervention (if needed):**
+   ```bash
+   # Check subscription status
+   npx wrangler d1 execute manuscript-platform --remote --command \
+     "SELECT status FROM subscriptions WHERE stripe_subscription_id='sub_xxxxx'"
+
+   # If user updated card, manually retry invoice
+   # Stripe Dashboard → Invoices → Find invoice → Retry payment
+   ```
+
+### Testing Stripe Integration
+
+**Test webhook locally:**
+```bash
+# Install Stripe CLI
+# https://stripe.com/docs/stripe-cli
+
+# Forward webhooks to local dev server
+stripe listen --forward-to localhost:8787/webhooks/stripe
+
+# Trigger test events
+stripe trigger checkout.session.completed
+stripe trigger invoice.payment_succeeded
+stripe trigger invoice.payment_failed
+```
+
+**Test in production (carefully):**
+```bash
+# Send test webhook from Stripe Dashboard
+# Developers → Webhooks → Endpoint → Send test webhook
+
+# Monitor logs
+npx wrangler tail --format pretty | grep "\[Webhook\]"
 ```
 
 ---
