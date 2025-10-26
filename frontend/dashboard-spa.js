@@ -448,6 +448,18 @@ const app = {
             } else if (view === 'summary' && this.state.reportId && !this.state.analysisResults.developmental) {
                 // If navigating to summary but don't have results, fetch and show data
                 this.showLimitedSummary();
+            } else if (view === 'market') {
+                // Load market analysis view
+                this.loadMarketAnalysisView();
+            } else if (view === 'assets') {
+                // Load assets view
+                this.loadAssetsView();
+            } else if (view === 'formatting') {
+                // Load formatting view
+                this.loadFormattingView();
+            } else if (view === 'social') {
+                // Load social media view
+                this.loadSocialView();
             }
         }
     },
@@ -488,6 +500,18 @@ const app = {
                 <a onclick="app.navigate('summary')">Analysis Results</a>
                 <span class="breadcrumb-separator">›</span>
                 <span class="breadcrumb-current">Annotated Manuscript</span>
+            `;
+        } else if (view === 'market') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Market Analysis</span>
+            `;
+        } else if (view === 'social') {
+            content += `
+                <a onclick="app.navigate('summary')">Analysis Results</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">Social Media Content</span>
             `;
         } else if (view === 'assetGeneration') {
             content += `
@@ -2963,6 +2987,1619 @@ const app = {
         const a = document.createElement('a');
         a.href = url;
         a.download = `marketing-kit-${this.state.reportId}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    },
+
+    // ============================================================================
+    // PHASE 2: MARKET ANALYSIS
+    // ============================================================================
+
+    /**
+     * Load Market Analysis View
+     * Checks if analysis already exists and displays appropriate UI state
+     */
+    loadMarketAnalysisView() {
+        console.log('Loading market analysis view...');
+
+        if (!this.state.reportId) {
+            alert('No report ID available. Please complete manuscript analysis first.');
+            this.navigate('library');
+            return;
+        }
+
+        const marketStart = document.getElementById('marketStart');
+        const marketLoading = document.getElementById('marketLoading');
+        const marketContent = document.getElementById('marketContent');
+
+        // Check if we already have market analysis data
+        if (this.state.marketAnalysis && this.state.marketAnalysis.status === 'complete') {
+            // Already have data, display it
+            marketStart.style.display = 'none';
+            marketLoading.style.display = 'none';
+            marketContent.style.display = 'block';
+            this.displayMarketAnalysis(this.state.marketAnalysis);
+        } else {
+            // Try to fetch existing market analysis
+            this.fetchMarketAnalysis();
+        }
+    },
+
+    /**
+     * Fetch existing market analysis data
+     */
+    async fetchMarketAnalysis() {
+        console.log('Fetching market analysis for reportId:', this.state.reportId);
+
+        try {
+            const response = await fetch(
+                `${this.API_BASE}/market-analysis?id=${this.state.reportId}`,
+                { credentials: 'include' }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Market analysis data:', data);
+
+                if (data.analysis && data.analysis.status === 'complete') {
+                    // We have complete market analysis
+                    this.state.marketAnalysis = data.analysis;
+                    this.displayMarketAnalysis(data.analysis);
+                } else if (data.analysis && data.analysis.status === 'processing') {
+                    // Analysis is in progress
+                    document.getElementById('marketStart').style.display = 'none';
+                    document.getElementById('marketLoading').style.display = 'block';
+                    document.getElementById('marketContent').style.display = 'none';
+                    this.pollMarketAnalysis();
+                } else {
+                    // No analysis found, show start button
+                    document.getElementById('marketStart').style.display = 'block';
+                    document.getElementById('marketLoading').style.display = 'none';
+                    document.getElementById('marketContent').style.display = 'none';
+                }
+            } else {
+                // No analysis found, show start button
+                document.getElementById('marketStart').style.display = 'block';
+                document.getElementById('marketLoading').style.display = 'none';
+                document.getElementById('marketContent').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error fetching market analysis:', error);
+            document.getElementById('marketStart').style.display = 'block';
+            document.getElementById('marketLoading').style.display = 'none';
+            document.getElementById('marketContent').style.display = 'none';
+        }
+    },
+
+    /**
+     * Start Market Analysis
+     * Triggers the market analysis job and starts polling for completion
+     */
+    async startMarketAnalysis() {
+        console.log('Starting market analysis for reportId:', this.state.reportId);
+
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        try {
+            // Show loading state
+            document.getElementById('marketStart').style.display = 'none';
+            document.getElementById('marketLoading').style.display = 'block';
+            document.getElementById('marketContent').style.display = 'none';
+
+            // Trigger market analysis
+            const response = await fetch(`${this.API_BASE}/analyze-market`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reportId: this.state.reportId
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to start market analysis');
+            }
+
+            const result = await response.json();
+            console.log('Market analysis started:', result);
+
+            // Start polling for completion
+            await this.pollMarketAnalysis();
+
+        } catch (error) {
+            console.error('Error starting market analysis:', error);
+            alert('Failed to start market analysis: ' + error.message);
+
+            // Reset UI
+            document.getElementById('marketStart').style.display = 'block';
+            document.getElementById('marketLoading').style.display = 'none';
+            document.getElementById('marketContent').style.display = 'none';
+        }
+    },
+
+    /**
+     * Poll Market Analysis Status
+     * Periodically checks if market analysis is complete
+     */
+    async pollMarketAnalysis() {
+        console.log('Polling market analysis status...');
+
+        const pollInterval = setInterval(async () => {
+            try {
+                const response = await fetch(
+                    `${this.API_BASE}/market-analysis?id=${this.state.reportId}`,
+                    { credentials: 'include' }
+                );
+
+                if (!response.ok) {
+                    console.error('Failed to fetch market analysis status');
+                    clearInterval(pollInterval);
+                    document.getElementById('marketLoading').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #f44336; margin-bottom: 15px;">Analysis Failed</h3>
+                            <p style="color: #666; margin-bottom: 30px;">
+                                Market analysis encountered an error. Please try again.
+                            </p>
+                            <button class="btn" onclick="app.navigate('market')">Try Again</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Market analysis poll result:', data);
+
+                if (data.analysis && data.analysis.status === 'complete') {
+                    // Analysis complete!
+                    clearInterval(pollInterval);
+                    this.state.marketAnalysis = data.analysis;
+
+                    // Hide loading, show content
+                    document.getElementById('marketLoading').style.display = 'none';
+                    document.getElementById('marketContent').style.display = 'block';
+
+                    // Display the results
+                    this.displayMarketAnalysis(data.analysis);
+                } else if (data.analysis && data.analysis.status === 'failed') {
+                    // Analysis failed
+                    clearInterval(pollInterval);
+                    document.getElementById('marketLoading').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #f44336; margin-bottom: 15px;">Analysis Failed</h3>
+                            <p style="color: #666; margin-bottom: 30px;">
+                                ${data.analysis.error || 'Market analysis encountered an error.'}
+                            </p>
+                            <button class="btn" onclick="app.navigate('market')">Try Again</button>
+                        </div>
+                    `;
+                }
+                // If status is still 'processing', keep polling
+            } catch (error) {
+                console.error('Error polling market analysis:', error);
+                clearInterval(pollInterval);
+            }
+        }, 5000); // Poll every 5 seconds
+    },
+
+    /**
+     * Display Market Analysis Results
+     * Renders the market analysis data in a formatted view
+     */
+    displayMarketAnalysis(analysis) {
+        console.log('Displaying market analysis:', analysis);
+
+        const contentDiv = document.getElementById('marketContent');
+
+        if (!analysis || !analysis.data) {
+            contentDiv.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">No Analysis Data</h3>
+                    <p style="color: #999;">Market analysis data is not available.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const data = analysis.data;
+
+        // Build HTML for market analysis results
+        let html = `
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">📊 Market Overview</h3>
+                <div style="background: #f8f9ff; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                    ${data.market_overview ? `<p style="line-height: 1.6; color: #333;">${data.market_overview}</p>` : '<p style="color: #999;">No market overview available</p>'}
+                </div>
+            </div>
+        `;
+
+        // Genre Positioning
+        if (data.genre_positioning) {
+            html += `
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">🎯 Genre Positioning</h3>
+                    <div style="background: #f8f9ff; border-radius: 8px; padding: 20px;">
+                        ${data.genre_positioning}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Comparable Titles
+        if (data.comparable_titles && data.comparable_titles.length > 0) {
+            html += `
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">📚 Comparable Titles</h3>
+            `;
+
+            data.comparable_titles.forEach((book, index) => {
+                html += `
+                    <div style="background: white; border-left: 4px solid #4caf50; border-radius: 8px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <h4 style="color: #333; margin-bottom: 10px;">${index + 1}. ${book.title || 'Unknown Title'}</h4>
+                        ${book.author ? `<p style="color: #666; margin-bottom: 10px;"><strong>Author:</strong> ${book.author}</p>` : ''}
+                        ${book.year ? `<p style="color: #666; margin-bottom: 10px;"><strong>Published:</strong> ${book.year}</p>` : ''}
+                        ${book.reason ? `<p style="color: #666; line-height: 1.6;"><strong>Why it's comparable:</strong> ${book.reason}</p>` : ''}
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+        }
+
+        // Target Audience
+        if (data.target_audience) {
+            html += `
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">👥 Target Audience</h3>
+                    <div style="background: #f8f9ff; border-radius: 8px; padding: 20px;">
+                        ${data.target_audience}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Market Opportunities
+        if (data.market_opportunities) {
+            html += `
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">💡 Market Opportunities</h3>
+                    <div style="background: #e8f5e9; border-radius: 8px; padding: 20px;">
+                        ${data.market_opportunities}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Competitive Analysis
+        if (data.competitive_analysis) {
+            html += `
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">⚔️ Competitive Analysis</h3>
+                    <div style="background: #fff8e1; border-radius: 8px; padding: 20px;">
+                        ${data.competitive_analysis}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Pricing Recommendations
+        if (data.pricing_recommendations) {
+            html += `
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">💰 Pricing Recommendations</h3>
+                    <div style="background: #f3e5f5; border-radius: 8px; padding: 20px;">
+                        ${data.pricing_recommendations}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add download button
+        html += `
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn" onclick="app.downloadMarketAnalysis()">
+                    📥 Download Market Analysis (JSON)
+                </button>
+            </div>
+        `;
+
+        contentDiv.innerHTML = html;
+    },
+
+    /**
+     * Download Market Analysis as JSON
+     */
+    downloadMarketAnalysis() {
+        if (!this.state.marketAnalysis) {
+            alert('No market analysis data available');
+            return;
+        }
+
+        const dataStr = JSON.stringify(this.state.marketAnalysis, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `market-analysis-${this.state.reportId}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    },
+
+    // ============================================================================
+    // PHASE 3: MARKETING ASSETS
+    // ============================================================================
+
+    /**
+     * Load Marketing Assets View
+     * Checks if assets already exist and displays appropriate UI state
+     */
+    loadAssetsView() {
+        console.log('Loading marketing assets view...');
+
+        if (!this.state.reportId) {
+            alert('No report ID available. Please complete manuscript analysis first.');
+            this.navigate('library');
+            return;
+        }
+
+        const assetsStart = document.getElementById('assetsStart');
+        const assetsLoading = document.getElementById('assetsLoading');
+        const assetsContent = document.getElementById('assetsContent');
+
+        // Check if we already have assets data
+        if (this.state.assetResults && Object.keys(this.state.assetResults).some(key => this.state.assetResults[key])) {
+            // Already have data, display it
+            assetsStart.style.display = 'none';
+            assetsLoading.style.display = 'none';
+            assetsContent.style.display = 'block';
+            this.displayAssets(this.state.assetResults);
+        } else {
+            // Try to fetch existing assets
+            this.fetchAssets();
+        }
+    },
+
+    /**
+     * Fetch existing marketing assets data
+     */
+    async fetchAssets() {
+        console.log('Fetching marketing assets for reportId:', this.state.reportId);
+
+        try {
+            const response = await fetch(
+                `${this.API_BASE}/assets?id=${this.state.reportId}`,
+                { credentials: 'include' }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Marketing assets data:', data);
+
+                if (data.assets && Object.keys(data.assets).length > 0) {
+                    // We have assets
+                    this.state.assetResults = data.assets;
+                    document.getElementById('assetsStart').style.display = 'none';
+                    document.getElementById('assetsLoading').style.display = 'none';
+                    document.getElementById('assetsContent').style.display = 'block';
+                    this.displayAssets(data.assets);
+                } else if (data.status === 'processing') {
+                    // Assets are being generated
+                    document.getElementById('assetsStart').style.display = 'none';
+                    document.getElementById('assetsLoading').style.display = 'block';
+                    document.getElementById('assetsContent').style.display = 'none';
+                    this.pollAssetGeneration();
+                } else {
+                    // No assets found, show start button
+                    document.getElementById('assetsStart').style.display = 'block';
+                    document.getElementById('assetsLoading').style.display = 'none';
+                    document.getElementById('assetsContent').style.display = 'none';
+                }
+            } else {
+                // No assets found, show start button
+                document.getElementById('assetsStart').style.display = 'block';
+                document.getElementById('assetsLoading').style.display = 'none';
+                document.getElementById('assetsContent').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error fetching marketing assets:', error);
+            document.getElementById('assetsStart').style.display = 'block';
+            document.getElementById('assetsLoading').style.display = 'none';
+            document.getElementById('assetsContent').style.display = 'none';
+        }
+    },
+
+    /**
+     * Start Marketing Assets Generation
+     * Triggers the asset generation job and starts polling for completion
+     */
+    async startAssetGeneration() {
+        console.log('Starting marketing asset generation for reportId:', this.state.reportId);
+
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        try {
+            // Show loading state
+            document.getElementById('assetsStart').style.display = 'none';
+            document.getElementById('assetsLoading').style.display = 'block';
+            document.getElementById('assetsContent').style.display = 'none';
+
+            // Trigger asset generation
+            const response = await fetch(`${this.API_BASE}/generate-assets`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reportId: this.state.reportId
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to start asset generation');
+            }
+
+            const result = await response.json();
+            console.log('Asset generation started:', result);
+
+            // Start polling for completion
+            await this.pollAssetGeneration();
+
+        } catch (error) {
+            console.error('Error starting asset generation:', error);
+            alert('Failed to start asset generation: ' + error.message);
+
+            // Reset UI
+            document.getElementById('assetsStart').style.display = 'block';
+            document.getElementById('assetsLoading').style.display = 'none';
+            document.getElementById('assetsContent').style.display = 'none';
+        }
+    },
+
+    /**
+     * Poll Asset Generation Status
+     * Periodically checks if asset generation is complete
+     */
+    async pollAssetGeneration() {
+        console.log('Polling asset generation status...');
+
+        const pollInterval = setInterval(async () => {
+            try {
+                const response = await fetch(
+                    `${this.API_BASE}/assets/status?id=${this.state.reportId}`,
+                    { credentials: 'include' }
+                );
+
+                if (!response.ok) {
+                    console.error('Failed to fetch asset generation status');
+                    clearInterval(pollInterval);
+                    document.getElementById('assetsLoading').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #f44336; margin-bottom: 15px;">Generation Failed</h3>
+                            <p style="color: #666; margin-bottom: 30px;">
+                                Asset generation encountered an error. Please try again.
+                            </p>
+                            <button class="btn" onclick="app.navigate('assets')">Try Again</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Asset generation poll result:', data);
+
+                if (data.status === 'complete' && data.assets) {
+                    // Generation complete!
+                    clearInterval(pollInterval);
+                    this.state.assetResults = data.assets;
+
+                    // Hide loading, show content
+                    document.getElementById('assetsLoading').style.display = 'none';
+                    document.getElementById('assetsContent').style.display = 'block';
+
+                    // Display the results
+                    this.displayAssets(data.assets);
+                } else if (data.status === 'failed') {
+                    // Generation failed
+                    clearInterval(pollInterval);
+                    document.getElementById('assetsLoading').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #f44336; margin-bottom: 15px;">Generation Failed</h3>
+                            <p style="color: #666; margin-bottom: 30px;">
+                                ${data.error || 'Asset generation encountered an error.'}
+                            </p>
+                            <button class="btn" onclick="app.navigate('assets')">Try Again</button>
+                        </div>
+                    `;
+                }
+                // If status is still 'processing', keep polling
+            } catch (error) {
+                console.error('Error polling asset generation:', error);
+                clearInterval(pollInterval);
+            }
+        }, 5000); // Poll every 5 seconds
+    },
+
+    /**
+     * Display Marketing Assets Results
+     * Renders the marketing assets in a formatted view
+     */
+    displayAssets(assets) {
+        console.log('Displaying marketing assets:', assets);
+
+        const contentDiv = document.getElementById('assetsContent');
+
+        if (!assets || Object.keys(assets).length === 0) {
+            contentDiv.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">No Assets Data</h3>
+                    <p style="color: #999;">Marketing assets data is not available.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '<div style="display: grid; gap: 25px;">';
+
+        // Book Description
+        if (assets.bookDescription) {
+            html += this.renderAssetCard(
+                '📖 Book Description',
+                assets.bookDescription,
+                'A compelling book description optimized for retailer platforms like Amazon.',
+                '#667eea'
+            );
+        }
+
+        // Keywords
+        if (assets.keywords) {
+            const keywordsList = Array.isArray(assets.keywords)
+                ? assets.keywords.join(', ')
+                : assets.keywords;
+            html += this.renderAssetCard(
+                '🔑 Keywords',
+                keywordsList,
+                'Search keywords to improve discoverability on book retail platforms.',
+                '#4caf50'
+            );
+        }
+
+        // Categories
+        if (assets.categories) {
+            const categoriesList = Array.isArray(assets.categories)
+                ? assets.categories.join(', ')
+                : assets.categories;
+            html += this.renderAssetCard(
+                '📚 Categories',
+                categoriesList,
+                'Amazon and retail platform categories for optimal placement.',
+                '#ffa726'
+            );
+        }
+
+        // Author Bio
+        if (assets.authorBio) {
+            html += this.renderAssetCard(
+                '✍️ Author Bio',
+                assets.authorBio,
+                'Professional author biography for your book\'s back matter and author page.',
+                '#9c27b0'
+            );
+        }
+
+        // Back Matter
+        if (assets.backMatter) {
+            html += this.renderAssetCard(
+                '📄 Back Matter',
+                assets.backMatter,
+                'Additional content to include at the end of your book (author note, acknowledgments, etc.).',
+                '#00bcd4'
+            );
+        }
+
+        // Cover Design Brief
+        if (assets.coverBrief) {
+            html += this.renderAssetCard(
+                '🎨 Cover Design Brief',
+                assets.coverBrief,
+                'Detailed specifications for your cover designer based on genre conventions.',
+                '#f44336'
+            );
+        }
+
+        // Series Description
+        if (assets.seriesDescription) {
+            html += this.renderAssetCard(
+                '📚 Series Description',
+                assets.seriesDescription,
+                'Series overview for positioning this book within a larger series.',
+                '#795548'
+            );
+        }
+
+        // Show errors if any
+        if (assets.errors && Object.keys(assets.errors).length > 0) {
+            html += `
+                <div style="background: #ffebee; border-left: 4px solid #f44336; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                    <h3 style="color: #d32f2f; margin-bottom: 15px;">⚠️ Generation Errors</h3>
+                    <p style="color: #666; margin-bottom: 10px;">Some assets could not be generated:</p>
+                    <ul style="margin-left: 20px; color: #666;">
+            `;
+            Object.entries(assets.errors).forEach(([key, error]) => {
+                html += `<li><strong>${key}:</strong> ${error}</li>`;
+            });
+            html += `
+                    </ul>
+                </div>
+            `;
+        }
+
+        html += '</div>';
+
+        // Add action buttons
+        html += `
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="app.downloadAssets()">
+                    📥 Download All Assets (JSON)
+                </button>
+                <button class="btn btn-secondary" onclick="app.copyAllAssets()">
+                    📋 Copy All to Clipboard
+                </button>
+                <button class="btn" onclick="app.navigate('formatting')">
+                    📚 Continue to Formatting →
+                </button>
+            </div>
+        `;
+
+        contentDiv.innerHTML = html;
+    },
+
+    /**
+     * Helper function to render individual asset cards
+     */
+    renderAssetCard(title, content, description, color) {
+        return `
+            <div style="background: white; border-left: 4px solid ${color}; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                    <h3 style="color: ${color}; margin: 0;">${title}</h3>
+                    <button
+                        onclick="app.copyAsset(this, '${title.replace(/'/g, "\\'")}', '${this.escapeForJS(content)}')"
+                        style="background: ${color}; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: opacity 0.2s;"
+                        onmouseover="this.style.opacity='0.8'"
+                        onmouseout="this.style.opacity='1'"
+                    >
+                        📋 Copy
+                    </button>
+                </div>
+                <p style="color: #999; font-size: 0.9em; margin-bottom: 15px; font-style: italic;">
+                    ${description}
+                </p>
+                <div style="background: #f8f9fa; border-radius: 6px; padding: 15px; line-height: 1.6; color: #333; white-space: pre-wrap; word-wrap: break-word;">
+${content}
+                </div>
+            </div>
+        `;
+    },
+
+    /**
+     * Escape content for use in JavaScript strings
+     */
+    escapeForJS(str) {
+        if (!str) return '';
+        return str
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, "\\'")
+            .replace(/"/g, '\\"')
+            .replace(/\n/g, '\\n')
+            .replace(/\r/g, '\\r');
+    },
+
+    /**
+     * Copy individual asset to clipboard
+     */
+    async copyAsset(button, title, content) {
+        try {
+            // Decode escaped content
+            const decodedContent = content
+                .replace(/\\n/g, '\n')
+                .replace(/\\r/g, '\r')
+                .replace(/\\"/g, '"')
+                .replace(/\\'/g, "'")
+                .replace(/\\\\/g, '\\');
+
+            await navigator.clipboard.writeText(decodedContent);
+
+            const originalText = button.innerHTML;
+            button.innerHTML = '✓ Copied!';
+            button.style.background = '#4caf50';
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = '';
+            }, 2000);
+        } catch (error) {
+            console.error('Failed to copy to clipboard:', error);
+            alert('Failed to copy to clipboard. Please try again.');
+        }
+    },
+
+    /**
+     * Copy all assets to clipboard as formatted text
+     */
+    async copyAllAssets() {
+        if (!this.state.assetResults) {
+            alert('No assets to copy');
+            return;
+        }
+
+        try {
+            let text = '=== MARKETING ASSETS ===\n\n';
+
+            const sections = [
+                { key: 'bookDescription', title: 'BOOK DESCRIPTION' },
+                { key: 'keywords', title: 'KEYWORDS' },
+                { key: 'categories', title: 'CATEGORIES' },
+                { key: 'authorBio', title: 'AUTHOR BIO' },
+                { key: 'backMatter', title: 'BACK MATTER' },
+                { key: 'coverBrief', title: 'COVER DESIGN BRIEF' },
+                { key: 'seriesDescription', title: 'SERIES DESCRIPTION' }
+            ];
+
+            sections.forEach(section => {
+                if (this.state.assetResults[section.key]) {
+                    const content = Array.isArray(this.state.assetResults[section.key])
+                        ? this.state.assetResults[section.key].join(', ')
+                        : this.state.assetResults[section.key];
+                    text += `${section.title}\n${'='.repeat(section.title.length)}\n${content}\n\n`;
+                }
+            });
+
+            await navigator.clipboard.writeText(text);
+            alert('All assets copied to clipboard!');
+        } catch (error) {
+            console.error('Failed to copy all assets:', error);
+            alert('Failed to copy to clipboard. Please try again.');
+        }
+    },
+
+    /**
+     * Download Marketing Assets as JSON
+     */
+    downloadAssets() {
+        if (!this.state.assetResults) {
+            alert('No assets data available');
+            return;
+        }
+
+        const dataStr = JSON.stringify(this.state.assetResults, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `marketing-assets-${this.state.reportId}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    },
+
+    // ============================================================================
+    // PHASE 4: MANUSCRIPT FORMATTING
+    // ============================================================================
+
+    /**
+     * Load Formatting View
+     * Checks if formatted files already exist and displays appropriate UI state
+     */
+    loadFormattingView() {
+        console.log('Loading formatting view...');
+
+        if (!this.state.reportId) {
+            alert('No report ID available. Please complete manuscript analysis first.');
+            this.navigate('library');
+            return;
+        }
+
+        const formattingStart = document.getElementById('formattingStart');
+        const formattingLoading = document.getElementById('formattingLoading');
+        const formattingContent = document.getElementById('formattingContent');
+
+        // Check if we already have formatting state
+        if (this.state.formattedFiles && (this.state.formattedFiles.epub || this.state.formattedFiles.pdf)) {
+            // Already have formatted files, display them
+            formattingStart.style.display = 'none';
+            formattingLoading.style.display = 'none';
+            formattingContent.style.display = 'block';
+            this.displayFormattedFiles(this.state.formattedFiles);
+        } else {
+            // Try to fetch existing formatted files
+            this.fetchFormattedFiles();
+        }
+    },
+
+    /**
+     * Fetch existing formatted files
+     */
+    async fetchFormattedFiles() {
+        console.log('Fetching formatted files for reportId:', this.state.reportId);
+
+        try {
+            const response = await fetch(
+                `${this.API_BASE}/download-formatted?id=${this.state.reportId}`,
+                { credentials: 'include' }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Formatted files data:', data);
+
+                if (data.files && (data.files.epub || data.files.pdf)) {
+                    // We have formatted files
+                    this.state.formattedFiles = data.files;
+                    document.getElementById('formattingStart').style.display = 'none';
+                    document.getElementById('formattingLoading').style.display = 'none';
+                    document.getElementById('formattingContent').style.display = 'block';
+                    this.displayFormattedFiles(data.files);
+                } else if (data.status === 'processing') {
+                    // Formatting is in progress
+                    document.getElementById('formattingStart').style.display = 'none';
+                    document.getElementById('formattingLoading').style.display = 'block';
+                    document.getElementById('formattingContent').style.display = 'none';
+                    this.pollFormatting();
+                } else {
+                    // No formatted files found, show start button
+                    document.getElementById('formattingStart').style.display = 'block';
+                    document.getElementById('formattingLoading').style.display = 'none';
+                    document.getElementById('formattingContent').style.display = 'none';
+                }
+            } else {
+                // No formatted files found, show start button
+                document.getElementById('formattingStart').style.display = 'block';
+                document.getElementById('formattingLoading').style.display = 'none';
+                document.getElementById('formattingContent').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error fetching formatted files:', error);
+            document.getElementById('formattingStart').style.display = 'block';
+            document.getElementById('formattingLoading').style.display = 'none';
+            document.getElementById('formattingContent').style.display = 'none';
+        }
+    },
+
+    /**
+     * Start Manuscript Formatting
+     * Triggers the formatting job to generate EPUB and PDF
+     */
+    async startFormatting() {
+        console.log('Starting manuscript formatting for reportId:', this.state.reportId);
+
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        try {
+            // Show loading state
+            document.getElementById('formattingStart').style.display = 'none';
+            document.getElementById('formattingLoading').style.display = 'block';
+            document.getElementById('formattingContent').style.display = 'none';
+
+            // Trigger formatting
+            const response = await fetch(`${this.API_BASE}/format-manuscript`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reportId: this.state.reportId,
+                    formats: ['epub', 'pdf'] // Request both formats
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to start formatting');
+            }
+
+            const result = await response.json();
+            console.log('Formatting started:', result);
+
+            // Start polling for completion
+            await this.pollFormatting();
+
+        } catch (error) {
+            console.error('Error starting formatting:', error);
+            alert('Failed to start formatting: ' + error.message);
+
+            // Reset UI
+            document.getElementById('formattingStart').style.display = 'block';
+            document.getElementById('formattingLoading').style.display = 'none';
+            document.getElementById('formattingContent').style.display = 'none';
+        }
+    },
+
+    /**
+     * Poll Formatting Status
+     * Periodically checks if formatting is complete
+     */
+    async pollFormatting() {
+        console.log('Polling formatting status...');
+
+        const pollInterval = setInterval(async () => {
+            try {
+                const response = await fetch(
+                    `${this.API_BASE}/download-formatted?id=${this.state.reportId}`,
+                    { credentials: 'include' }
+                );
+
+                if (!response.ok) {
+                    console.error('Failed to fetch formatting status');
+                    clearInterval(pollInterval);
+                    document.getElementById('formattingLoading').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #f44336; margin-bottom: 15px;">Formatting Failed</h3>
+                            <p style="color: #666; margin-bottom: 30px;">
+                                Manuscript formatting encountered an error. Please try again.
+                            </p>
+                            <button class="btn" onclick="app.navigate('formatting')">Try Again</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Formatting poll result:', data);
+
+                if (data.status === 'complete' && data.files) {
+                    // Formatting complete!
+                    clearInterval(pollInterval);
+                    this.state.formattedFiles = data.files;
+
+                    // Hide loading, show content
+                    document.getElementById('formattingLoading').style.display = 'none';
+                    document.getElementById('formattingContent').style.display = 'block';
+
+                    // Display the results
+                    this.displayFormattedFiles(data.files);
+                } else if (data.status === 'failed') {
+                    // Formatting failed
+                    clearInterval(pollInterval);
+                    document.getElementById('formattingLoading').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #f44336; margin-bottom: 15px;">Formatting Failed</h3>
+                            <p style="color: #666; margin-bottom: 30px;">
+                                ${data.error || 'Manuscript formatting encountered an error.'}
+                            </p>
+                            <button class="btn" onclick="app.navigate('formatting')">Try Again</button>
+                        </div>
+                    `;
+                }
+                // If status is still 'processing', keep polling
+            } catch (error) {
+                console.error('Error polling formatting:', error);
+                clearInterval(pollInterval);
+            }
+        }, 5000); // Poll every 5 seconds
+    },
+
+    /**
+     * Display Formatted Files
+     * Shows download links for EPUB and PDF files
+     */
+    displayFormattedFiles(files) {
+        console.log('Displaying formatted files:', files);
+
+        const contentDiv = document.getElementById('formattingContent');
+
+        if (!files || (!files.epub && !files.pdf)) {
+            contentDiv.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">No Formatted Files</h3>
+                    <p style="color: #999;">Formatted files are not available.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = `
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 30px; margin-bottom: 30px; text-align: center;">
+                <div style="font-size: 3em; margin-bottom: 15px;">✅</div>
+                <h2 style="margin-bottom: 15px;">Formatting Complete!</h2>
+                <p style="font-size: 1.1em; opacity: 0.9;">
+                    Your manuscript has been professionally formatted for publishing.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px;">
+        `;
+
+        // EPUB Card
+        if (files.epub) {
+            html += `
+                <div style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">📕</div>
+                    <h3 style="color: #667eea; margin-bottom: 10px;">EPUB Format</h3>
+                    <p style="color: #666; margin-bottom: 20px; line-height: 1.6;">
+                        Standard ebook format for Amazon Kindle, Apple Books, Google Play Books, and most e-readers.
+                    </p>
+                    <div style="background: #f8f9ff; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                        <div style="color: #999; font-size: 0.9em; margin-bottom: 5px;">File Size</div>
+                        <div style="color: #333; font-weight: 600;">${files.epub.size ? this.formatFileSize(files.epub.size) : 'N/A'}</div>
+                    </div>
+                    <button
+                        class="btn"
+                        onclick="app.downloadFormattedFile('epub', '${files.epub.url || ''}')"
+                        style="width: 100%; margin: 5px 0;"
+                    >
+                        📥 Download EPUB
+                    </button>
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                        <div style="color: #999; font-size: 0.85em; margin-bottom: 8px;">Best for:</div>
+                        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                            <span style="background: #e8f5e9; color: #4caf50; padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">Amazon KDP</span>
+                            <span style="background: #e3f2fd; color: #2196f3; padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">Apple Books</span>
+                            <span style="background: #fce4ec; color: #e91e63; padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">Google Play</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // PDF Card
+        if (files.pdf) {
+            html += `
+                <div style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">📄</div>
+                    <h3 style="color: #f44336; margin-bottom: 10px;">PDF Format</h3>
+                    <p style="color: #666; margin-bottom: 20px; line-height: 1.6;">
+                        Professional print-ready PDF for paperback publishing, direct sales, and premium distribution.
+                    </p>
+                    <div style="background: #fff8f8; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                        <div style="color: #999; font-size: 0.9em; margin-bottom: 5px;">File Size</div>
+                        <div style="color: #333; font-weight: 600;">${files.pdf.size ? this.formatFileSize(files.pdf.size) : 'N/A'}</div>
+                    </div>
+                    <button
+                        class="btn"
+                        onclick="app.downloadFormattedFile('pdf', '${files.pdf.url || ''}')"
+                        style="width: 100%; margin: 5px 0; background: #f44336;"
+                    >
+                        📥 Download PDF
+                    </button>
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                        <div style="color: #999; font-size: 0.85em; margin-bottom: 8px;">Best for:</div>
+                        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                            <span style="background: #fff3e0; color: #ff9800; padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">Print Books</span>
+                            <span style="background: #f3e5f5; color: #9c27b0; padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">Direct Sales</span>
+                            <span style="background: #e0f2f1; color: #009688; padding: 4px 12px; border-radius: 12px; font-size: 0.85em; font-weight: 600;">Archive</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        html += `</div>`;
+
+        // Publishing Platform Guide
+        html += `
+            <div style="background: #f8f9fa; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+                <h3 style="color: #333; margin-bottom: 20px;">📚 Publishing Platform Guide</h3>
+                <div style="display: grid; gap: 20px;">
+                    <div style="background: white; border-radius: 8px; padding: 20px; border-left: 4px solid #4caf50;">
+                        <h4 style="color: #4caf50; margin-bottom: 10px;">Amazon Kindle Direct Publishing (KDP)</h4>
+                        <p style="color: #666; margin-bottom: 10px; line-height: 1.6;">
+                            <strong>For Ebook:</strong> Upload your EPUB file to KDP. Amazon will automatically convert it to their Kindle format (AZW3).
+                        </p>
+                        <p style="color: #666; line-height: 1.6;">
+                            <strong>For Paperback:</strong> Upload your PDF file to KDP Print. Ensure it meets their trim size requirements.
+                        </p>
+                        <a href="https://kdp.amazon.com" target="_blank" style="color: #4caf50; text-decoration: none; font-weight: 600; margin-top: 10px; display: inline-block;">
+                            → Go to Amazon KDP
+                        </a>
+                    </div>
+
+                    <div style="background: white; border-radius: 8px; padding: 20px; border-left: 4px solid #2196f3;">
+                        <h4 style="color: #2196f3; margin-bottom: 10px;">Apple Books</h4>
+                        <p style="color: #666; margin-bottom: 10px; line-height: 1.6;">
+                            Upload your EPUB file to Apple Books Connect. The EPUB format is natively supported.
+                        </p>
+                        <a href="https://books.apple.com/us/publisher" target="_blank" style="color: #2196f3; text-decoration: none; font-weight: 600; margin-top: 10px; display: inline-block;">
+                            → Go to Apple Books Connect
+                        </a>
+                    </div>
+
+                    <div style="background: white; border-radius: 8px; padding: 20px; border-left: 4px solid #ff9800;">
+                        <h4 style="color: #ff9800; margin-bottom: 10px;">IngramSpark (Wide Distribution)</h4>
+                        <p style="color: #666; margin-bottom: 10px; line-height: 1.6;">
+                            Upload EPUB for ebook distribution and PDF for print-on-demand. IngramSpark distributes to over 40,000 retailers worldwide.
+                        </p>
+                        <a href="https://www.ingramspark.com" target="_blank" style="color: #ff9800; text-decoration: none; font-weight: 600; margin-top: 10px; display: inline-block;">
+                            → Go to IngramSpark
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Action buttons
+        html += `
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="app.navigate('social')">
+                    📱 Continue to Social Media Content →
+                </button>
+                <button class="btn" onclick="app.navigate('summary')">
+                    ← Back to Summary
+                </button>
+            </div>
+        `;
+
+        contentDiv.innerHTML = html;
+    },
+
+    /**
+     * Format file size for display
+     */
+    formatFileSize(bytes) {
+        if (!bytes) return 'N/A';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    },
+
+    /**
+     * Download formatted file
+     */
+    async downloadFormattedFile(format, url) {
+        console.log('Downloading formatted file:', format, url);
+
+        if (!url) {
+            alert('Download URL not available');
+            return;
+        }
+
+        try {
+            // If it's a full URL, use it directly
+            if (url.startsWith('http')) {
+                window.open(url, '_blank');
+            } else {
+                // Otherwise, construct the URL with API base
+                const downloadUrl = `${this.API_BASE}${url}`;
+                window.open(downloadUrl, '_blank');
+            }
+        } catch (error) {
+            console.error('Error downloading file:', error);
+            alert('Failed to download file. Please try again.');
+        }
+    },
+
+    // ============================================================================
+    // PHASE 5: SOCIAL MEDIA CONTENT
+    // ============================================================================
+
+    /**
+     * Load Social Media View
+     * Checks if social media content already exists and displays appropriate UI state
+     */
+    loadSocialView() {
+        console.log('Loading social media view...');
+
+        if (!this.state.reportId) {
+            alert('No report ID available. Please complete manuscript analysis first.');
+            this.navigate('library');
+            return;
+        }
+
+        const socialStart = document.getElementById('socialStart');
+        const socialLoading = document.getElementById('socialLoading');
+        const socialContent = document.getElementById('socialContent');
+
+        // Check if we already have social media data
+        if (this.state.socialMedia && Object.keys(this.state.socialMedia).length > 0) {
+            // Already have data, display it
+            socialStart.style.display = 'none';
+            socialLoading.style.display = 'none';
+            socialContent.style.display = 'block';
+            this.displaySocialMedia(this.state.socialMedia);
+        } else {
+            // Try to fetch existing social media content
+            this.fetchSocialMedia();
+        }
+    },
+
+    /**
+     * Fetch existing social media content
+     */
+    async fetchSocialMedia() {
+        console.log('Fetching social media content for reportId:', this.state.reportId);
+
+        try {
+            const response = await fetch(
+                `${this.API_BASE}/social-media?id=${this.state.reportId}`,
+                { credentials: 'include' }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Social media data:', data);
+
+                if (data.socialMedia && Object.keys(data.socialMedia).length > 0) {
+                    // We have social media content
+                    this.state.socialMedia = data.socialMedia;
+                    document.getElementById('socialStart').style.display = 'none';
+                    document.getElementById('socialLoading').style.display = 'none';
+                    document.getElementById('socialContent').style.display = 'block';
+                    this.displaySocialMedia(data.socialMedia);
+                } else if (data.status === 'processing') {
+                    // Content is being generated
+                    document.getElementById('socialStart').style.display = 'none';
+                    document.getElementById('socialLoading').style.display = 'block';
+                    document.getElementById('socialContent').style.display = 'none';
+                    this.pollSocialMedia();
+                } else {
+                    // No content found, show start button
+                    document.getElementById('socialStart').style.display = 'block';
+                    document.getElementById('socialLoading').style.display = 'none';
+                    document.getElementById('socialContent').style.display = 'none';
+                }
+            } else {
+                // No content found, show start button
+                document.getElementById('socialStart').style.display = 'block';
+                document.getElementById('socialLoading').style.display = 'none';
+                document.getElementById('socialContent').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error fetching social media content:', error);
+            document.getElementById('socialStart').style.display = 'block';
+            document.getElementById('socialLoading').style.display = 'none';
+            document.getElementById('socialContent').style.display = 'none';
+        }
+    },
+
+    /**
+     * Start Social Media Content Generation
+     * Triggers the generation job for all social platforms
+     */
+    async startSocialMedia() {
+        console.log('Starting social media content generation for reportId:', this.state.reportId);
+
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        try {
+            // Show loading state
+            document.getElementById('socialStart').style.display = 'none';
+            document.getElementById('socialLoading').style.display = 'block';
+            document.getElementById('socialContent').style.display = 'none';
+
+            // Trigger social media generation
+            const response = await fetch(`${this.API_BASE}/generate-social-media`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reportId: this.state.reportId
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to start social media generation');
+            }
+
+            const result = await response.json();
+            console.log('Social media generation started:', result);
+
+            // Start polling for completion
+            await this.pollSocialMedia();
+
+        } catch (error) {
+            console.error('Error starting social media generation:', error);
+            alert('Failed to start social media generation: ' + error.message);
+
+            // Reset UI
+            document.getElementById('socialStart').style.display = 'block';
+            document.getElementById('socialLoading').style.display = 'none';
+            document.getElementById('socialContent').style.display = 'none';
+        }
+    },
+
+    /**
+     * Poll Social Media Generation Status
+     * Periodically checks if generation is complete
+     */
+    async pollSocialMedia() {
+        console.log('Polling social media generation status...');
+
+        const pollInterval = setInterval(async () => {
+            try {
+                const response = await fetch(
+                    `${this.API_BASE}/social-media?id=${this.state.reportId}`,
+                    { credentials: 'include' }
+                );
+
+                if (!response.ok) {
+                    console.error('Failed to fetch social media status');
+                    clearInterval(pollInterval);
+                    document.getElementById('socialLoading').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #f44336; margin-bottom: 15px;">Generation Failed</h3>
+                            <p style="color: #666; margin-bottom: 30px;">
+                                Social media content generation encountered an error. Please try again.
+                            </p>
+                            <button class="btn" onclick="app.navigate('social')">Try Again</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Social media poll result:', data);
+
+                if (data.status === 'complete' && data.socialMedia) {
+                    // Generation complete!
+                    clearInterval(pollInterval);
+                    this.state.socialMedia = data.socialMedia;
+
+                    // Hide loading, show content
+                    document.getElementById('socialLoading').style.display = 'none';
+                    document.getElementById('socialContent').style.display = 'block';
+
+                    // Display the results
+                    this.displaySocialMedia(data.socialMedia);
+                } else if (data.status === 'failed') {
+                    // Generation failed
+                    clearInterval(pollInterval);
+                    document.getElementById('socialLoading').innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #f44336; margin-bottom: 15px;">Generation Failed</h3>
+                            <p style="color: #666; margin-bottom: 30px;">
+                                ${data.error || 'Social media content generation encountered an error.'}
+                            </p>
+                            <button class="btn" onclick="app.navigate('social')">Try Again</button>
+                        </div>
+                    `;
+                }
+                // If status is still 'processing', keep polling
+            } catch (error) {
+                console.error('Error polling social media generation:', error);
+                clearInterval(pollInterval);
+            }
+        }, 5000); // Poll every 5 seconds
+    },
+
+    /**
+     * Display Social Media Content
+     * Renders platform-specific social media posts
+     */
+    displaySocialMedia(socialMedia) {
+        console.log('Displaying social media content:', socialMedia);
+
+        const contentDiv = document.getElementById('socialContent');
+
+        if (!socialMedia || Object.keys(socialMedia).length === 0) {
+            contentDiv.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="font-size: 3em; margin-bottom: 20px;">⚠️</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">No Social Media Content</h3>
+                    <p style="color: #999;">Social media content is not available.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '<div style="display: grid; gap: 25px;">';
+
+        // Platform configurations with icons and colors
+        const platforms = [
+            { key: 'twitter', name: 'Twitter / X', icon: '𝕏', color: '#1DA1F2', charLimit: '280 characters' },
+            { key: 'facebook', name: 'Facebook', icon: '📘', color: '#1877F2', charLimit: '63,206 characters' },
+            { key: 'instagram', name: 'Instagram', icon: '📸', color: '#E4405F', charLimit: '2,200 characters' },
+            { key: 'linkedin', name: 'LinkedIn', icon: '💼', color: '#0A66C2', charLimit: '3,000 characters' },
+            { key: 'tiktok', name: 'TikTok', icon: '🎵', color: '#000000', charLimit: '2,200 characters' }
+        ];
+
+        platforms.forEach(platform => {
+            if (socialMedia[platform.key]) {
+                const content = socialMedia[platform.key];
+                html += this.renderSocialCard(
+                    platform.icon,
+                    platform.name,
+                    content,
+                    platform.color,
+                    platform.charLimit
+                );
+            }
+        });
+
+        html += '</div>';
+
+        // Tips Section
+        html += `
+            <div style="background: #f8f9fa; border-radius: 12px; padding: 30px; margin-top: 30px;">
+                <h3 style="color: #333; margin-bottom: 20px;">💡 Social Media Marketing Tips</h3>
+                <div style="display: grid; gap: 15px;">
+                    <div style="background: white; border-radius: 8px; padding: 20px; border-left: 4px solid #1DA1F2;">
+                        <h4 style="color: #1DA1F2; margin-bottom: 10px;">Best Posting Times</h4>
+                        <ul style="color: #666; line-height: 1.8; margin-left: 20px;">
+                            <li><strong>Twitter/X:</strong> Wednesday & Friday, 9 AM - 3 PM</li>
+                            <li><strong>Facebook:</strong> Tuesday, Wednesday & Friday, 9 AM - 1 PM</li>
+                            <li><strong>Instagram:</strong> Monday, Tuesday & Friday, 11 AM - 2 PM</li>
+                            <li><strong>LinkedIn:</strong> Tuesday - Thursday, 9 AM - 12 PM</li>
+                            <li><strong>TikTok:</strong> Tuesday, Thursday & Friday, 6 PM - 10 PM</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: white; border-radius: 8px; padding: 20px; border-left: 4px solid #4caf50;">
+                        <h4 style="color: #4caf50; margin-bottom: 10px;">Engagement Strategies</h4>
+                        <ul style="color: #666; line-height: 1.8; margin-left: 20px;">
+                            <li>Use 3-5 relevant hashtags on Twitter and Instagram</li>
+                            <li>Include a compelling call-to-action in every post</li>
+                            <li>Respond to comments within the first hour</li>
+                            <li>Share behind-the-scenes content about your writing process</li>
+                            <li>Cross-post content but customize for each platform</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: white; border-radius: 8px; padding: 20px; border-left: 4px solid #ff9800;">
+                        <h4 style="color: #ff9800; margin-bottom: 10px;">Content Variety</h4>
+                        <ul style="color: #666; line-height: 1.8; margin-left: 20px;">
+                            <li>Mix promotional posts with value-added content (80/20 rule)</li>
+                            <li>Share reader testimonials and reviews</li>
+                            <li>Create character spotlights and world-building posts</li>
+                            <li>Post writing tips related to your book's theme</li>
+                            <li>Run polls and ask questions to boost engagement</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Action buttons
+        html += `
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="app.downloadSocialMedia()">
+                    📥 Download All Posts (JSON)
+                </button>
+                <button class="btn btn-secondary" onclick="app.copyAllSocialMedia()">
+                    📋 Copy All to Clipboard
+                </button>
+                <button class="btn" onclick="app.navigate('summary')">
+                    ← Back to Summary
+                </button>
+            </div>
+        `;
+
+        contentDiv.innerHTML = html;
+    },
+
+    /**
+     * Render individual social media platform card
+     */
+    renderSocialCard(icon, platformName, content, color, charLimit) {
+        const characterCount = content.length;
+        const isWithinLimit = platformName.includes('Twitter') ? characterCount <= 280 : true;
+
+        return `
+            <div style="background: white; border-left: 4px solid ${color}; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                    <div>
+                        <h3 style="color: ${color}; margin: 0 0 5px 0; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.5em;">${icon}</span>
+                            ${platformName}
+                        </h3>
+                        <div style="font-size: 0.85em; color: ${isWithinLimit ? '#4caf50' : '#f44336'}; font-weight: 600;">
+                            ${characterCount} / ${charLimit}
+                            ${!isWithinLimit ? ' ⚠️ Over limit!' : ' ✓'}
+                        </div>
+                    </div>
+                    <button
+                        onclick="app.copySocialPost(this, '${platformName.replace(/'/g, "\\'")}', '${this.escapeForJS(content)}')"
+                        style="background: ${color}; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: opacity 0.2s;"
+                        onmouseover="this.style.opacity='0.8'"
+                        onmouseout="this.style.opacity='1'"
+                    >
+                        📋 Copy
+                    </button>
+                </div>
+                <div style="background: #f8f9fa; border-radius: 6px; padding: 15px; line-height: 1.6; color: #333; white-space: pre-wrap; word-wrap: break-word;">
+${content}
+                </div>
+            </div>
+        `;
+    },
+
+    /**
+     * Copy individual social media post to clipboard
+     */
+    async copySocialPost(button, platformName, content) {
+        try {
+            // Decode escaped content
+            const decodedContent = content
+                .replace(/\\n/g, '\n')
+                .replace(/\\r/g, '\r')
+                .replace(/\\"/g, '"')
+                .replace(/\\'/g, "'")
+                .replace(/\\\\/g, '\\');
+
+            await navigator.clipboard.writeText(decodedContent);
+
+            const originalText = button.innerHTML;
+            button.innerHTML = '✓ Copied!';
+            button.style.background = '#4caf50';
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = '';
+            }, 2000);
+        } catch (error) {
+            console.error('Failed to copy to clipboard:', error);
+            alert('Failed to copy to clipboard. Please try again.');
+        }
+    },
+
+    /**
+     * Copy all social media posts to clipboard as formatted text
+     */
+    async copyAllSocialMedia() {
+        if (!this.state.socialMedia) {
+            alert('No social media content to copy');
+            return;
+        }
+
+        try {
+            let text = '=== SOCIAL MEDIA CONTENT ===\n\n';
+
+            const platforms = [
+                { key: 'twitter', name: 'TWITTER / X' },
+                { key: 'facebook', name: 'FACEBOOK' },
+                { key: 'instagram', name: 'INSTAGRAM' },
+                { key: 'linkedin', name: 'LINKEDIN' },
+                { key: 'tiktok', name: 'TIKTOK' }
+            ];
+
+            platforms.forEach(platform => {
+                if (this.state.socialMedia[platform.key]) {
+                    text += `${platform.name}\n${'='.repeat(platform.name.length)}\n${this.state.socialMedia[platform.key]}\n\n`;
+                }
+            });
+
+            await navigator.clipboard.writeText(text);
+            alert('All social media content copied to clipboard!');
+        } catch (error) {
+            console.error('Failed to copy all social media content:', error);
+            alert('Failed to copy to clipboard. Please try again.');
+        }
+    },
+
+    /**
+     * Download Social Media Content as JSON
+     */
+    downloadSocialMedia() {
+        if (!this.state.socialMedia) {
+            alert('No social media content available');
+            return;
+        }
+
+        const dataStr = JSON.stringify(this.state.socialMedia, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `social-media-${this.state.reportId}.json`;
         a.click();
         URL.revokeObjectURL(url);
     }

@@ -719,6 +719,26 @@
                 <button class="btn btn-secondary" onclick="app.navigate('annotated')">
                     ✏️ View Annotated Manuscript
                 </button>
+
+                <!-- Phase 2-5 Feature Access -->
+                <div style="margin: 30px 0; padding: 20px 0; border-top: 2px solid rgba(255,255,255,0.3);">
+                    <h3 style="margin-bottom: 20px;">📈 Marketing & Publishing Tools</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <button class="btn btn-secondary" onclick="app.navigate('market')">
+                            🎯 Market Analysis
+                        </button>
+                        <button class="btn btn-secondary" onclick="app.navigate('assets')">
+                            📦 Marketing Assets
+                        </button>
+                        <button class="btn btn-secondary" onclick="app.navigate('formatting')">
+                            📚 Format for Publishing
+                        </button>
+                        <button class="btn btn-secondary" onclick="app.navigate('social')">
+                            📱 Social Media Content
+                        </button>
+                    </div>
+                </div>
+
                 <button class="btn" onclick="app.downloadReports()">
                     📥 Download JSON Data
                 </button>
@@ -747,6 +767,171 @@
             </div>
             <div class="report-view" id="annotatedContent" style="display: none;">
                 <!-- Annotated manuscript HTML injected here -->
+            </div>
+        </div>
+
+        <!-- VIEW: Market Analysis (Phase 2) -->
+        <div id="viewMarket" class="view">
+            <div class="card">
+                <button class="btn-back" onclick="app.navigate('summary')">
+                    ← Back to Results
+                </button>
+
+                <h2 style="margin-bottom: 20px;">🎯 Market Analysis</h2>
+                <p style="color: #666; margin-bottom: 30px;">
+                    AI-powered analysis of your manuscript's genre positioning, comparable titles, and market opportunities.
+                </p>
+
+                <!-- Loading State -->
+                <div id="marketLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing market positioning and comparable titles...</p>
+                    <p style="font-size: 0.9em; color: #999; margin-top: 10px;">
+                        This may take 1-2 minutes
+                    </p>
+                </div>
+
+                <!-- Content Area -->
+                <div id="marketContent" style="display: none;">
+                    <!-- Market analysis results will be injected here by JavaScript -->
+                </div>
+
+                <!-- Start Button -->
+                <div id="marketStart" style="text-align: center; padding: 40px 0;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">🎯</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">Market Analysis Not Started</h3>
+                    <p style="color: #999; margin-bottom: 30px;">
+                        Discover your manuscript's market positioning, find comparable titles,<br>
+                        and identify target audience demographics.
+                    </p>
+                    <button class="btn" onclick="app.startMarketAnalysis()">
+                        Start Market Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Marketing Assets (Phase 3) -->
+        <div id="viewAssets" class="view">
+            <div class="card">
+                <button class="btn-back" onclick="app.navigate('summary')">
+                    ← Back to Results
+                </button>
+
+                <h2 style="margin-bottom: 20px;">📦 Marketing Assets</h2>
+                <p style="color: #666; margin-bottom: 30px;">
+                    Generate professional marketing materials including book descriptions, keywords, author bio, and more.
+                </p>
+
+                <!-- Loading State -->
+                <div id="assetsLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Generating marketing assets...</p>
+                    <p style="font-size: 0.9em; color: #999; margin-top: 10px;">
+                        This may take 2-3 minutes
+                    </p>
+                </div>
+
+                <!-- Content Area -->
+                <div id="assetsContent" style="display: none;">
+                    <!-- Marketing assets will be injected here by JavaScript -->
+                </div>
+
+                <!-- Start Button -->
+                <div id="assetsStart" style="text-align: center; padding: 40px 0;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">📦</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">Marketing Assets Not Generated</h3>
+                    <p style="color: #999; margin-bottom: 30px;">
+                        Generate a complete marketing package including:<br>
+                        • Book Description & Blurb • Keywords & Categories • Author Bio<br>
+                        • Back Matter Content • Cover Design Brief • Series Description
+                    </p>
+                    <button class="btn" onclick="app.startAssetGeneration()">
+                        Generate Marketing Assets
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Formatting (Phase 4) -->
+        <div id="viewFormatting" class="view">
+            <div class="card">
+                <button class="btn-back" onclick="app.navigate('summary')">
+                    ← Back to Results
+                </button>
+
+                <h2 style="margin-bottom: 20px;">📚 Format for Publishing</h2>
+                <p style="color: #666; margin-bottom: 30px;">
+                    Convert your manuscript to professional EPUB and PDF formats ready for publishing platforms.
+                </p>
+
+                <!-- Loading State -->
+                <div id="formattingLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Formatting manuscript...</p>
+                    <p style="font-size: 0.9em; color: #999; margin-top: 10px;">
+                        This may take 1-2 minutes
+                    </p>
+                </div>
+
+                <!-- Content Area -->
+                <div id="formattingContent" style="display: none;">
+                    <!-- Formatting results and download links will be injected here by JavaScript -->
+                </div>
+
+                <!-- Start Button -->
+                <div id="formattingStart" style="text-align: center; padding: 40px 0;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">📚</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">Manuscript Not Formatted</h3>
+                    <p style="color: #999; margin-bottom: 30px;">
+                        Convert your manuscript to professional publishing formats:<br>
+                        • EPUB (for most ebook platforms) • PDF (for print and premium distribution)
+                    </p>
+                    <button class="btn" onclick="app.startFormatting()">
+                        Format Manuscript
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Social Media Content (Phase 5) -->
+        <div id="viewSocial" class="view">
+            <div class="card">
+                <button class="btn-back" onclick="app.navigate('summary')">
+                    ← Back to Results
+                </button>
+
+                <h2 style="margin-bottom: 20px;">📱 Social Media Content</h2>
+                <p style="color: #666; margin-bottom: 30px;">
+                    Generate engaging social media posts tailored for different platforms to promote your book.
+                </p>
+
+                <!-- Loading State -->
+                <div id="socialLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Generating social media content...</p>
+                    <p style="font-size: 0.9em; color: #999; margin-top: 10px;">
+                        This may take 1-2 minutes
+                    </p>
+                </div>
+
+                <!-- Content Area -->
+                <div id="socialContent" style="display: none;">
+                    <!-- Social media posts will be injected here by JavaScript -->
+                </div>
+
+                <!-- Start Button -->
+                <div id="socialStart" style="text-align: center; padding: 40px 0;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">📱</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">Social Media Content Not Generated</h3>
+                    <p style="color: #999; margin-bottom: 30px;">
+                        Generate platform-specific social media content for:<br>
+                        • Twitter/X • Facebook • Instagram • LinkedIn • TikTok
+                    </p>
+                    <button class="btn" onclick="app.startSocialMedia()">
+                        Generate Social Media Content
+                    </button>
+                </div>
             </div>
         </div>
     </div>
