@@ -1,6 +1,8 @@
 // Line Editing Agent
 // Focuses on prose quality, sentence-level improvements, and style
 
+import { extractText } from './text-extraction.js';
+
 export class LineEditingAgent {
   constructor(env) {
     this.env = env;
@@ -69,33 +71,20 @@ export class LineEditingAgent {
   }
 
   /**
-   * Extract text from manuscript (same as developmental agent)
+   * Extract text from manuscript using shared utility
    */
   async extractText(manuscript) {
     const contentType = manuscript.httpMetadata?.contentType;
     const buffer = await manuscript.arrayBuffer();
-    
-    switch(contentType) {
-      case 'text/plain':
-        return new TextDecoder().decode(buffer);
-      
-      case 'application/pdf':
-        return this.extractFromPDF(buffer);
-      
-      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-        return this.extractFromDOCX(buffer);
-      
-      default:
-        throw new Error(`Unsupported file type: ${contentType}`);
+
+    try {
+      const text = await extractText(buffer, contentType);
+      console.log(`[Line Editing Agent] Extracted ${text.length} characters from ${contentType}`);
+      return text;
+    } catch (error) {
+      console.error(`[Line Editing Agent] Text extraction failed:`, error);
+      throw error;
     }
-  }
-
-  async extractFromPDF(buffer) {
-    return "PDF extraction not yet implemented. Use .txt for now.";
-  }
-
-  async extractFromDOCX(buffer) {
-    return "DOCX extraction not yet implemented. Use .txt for now.";
   }
 
   /**

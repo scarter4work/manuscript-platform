@@ -54,7 +54,11 @@
       "mcp__linear__get_issue",
       "WebFetch(domain:github.com)",
       "Bash(gh --version:*)",
-      "mcp__linear__update_issue"
+      "mcp__linear__update_issue",
+      "Bash(gh run list:*)",
+      "Bash(/dev/null)",
+      "Bash(npm test)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []

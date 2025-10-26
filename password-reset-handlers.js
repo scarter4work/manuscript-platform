@@ -25,7 +25,7 @@ export async function handleForgotPassword(request, env, corsHeaders) {
 
     // Check if user exists
     const user = await env.DB.prepare(
-      'SELECT id, email, full_name FROM users WHERE email = ? AND is_active = 1'
+      'SELECT id, email, full_name FROM users WHERE email = ?'
     ).bind(email).first();
 
     // Always return success (don't reveal if email exists - security best practice)

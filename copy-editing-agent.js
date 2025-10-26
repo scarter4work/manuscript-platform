@@ -1,6 +1,8 @@
 // Copy Editing Agent
 // Focuses on grammar, punctuation, consistency, and technical correctness
 
+import { extractText } from './text-extraction.js';
+
 export class CopyEditingAgent {
   constructor(env) {
     this.env = env;
@@ -74,33 +76,20 @@ export class CopyEditingAgent {
   }
 
   /**
-   * Extract text from manuscript
+   * Extract text from manuscript using shared utility
    */
   async extractText(manuscript) {
     const contentType = manuscript.httpMetadata?.contentType;
     const buffer = await manuscript.arrayBuffer();
-    
-    switch(contentType) {
-      case 'text/plain':
-        return new TextDecoder().decode(buffer);
-      
-      case 'application/pdf':
-        return this.extractFromPDF(buffer);
-      
-      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-        return this.extractFromDOCX(buffer);
-      
-      default:
-        throw new Error(`Unsupported file type: ${contentType}`);
+
+    try {
+      const text = await extractText(buffer, contentType);
+      console.log(`[Copy Editing Agent] Extracted ${text.length} characters from ${contentType}`);
+      return text;
+    } catch (error) {
+      console.error(`[Copy Editing Agent] Text extraction failed:`, error);
+      throw error;
     }
-  }
-
-  async extractFromPDF(buffer) {
-    return "PDF extraction not yet implemented. Use .txt for now.";
-  }
-
-  async extractFromDOCX(buffer) {
-    return "DOCX extraction not yet implemented. Use .txt for now.";
   }
 
   /**

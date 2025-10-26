@@ -237,17 +237,17 @@ export default {
       // ========================================================================
       // Route: Upload raw manuscript
       if (path === '/upload/manuscript' && request.method === 'POST') {
-        return await handleManuscriptUpload(request, env, allHeaders);
+        return addCorsHeaders(await handleManuscriptUpload(request, env, allHeaders), rateLimitHeaders);
       }
 
       // Route: Upload marketing asset
       if (path === '/upload/marketing' && request.method === 'POST') {
-        return await handleMarketingUpload(request, env, allHeaders);
+        return addCorsHeaders(await handleMarketingUpload(request, env), rateLimitHeaders);
       }
 
       // Route: Get file (with signed URL generation)
       if (path.startsWith('/get/') && request.method === 'GET') {
-        return await handleFileGet(request, env, allHeaders);
+        return addCorsHeaders(await handleFileGet(request, env), rateLimitHeaders);
       }
 
       // Route: List files for an author
@@ -457,6 +457,11 @@ export default {
 
       // POST /payments/webhook - Stripe webhook handler (coming soon)
       if (path === '/payments/webhook' && request.method === 'POST') {
+        return await handleStripeWebhook(request, env, allHeaders);
+      }
+
+      // POST /webhooks/stripe - Stripe webhook handler (production endpoint)
+      if (path === '/webhooks/stripe' && request.method === 'POST') {
         return await handleStripeWebhook(request, env, allHeaders);
       }
 
@@ -701,7 +706,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     if (!userId) {
       return new Response(JSON.stringify({ error: 'Unauthorized - please log in' }), {
         status: 401,
-        headers: { ...allHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -722,7 +727,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
         message: 'You have reached your monthly manuscript limit. Please upgrade your plan or wait for your billing period to reset.'
       }), {
         status: 403,
-        headers: { ...allHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -734,7 +739,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     if (!file) {
       return new Response(JSON.stringify({ error: 'No file provided' }), {
         status: 400,
-        headers: { ...allHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -743,7 +748,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     if (file.size > maxSize) {
       return new Response(JSON.stringify({ error: 'File too large. Maximum size is 50MB' }), {
         status: 400,
-        headers: { ...allHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -759,7 +764,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     if (!allowedTypes.includes(file.type)) {
       return new Response(JSON.stringify({ error: 'Invalid file type. Allowed: PDF, DOCX, DOC, TXT, EPUB' }), {
         status: 400,
-        headers: { ...allHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -890,13 +895,13 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
       }
     }), {
       status: 200,
-      headers: { ...allHeaders, 'Content-Type': 'application/json' }
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   } catch (error) {
     console.error('Upload error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...allHeaders, 'Content-Type': 'application/json' }
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
 }

@@ -1,6 +1,8 @@
 // Developmental Editing Agent
 // Analyzes manuscript structure, plot, pacing, and character development
 
+import { extractText, analyzeStructure } from './text-extraction.js';
+
 export class DevelopmentalAgent {
   constructor(env) {
     this.env = env;
@@ -60,45 +62,20 @@ export class DevelopmentalAgent {
   }
 
   /**
-   * Extract text from various file formats
+   * Extract text from various file formats using shared utility
    */
   async extractText(manuscript) {
     const contentType = manuscript.httpMetadata?.contentType;
     const buffer = await manuscript.arrayBuffer();
-    
-    switch(contentType) {
-      case 'text/plain':
-        return new TextDecoder().decode(buffer);
-      
-      case 'application/pdf':
-        // In production, use a PDF parser library
-        // For now, return placeholder
-        return this.extractFromPDF(buffer);
-      
-      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-        // In production, use mammoth or similar
-        return this.extractFromDOCX(buffer);
-      
-      default:
-        throw new Error(`Unsupported file type: ${contentType}`);
+
+    try {
+      const text = await extractText(buffer, contentType);
+      console.log(`[Developmental Agent] Extracted ${text.length} characters from ${contentType}`);
+      return text;
+    } catch (error) {
+      console.error(`[Developmental Agent] Text extraction failed:`, error);
+      throw error;
     }
-  }
-
-  /**
-   * Extract text from PDF (placeholder - use pdf-parse or similar in production)
-   */
-  async extractFromPDF(buffer) {
-    // TODO: Implement PDF text extraction
-    // For now, return a note that this needs implementation
-    return "PDF extraction not yet implemented. Use .txt or .docx for now.";
-  }
-
-  /**
-   * Extract text from DOCX (placeholder - use mammoth in production)
-   */
-  async extractFromDOCX(buffer) {
-    // TODO: Implement DOCX text extraction with mammoth
-    return "DOCX extraction not yet implemented. Use .txt for now.";
   }
 
   /**

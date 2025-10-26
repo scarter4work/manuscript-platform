@@ -6,11 +6,18 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint . --ext .js --ignore-pattern frontend/ --ignore-pattern node_modules/",
     "lint:fix": "eslint . --ext .js --ignore-pattern frontend/ --ignore-pattern node_modules/ --fix"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.10.0",
+    "@rollup/rollup-win32-x64-msvc": "^4.52.5",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.38.0",
+    "vitest": "^3.2.4",
     "wrangler": "^4.42.2"
   },
   "dependencies": {
@@ -19,6 +26,9 @@
     "dotenv": "^17.2.3",
     "fflate": "^0.8.2",
     "formdata-node": "^6.0.3",
+    "hono": "^4.10.3",
+    "itty-router": "^5.0.22",
+    "mammoth": "^1.11.0",
     "pdf-lib": "^1.17.1",
     "stripe": "^19.1.0"
   }
