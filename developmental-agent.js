@@ -2,6 +2,7 @@
 // Analyzes manuscript structure, plot, pacing, and character development
 
 import { extractText, analyzeStructure } from './text-extraction.js';
+import { callClaudeWithCostTracking, AGENT_CONFIG } from './agent-utils.js';
 
 export class DevelopmentalAgent {
   constructor(env) {
@@ -13,9 +14,14 @@ export class DevelopmentalAgent {
    * Main analysis entry point
    * @param {string} manuscriptKey - R2 key for the manuscript
    * @param {string} genre - Book genre (romance, thriller, fantasy, etc.)
+   * @param {string} userId - User ID (optional, for cost tracking)
+   * @param {string} manuscriptId - Manuscript ID (optional, for cost tracking)
    * @returns {Object} Complete developmental analysis
    */
-  async analyze(manuscriptKey, genre) {
+  async analyze(manuscriptKey, genre, userId = null, manuscriptId = null) {
+    // Store for cost tracking
+    this.userId = userId;
+    this.manuscriptId = manuscriptId;
     console.log(`Starting developmental analysis for ${manuscriptKey}`);
     
     // 1. Retrieve manuscript from R2
@@ -118,20 +124,18 @@ export class DevelopmentalAgent {
   }
 
   /**
-   * Run comprehensive developmental analysis using Claude
+   * Run comprehensive developmental analysis using Claude (with cost tracking)
    */
   async runDevelopmentalAnalysis(text, structure, genre) {
     // Check if API key is set
     if (!this.claudeApiKey) {
       throw new Error('ANTHROPIC_API_KEY is not set in environment variables');
     }
-    
-    console.log('Using API key:', this.claudeApiKey.substring(0, 10) + '...');
-    
+
     // Prepare the manuscript for analysis (truncate if too long)
     const maxTokens = 100000; // Approximate token limit
     const truncatedText = this.truncateForAnalysis(text, maxTokens);
-    
+
     const prompt = `You are an expert developmental editor specializing in ${genre} fiction. Analyze this manuscript and provide detailed feedback on:
 
 1. **Story Structure & Pacing**
@@ -174,7 +178,7 @@ Provide your analysis ONLY as valid JSON (no other text before or after).
 
 IMPORTANT JSON RULES:
 - Use double quotes for all strings
-- Escape any internal quotes with backslash: \" 
+- Escape any internal quotes with backslash: \"
 - No trailing commas
 - No comments in the JSON
 - Keep all text values on single lines (no line breaks inside strings)
@@ -191,93 +195,18 @@ Return this exact structure:
   "marketability": { "score": 1-10, "summary": "Brief assessment of commercial potential" }
 }`;
 
-    // Retry logic with exponential backoff
-    const maxRetries = 5;
-    let lastError;
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        console.log(`Attempt ${attempt}/${maxRetries} to call Claude API via AI Gateway...`);
-        
-        // Use Cloudflare AI Gateway instead of direct API call
-        // This works from Workers and provides caching/analytics
-        const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
-        
-        console.log('Gateway URL:', gatewayUrl);
-        console.log('API Key present:', !!this.claudeApiKey);
-        console.log('API Key starts with:', this.claudeApiKey?.substring(0, 15));
-        
-        const requestBody = {
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 4096,
-          messages: [{
-            role: 'user',
-            content: prompt
-          }],
-          temperature: 0.3
-        };
-        
-        console.log('Request body:', JSON.stringify({ ...requestBody, messages: '[REDACTED]' }));
-        
-        const response = await fetch(gatewayUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': this.claudeApiKey,
-            'anthropic-version': '2023-06-01'
-          },
-          body: JSON.stringify(requestBody)
-        });
-        
-        console.log('Response status:', response.status);
-        console.log('Response statusText:', response.statusText);
-
-        if (!response.ok) {
-          const errorBody = await response.text();
-          console.error('Claude API error details:', errorBody);
-          
-          // If it's a rate limit (429) or server error (5xx), retry
-          if (response.status === 429 || response.status >= 500) {
-            throw new Error(`Retryable error: ${response.status} - ${errorBody}`);
-          }
-          
-          // Otherwise, fail immediately
-          throw new Error(`Claude API error: ${response.status} - ${errorBody}`);
-        }
-
-        const data = await response.json();
-        const analysisText = data.content[0].text;
-        
-        // Parse JSON response
-        const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          return JSON.parse(jsonMatch[0]);
-        }
-        
-        // Fallback if JSON parsing fails
-        return {
-          overallScore: 7,
-          rawAnalysis: analysisText,
-          parseError: true
-        };
-        
-      } catch (error) {
-        console.error(`Attempt ${attempt} failed:`, error.message);
-        lastError = error;
-        
-        // If this isn't the last attempt, wait before retrying
-        if (attempt < maxRetries) {
-          // Exponential backoff: 2s, 4s, 8s, 16s
-          const waitTime = Math.pow(2, attempt) * 1000;
-          console.log(`Waiting ${waitTime}ms before retry...`);
-          await new Promise(resolve => setTimeout(resolve, waitTime));
-        }
-      }
-    }
-    
-    // All retries failed
-    console.error('All retry attempts failed');
-    throw new Error(`Failed to analyze manuscript after ${maxRetries} attempts: ${lastError.message}`);
+    // Use shared utility with cost tracking
+    return await callClaudeWithCostTracking(
+      this.claudeApiKey,
+      prompt,
+      AGENT_CONFIG.TEMPERATURE.PRECISE,
+      'DevelopmentalAgent',
+      this.env,
+      this.userId,
+      this.manuscriptId,
+      'analysis',
+      'analyze_developmental'
+    );
   }
 
   /**

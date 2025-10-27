@@ -45,8 +45,11 @@ export default {
           timestamp: new Date().toISOString()
         });
 
-        // Get manuscript ID from database for status updates
+        // Get manuscript ID and user ID from database for status updates and cost tracking
         const manuscriptId = await getManuscriptIdFromKey(env, manuscriptKey);
+
+        // Extract userId from manuscriptKey (format: userId/manuscriptId/filename)
+        const userId = manuscriptKey.split('/')[0];
 
         // Update database status to 'analyzing'
         if (manuscriptId) {
@@ -68,7 +71,7 @@ export default {
         const devAgent = new DevelopmentalAgent(env);
 
         const devAnalysis = await runWithProgress(
-          devAgent.analyze(manuscriptKey, genre),
+          devAgent.analyze(manuscriptKey, genre, userId, manuscriptId),
           env,
           reportId,
           5,  // start progress
@@ -92,7 +95,7 @@ export default {
         const lineAgent = new LineEditingAgent(env);
 
         const lineAnalysis = await runWithProgress(
-          lineAgent.analyze(manuscriptKey, genre),
+          lineAgent.analyze(manuscriptKey, genre, userId, manuscriptId),
           env,
           reportId,
           33, // start progress
@@ -116,7 +119,7 @@ export default {
         const copyAgent = new CopyEditingAgent(env);
 
         const copyAnalysis = await runWithProgress(
-          copyAgent.analyze(manuscriptKey, styleGuide),
+          copyAgent.analyze(manuscriptKey, styleGuide, userId, manuscriptId),
           env,
           reportId,
           66, // start progress
