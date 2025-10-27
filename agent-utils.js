@@ -1,6 +1,8 @@
 // Shared utilities for AI agents
 // This file contains common functions used by multiple agent classes
 
+import { logClaudeAPICost } from './cost-utils.js';
+
 /**
  * Configuration constants for AI agents
  * Centralized so they can be easily changed across all agents
@@ -122,7 +124,14 @@ export async function callClaudeWithRetry(apiKey, prompt, temperature, agentName
       const parsedResponse = JSON.parse(jsonMatch[0]);
       console.log(`${agentName} - Successfully generated response`);
 
-      return parsedResponse;
+      // Extract usage data for cost tracking
+      const usage = {
+        inputTokens: data.usage?.input_tokens || 0,
+        outputTokens: data.usage?.output_tokens || 0,
+        model: AGENT_CONFIG.CLAUDE_MODEL,
+      };
+
+      return { response: parsedResponse, usage };
 
     } catch (error) {
       console.error(`${agentName} - Attempt ${attempt} failed:`, error.message);
@@ -143,6 +152,56 @@ export async function callClaudeWithRetry(apiKey, prompt, temperature, agentName
   throw new Error(
     `${agentName} - Failed after ${AGENT_CONFIG.MAX_RETRIES} attempts. Last error: ${lastError.message}`
   );
+}
+
+/**
+ * Call Claude API with cost tracking
+ * Wrapper around callClaudeWithRetry that automatically logs costs to the database
+ *
+ * @param {string} apiKey - Anthropic API key
+ * @param {string} prompt - The prompt to send to Claude
+ * @param {number} temperature - Temperature setting (0-1, higher = more creative)
+ * @param {string} agentName - Name of the agent (for logging)
+ * @param {Object} env - Cloudflare environment (for database access)
+ * @param {string} userId - User ID (optional, for cost attribution)
+ * @param {string} manuscriptId - Manuscript ID (optional, for cost attribution)
+ * @param {string} featureName - Feature name (e.g., 'analysis', 'asset_generation')
+ * @param {string} operation - Operation name (e.g., 'analyze_developmental', 'generate_book_description')
+ * @returns {Promise<Object>} Parsed JSON response from Claude (without usage)
+ * @throws {Error} If all retry attempts fail
+ */
+export async function callClaudeWithCostTracking(
+  apiKey,
+  prompt,
+  temperature,
+  agentName,
+  env,
+  userId = null,
+  manuscriptId = null,
+  featureName,
+  operation
+) {
+  // Call Claude API and get response + usage
+  const { response, usage } = await callClaudeWithRetry(apiKey, prompt, temperature, agentName);
+
+  // Log cost to database (fire and forget - don't block on cost tracking)
+  try {
+    await logClaudeAPICost(env, {
+      userId,
+      manuscriptId,
+      featureName,
+      operation,
+      inputTokens: usage.inputTokens,
+      outputTokens: usage.outputTokens,
+      model: usage.model,
+    });
+  } catch (costError) {
+    console.error(`${agentName} - Failed to log cost:`, costError);
+    // Don't fail the request if cost tracking fails
+  }
+
+  // Return just the response (maintains backward compatibility)
+  return response;
 }
 
 /**

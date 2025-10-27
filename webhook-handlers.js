@@ -4,6 +4,7 @@
  */
 
 import Stripe from 'stripe';
+import { calculateStripeFee, logCost } from './cost-utils.js';
 
 /**
  * Main webhook handler
@@ -155,6 +156,7 @@ async function handleCheckoutCompleted(env, session) {
     // One-time payment - record in payment history
     const paymentId = crypto.randomUUID();
     const timestamp = Math.floor(Date.now() / 1000);
+    const amountUSD = session.amount_total / 100; // Convert cents to dollars
 
     await env.DB.prepare(`
       INSERT INTO payment_history (
@@ -171,6 +173,25 @@ async function handleCheckoutCompleted(env, session) {
     ).run();
 
     console.log('[Webhook] One-time payment recorded:', paymentId);
+
+    // Log Stripe fee cost
+    try {
+      const stripeFee = calculateStripeFee(amountUSD);
+      await logCost(env, {
+        userId,
+        costCenter: 'stripe_fees',
+        featureName: 'payment_processing',
+        operation: 'one_time_payment',
+        costUSD: stripeFee,
+        metadata: {
+          paymentId,
+          amountUSD,
+          currency: session.currency,
+        },
+      });
+    } catch (costError) {
+      console.error('[Webhook] Failed to log Stripe fee:', costError);
+    }
   }
 }
 
@@ -242,6 +263,8 @@ async function handlePaymentSucceeded(env, invoice) {
   `).bind(invoice.subscription).first();
 
   if (subscription) {
+    const amountUSD = invoice.amount_paid / 100; // Convert cents to dollars
+
     await env.DB.prepare(`
       INSERT INTO payment_history (
         id, user_id, subscription_id, stripe_invoice_id, amount, currency,
@@ -259,6 +282,27 @@ async function handlePaymentSucceeded(env, invoice) {
     ).run();
 
     console.log('[Webhook] Payment succeeded:', paymentId);
+
+    // Log Stripe fee cost
+    try {
+      const stripeFee = calculateStripeFee(amountUSD);
+      await logCost(env, {
+        userId: subscription.user_id,
+        costCenter: 'stripe_fees',
+        featureName: 'payment_processing',
+        operation: 'subscription_payment',
+        costUSD: stripeFee,
+        metadata: {
+          paymentId,
+          subscriptionId: subscription.id,
+          invoiceId: invoice.id,
+          amountUSD,
+          currency: invoice.currency,
+        },
+      });
+    } catch (costError) {
+      console.error('[Webhook] Failed to log Stripe fee:', costError);
+    }
   }
 }
 

@@ -19,6 +19,15 @@ import {
   updateDMCAStatus,
   resolveDMCARequest,
 } from '../dmca-admin-handlers.js';
+import {
+  getCostOverview,
+  getDailyCosts,
+  getTopSpenders,
+  getBudgetAlerts,
+  updateBudgetConfig,
+  acknowledgeBudgetAlert,
+  getFeatureCosts,
+} from '../admin-cost-handlers.js';
 import { assertAuthenticated } from '../error-handling.js';
 
 /**
@@ -140,4 +149,32 @@ export default function registerAdminRoutes(app) {
 
   // POST /admin/dmca/resolve - Resolve DMCA request (approve or reject)
   app.post('/admin/dmca/resolve', requireAuth, requireAdmin, wrapHandler(resolveDMCARequest));
+
+  // ============================================================================
+  // COST TRACKING & BUDGET MANAGEMENT
+  // ============================================================================
+
+  // GET /admin/costs/overview - Get cost overview and budget status
+  app.get('/admin/costs/overview', requireAuth, requireAdmin, wrapHandler(getCostOverview));
+
+  // GET /admin/costs/daily - Get daily cost breakdown
+  app.get('/admin/costs/daily', requireAuth, requireAdmin, wrapHandler(getDailyCosts));
+
+  // GET /admin/costs/features - Get feature cost breakdown
+  app.get('/admin/costs/features', requireAuth, requireAdmin, wrapHandler(getFeatureCosts));
+
+  // GET /admin/costs/top-users - Get top spending users
+  app.get('/admin/costs/top-users', requireAuth, requireAdmin, wrapHandler(getTopSpenders));
+
+  // GET /admin/costs/alerts - Get budget alerts
+  app.get('/admin/costs/alerts', requireAuth, requireAdmin, wrapHandler(getBudgetAlerts));
+
+  // PATCH /admin/costs/budget - Update budget configuration
+  app.patch('/admin/costs/budget', requireAuth, requireAdmin, wrapHandler(updateBudgetConfig));
+
+  // PATCH /admin/costs/alerts/:id/acknowledge - Acknowledge a budget alert
+  app.patch('/admin/costs/alerts/:id/acknowledge', requireAuth, requireAdmin, async (c) => {
+    const alertId = c.req.param('id');
+    return wrapHandler((req, env, corsHeaders) => acknowledgeBudgetAlert(req, env, corsHeaders, alertId))(c);
+  });
 }
