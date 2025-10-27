@@ -2,6 +2,7 @@
 // Focuses on grammar, punctuation, consistency, and technical correctness
 
 import { extractText } from './text-extraction.js';
+import { callClaudeWithCostTracking, AGENT_CONFIG } from './agent-utils.js';
 
 export class CopyEditingAgent {
   constructor(env) {
@@ -13,9 +14,15 @@ export class CopyEditingAgent {
    * Main analysis entry point
    * @param {string} manuscriptKey - R2 key for the manuscript
    * @param {string} styleGuide - 'chicago' (default), 'ap', or 'custom'
+   * @param {string} userId - User ID (optional, for cost tracking)
+   * @param {string} manuscriptId - Manuscript ID (optional, for cost tracking)
    * @returns {Object} Complete copy editing analysis
    */
-  async analyze(manuscriptKey, styleGuide = 'chicago') {
+  async analyze(manuscriptKey, styleGuide = 'chicago', userId = null, manuscriptId = null) {
+    // Store for cost tracking
+    this.userId = userId;
+    this.manuscriptId = manuscriptId;
+
     console.log(`Starting copy editing analysis for ${manuscriptKey}`);
     
     // 1. Retrieve manuscript from R2
@@ -223,105 +230,23 @@ Return this exact structure:
 
 Only flag clear, definite errors. If something is stylistic preference rather than wrong, don't flag it unless it violates the style guide.`;
 
-    // Retry logic with exponential backoff
-    const maxRetries = 5;
-    let lastError;
+    // Use shared utility with cost tracking
+    const analysis = await callClaudeWithCostTracking(
+      this.claudeApiKey,
+      prompt,
+      AGENT_CONFIG.TEMPERATURE.PRECISE,
+      'CopyEditingAgent',
+      this.env,
+      this.userId,
+      this.manuscriptId,
+      'analysis',
+      'analyze_copy_editing'
+    );
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        console.log(`Section ${section.sectionNumber} - Attempt ${attempt}/${maxRetries}`);
-
-        // Use Cloudflare AI Gateway instead of direct API call
-        const gatewayUrl = 'https://gateway.ai.cloudflare.com/v1/8cd795daa8ce3c17078fe6cf3a2de8e3/manuscript-ai-gateway/anthropic/v1/messages';
-
-        const response = await fetch(gatewayUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': this.claudeApiKey,
-            'anthropic-version': '2023-06-01'
-          },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 4096,
-            messages: [{
-              role: 'user',
-              content: prompt
-            }],
-            temperature: 0.3  // Lower temperature for more consistent JSON
-          })
-        });
-
-        if (!response.ok) {
-          const errorBody = await response.text();
-          console.error('Claude API error details:', errorBody);
-
-          // If it's a rate limit (429) or server error (5xx), retry
-          if (response.status === 429 || response.status >= 500) {
-            throw new Error(`Retryable error: ${response.status} - ${errorBody}`);
-          }
-
-          throw new Error(`Claude API error: ${response.status} - ${errorBody}`);
-        }
-
-        const data = await response.json();
-        const analysisText = data.content[0].text;
-
-        // Parse JSON response
-        let analysis;
-        try {
-          const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-          if (!jsonMatch) {
-            throw new Error('No JSON found in response');
-          }
-
-          let jsonStr = jsonMatch[0];
-          jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1');
-          jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g, '');
-
-          analysis = JSON.parse(jsonStr);
-        } catch (parseError) {
-          console.error('JSON parse error:', parseError.message);
-          return {
-            sectionNumber: section.sectionNumber,
-            wordRange: `${section.startWord}-${section.endWord}`,
-            overallScore: 8,
-            errorCount: 0,
-            parseError: true,
-            errors: [],
-            strengths: ['Parse error - manual review needed']
-          };
-        }
-
-        return {
-          sectionNumber: section.sectionNumber,
-          wordRange: `${section.startWord}-${section.endWord}`,
-          ...analysis
-        };
-
-      } catch (error) {
-        console.error(`Section ${section.sectionNumber} - Attempt ${attempt} failed:`, error.message);
-        lastError = error;
-
-        if (attempt < maxRetries) {
-          const waitTime = Math.pow(2, attempt) * 1000;
-          console.log(`Waiting ${waitTime}ms before retry...`);
-          await new Promise(resolve => setTimeout(resolve, waitTime));
-        }
-      }
-    }
-
-    // All retries failed - return fallback
-    console.error(`Section ${section.sectionNumber} - All retries failed`);
     return {
       sectionNumber: section.sectionNumber,
       wordRange: `${section.startWord}-${section.endWord}`,
-      overallScore: 8,
-      errorCount: 0,
-      error: true,
-      errorMessage: lastError.message,
-      errors: [],
-      strengths: []
+      ...analysis
     };
   }
 
