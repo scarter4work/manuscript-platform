@@ -1,0 +1,88 @@
+name: Auto Deploy on Push
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/**'
+
+jobs:
+  auto-deploy:
+    name: Auto Deploy to Production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://api.scarter4workmanuscripthub.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate deployment
+        run: npx wrangler deploy --dry-run --outdir=./dist
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+
+      - name: Wait for deployment to stabilize
+        run: sleep 30
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests against production..."
+
+          # Test API health
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://api.scarter4workmanuscripthub.com/)
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "ERROR: Expected 200, got $HTTP_CODE"
+            exit 1
+          fi
+          echo "✓ API health check passed (200 OK)"
+
+          # Test protected endpoint (should return 401)
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://api.scarter4workmanuscripthub.com/manuscripts)
+          if [ "$HTTP_CODE" != "401" ]; then
+            echo "ERROR: Expected 401 (Unauthorized), got $HTTP_CODE"
+            exit 1
+          fi
+          echo "✓ Auth check passed (401 Unauthorized as expected)"
+
+          # Test CORS headers
+          CORS_HEADER=$(curl -s -I https://api.scarter4workmanuscripthub.com/manuscripts | grep -i "access-control-allow-origin")
+          if [ -z "$CORS_HEADER" ]; then
+            echo "WARNING: CORS headers not found"
+          else
+            echo "✓ CORS headers present"
+          fi
+
+          echo "All smoke tests passed!"
+
+      - name: Create deployment record
+        run: |
+          echo "✅ Auto-deployment completed successfully"
+          echo "Environment: production"
+          echo "Commit: ${{ github.sha }}"
+          echo "Deployed by: ${{ github.actor }}"
+          echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+      - name: Notify deployment failure
+        if: failure()
+        run: |
+          echo "❌ Auto-deployment to production failed!"
+          echo "Check logs above for details"
+          exit 1
