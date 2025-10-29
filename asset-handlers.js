@@ -14,6 +14,7 @@ import { SeriesDescriptionAgent } from './series-description-agent.js';
 import { FormattingAgent } from './formatting-agent.js';
 import { MarketAnalysisAgent } from './market-analysis-agent.js';
 import { SocialMediaAgent } from './social-media-agent.js';
+import { CoverGenerationAgent } from './cover-generation-agent.js';
 
 /**
  * Check asset generation status (Phase D)
@@ -918,6 +919,279 @@ export async function handleGetSocialMedia(request, env, corsHeaders) {
 
   } catch (error) {
     console.error('Error fetching social media marketing:', error);
+    return new Response(JSON.stringify({
+      error: error.message
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+/**
+ * Generate AI cover images using DALL-E 3
+ * POST /generate-covers
+ *
+ * Required: reportId, title, authorName
+ * Optional: numVariations (default: 3, max: 5)
+ *
+ * Requires: Cover brief must exist (generated via /generate-assets or cover design agent)
+ */
+export async function handleGenerateCovers(request, env, corsHeaders) {
+  try {
+    const body = await request.json();
+    const { reportId, title, authorName, numVariations } = body;
+
+    // Validate required parameters
+    if (!reportId) {
+      return new Response(JSON.stringify({ error: 'reportId is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (!title) {
+      return new Response(JSON.stringify({ error: 'title is required for cover generation' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (!authorName) {
+      return new Response(JSON.stringify({ error: 'authorName is required for cover generation' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    console.log('Generating covers for report:', reportId);
+
+    // Look up the manuscript key from the short report ID
+    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+
+    if (!mappingObject) {
+      return new Response(JSON.stringify({
+        error: 'Report not found',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const manuscriptKey = await mappingObject.text();
+    console.log('Found manuscript key:', manuscriptKey);
+
+    // Fetch cover brief (generated from /generate-assets or standalone)
+    const coverBriefObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-cover-brief.json`);
+
+    if (!coverBriefObj) {
+      return new Response(JSON.stringify({
+        error: 'Cover design brief not found. Please run /generate-assets first or generate a cover brief.',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const coverBriefData = await coverBriefObj.json();
+    const coverBrief = coverBriefData.coverBrief || coverBriefData;
+
+    // Get user ID for cost tracking
+    // Extract userId from manuscriptKey (format: userId/manuscriptId/filename)
+    const userId = manuscriptKey.split('/')[0];
+    const manuscriptId = manuscriptKey.split('/')[1];
+
+    // Initialize cover generation agent
+    const coverGenAgent = new CoverGenerationAgent(env);
+
+    console.log('Generating cover images with DALL-E 3...');
+
+    // Generate cover images
+    const result = await coverGenAgent.generate(
+      manuscriptKey,
+      coverBrief,
+      title,
+      authorName,
+      numVariations || 3,
+      userId,
+      manuscriptId
+    );
+
+    console.log('Covers generated successfully');
+
+    return new Response(JSON.stringify({
+      success: true,
+      reportId: reportId,
+      covers: result
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error generating covers:', error);
+    console.error('Error stack:', error.stack);
+    return new Response(JSON.stringify({
+      error: error.message,
+      stack: error.stack
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+/**
+ * Get generated cover images
+ * GET /covers?reportId={reportId}
+ */
+export async function handleGetCovers(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const reportId = url.searchParams.get('reportId') || url.searchParams.get('id');
+
+    if (!reportId) {
+      return new Response(JSON.stringify({ error: 'reportId is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get manuscript key from mapping
+    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+
+    if (!mappingObject) {
+      return new Response(JSON.stringify({
+        error: 'Report not found',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const manuscriptKey = await mappingObject.text();
+
+    // Fetch cover images metadata
+    const coverImagesObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-cover-images.json`);
+
+    if (!coverImagesObj) {
+      return new Response(JSON.stringify({
+        error: 'Cover images not found. Run /generate-covers first.',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const coverImagesData = await coverImagesObj.json();
+
+    // Generate signed URLs for each cover image (valid for 1 hour)
+    const coversWithUrls = await Promise.all(
+      coverImagesData.coverImages.map(async (cover) => {
+        // Get the actual image from R2
+        const imageObj = await env.MANUSCRIPTS_PROCESSED.get(cover.r2Key);
+
+        if (imageObj) {
+          // For now, return the R2 key and metadata
+          // In production, you might generate signed URLs or serve via a CDN
+          return {
+            ...cover,
+            available: true
+          };
+        } else {
+          return {
+            ...cover,
+            available: false,
+            error: 'Image file not found in storage'
+          };
+        }
+      })
+    );
+
+    return new Response(JSON.stringify({
+      ...coverImagesData,
+      coverImages: coversWithUrls
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error fetching covers:', error);
+    return new Response(JSON.stringify({
+      error: error.message
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+/**
+ * Download a specific cover image
+ * GET /covers/download?reportId={reportId}&variation={variationNumber}
+ */
+export async function handleDownloadCover(request, env, corsHeaders) {
+  try {
+    const url = new URL(request.url);
+    const reportId = url.searchParams.get('reportId');
+    const variation = parseInt(url.searchParams.get('variation') || '1');
+
+    if (!reportId) {
+      return new Response(JSON.stringify({ error: 'reportId is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get manuscript key from mapping
+    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+
+    if (!mappingObject) {
+      return new Response(JSON.stringify({
+        error: 'Report not found',
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const manuscriptKey = await mappingObject.text();
+
+    // Build R2 key for the specific variation
+    const processedKey = manuscriptKey.replace('MANUSCRIPTS_RAW', 'PROCESSED');
+    const imageKey = `${processedKey}-cover-variation-${variation}.png`;
+
+    // Fetch the image from R2
+    const imageObj = await env.MANUSCRIPTS_PROCESSED.get(imageKey);
+
+    if (!imageObj) {
+      return new Response(JSON.stringify({
+        error: `Cover variation ${variation} not found`,
+        reportId: reportId
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Return the image
+    return new Response(imageObj.body, {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'image/png',
+        'Content-Disposition': `attachment; filename="cover-variation-${variation}.png"`
+      }
+    });
+
+  } catch (error) {
+    console.error('Error downloading cover:', error);
     return new Response(JSON.stringify({
       error: error.message
     }), {

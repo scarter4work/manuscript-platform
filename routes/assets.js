@@ -14,6 +14,9 @@ import {
   handleGetMarketAnalysis,
   handleGenerateSocialMedia,
   handleGetSocialMedia,
+  handleGenerateCovers,
+  handleGetCovers,
+  handleDownloadCover,
 } from '../asset-handlers.js';
 import { assertAuthenticated } from '../error-handling.js';
 
@@ -95,4 +98,16 @@ export default function registerAssetRoutes(app) {
   // GET /social-media - Get social media marketing results
   // Protected endpoint - requires authentication
   app.get('/social-media', requireAuth, wrapHandler(handleGetSocialMedia));
+
+  // POST /generate-covers - Generate AI cover images using DALL-E 3
+  // Protected endpoint - requires authentication
+  app.post('/generate-covers', requireAuth, wrapHandler(handleGenerateCovers));
+
+  // GET /covers - Get generated cover images
+  // Protected endpoint - requires authentication
+  app.get('/covers', requireAuth, wrapHandler(handleGetCovers));
+
+  // GET /covers/download - Download a specific cover image
+  // Protected endpoint - requires authentication
+  app.get('/covers/download', requireAuth, wrapHandler(handleDownloadCover));
 }
