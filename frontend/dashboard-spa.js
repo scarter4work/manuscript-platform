@@ -4602,6 +4602,194 @@ ${content}
         a.download = `social-media-${this.state.reportId}.json`;
         a.click();
         URL.revokeObjectURL(url);
+    },
+
+    // ============================================================================
+    // AI COVER GENERATION
+    // ============================================================================
+
+    /**
+     * Start AI cover generation with DALL-E 3
+     */
+    async startCoverGeneration() {
+        // Get input values
+        const title = document.getElementById('coverTitle')?.value?.trim();
+        const authorName = document.getElementById('coverAuthor')?.value?.trim();
+        const numVariations = parseInt(document.getElementById('coverVariations')?.value || '3');
+
+        // Validate inputs
+        if (!title) {
+            alert('Please enter a book title');
+            return;
+        }
+
+        if (!authorName) {
+            alert('Please enter an author name');
+            return;
+        }
+
+        if (!this.state.reportId) {
+            alert('No report ID available. Please analyze a manuscript first.');
+            return;
+        }
+
+        console.log('Starting cover generation:', { title, authorName, numVariations });
+
+        // Show loading state
+        document.getElementById('coversForm').style.display = 'none';
+        document.getElementById('coversLoading').style.display = 'block';
+        document.getElementById('coversContent').style.display = 'none';
+
+        try {
+            // Call the generate-covers endpoint
+            const response = await fetch(`${this.API_BASE}/generate-covers`, {
+                credentials: 'include',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    reportId: this.state.reportId,
+                    title: title,
+                    authorName: authorName,
+                    numVariations: numVariations
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Cover generation failed');
+            }
+
+            console.log('Covers generated successfully:', result);
+
+            // Store cover data
+            this.state.covers = result.covers;
+
+            // Display results
+            this.displayCovers(result.covers);
+
+            // Hide loading, show content
+            document.getElementById('coversLoading').style.display = 'none';
+            document.getElementById('coversContent').style.display = 'block';
+
+        } catch (error) {
+            console.error('Cover generation error:', error);
+            alert(`Cover generation failed: ${error.message}`);
+
+            // Show form again
+            document.getElementById('coversForm').style.display = 'block';
+            document.getElementById('coversLoading').style.display = 'none';
+        }
+    },
+
+    /**
+     * Display generated cover images
+     */
+    displayCovers(coversData) {
+        const container = document.getElementById('coversContent');
+        if (!container) return;
+
+        const coverImages = coversData.coverImages || [];
+
+        let html = `
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #333; margin-bottom: 10px;">✅ Cover Images Generated!</h3>
+                <p style="color: #666; margin-bottom: 20px;">
+                    ${coverImages.length} cover variation${coverImages.length !== 1 ? 's' : ''} created.
+                    Click download to get the full-size version.
+                </p>
+            </div>
+        `;
+
+        // Grid of cover images
+        html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">';
+
+        coverImages.forEach((cover, index) => {
+            html += `
+                <div style="border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: white;">
+                    <div style="aspect-ratio: 1024/1792; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white;">
+                            <p style="font-size: 1.2em; margin-bottom: 10px;">Variation ${cover.variationNumber}</p>
+                            <button
+                                onclick="app.downloadCover(${cover.variationNumber})"
+                                style="background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                📥 Download
+                            </button>
+                        </div>
+                    </div>
+                    <div style="padding: 15px;">
+                        <p style="font-size: 0.9em; color: #666; margin-bottom: 5px;">
+                            <strong>Model:</strong> ${cover.size || 'DALL-E 3'}
+                        </p>
+                        <p style="font-size: 0.85em; color: #999; margin-bottom: 10px;">
+                            ${cover.revisedPrompt ? cover.revisedPrompt.substring(0, 100) + '...' : 'AI-generated cover design'}
+                        </p>
+                        ${cover.duration ? `<p style="font-size: 0.8em; color: #999;">Generated in ${(cover.duration / 1000).toFixed(1)}s</p>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+
+        // Error reporting
+        if (coversData.errors && coversData.errors.length > 0) {
+            html += `
+                <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <p style="color: #856404; font-weight: 600; margin-bottom: 10px;">⚠️ Some variations failed:</p>
+                    <ul style="margin: 0; padding-left: 20px; color: #856404;">
+                        ${coversData.errors.map(e => `<li>Variation ${e.variation}: ${e.error}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Summary
+        html += `
+            <div style="background: #f7fafc; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                <h4 style="margin-bottom: 15px; color: #333;">📊 Generation Summary</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div>
+                        <p style="color: #999; font-size: 0.9em; margin-bottom: 5px;">Requested</p>
+                        <p style="color: #333; font-size: 1.2em; font-weight: 600;">${coversData.requested} variations</p>
+                    </div>
+                    <div>
+                        <p style="color: #999; font-size: 0.9em; margin-bottom: 5px;">Generated</p>
+                        <p style="color: #333; font-size: 1.2em; font-weight: 600;">${coversData.generated} successful</p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Generate more button
+        html += `
+            <button class="btn btn-secondary" onclick="app.navigate('covers'); document.getElementById('coversForm').style.display = 'block'; document.getElementById('coversContent').style.display = 'none';">
+                🎨 Generate More Covers
+            </button>
+        `;
+
+        container.innerHTML = html;
+    },
+
+    /**
+     * Download a specific cover variation
+     */
+    async downloadCover(variationNumber) {
+        if (!this.state.reportId) {
+            alert('No report ID available');
+            return;
+        }
+
+        try {
+            const url = `${this.API_BASE}/covers/download?reportId=${this.state.reportId}&variation=${variationNumber}`;
+
+            // Open in new window to trigger download
+            window.open(url, '_blank');
+
+        } catch (error) {
+            console.error('Download error:', error);
+            alert(`Download failed: ${error.message}`);
+        }
     }
 };
 

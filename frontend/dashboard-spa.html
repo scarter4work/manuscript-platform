@@ -730,6 +730,9 @@
                         <button class="btn btn-secondary" onclick="app.navigate('assets')">
                             📦 Marketing Assets
                         </button>
+                        <button class="btn btn-secondary" onclick="app.navigate('covers')">
+                            🎨 AI Cover Images
+                        </button>
                         <button class="btn btn-secondary" onclick="app.navigate('formatting')">
                             📚 Format for Publishing
                         </button>
@@ -931,6 +934,69 @@
                     <button class="btn" onclick="app.startSocialMedia()">
                         Generate Social Media Content
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: AI Cover Generation -->
+        <div id="viewCovers" class="view">
+            <div class="card">
+                <button class="btn-back" onclick="app.navigate('summary')">
+                    ← Back to Results
+                </button>
+
+                <h2 style="margin-bottom: 20px;">🎨 AI Cover Image Generation</h2>
+                <p style="color: #666; margin-bottom: 30px;">
+                    Generate professional book cover images using AI (DALL-E 3). Enter your book title and author name to create multiple cover variations.
+                </p>
+
+                <!-- Input Form -->
+                <div id="coversForm" style="margin-bottom: 30px;">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 600;">Book Title *</label>
+                        <input id="coverTitle" type="text" placeholder="Enter your book title"
+                            style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 600;">Author Name *</label>
+                        <input id="coverAuthor" type="text" placeholder="Enter author name"
+                            style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 600;">Number of Variations</label>
+                        <select id="coverVariations"
+                            style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                            <option value="1">1 variation</option>
+                            <option value="2">2 variations</option>
+                            <option value="3" selected>3 variations (recommended)</option>
+                            <option value="4">4 variations</option>
+                            <option value="5">5 variations (max)</option>
+                        </select>
+                    </div>
+
+                    <p style="color: #999; font-size: 0.9em; margin-bottom: 20px;">
+                        💡 Each image costs ~$0.08. Generation takes about 30-60 seconds per image.
+                    </p>
+
+                    <button class="btn" onclick="app.startCoverGeneration()">
+                        🎨 Generate Cover Images
+                    </button>
+                </div>
+
+                <!-- Loading State -->
+                <div id="coversLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Generating AI cover images...</p>
+                    <p id="coversProgress" style="font-size: 0.9em; color: #999; margin-top: 10px;">
+                        This may take 1-3 minutes depending on the number of variations
+                    </p>
+                </div>
+
+                <!-- Content Area -->
+                <div id="coversContent" style="display: none;">
+                    <!-- Cover images will be injected here by JavaScript -->
                 </div>
             </div>
         </div>
