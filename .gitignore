@@ -7,3 +7,4 @@ dist/
 analysis-*.json
 line-analysis-*.json
 copy-analysis-*.json
+frontend-dist/

@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    // Language and environment
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    // Type checking
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true,
+
+    // Interop and JSX
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    // Output
+    "declaration": false,
+    "sourceMap": true,
+
+    // Paths (matching vite.config.ts aliases)
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["frontend-src/*"],
+      "@components/*": ["frontend-src/components/*"],
+      "@utils/*": ["frontend-src/utils/*"],
+      "@styles/*": ["frontend-src/styles/*"],
+      "@api/*": ["frontend-src/api/*"]
+    },
+
+    // Type definitions
+    "types": ["vite/client", "node"]
+  },
+
+  "include": [
+    "frontend-src/**/*.ts",
+    "frontend-src/**/*.d.ts",
+    "frontend-src/**/*.tsx"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "frontend-dist",
+    "frontend"
+  ]
+}

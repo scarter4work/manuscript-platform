@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Professional manuscript analysis powered by AI">
+  <title>Manuscript Analysis Platform - AI-Powered Writing Feedback</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- This will be processed by Vite and replaced with the bundled CSS -->
+  <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+  <!-- Hero Section -->
+  <div class="gradient-bg min-h-screen flex items-center justify-center">
+    <div class="container mx-auto px-6">
+      <div class="text-center text-white">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">
+          Transform Your Manuscript with AI
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-balance">
+          Get professional-grade developmental editing, line editing, and marketing insights
+          for your book—powered by advanced AI analysis.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <button class="btn-primary bg-white text-primary hover:bg-gray-100" id="getStartedBtn">
+            Get Started Free
+          </button>
+          <button class="btn-outline border-white text-white hover:bg-white hover:text-primary" id="learnMoreBtn">
+            Learn More
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mt-16">
+          <div class="card text-gray-900">
+            <div class="text-4xl mb-3">📝</div>
+            <h3 class="text-xl font-semibold mb-2">Developmental Analysis</h3>
+            <p class="text-gray-600">
+              Deep insights into plot, character development, pacing, and story structure.
+            </p>
+          </div>
+
+          <div class="card text-gray-900">
+            <div class="text-4xl mb-3">✨</div>
+            <h3 class="text-xl font-semibold mb-2">Line Editing</h3>
+            <p class="text-gray-600">
+              Professional-quality suggestions for style, voice, dialogue, and prose quality.
+            </p>
+          </div>
+
+          <div class="card text-gray-900">
+            <div class="text-4xl mb-3">🎨</div>
+            <h3 class="text-xl font-semibold mb-2">Marketing Assets</h3>
+            <p class="text-gray-600">
+              AI-generated cover images, back cover copy, and marketing materials.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="bg-gray-50 py-16">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div>
+          <div class="text-4xl font-bold text-primary mb-2" id="manuscriptsAnalyzed">0</div>
+          <div class="text-gray-600">Manuscripts Analyzed</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-primary mb-2" id="authorsServed">0</div>
+          <div class="text-gray-600">Authors Served</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-primary mb-2">4.9★</div>
+          <div class="text-gray-600">Average Rating</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="py-16 bg-white">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-3xl font-bold mb-4">Ready to Improve Your Manuscript?</h2>
+      <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        Join thousands of authors who have transformed their writing with AI-powered analysis.
+      </p>
+      <button class="btn-primary" id="ctaBtn">
+        Start Your Free Analysis
+      </button>
+    </div>
+  </div>
+
+  <!-- This will be processed by Vite and replaced with the bundled JS -->
+  <script type="module" src="./index.ts"></script>
+</body>
+</html>
