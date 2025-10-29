@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center | Manuscript Publishing Platform</title>
+    <meta name="description" content="Documentation, tutorials, and guides for using the Manuscript Publishing Platform. Get help with uploading, analysis, marketing, and publishing.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+        }
+
+        /* Hero / Search Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 60px 18px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .search-box button {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Categories Section */
+        .categories {
+            max-width: 1200px;
+            margin: -40px auto 60px;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .category-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .category-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .category-card h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .category-card p {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .category-card .article-count {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Popular Articles */
+        .popular-articles {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .articles-list {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .article-item {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .article-item:hover {
+            background: #f8f9fa;
+        }
+
+        .article-item:last-child {
+            border-bottom: none;
+        }
+
+        .article-info h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .article-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .article-arrow {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        /* Contact Support */
+        .contact-support {
+            background: white;
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .contact-support h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .contact-support p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: #888;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .footer a {
+            color: #888;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .footer a:hover {
+            color: #667eea;
+        }
+
+        /* Search Results */
+        .search-results {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="/marketing.html" class="logo">📚 Manuscript Hub</a>
+            <div class="nav-links">
+                <a href="/marketing.html">Home</a>
+                <a href="/dashboard-spa.html">Dashboard</a>
+                <a href="mailto:support@scarter4workmanuscripthub.com">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero / Search -->
+    <section class="hero">
+        <h1>How can we help you?</h1>
+        <p>Search our knowledge base or browse categories below</p>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for articles..." onkeyup="handleSearch(event)">
+            <button onclick="performSearch()">🔍 Search</button>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+        <div class="categories-grid">
+            <div class="category-card" onclick="window.location.href='getting-started.html'">
+                <div class="category-icon">🚀</div>
+                <h3>Getting Started</h3>
+                <p>Quick start guides, account setup, and uploading your first manuscript</p>
+                <div class="article-count">4 articles</div>
+            </div>
+
+            <div class="category-card" onclick="window.location.href='analysis-features.html'">
+                <div class="category-icon">✍️</div>
+                <h3>Analysis Features</h3>
+                <p>Understanding developmental, line, and copy editing feedback</p>
+                <div class="article-count">5 articles</div>
+            </div>
+
+            <div class="category-card" onclick="window.location.href='marketing-assets.html'">
+                <div class="category-icon">🎯</div>
+                <h3>Marketing Assets</h3>
+                <p>Book descriptions, keywords, categories, and author bios</p>
+                <div class="article-count">6 articles</div>
+            </div>
+
+            <div class="category-card" onclick="window.location.href='publishing-tools.html'">
+                <div class="category-icon">📖</div>
+                <h3>Publishing Tools</h3>
+                <p>EPUB generation, PDF formatting, and cover design</p>
+                <div class="article-count">5 articles</div>
+            </div>
+
+            <div class="category-card" onclick="window.location.href='billing-subscriptions.html'">
+                <div class="category-icon">💳</div>
+                <h3>Billing & Subscriptions</h3>
+                <p>Plans, payments, upgrades, and refunds</p>
+                <div class="article-count">6 articles</div>
+            </div>
+
+            <div class="category-card" onclick="window.location.href='troubleshooting.html'">
+                <div class="category-icon">🔧</div>
+                <h3>Troubleshooting</h3>
+                <p>Common issues and how to resolve them</p>
+                <div class="article-count">8 articles</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Articles -->
+    <section class="popular-articles">
+        <h2 class="section-title">Popular Articles</h2>
+        <div class="articles-list">
+            <a href="getting-started.html#quick-start" class="article-item">
+                <div class="article-info">
+                    <h4>Quick Start: Upload Your First Manuscript in 5 Minutes</h4>
+                    <p>Learn the basics of uploading and analyzing your first manuscript</p>
+                </div>
+                <div class="article-arrow">→</div>
+            </a>
+
+            <a href="analysis-features.html#understanding-scores" class="article-item">
+                <div class="article-info">
+                    <h4>Understanding Your Analysis Scores</h4>
+                    <p>How to interpret developmental, line, and copy editing scores</p>
+                </div>
+                <div class="article-arrow">→</div>
+            </a>
+
+            <a href="marketing-assets.html#book-description" class="article-item">
+                <div class="article-info">
+                    <h4>Creating the Perfect Book Description for Amazon</h4>
+                    <p>Using AI-generated descriptions to boost discoverability</p>
+                </div>
+                <div class="article-arrow">→</div>
+            </a>
+
+            <a href="publishing-tools.html#epub-pdf" class="article-item">
+                <div class="article-info">
+                    <h4>Formatting Your Manuscript for Amazon KDP</h4>
+                    <p>Generate EPUB and PDF files ready for publishing</p>
+                </div>
+                <div class="article-arrow">→</div>
+            </a>
+
+            <a href="troubleshooting.html#upload-issues" class="article-item">
+                <div class="article-info">
+                    <h4>Troubleshooting Upload Issues</h4>
+                    <p>Common file format problems and how to fix them</p>
+                </div>
+                <div class="article-arrow">→</div>
+            </a>
+
+            <a href="billing-subscriptions.html#pricing-plans" class="article-item">
+                <div class="article-info">
+                    <h4>Choosing the Right Subscription Plan</h4>
+                    <p>Compare Free, Pro, and Enterprise plans to find your fit</p>
+                </div>
+                <div class="article-arrow">→</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Search Results (Hidden by default) -->
+    <section class="search-results" id="searchResults">
+        <h2 class="section-title">Search Results</h2>
+        <div class="articles-list" id="resultsContainer">
+            <!-- Results populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Contact Support -->
+    <section class="contact-support">
+        <h2>Still need help?</h2>
+        <p>Can't find what you're looking for? Our support team is here to help.</p>
+        <a href="mailto:support@scarter4workmanuscripthub.com" class="contact-btn">Contact Support</a>
+        <p style="margin-top: 20px; font-size: 14px;">Average response time: 24-48 hours</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>
+            <a href="/marketing.html">Home</a>
+            <a href="/privacy.html">Privacy</a>
+            <a href="/terms.html">Terms</a>
+            <a href="/dashboard-spa.html">Dashboard</a>
+        </div>
+        <div style="margin-top: 20px;">
+            &copy; 2025 Manuscript Publishing Platform
+        </div>
+    </footer>
+
+    <script>
+        // Simple search functionality
+        const articles = [
+            { title: "Quick Start: Upload Your First Manuscript", url: "getting-started.html#quick-start", category: "Getting Started" },
+            { title: "Account Setup and Email Verification", url: "getting-started.html#account-setup", category: "Getting Started" },
+            { title: "Understanding Subscription Plans", url: "billing-subscriptions.html#pricing-plans", category: "Billing" },
+            { title: "Uploading Manuscripts: Supported Formats", url: "getting-started.html#uploading", category: "Getting Started" },
+            { title: "Understanding Developmental Analysis", url: "analysis-features.html#developmental", category: "Analysis" },
+            { title: "Line Editing: Improving Your Prose", url: "analysis-features.html#line-editing", category: "Analysis" },
+            { title: "Copy Editing: Grammar and Style", url: "analysis-features.html#copy-editing", category: "Analysis" },
+            { title: "Reading Your Analysis Report", url: "analysis-features.html#understanding-scores", category: "Analysis" },
+            { title: "Creating Book Descriptions for Amazon", url: "marketing-assets.html#book-description", category: "Marketing" },
+            { title: "Optimizing Keywords for Discoverability", url: "marketing-assets.html#keywords", category: "Marketing" },
+            { title: "Choosing the Right BISAC Categories", url: "marketing-assets.html#categories", category: "Marketing" },
+            { title: "Generating Professional Author Bios", url: "marketing-assets.html#author-bio", category: "Marketing" },
+            { title: "Creating Cover Design Briefs", url: "marketing-assets.html#cover-design", category: "Marketing" },
+            { title: "AI Cover Image Generation", url: "marketing-assets.html#cover-images", category: "Marketing" },
+            { title: "Generating EPUB Files for Kindle", url: "publishing-tools.html#epub", category: "Publishing" },
+            { title: "Creating Print-Ready PDF Files", url: "publishing-tools.html#pdf", category: "Publishing" },
+            { title: "Market Analysis and Pricing Strategy", url: "publishing-tools.html#market-analysis", category: "Publishing" },
+            { title: "Social Media Marketing Content", url: "publishing-tools.html#social-media", category: "Publishing" },
+            { title: "Troubleshooting Upload Issues", url: "troubleshooting.html#upload-issues", category: "Troubleshooting" },
+            { title: "Why Did My Analysis Fail?", url: "troubleshooting.html#analysis-errors", category: "Troubleshooting" },
+            { title: "Payment and Billing Issues", url: "troubleshooting.html#payment-issues", category: "Troubleshooting" },
+            { title: "Account Login Problems", url: "troubleshooting.html#login-issues", category: "Troubleshooting" },
+            { title: "Upgrading Your Subscription", url: "billing-subscriptions.html#upgrading", category: "Billing" },
+            { title: "Canceling Your Subscription", url: "billing-subscriptions.html#canceling", category: "Billing" },
+            { title: "Refund Policy and Requests", url: "billing-subscriptions.html#refunds", category: "Billing" },
+            { title: "Understanding Usage Limits", url: "billing-subscriptions.html#usage-limits", category: "Billing" },
+        ];
+
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            if (query.length < 2) {
+                document.getElementById('searchResults').classList.remove('active');
+                return;
+            }
+
+            const results = articles.filter(article =>
+                article.title.toLowerCase().includes(query) ||
+                article.category.toLowerCase().includes(query)
+            );
+
+            displaySearchResults(results, query);
+        }
+
+        function displaySearchResults(results, query) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const searchResults = document.getElementById('searchResults');
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div style="padding: 40px; text-align: center; color: #666;">
+                        <p>No results found for "${query}"</p>
+                        <p style="margin-top: 10px; font-size: 14px;">Try different keywords or browse categories above</p>
+                    </div>
+                `;
+            } else {
+                resultsContainer.innerHTML = results.map(article => `
+                    <a href="${article.url}" class="article-item">
+                        <div class="article-info">
+                            <h4>${article.title}</h4>
+                            <p>${article.category}</p>
+                        </div>
+                        <div class="article-arrow">→</div>
+                    </a>
+                `).join('');
+            }
+
+            searchResults.classList.add('active');
+            searchResults.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Clear search when clicking outside
+        document.addEventListener('click', function(event) {
+            const searchBox = document.querySelector('.search-box');
+            const searchResults = document.getElementById('searchResults');
+
+            if (!searchBox.contains(event.target) && !searchResults.contains(event.target)) {
+                // Don't clear on article click
+            }
+        });
+    </script>
+</body>
+</html>
