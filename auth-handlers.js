@@ -11,6 +11,8 @@
  * - POST /auth/password-reset - Reset password with token
  *
  * All handlers maintain audit logs and implement security best practices
+ *
+ * MAN-28/MAN-39: Now includes KV caching for user profile lookups
  */
 
 import {
@@ -30,6 +32,7 @@ import {
   generateVerificationToken,
   validateVerificationToken
 } from './auth-utils.js';
+import { initCache } from './db-cache.js';
 
 // ============================================================================
 // CORS HEADERS
@@ -351,6 +354,8 @@ export async function handleLogout(request, env) {
  * - 200: { userId, email, role, createdAt, lastLogin, emailVerified }
  * - 401: { error: 'Not authenticated' }
  * - 500: { error: 'Internal server error' }
+ *
+ * MAN-39: Now uses KV caching (1 hour TTL) for user profile
  */
 export async function handleGetMe(request, env) {
   try {
@@ -364,12 +369,11 @@ export async function handleGetMe(request, env) {
       return errorResponse('Not authenticated', 401, origin);
     }
 
-    // Fetch user details from database
-    const user = await env.DB.prepare(`
-      SELECT id, email, role, created_at, last_login, email_verified
-      FROM users
-      WHERE id = ?
-    `).bind(userId).first();
+    // Initialize cache
+    const cache = initCache(env);
+
+    // Get user profile from cache or DB
+    const user = await cache.user.getProfile(userId, env);
 
     if (!user) {
       return errorResponse('User not found', 404, origin);
@@ -383,7 +387,7 @@ export async function handleGetMe(request, env) {
       createdAt: user.created_at,
       lastLogin: user.last_login,
       emailVerified: user.email_verified === 1
-    }, 200, {}, origin);
+    }, 200, { 'X-Cache': 'HIT' }, origin);
 
   } catch (error) {
     console.error('Get user error:', error);
@@ -403,6 +407,8 @@ export async function handleGetMe(request, env) {
  * - 200: { message: 'Email verified successfully' }
  * - 400: { error: 'Invalid or expired verification token' }
  * - 500: { error: 'Internal server error' }
+ *
+ * MAN-39: Invalidates user cache after verification
  */
 export async function handleVerifyEmail(request, env) {
   try {
@@ -425,6 +431,11 @@ export async function handleVerifyEmail(request, env) {
     await env.DB.prepare(
       'UPDATE users SET email_verified = 1 WHERE id = ?'
     ).bind(userId).run();
+
+    // Invalidate user cache
+    const cache = initCache(env);
+    await cache.user.invalidate(userId);
+    console.log(`Cache INVALIDATED: user ${userId}`);
 
     // Log verification event
     await logAuthEvent(env, userId, 'email_verified', request, {});

@@ -2,13 +2,18 @@
  * Admin Cost Tracking Handlers
  *
  * Handlers for cost analytics, budget management, and cost reporting
+ *
+ * MAN-28/MAN-39: Now includes KV caching for admin stats
  */
 
 import { assertAuthenticated } from './error-handling.js';
+import { initCache } from './db-cache.js';
 
 /**
  * Get cost overview statistics
  * GET /admin/costs/overview
+ *
+ * MAN-39: Now uses KV caching (5 min TTL) for expensive aggregation queries
  */
 export async function getCostOverview(request, env, corsHeaders) {
   try {
@@ -26,6 +31,24 @@ export async function getCostOverview(request, env, corsHeaders) {
     }
 
     const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+    // Initialize cache
+    const cache = initCache(env);
+    const cacheKey = `admin:cost-overview:${currentMonth}`;
+
+    // Try to get from cache
+    const cached = await cache.cache.get(cacheKey);
+    if (cached) {
+      console.log(`Cache HIT: ${cacheKey}`);
+      return new Response(JSON.stringify(cached), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Cache': 'HIT',
+          ...corsHeaders
+        }
+      });
+    }
 
     // Get budget config
     const budgetConfig = await env.DB.prepare(
@@ -66,7 +89,7 @@ export async function getCostOverview(request, env, corsHeaders) {
       ? (budgetConfig.current_spend_usd / budgetConfig.monthly_limit_usd) * 100
       : 0;
 
-    return new Response(JSON.stringify({
+    const response = {
       success: true,
       data: {
         budget: {
@@ -92,9 +115,19 @@ export async function getCostOverview(request, env, corsHeaders) {
         },
         topFeatures: featureCosts.results || [],
       }
-    }), {
+    };
+
+    // Cache for 5 minutes
+    await cache.cache.set(cacheKey, response, 300);
+    console.log(`Cache SET: ${cacheKey}`);
+
+    return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Cache': 'MISS',
+        ...corsHeaders
+      }
     });
 
   } catch (error) {

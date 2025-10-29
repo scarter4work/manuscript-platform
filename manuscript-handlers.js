@@ -9,9 +9,12 @@
  * - Track manuscript status (draft, analyzing, complete)
  *
  * All endpoints require authentication.
+ *
+ * MAN-28/MAN-39: Now includes KV caching for improved performance
  */
 
 import { getUserFromRequest } from './auth-utils.js';
+import { initCache } from './db-cache.js';
 
 export const manuscriptHandlers = {
   /**
@@ -25,6 +28,8 @@ export const manuscriptHandlers = {
    * - offset: Pagination offset (default: 0)
    *
    * Returns: Array of manuscript objects with metadata
+   *
+   * MAN-39: Now with KV caching (5 min TTL for first page)
    */
   async listManuscripts(request, env) {
     try {
@@ -42,6 +47,27 @@ export const manuscriptHandlers = {
       const genre = url.searchParams.get('genre');
       const limit = parseInt(url.searchParams.get('limit')) || 50;
       const offset = parseInt(url.searchParams.get('offset')) || 0;
+
+      // Initialize cache
+      const cache = initCache(env);
+
+      // Try cache for first page only (offset === 0)
+      let cacheHit = false;
+      if (offset === 0) {
+        const cacheKey = `manuscripts:${userId}:${status || 'all'}:${genre || 'all'}:p1`;
+        const cached = await cache.cache.get(cacheKey);
+
+        if (cached) {
+          console.log(`Cache HIT: ${cacheKey}`);
+          return new Response(JSON.stringify(cached), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Cache': 'HIT'
+            }
+          });
+        }
+      }
 
       // Build query
       let query = 'SELECT * FROM manuscripts WHERE user_id = ?';
@@ -68,15 +94,27 @@ export const manuscriptHandlers = {
         metadata: m.metadata ? JSON.parse(m.metadata) : {}
       }));
 
-      return new Response(JSON.stringify({
+      const response = {
         success: true,
         manuscripts,
         count: manuscripts.length,
         limit,
         offset
-      }), {
+      };
+
+      // Cache first page results (5 min TTL)
+      if (offset === 0) {
+        const cacheKey = `manuscripts:${userId}:${status || 'all'}:${genre || 'all'}:p1`;
+        await cache.cache.set(cacheKey, response, 300); // 5 min
+        console.log(`Cache SET: ${cacheKey}`);
+      }
+
+      return new Response(JSON.stringify(response), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Cache': 'MISS'
+        }
       });
 
     } catch (error) {
@@ -93,6 +131,9 @@ export const manuscriptHandlers = {
    * Get details of a specific manuscript
    *
    * Returns: Manuscript object with full metadata
+   *
+   * MAN-39: Now uses KV caching for metadata (15 min TTL) and analysis status (1 hour TTL)
+   * Reduces 4 R2 HEAD requests to 0 on cache hit
    */
   async getManuscript(request, env, manuscriptId) {
     try {
@@ -105,41 +146,34 @@ export const manuscriptHandlers = {
         });
       }
 
-      // Fetch manuscript and verify ownership
-      const { results } = await env.DB.prepare(
-        'SELECT * FROM manuscripts WHERE id = ? AND user_id = ?'
-      ).bind(manuscriptId, userId).all();
+      // Initialize cache
+      const cache = initCache(env);
 
-      if (results.length === 0) {
+      // Get manuscript from cache or DB
+      const manuscript = await cache.manuscript.getMetadata(manuscriptId, userId, env);
+
+      if (!manuscript) {
         return new Response(JSON.stringify({ error: 'Manuscript not found or access denied' }), {
           status: 404,
           headers: { 'Content-Type': 'application/json' }
         });
       }
 
-      const manuscript = results[0];
-      manuscript.metadata = manuscript.metadata ? JSON.parse(manuscript.metadata) : {};
-
-      // Check if analysis results exist
-      const hasDevAnalysis = await env.MANUSCRIPTS_PROCESSED.head(`${manuscript.r2_key}-analysis.json`);
-      const hasLineAnalysis = await env.MANUSCRIPTS_PROCESSED.head(`${manuscript.r2_key}-line-analysis.json`);
-      const hasCopyAnalysis = await env.MANUSCRIPTS_PROCESSED.head(`${manuscript.r2_key}-copy-analysis.json`);
-      const hasAssets = await env.MANUSCRIPTS_PROCESSED.head(`${manuscript.r2_key}-assets.json`);
+      // Get analysis status from cache (reduces 4 R2 HEAD requests)
+      const analysisStatus = await cache.manuscript.getAnalysisStatus(manuscript.r2_key, env);
 
       return new Response(JSON.stringify({
         success: true,
         manuscript: {
           ...manuscript,
-          analysisStatus: {
-            developmental: !!hasDevAnalysis,
-            lineEditing: !!hasLineAnalysis,
-            copyEditing: !!hasCopyAnalysis,
-            assetsGenerated: !!hasAssets
-          }
+          analysisStatus
         }
       }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Cache': 'HIT'  // Both metadata and analysis status can be cached
+        }
       });
 
     } catch (error) {
@@ -157,6 +191,8 @@ export const manuscriptHandlers = {
    *
    * Request body: { title?, genre?, status?, metadata? }
    * Returns: Updated manuscript object
+   *
+   * MAN-39: Now invalidates related caches after update
    */
   async updateManuscript(request, env, manuscriptId) {
     try {
@@ -171,9 +207,9 @@ export const manuscriptHandlers = {
 
       const body = await request.json();
 
-      // Verify ownership
+      // Verify ownership and get r2_key for cache invalidation
       const { results } = await env.DB.prepare(
-        'SELECT id FROM manuscripts WHERE id = ? AND user_id = ?'
+        'SELECT id, r2_key FROM manuscripts WHERE id = ? AND user_id = ?'
       ).bind(manuscriptId, userId).all();
 
       if (results.length === 0) {
@@ -182,6 +218,8 @@ export const manuscriptHandlers = {
           headers: { 'Content-Type': 'application/json' }
         });
       }
+
+      const r2_key = results[0].r2_key;
 
       // Build update query dynamically based on provided fields
       const updates = [];
@@ -225,6 +263,11 @@ export const manuscriptHandlers = {
         'SELECT * FROM manuscripts WHERE id = ?'
       ).bind(manuscriptId).all();
 
+      // IMPORTANT: Invalidate caches after update
+      const cache = initCache(env);
+      await cache.manuscript.invalidate(manuscriptId, userId, r2_key);
+      console.log(`Cache INVALIDATED: manuscript ${manuscriptId}`);
+
       return new Response(JSON.stringify({
         success: true,
         manuscript: {
@@ -256,6 +299,8 @@ export const manuscriptHandlers = {
    * - Generated assets
    *
    * Returns: Success confirmation
+   *
+   * MAN-39: Now invalidates related caches after deletion
    */
   async deleteManuscript(request, env, manuscriptId) {
     try {
@@ -309,6 +354,11 @@ export const manuscriptHandlers = {
         await env.MANUSCRIPTS_RAW.delete(`report-id:${metadata.reportId}`).catch(() => {});
         await env.MANUSCRIPTS_RAW.delete(`status:${metadata.reportId}`).catch(() => {});
       }
+
+      // IMPORTANT: Invalidate caches before database deletion
+      const cache = initCache(env);
+      await cache.manuscript.invalidate(manuscriptId, userId, manuscript.r2_key);
+      console.log(`Cache INVALIDATED: manuscript ${manuscriptId}`);
 
       // Delete from database
       await env.DB.prepare(

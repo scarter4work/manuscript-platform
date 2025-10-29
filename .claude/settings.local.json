@@ -58,7 +58,9 @@
       "Bash(gh run list:*)",
       "Bash(/dev/null)",
       "Bash(npm test)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm run build:frontend:*)"
     ],
     "deny": [],
     "ask": []
