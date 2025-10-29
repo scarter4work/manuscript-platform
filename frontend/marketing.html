@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>AI Manuscript Editing & Publishing Platform | Professional Book Analysis for Authors</title>
+    <meta name="description" content="Transform your manuscript into a bestseller with AI-powered editing, marketing assets, and Amazon KDP formatting. Get professional developmental, line, and copy editing analysis in minutes.">
+    <meta name="keywords" content="AI manuscript editing, book editing software, self-publishing platform, manuscript analysis AI, Amazon KDP tools, developmental editing, line editing, copy editing">
+    <meta name="author" content="Manuscript Publishing Platform">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://scarter4workmanuscripthub.com/">
+    <meta property="og:title" content="AI Manuscript Editing & Publishing Platform for Authors">
+    <meta property="og:description" content="Professional AI-powered editing and marketing tools for self-publishing authors. Get your manuscript publication-ready in minutes, not months.">
+    <meta property="og:image" content="https://scarter4workmanuscripthub.com/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://scarter4workmanuscripthub.com/">
+    <meta property="twitter:title" content="AI Manuscript Editing & Publishing Platform for Authors">
+    <meta property="twitter:description" content="Professional AI-powered editing and marketing tools for self-publishing authors. Get your manuscript publication-ready in minutes.">
+    <meta property="twitter:image" content="https://scarter4workmanuscripthub.com/twitter-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header / Navigation */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .cta-btn {
+            background: white;
+            color: #667eea;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Trust Signals */
+        .trust-signals {
+            background: #f8f9fa;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .trust-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .trust-item {
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .trust-item strong {
+            color: #667eea;
+            font-size: 24px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .steps-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 30px;
+            border-radius: 12px;
+            transition: transform 0.3s;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 60px;
+            margin-bottom: 20px;
+        }
+
+        .step h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .step p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 20px;
+            background: #f8f9fa;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .pricing-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .pricing-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .pricing-card.featured {
+            border-color: #667eea;
+            border-width: 3px;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: #667eea;
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .plan-price {
+            font-size: 56px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .plan-price sup {
+            font-size: 24px;
+        }
+
+        .plan-period {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 12px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 80px 20px;
+            background: #f8f9fa;
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f8f9fa;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 24px;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .faq-question.active::after {
+            content: '−';
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .faq-answer.active {
+            padding: 0 30px 25px 30px;
+            max-height: 500px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 48px;
+            margin-bottom: 25px;
+        }
+
+        .cta-section p {
+            font-size: 22px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: #ccc;
+            padding: 60px 20px 30px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header / Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">📚 Manuscript Hub</a>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+                <a href="login.html">Login</a>
+                <a href="register.html" class="cta-btn">Start Free Trial</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Turn Your Manuscript Into a Bestseller</h1>
+            <p>Professional AI-powered editing, marketing assets, and Amazon KDP formatting—all in one platform. Get publication-ready in minutes, not months.</p>
+            <div class="hero-cta">
+                <a href="register.html" class="btn btn-primary">Start Free Trial</a>
+                <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Signals -->
+    <section class="trust-signals">
+        <div class="trust-container">
+            <div class="trust-item">
+                <strong>✓</strong>
+                No credit card required
+            </div>
+            <div class="trust-item">
+                <strong>✓</strong>
+                Secure payment via Stripe
+            </div>
+            <div class="trust-item">
+                <strong>✓</strong>
+                30-day money-back guarantee
+            </div>
+            <div class="trust-item">
+                <strong>✓</strong>
+                Used by 1000+ authors
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Get your manuscript publication-ready in three simple steps</p>
+
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Upload Your Manuscript</h3>
+                <p>Upload your manuscript in .txt, .pdf, or .docx format. Our system supports manuscripts up to 50MB and handles all major file formats.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>AI Analysis & Editing</h3>
+                <p>Our AI agents analyze your manuscript for developmental issues, line editing improvements, and copy editing corrections. Get detailed feedback in 30-60 seconds.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Generate Marketing & Publish</h3>
+                <p>Create Amazon KDP-optimized book descriptions, keywords, categories, cover designs, and formatted files (EPUB & PDF). Launch ready!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="features">
+        <h2 class="section-title">Comprehensive Publishing Suite</h2>
+        <p class="section-subtitle">Everything you need to edit, market, and publish your book</p>
+
+        <div class="features-grid">
+            <!-- Editing Analysis -->
+            <div class="feature-card">
+                <div class="feature-icon">✍️</div>
+                <h3>Professional Editing Analysis</h3>
+                <p>Get expert-level feedback across three critical editing dimensions:</p>
+                <ul class="feature-list">
+                    <li>Developmental editing (plot, characters, pacing)</li>
+                    <li>Line editing (prose quality, flow, voice)</li>
+                    <li>Copy editing (grammar, punctuation, consistency)</li>
+                    <li>Annotated manuscript with inline suggestions</li>
+                </ul>
+            </div>
+
+            <!-- Marketing Assets -->
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Marketing Assets Generation</h3>
+                <p>AI-generated marketing materials optimized for Amazon KDP:</p>
+                <ul class="feature-list">
+                    <li>Book descriptions (3 lengths)</li>
+                    <li>7 SEO keyword phrases</li>
+                    <li>BISAC categories</li>
+                    <li>Author bio (4 versions)</li>
+                    <li>Cover design briefs with AI art prompts</li>
+                    <li>Series descriptions & planning</li>
+                </ul>
+            </div>
+
+            <!-- Manuscript Formatting -->
+            <div class="feature-card">
+                <div class="feature-icon">📖</div>
+                <h3>Amazon KDP Formatting</h3>
+                <p>Professional manuscript formatting for Kindle and paperback:</p>
+                <ul class="feature-list">
+                    <li>EPUB 3.0 for Kindle ebooks</li>
+                    <li>Print-ready PDF for paperbacks</li>
+                    <li>Multiple trim size options</li>
+                    <li>Front & back matter included</li>
+                    <li>Table of contents generation</li>
+                </ul>
+            </div>
+
+            <!-- Market Analysis -->
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Market Analysis</h3>
+                <p>Data-driven insights for competitive positioning:</p>
+                <ul class="feature-list">
+                    <li>Genre & sub-genre identification</li>
+                    <li>Pricing strategy recommendations</li>
+                    <li>Target audience profiling</li>
+                    <li>Competitive positioning analysis</li>
+                </ul>
+            </div>
+
+            <!-- Social Media Marketing -->
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Book Launch Marketing Kit</h3>
+                <p>Complete marketing campaign for your book launch:</p>
+                <ul class="feature-list">
+                    <li>15+ social media posts</li>
+                    <li>Launch email templates</li>
+                    <li>30-day content calendar</li>
+                    <li>Book trailer script</li>
+                    <li>ARC program strategy</li>
+                </ul>
+            </div>
+
+            <!-- AI Cover Generation -->
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>AI Cover Image Creation</h3>
+                <p>Professional book covers generated with DALL-E 3:</p>
+                <ul class="feature-list">
+                    <li>Multiple cover variations</li>
+                    <li>Genre-appropriate designs</li>
+                    <li>High-resolution (1024x1792px)</li>
+                    <li>Title & author text included</li>
+                    <li>Download for Amazon KDP</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="pricing">
+        <h2 class="section-title">Choose Your Plan</h2>
+        <p class="section-subtitle">Start free, upgrade when you need more</p>
+
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-price"><sup>$</sup>0</div>
+                <div class="plan-period">forever</div>
+                <ul class="plan-features">
+                    <li>1 manuscript per month</li>
+                    <li>Basic analysis (3 agents)</li>
+                    <li>30 days storage</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="register.html" class="btn btn-primary">Get Started Free</a>
+            </div>
+
+            <!-- Pro Plan (Featured) -->
+            <div class="pricing-card featured">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price"><sup>$</sup>29</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li>10 manuscripts per month</li>
+                    <li>Full analysis + all agents</li>
+                    <li>Asset generation (7 agents)</li>
+                    <li>AI cover generation</li>
+                    <li>1 year storage</li>
+                    <li>Priority support</li>
+                </ul>
+                <a href="register.html" class="btn btn-primary">Start Pro Trial</a>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="pricing-card">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-price"><sup>$</sup>99</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li>Unlimited manuscripts</li>
+                    <li>Everything in Pro</li>
+                    <li>Team features (5 members)</li>
+                    <li>API access</li>
+                    <li>Custom branding</li>
+                    <li>Dedicated support</li>
+                </ul>
+                <a href="register.html" class="btn btn-primary">Contact Sales</a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="pricing.html" style="color: #667eea; font-weight: 600; text-decoration: none; font-size: 18px;">View Detailed Pricing Comparison →</a>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Is there really a free plan?
+                </div>
+                <div class="faq-answer">
+                    Yes! Our free plan allows you to analyze 1 manuscript per month with full developmental, line, and copy editing analysis. No credit card required to start. You can upgrade anytime to access marketing assets and additional features.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How long does analysis take?
+                </div>
+                <div class="faq-answer">
+                    Most manuscripts are analyzed in 30-60 seconds. Our AI agents work in parallel to provide comprehensive feedback across developmental editing, line editing, and copy editing simultaneously. Marketing asset generation takes an additional 30-60 seconds.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    What file formats do you support?
+                </div>
+                <div class="faq-answer">
+                    We support .txt, .pdf, and .docx files up to 50MB. Your manuscript will be analyzed regardless of formatting, and we'll generate clean EPUB and PDF outputs for Amazon KDP publishing.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Can I cancel my subscription anytime?
+                </div>
+                <div class="faq-answer">
+                    Absolutely. You can cancel your subscription at any time from the billing dashboard. You'll continue to have access to your plan features until the end of your current billing period. All your previous analyses remain accessible according to your plan's storage duration.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Is my manuscript secure and private?
+                </div>
+                <div class="faq-answer">
+                    Yes. Your manuscripts are encrypted in transit and at rest. We never share your content with third parties or use it to train AI models. You retain full copyright ownership of your work. See our Privacy Policy for details.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Do you offer refunds?
+                </div>
+                <div class="faq-answer">
+                    Yes. We offer a 30-day money-back guarantee on all paid plans. If you're not satisfied with our service for any reason, contact us within 30 days of your purchase for a full refund. See our Refund Policy for details.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    What makes your AI different from ChatGPT?
+                </div>
+                <div class="faq-answer">
+                    Our platform uses specialized AI agents trained specifically for manuscript editing and publishing. Each agent focuses on a specific aspect (developmental, line, copy editing, etc.) and follows professional editing standards. We also integrate directly with Amazon KDP workflows, generating formatted files and marketing assets that ChatGPT can't produce.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Can I use the AI-generated marketing materials commercially?
+                </div>
+                <div class="faq-answer">
+                    Yes! All marketing materials, cover designs, and formatted files generated by our platform are yours to use commercially. You have full rights to use them on Amazon KDP, other publishing platforms, your website, and social media.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Publish Your Bestseller?</h2>
+        <p>Join thousands of authors using AI to edit, market, and publish their books faster than ever.</p>
+        <a href="register.html" class="btn btn-primary">Start Free Trial - No Credit Card Required</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Product</h3>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="pricing.html">Detailed Pricing</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="mailto:support@scarter4workmanuscripthub.com">Contact</a></li>
+                    <li><a href="dmca-request.html">DMCA</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="dmca-policy.html">DMCA Policy</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Account</h3>
+                <ul>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Sign Up</a></li>
+                    <li><a href="dashboard-spa.html">Dashboard</a></li>
+                    <li><a href="billing.html">Billing</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Manuscript Publishing Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Toggle
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const isActive = answer.classList.contains('active');
+
+            // Close all FAQ answers
+            document.querySelectorAll('.faq-answer').forEach(ans => {
+                ans.classList.remove('active');
+            });
+            document.querySelectorAll('.faq-question').forEach(q => {
+                q.classList.remove('active');
+            });
+
+            // Open clicked FAQ if it wasn't active
+            if (!isActive) {
+                answer.classList.add('active');
+                element.classList.add('active');
+            }
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

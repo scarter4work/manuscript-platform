@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags - CUSTOMIZE THESE FOR EACH CAMPAIGN -->
+    <title>AI Manuscript Editing for [GENRE] Authors | Manuscript Hub</title>
+    <meta name="description" content="Professional AI-powered editing specifically for [GENRE] manuscripts. Get developmental, line, and copy editing analysis in 60 seconds. Start free.">
+    <meta name="keywords" content="[GENRE] manuscript editing, [GENRE] book editing, AI editing for [GENRE] authors, self-publishing [GENRE]">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://scarter4workmanuscripthub.com/landing/[CAMPAIGN-NAME]">
+    <meta property="og:title" content="AI Manuscript Editing for [GENRE] Authors">
+    <meta property="og:description" content="Professional AI-powered editing specifically for [GENRE] manuscripts. Start free.">
+    <meta property="og:image" content="https://scarter4workmanuscripthub.com/og-[CAMPAIGN-NAME].png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://scarter4workmanuscripthub.com/landing/[CAMPAIGN-NAME]">
+    <meta property="twitter:title" content="AI Manuscript Editing for [GENRE] Authors">
+    <meta property="twitter:description" content="Professional AI-powered editing specifically for [GENRE] manuscripts.">
+    <meta property="twitter:image" content="https://scarter4workmanuscripthub.com/twitter-[CAMPAIGN-NAME].png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Minimal Header - No Navigation Distractions */
+        .header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* Hero Section - High Converting */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-btn {
+            background: white;
+            color: #667eea;
+            padding: 20px 50px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .trust-line {
+            margin-top: 30px;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Benefits Section */
+        .benefits {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 60px;
+            color: #333;
+        }
+
+        .benefits-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .benefit {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .benefit-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .benefit h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .benefit p {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        /* Social Proof */
+        .social-proof {
+            padding: 80px 20px;
+            background: #f8f9fa;
+            text-align: center;
+        }
+
+        .testimonial {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .testimonial-quote {
+            font-size: 20px;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        /* Features - Specific to Campaign */
+        .features {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .feature-list {
+            max-width: 800px;
+            margin: 0 auto;
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 20px 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            color: #4caf50;
+            font-size: 30px;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Pricing - Simple Single Plan */
+        .pricing {
+            padding: 80px 20px;
+            background: #f8f9fa;
+            text-align: center;
+        }
+
+        .price-box {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid #667eea;
+        }
+
+        .price {
+            font-size: 72px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .price sup {
+            font-size: 36px;
+        }
+
+        .price-period {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .price-features {
+            text-align: left;
+            margin: 30px 0;
+            list-style: none;
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .price-features li::before {
+            content: '✓';
+            color: #4caf50;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        /* Urgency / Scarcity (Optional) */
+        .urgency {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px auto;
+            max-width: 600px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* FAQ - Minimal */
+        .faq {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .faq-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 30px;
+        }
+
+        .faq-q {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .faq-a {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+
+        .final-cta p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        /* Footer - Minimal */
+        .footer {
+            background: #1a1a1a;
+            color: #888;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #888;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .footer a:hover {
+            color: #667eea;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .price {
+                font-size: 56px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Minimal Header -->
+    <header class="header">
+        <div class="logo">📚 Manuscript Hub</div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <!-- CUSTOMIZE: Change headline based on campaign target -->
+            <h1>Professional Editing for [GENRE] Authors in 60 Seconds</h1>
+
+            <!-- CUSTOMIZE: Change benefit based on pain point -->
+            <p>Get AI-powered developmental, line, and copy editing analysis without spending thousands on human editors.</p>
+
+            <!-- CUSTOMIZE: Track conversions with UTM parameters -->
+            <a href="register.html?utm_source=[SOURCE]&utm_medium=[MEDIUM]&utm_campaign=[CAMPAIGN]" class="cta-btn">
+                Start Free Trial →
+            </a>
+
+            <div class="trust-line">
+                ✓ No credit card required • ✓ Full analysis in 60 seconds • ✓ 1000+ authors trust us
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits">
+        <h2 class="section-title">Why [GENRE] Authors Choose Us</h2>
+
+        <div class="benefits-grid">
+            <!-- CUSTOMIZE: Change benefits based on genre/audience -->
+            <div class="benefit">
+                <div class="benefit-icon">⚡</div>
+                <h3>Fast Analysis</h3>
+                <p>Get comprehensive editing feedback in 60 seconds, not 6 weeks. Perfect for [GENRE] authors on tight deadlines.</p>
+            </div>
+
+            <div class="benefit">
+                <div class="benefit-icon">💰</div>
+                <h3>Affordable Editing</h3>
+                <p>Professional-quality editing analysis for $0-$29/month instead of $1000+ for traditional editors.</p>
+            </div>
+
+            <div class="benefit">
+                <div class="benefit-icon">🎯</div>
+                <h3>[GENRE]-Specific Feedback</h3>
+                <p>Our AI understands [GENRE] tropes, pacing, and reader expectations to give you targeted recommendations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <h2 class="section-title">What [GENRE] Authors Are Saying</h2>
+
+        <!-- CUSTOMIZE: Add real testimonials from genre-specific users -->
+        <div class="testimonial">
+            <div class="testimonial-quote">
+                "As a [GENRE] author, I was skeptical of AI editing. But this platform caught plot holes and pacing issues that I missed. It's like having a professional editor on call 24/7."
+            </div>
+            <div class="testimonial-author">— [Author Name], [GENRE] Author</div>
+        </div>
+
+        <div class="testimonial">
+            <div class="testimonial-quote">
+                "I saved over $2000 in editing costs and launched my [GENRE] novel 3 months earlier thanks to the instant feedback. The marketing assets feature is a game-changer too!"
+            </div>
+            <div class="testimonial-author">— [Author Name], Bestselling [GENRE] Author</div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2 class="section-title">Everything You Need to Publish</h2>
+
+        <ul class="feature-list">
+            <li>Developmental editing analysis (plot, characters, pacing)</li>
+            <li>Line editing feedback (prose quality, flow, voice)</li>
+            <li>Copy editing corrections (grammar, punctuation, consistency)</li>
+            <li>Amazon KDP book descriptions & keywords</li>
+            <li>AI-generated cover design briefs</li>
+            <li>Formatted EPUB & PDF files</li>
+            <li>Social media marketing kit</li>
+            <li>30-day money-back guarantee</li>
+        </ul>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing">
+        <h2 class="section-title">Special Offer for [GENRE] Authors</h2>
+
+        <!-- CUSTOMIZE: Optional urgency/scarcity -->
+        <!-- <div class="urgency">
+            ⏰ Limited Time: First 100 signups get 50% off Pro plan for 3 months
+        </div> -->
+
+        <div class="price-box">
+            <!-- CUSTOMIZE: Highlight specific plan based on campaign -->
+            <div class="price"><sup>$</sup>0</div>
+            <div class="price-period">Free Forever</div>
+
+            <ul class="price-features">
+                <li>1 manuscript per month</li>
+                <li>Full editing analysis (3 agents)</li>
+                <li>30 days storage</li>
+                <li>Email support</li>
+            </ul>
+
+            <a href="register.html?utm_source=[SOURCE]&utm_medium=[MEDIUM]&utm_campaign=[CAMPAIGN]" class="cta-btn">
+                Get Started Free →
+            </a>
+
+            <div style="margin-top: 20px; font-size: 16px; color: #666;">
+                Upgrade to Pro ($29/month) anytime for unlimited features
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+        <h2 class="section-title">Common Questions</h2>
+
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-q">Is this really free?</div>
+                <div class="faq-a">Yes! The free plan gives you 1 manuscript analysis per month with full editing feedback. No credit card required.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">How long does analysis take?</div>
+                <div class="faq-a">Most manuscripts are analyzed in 30-60 seconds. You'll get instant feedback on developmental editing, line editing, and copy editing.</div>
+            </div>
+
+            <!-- CUSTOMIZE: Add genre-specific FAQ -->
+            <div class="faq-item">
+                <div class="faq-q">Does the AI understand [GENRE] conventions?</div>
+                <div class="faq-a">Yes! Our AI is trained on professional editing standards and understands [GENRE]-specific tropes, pacing, and reader expectations.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Can I cancel anytime?</div>
+                <div class="faq-a">Absolutely. Cancel your subscription anytime from the billing dashboard. The free plan is free forever with no obligations.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2>Ready to Publish Your [GENRE] Bestseller?</h2>
+        <p>Join 1000+ [GENRE] authors using AI to edit, market, and publish faster.</p>
+        <a href="register.html?utm_source=[SOURCE]&utm_medium=[MEDIUM]&utm_campaign=[CAMPAIGN]" class="cta-btn">
+            Start Free Trial - No Credit Card Required →
+        </a>
+    </section>
+
+    <!-- Minimal Footer -->
+    <footer class="footer">
+        <div>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="refund-policy.html">Refunds</a>
+            <a href="mailto:support@scarter4workmanuscripthub.com">Support</a>
+        </div>
+        <div style="margin-top: 20px;">
+            &copy; 2025 Manuscript Publishing Platform
+        </div>
+    </footer>
+
+    <!-- CUSTOMIZE: Add conversion tracking scripts -->
+    <script>
+        // Google Analytics / Facebook Pixel tracking
+        // Track button clicks
+        document.querySelectorAll('.cta-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // gtag('event', 'conversion', {'send_to': 'AW-CONVERSION_ID'});
+                // fbq('track', 'Lead');
+                console.log('CTA clicked - Track conversion here');
+            });
+        });
+    </script>
+</body>
+</html>
