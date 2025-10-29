@@ -75,6 +75,11 @@ database_id = "3d9000ef-95fb-4561-bb84-192b395eadd2"
 binding = "SESSIONS"
 id = "48959d60fe25478db01651f3eef4daff"
 
+# KV Namespace - Query result caching (MAN-28)
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "cache-namespace-placeholder"  # Replace with actual KV namespace ID after creation
+
 # Environment variables (set via Cloudflare Dashboard for production)
 # For local development, create a .dev.vars file with:
 # ANTHROPIC_API_KEY=your_key_here
