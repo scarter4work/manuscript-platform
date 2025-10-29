@@ -78,7 +78,7 @@ id = "48959d60fe25478db01651f3eef4daff"
 # KV Namespace - Query result caching (MAN-28)
 [[kv_namespaces]]
 binding = "CACHE_KV"
-id = "cache-namespace-placeholder"  # Replace with actual KV namespace ID after creation
+id = "ee58654ea8644618990fbd32fb99d140"
 
 # Environment variables (set via Cloudflare Dashboard for production)
 # For local development, create a .dev.vars file with:
