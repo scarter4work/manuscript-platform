@@ -22,6 +22,7 @@ import registerAssetRoutes from './routes/assets.js';
 import registerDMCARoutes from './routes/dmca.js';
 import registerResultsRoutes from './routes/results.js';
 import registerPublicAPIRoutes from './routes/public-api.js';
+import registerKDPRoutes from './routes/kdp.js';
 import queueConsumer from './queue-consumer.js';
 import assetConsumer from './asset-generation-consumer.js';
 
@@ -186,6 +187,9 @@ registerResultsRoutes(app);
 
 // MAN-14: Public API routes (Enterprise tier)
 registerPublicAPIRoutes(app);
+
+// MAN-15: KDP Export routes
+registerKDPRoutes(app);
 
 // ============================================================================
 // 404 HANDLER
