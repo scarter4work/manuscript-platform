@@ -19,6 +19,7 @@ import { SocialMediaAgent } from './social-media-agent.js';
 import { authHandlers } from './auth-handlers.js';
 import { manuscriptHandlers } from './manuscript-handlers.js';
 import { audiobookHandlers } from './audiobook-handlers.js';
+import { reviewHandlers } from './review-handlers.js';
 import { teamHandlers } from './team-handlers.js';
 import { emailPreferenceHandlers } from './email-preference-handlers.js';
 import queueConsumer from './queue-consumer.js';
@@ -257,6 +258,46 @@ export default {
       if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/regenerate$/) && request.method === 'POST') {
         const manuscriptId = path.split('/')[2];
         return addCorsHeaders(await audiobookHandlers.regenerateAudiobookAssets(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // ========================================================================
+      // REVIEW MONITORING ROUTES (MAN-19)
+      // ========================================================================
+
+      // GET /manuscripts/:id/reviews - Get review monitoring status and recent reviews
+      if (path.match(/^\/manuscripts\/[^/]+\/reviews$/) && request.method === 'GET') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await reviewHandlers.getReviewMonitoring(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // POST /manuscripts/:id/reviews/setup - Setup or update review monitoring
+      if (path.match(/^\/manuscripts\/[^/]+\/reviews\/setup$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await reviewHandlers.setupReviewMonitoring(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // POST /manuscripts/:id/reviews/fetch - Manually trigger review fetch
+      if (path.match(/^\/manuscripts\/[^/]+\/reviews\/fetch$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await reviewHandlers.fetchReviews(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // GET /manuscripts/:id/reviews/sentiment - Get sentiment analysis
+      if (path.match(/^\/manuscripts\/[^/]+\/reviews\/sentiment$/) && request.method === 'GET') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await reviewHandlers.getReviewSentiment(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // POST /manuscripts/:id/reviews/responses - Get response suggestions
+      if (path.match(/^\/manuscripts\/[^/]+\/reviews\/responses$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await reviewHandlers.getReviewResponses(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // GET /manuscripts/:id/reviews/trends - Get trend analysis
+      if (path.match(/^\/manuscripts\/[^/]+\/reviews\/trends$/) && request.method === 'GET') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await reviewHandlers.getReviewTrends(request, env, manuscriptId), rateLimitHeaders);
       }
 
       // ========================================================================
@@ -710,6 +751,14 @@ export default {
               'GET /manuscripts/:id/audiobook - Get all audiobook assets',
               'GET /manuscripts/:id/audiobook/:assetType - Get specific asset (narration/pronunciation/timing/samples/metadata)',
               'POST /manuscripts/:id/audiobook/regenerate - Regenerate audiobook assets'
+            ],
+            reviews: [
+              'GET /manuscripts/:id/reviews - Get review monitoring status',
+              'POST /manuscripts/:id/reviews/setup - Setup review monitoring',
+              'POST /manuscripts/:id/reviews/fetch - Manually fetch reviews',
+              'GET /manuscripts/:id/reviews/sentiment - Get sentiment analysis',
+              'POST /manuscripts/:id/reviews/responses - Get response suggestions',
+              'GET /manuscripts/:id/reviews/trends - Get trend analysis'
             ],
             analysis: [
               'POST /analyze/developmental',
