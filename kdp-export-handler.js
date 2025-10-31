@@ -1,6 +1,5 @@
 // KDP Export Handler (MAN-15)
 // Generates a KDP-ready export package for manual upload to Amazon KDP
-// Fixed platform-specific dependency issue in CI
 
 /**
  * Generate KDP export package
