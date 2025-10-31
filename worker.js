@@ -20,6 +20,7 @@ import { authHandlers } from './auth-handlers.js';
 import { manuscriptHandlers } from './manuscript-handlers.js';
 import { audiobookHandlers } from './audiobook-handlers.js';
 import { reviewHandlers } from './review-handlers.js';
+import { publishingHandlers } from './publishing-handlers.js';
 import { teamHandlers } from './team-handlers.js';
 import { emailPreferenceHandlers } from './email-preference-handlers.js';
 import queueConsumer from './queue-consumer.js';
@@ -298,6 +299,34 @@ export default {
       if (path.match(/^\/manuscripts\/[^/]+\/reviews\/trends$/) && request.method === 'GET') {
         const manuscriptId = path.split('/')[2];
         return addCorsHeaders(await reviewHandlers.getReviewTrends(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // ========================================================================
+      // MULTI-PLATFORM PUBLISHING ROUTES (MAN-20)
+      // ========================================================================
+
+      // POST /manuscripts/:id/publishing/metadata - Generate platform-specific metadata
+      if (path.match(/^\/manuscripts\/[^/]+\/publishing\/metadata$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await publishingHandlers.generatePlatformMetadata(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // POST /manuscripts/:id/publishing/formats - Prepare manuscript formats
+      if (path.match(/^\/manuscripts\/[^/]+\/publishing\/formats$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await publishingHandlers.prepareFormats(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // POST /manuscripts/:id/publishing/strategy - Generate distribution strategy
+      if (path.match(/^\/manuscripts\/[^/]+\/publishing\/strategy$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await publishingHandlers.generateDistributionStrategy(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // POST /manuscripts/:id/publishing/package - Generate complete publishing package
+      if (path.match(/^\/manuscripts\/[^/]+\/publishing\/package$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await publishingHandlers.generatePublishingPackage(request, env, manuscriptId), rateLimitHeaders);
       }
 
       // ========================================================================
@@ -759,6 +788,12 @@ export default {
               'GET /manuscripts/:id/reviews/sentiment - Get sentiment analysis',
               'POST /manuscripts/:id/reviews/responses - Get response suggestions',
               'GET /manuscripts/:id/reviews/trends - Get trend analysis'
+            ],
+            publishing: [
+              'POST /manuscripts/:id/publishing/metadata - Generate platform-specific metadata',
+              'POST /manuscripts/:id/publishing/formats - Prepare manuscript formats',
+              'POST /manuscripts/:id/publishing/strategy - Generate distribution strategy',
+              'POST /manuscripts/:id/publishing/package - Generate complete publishing package'
             ],
             analysis: [
               'POST /analyze/developmental',
