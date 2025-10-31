@@ -28,7 +28,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci --omit=optional
+        run: npm install --ignore-scripts
 
       - name: Validate deployment
         run: npx wrangler deploy --dry-run --outdir=./dist
