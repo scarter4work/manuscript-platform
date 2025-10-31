@@ -18,6 +18,8 @@ import { MarketAnalysisAgent } from './market-analysis-agent.js';
 import { SocialMediaAgent } from './social-media-agent.js';
 import { authHandlers } from './auth-handlers.js';
 import { manuscriptHandlers } from './manuscript-handlers.js';
+import { teamHandlers } from './team-handlers.js';
+import { emailPreferenceHandlers } from './email-preference-handlers.js';
 import queueConsumer from './queue-consumer.js';
 import assetConsumer from './asset-generation-consumer.js';
 import { handleStripeWebhook } from './webhook-handlers.js';
@@ -230,6 +232,88 @@ export default {
       if (path.match(/^\/manuscripts\/.+\/reanalyze$/) && request.method === 'POST') {
         const manuscriptId = path.match(/^\/manuscripts\/(.+)\/reanalyze$/)[1];
         return addCorsHeaders(await manuscriptHandlers.reanalyzeManuscript(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // ========================================================================
+      // TEAM COLLABORATION ROUTES (MAN-13)
+      // ========================================================================
+
+      // POST /teams - Create a new team (Enterprise tier only)
+      if (path === '/teams' && request.method === 'POST') {
+        return addCorsHeaders(await teamHandlers.createTeam(request, env), rateLimitHeaders);
+      }
+
+      // GET /teams - List user's teams
+      if (path === '/teams' && request.method === 'GET') {
+        return addCorsHeaders(await teamHandlers.listTeams(request, env), rateLimitHeaders);
+      }
+
+      // GET /teams/:id - Get team details
+      if (path.match(/^\/teams\/[^/]+$/) && request.method === 'GET') {
+        const teamId = path.split('/')[2];
+        return addCorsHeaders(await teamHandlers.getTeam(request, env, teamId), rateLimitHeaders);
+      }
+
+      // POST /teams/:id/invite - Invite member to team (admin only)
+      if (path.match(/^\/teams\/[^/]+\/invite$/) && request.method === 'POST') {
+        const teamId = path.split('/')[2];
+        return addCorsHeaders(await teamHandlers.inviteToTeam(request, env, teamId), rateLimitHeaders);
+      }
+
+      // POST /teams/accept-invitation/:token - Accept team invitation
+      if (path.match(/^\/teams\/accept-invitation\/[^/]+$/) && request.method === 'POST') {
+        const token = path.split('/')[3];
+        return addCorsHeaders(await teamHandlers.acceptInvitation(request, env, token), rateLimitHeaders);
+      }
+
+      // DELETE /teams/:teamId/members/:userId - Remove team member (admin only)
+      if (path.match(/^\/teams\/[^/]+\/members\/[^/]+$/) && request.method === 'DELETE') {
+        const parts = path.split('/');
+        const teamId = parts[2];
+        const userId = parts[4];
+        return addCorsHeaders(await teamHandlers.removeMember(request, env, teamId, userId), rateLimitHeaders);
+      }
+
+      // POST /teams/:id/share-manuscript - Share manuscript with team
+      if (path.match(/^\/teams\/[^/]+\/share-manuscript$/) && request.method === 'POST') {
+        const teamId = path.split('/')[2];
+        return addCorsHeaders(await teamHandlers.shareManuscript(request, env, teamId), rateLimitHeaders);
+      }
+
+      // GET /teams/:id/manuscripts - Get team's shared manuscripts
+      if (path.match(/^\/teams\/[^/]+\/manuscripts$/) && request.method === 'GET') {
+        const teamId = path.split('/')[2];
+        return addCorsHeaders(await teamHandlers.getTeamManuscripts(request, env, teamId), rateLimitHeaders);
+      }
+
+      // GET /teams/:id/activity - Get team activity feed
+      if (path.match(/^\/teams\/[^/]+\/activity$/) && request.method === 'GET') {
+        const teamId = path.split('/')[2];
+        return addCorsHeaders(await teamHandlers.getTeamActivity(request, env, teamId), rateLimitHeaders);
+      }
+
+      // ========================================================================
+      // USER PREFERENCE ROUTES
+      // ========================================================================
+
+      // GET /user/email-preferences - Get user's email notification preferences
+      if (path === '/user/email-preferences' && request.method === 'GET') {
+        return addCorsHeaders(await emailPreferenceHandlers.getEmailPreferences(request, env), rateLimitHeaders);
+      }
+
+      // PUT /user/email-preferences - Update user's email notification preferences
+      if (path === '/user/email-preferences' && request.method === 'PUT') {
+        return addCorsHeaders(await emailPreferenceHandlers.updateEmailPreferences(request, env), rateLimitHeaders);
+      }
+
+      // POST /user/resubscribe - Re-enable all email notifications
+      if (path === '/user/resubscribe' && request.method === 'POST') {
+        return addCorsHeaders(await emailPreferenceHandlers.resubscribe(request, env), rateLimitHeaders);
+      }
+
+      // GET /unsubscribe/:token - One-click unsubscribe (no auth required)
+      if (path.match(/^\/unsubscribe\/[^/]+$/) && request.method === 'GET') {
+        return await emailPreferenceHandlers.unsubscribeByToken(request, env);
       }
 
       // ========================================================================

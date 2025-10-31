@@ -16,6 +16,56 @@
 import { getUserFromRequest } from './auth-utils.js';
 import { initCache } from './db-cache.js';
 
+/**
+ * Helper: Check if user can access a manuscript
+ * Checks: direct ownership, team sharing, or individual sharing
+ * Returns: { hasAccess: boolean, permissionLevel: string, isOwner: boolean }
+ */
+async function checkManuscriptAccess(manuscriptId, userId, env) {
+  // Check ownership first
+  const manuscript = await env.DB.prepare(
+    'SELECT user_id FROM manuscripts WHERE id = ?'
+  ).bind(manuscriptId).first();
+
+  if (!manuscript) {
+    return { hasAccess: false, permissionLevel: null, isOwner: false };
+  }
+
+  const isOwner = manuscript.user_id === userId;
+  if (isOwner) {
+    return { hasAccess: true, permissionLevel: 'owner', isOwner: true };
+  }
+
+  // Check team or individual permissions
+  const permission = await env.DB.prepare(`
+    SELECT permission_level FROM manuscript_permissions
+    WHERE manuscript_id = ?
+      AND (
+        user_id = ?
+        OR team_id IN (
+          SELECT team_id FROM team_members WHERE user_id = ?
+        )
+      )
+    ORDER BY
+      CASE permission_level
+        WHEN 'edit' THEN 1
+        WHEN 'comment' THEN 2
+        WHEN 'view' THEN 3
+      END
+    LIMIT 1
+  `).bind(manuscriptId, userId, userId).first();
+
+  if (permission) {
+    return {
+      hasAccess: true,
+      permissionLevel: permission.permission_level,
+      isOwner: false
+    };
+  }
+
+  return { hasAccess: false, permissionLevel: null, isOwner: false };
+}
+
 export const manuscriptHandlers = {
   /**
    * GET /manuscripts
@@ -134,6 +184,7 @@ export const manuscriptHandlers = {
    *
    * MAN-39: Now uses KV caching for metadata (15 min TTL) and analysis status (1 hour TTL)
    * Reduces 4 R2 HEAD requests to 0 on cache hit
+   * MAN-13: Now respects team sharing permissions
    */
   async getManuscript(request, env, manuscriptId) {
     try {
@@ -142,6 +193,15 @@ export const manuscriptHandlers = {
       if (!userId) {
         return new Response(JSON.stringify({ error: 'Unauthorized' }), {
           status: 401,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Check access permissions (owner, team, or individual sharing)
+      const access = await checkManuscriptAccess(manuscriptId, userId, env);
+      if (!access.hasAccess) {
+        return new Response(JSON.stringify({ error: 'Manuscript not found or access denied' }), {
+          status: 404,
           headers: { 'Content-Type': 'application/json' }
         });
       }
@@ -166,7 +226,10 @@ export const manuscriptHandlers = {
         success: true,
         manuscript: {
           ...manuscript,
-          analysisStatus
+          analysisStatus,
+          // Include permission info for UI
+          accessLevel: access.permissionLevel,
+          isOwner: access.isOwner
         }
       }), {
         status: 200,
@@ -193,6 +256,7 @@ export const manuscriptHandlers = {
    * Returns: Updated manuscript object
    *
    * MAN-39: Now invalidates related caches after update
+   * MAN-13: Now requires edit permission (owner or shared with edit access)
    */
   async updateManuscript(request, env, manuscriptId) {
     try {
@@ -205,15 +269,35 @@ export const manuscriptHandlers = {
         });
       }
 
+      // Check access permissions - must have edit permission or be owner
+      const access = await checkManuscriptAccess(manuscriptId, userId, env);
+      if (!access.hasAccess) {
+        return new Response(JSON.stringify({ error: 'Manuscript not found or access denied' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Require edit permission or ownership
+      if (access.permissionLevel !== 'owner' && access.permissionLevel !== 'edit') {
+        return new Response(JSON.stringify({
+          error: 'Edit permission required',
+          currentPermission: access.permissionLevel
+        }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
       const body = await request.json();
 
-      // Verify ownership and get r2_key for cache invalidation
+      // Get r2_key for cache invalidation
       const { results } = await env.DB.prepare(
-        'SELECT id, r2_key FROM manuscripts WHERE id = ? AND user_id = ?'
-      ).bind(manuscriptId, userId).all();
+        'SELECT id, r2_key FROM manuscripts WHERE id = ?'
+      ).bind(manuscriptId).all();
 
       if (results.length === 0) {
-        return new Response(JSON.stringify({ error: 'Manuscript not found or access denied' }), {
+        return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
           status: 404,
           headers: { 'Content-Type': 'application/json' }
         });
@@ -301,6 +385,7 @@ export const manuscriptHandlers = {
    * Returns: Success confirmation
    *
    * MAN-39: Now invalidates related caches after deletion
+   * MAN-13: Only owners can delete (shared users cannot)
    */
   async deleteManuscript(request, env, manuscriptId) {
     try {
@@ -313,13 +398,33 @@ export const manuscriptHandlers = {
         });
       }
 
-      // Fetch manuscript and verify ownership
+      // Check access permissions
+      const access = await checkManuscriptAccess(manuscriptId, userId, env);
+      if (!access.hasAccess) {
+        return new Response(JSON.stringify({ error: 'Manuscript not found or access denied' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Only owners can delete manuscripts (not shared users)
+      if (!access.isOwner) {
+        return new Response(JSON.stringify({
+          error: 'Only the owner can delete this manuscript',
+          currentPermission: access.permissionLevel
+        }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Fetch manuscript details
       const { results } = await env.DB.prepare(
         'SELECT * FROM manuscripts WHERE id = ? AND user_id = ?'
       ).bind(manuscriptId, userId).all();
 
       if (results.length === 0) {
-        return new Response(JSON.stringify({ error: 'Manuscript not found or access denied' }), {
+        return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
           status: 404,
           headers: { 'Content-Type': 'application/json' }
         });

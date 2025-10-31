@@ -41,6 +41,7 @@
     "formdata-node": "^6.0.3",
     "hono": "^4.10.3",
     "itty-router": "^5.0.22",
+    "jose": "^6.1.0",
     "mammoth": "^1.11.0",
     "openai": "^6.7.0",
     "pdf-lib": "^1.17.1",

@@ -10,6 +10,11 @@
  * 5. Back Matter (about the author, other books)
  * 6. Cover Design Brief (for designers)
  * 7. Series Description (if part of a series)
+ * 8. Audiobook Narration Brief (narrator guidance and style)
+ * 9. Audiobook Pronunciation Guide (proper nouns and terms)
+ * 10. Audiobook Timing Estimates (chapter timing and pacing)
+ * 11. Audiobook Sample Selections (audition and retail samples)
+ * 12. Audiobook Metadata (ACX/Audible submission data)
  *
  * Status updates are written to R2 throughout the process so the frontend
  * can poll for progress. Results are stored in R2 for later retrieval.
@@ -22,6 +27,12 @@ import { AuthorBioAgent } from './author-bio-agent.js';
 import { BackMatterAgent } from './back-matter-agent.js';
 import { CoverDesignAgent } from './cover-design-agent.js';
 import { SeriesDescriptionAgent } from './series-description-agent.js';
+import { AudiobookNarrationAgent } from './audiobook-narration-agent.js';
+import { AudiobookPronunciationAgent } from './audiobook-pronunciation-agent.js';
+import { AudiobookTimingAgent } from './audiobook-timing-agent.js';
+import { AudiobookSampleAgent } from './audiobook-sample-agent.js';
+import { AudiobookMetadataAgent } from './audiobook-metadata-agent.js';
+import { sendAssetGenerationCompleteEmail } from './email-service.js';
 
 export default {
   /**
@@ -57,7 +68,12 @@ export default {
             authorBio: { status: 'pending', progress: 0 },
             backMatter: { status: 'pending', progress: 0 },
             coverBrief: { status: 'pending', progress: 0 },
-            seriesDescription: { status: 'pending', progress: 0 }
+            seriesDescription: { status: 'pending', progress: 0 },
+            audiobookNarration: { status: 'pending', progress: 0 },
+            audiobookPronunciation: { status: 'pending', progress: 0 },
+            audiobookTiming: { status: 'pending', progress: 0 },
+            audiobookSamples: { status: 'pending', progress: 0 },
+            audiobookMetadata: { status: 'pending', progress: 0 }
           }
         });
 
@@ -71,7 +87,13 @@ export default {
         const devAnalysis = await devAnalysisObj.json();
         console.log('[Asset Queue] Developmental analysis loaded');
 
-        // Initialize all 7 asset generation agents
+        // Extract userId and manuscriptId from manuscriptKey for cost tracking
+        // Format: userId/manuscriptId/filename
+        const keyParts = manuscriptKey.split('/');
+        const userId = keyParts.length >= 1 ? keyParts[0] : null;
+        const manuscriptId = keyParts.length >= 2 ? keyParts[1] : null;
+
+        // Initialize all 12 asset generation agents (7 original + 5 audiobook)
         const bookDescAgent = new BookDescriptionAgent(env);
         const keywordAgent = new KeywordAgent(env);
         const categoryAgent = new CategoryAgent(env);
@@ -79,14 +101,19 @@ export default {
         const backMatterAgent = new BackMatterAgent(env);
         const coverDesignAgent = new CoverDesignAgent(env);
         const seriesDescriptionAgent = new SeriesDescriptionAgent(env);
+        const audiobookNarrationAgent = new AudiobookNarrationAgent(env);
+        const audiobookPronunciationAgent = new AudiobookPronunciationAgent(env);
+        const audiobookTimingAgent = new AudiobookTimingAgent(env);
+        const audiobookSampleAgent = new AudiobookSampleAgent(env);
+        const audiobookMetadataAgent = new AudiobookMetadataAgent(env);
 
-        console.log('[Asset Queue] Running all 7 agents in parallel...');
+        console.log('[Asset Queue] Running all 12 agents in parallel...');
 
         // Update status to show all agents are running
         await updateAssetStatus(env, reportId, {
           status: 'processing',
           progress: 10,
-          message: 'Generating marketing assets...',
+          message: 'Generating marketing and audiobook assets...',
           timestamp: new Date().toISOString(),
           agents: {
             bookDescription: { status: 'running', progress: 10 },
@@ -95,12 +122,18 @@ export default {
             authorBio: { status: 'running', progress: 10 },
             backMatter: { status: 'running', progress: 10 },
             coverBrief: { status: 'running', progress: 10 },
-            seriesDescription: { status: 'running', progress: 10 }
+            seriesDescription: { status: 'running', progress: 10 },
+            audiobookNarration: { status: 'running', progress: 10 },
+            audiobookPronunciation: { status: 'running', progress: 10 },
+            audiobookTiming: { status: 'running', progress: 10 },
+            audiobookSamples: { status: 'running', progress: 10 },
+            audiobookMetadata: { status: 'running', progress: 10 }
           }
         });
 
         // Execute all agents in parallel using Promise.all
         // Each agent call is wrapped in .catch() to prevent one failure from stopping others
+        // Note: Audiobook metadata agent will run in parallel but may have null for some inputs initially
         const results = await Promise.allSettled([
           bookDescAgent.generate(manuscriptKey, devAnalysis, genre),
           keywordAgent.generate(manuscriptKey, devAnalysis, genre),
@@ -108,14 +141,49 @@ export default {
           authorBioAgent.generate(manuscriptKey, devAnalysis, genre, authorData),
           backMatterAgent.generate(manuscriptKey, devAnalysis, genre, authorData),
           coverDesignAgent.generate(manuscriptKey, devAnalysis, genre),
-          seriesDescriptionAgent.generate(manuscriptKey, devAnalysis, genre, seriesData)
+          seriesDescriptionAgent.generate(manuscriptKey, devAnalysis, genre, seriesData),
+          audiobookNarrationAgent.generate(manuscriptKey, devAnalysis, genre, userId, manuscriptId),
+          audiobookPronunciationAgent.generate(manuscriptKey, devAnalysis, genre, userId, manuscriptId),
+          audiobookTimingAgent.generate(manuscriptKey, devAnalysis, genre, userId, manuscriptId),
+          audiobookSampleAgent.generate(manuscriptKey, devAnalysis, genre, userId, manuscriptId),
+          // Audiobook metadata runs in parallel but fetches other assets from R2 if needed
+          (async () => {
+            // Wait a bit for other assets to be generated and stored
+            // This is a best-effort approach - metadata will work with whatever is available
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
+            // Fetch assets that may have been generated by now
+            let bookDesc = null, cats = null, keys = null;
+            try {
+              const bookDescObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-book-description.json`);
+              if (bookDescObj) bookDesc = await bookDescObj.json();
+            } catch (e) { /* ignore */ }
+            try {
+              const catsObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-categories.json`);
+              if (catsObj) cats = await catsObj.json();
+            } catch (e) { /* ignore */ }
+            try {
+              const keysObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-keywords.json`);
+              if (keysObj) keys = await keysObj.json();
+            } catch (e) { /* ignore */ }
+
+            return await audiobookMetadataAgent.generate(
+              manuscriptKey, devAnalysis, bookDesc, cats, keys, genre, userId, manuscriptId
+            );
+          })()
         ]);
 
         console.log('[Asset Queue] All agents completed');
 
         // Process results
-        const [bookDescription, keywords, categories, authorBio, backMatter, coverBrief, seriesDescription] = results.map((result, index) => {
-          const agentNames = ['bookDescription', 'keywords', 'categories', 'authorBio', 'backMatter', 'coverBrief', 'seriesDescription'];
+        const [
+          bookDescription, keywords, categories, authorBio, backMatter, coverBrief, seriesDescription,
+          audiobookNarration, audiobookPronunciation, audiobookTiming, audiobookSamples, audiobookMetadata
+        ] = results.map((result, index) => {
+          const agentNames = [
+            'bookDescription', 'keywords', 'categories', 'authorBio', 'backMatter', 'coverBrief', 'seriesDescription',
+            'audiobookNarration', 'audiobookPronunciation', 'audiobookTiming', 'audiobookSamples', 'audiobookMetadata'
+          ];
           if (result.status === 'fulfilled') {
             return result.value;
           } else {
@@ -133,6 +201,11 @@ export default {
         if (backMatter.error) errors.push(backMatter);
         if (coverBrief.error) errors.push(coverBrief);
         if (seriesDescription.error) errors.push(seriesDescription);
+        if (audiobookNarration.error) errors.push(audiobookNarration);
+        if (audiobookPronunciation.error) errors.push(audiobookPronunciation);
+        if (audiobookTiming.error) errors.push(audiobookTiming);
+        if (audiobookSamples.error) errors.push(audiobookSamples);
+        if (audiobookMetadata.error) errors.push(audiobookMetadata);
 
         // Combine results into a single asset package
         const combinedAssets = {
@@ -146,6 +219,11 @@ export default {
           backMatter: backMatter.error ? null : backMatter.backMatter,
           coverBrief: coverBrief.error ? null : coverBrief.coverBrief,
           seriesDescription: seriesDescription.error ? null : seriesDescription.seriesDescription,
+          audiobookNarration: audiobookNarration.error ? null : audiobookNarration.narrationBrief,
+          audiobookPronunciation: audiobookPronunciation.error ? null : audiobookPronunciation.pronunciationGuide,
+          audiobookTiming: audiobookTiming.error ? null : audiobookTiming.timingAnalysis,
+          audiobookSamples: audiobookSamples.error ? null : audiobookSamples.sampleSelections,
+          audiobookMetadata: audiobookMetadata.error ? null : audiobookMetadata.audiobookMetadata,
           errors: errors.length > 0 ? errors : undefined
         };
 
@@ -185,7 +263,12 @@ export default {
             authorBio: { status: authorBio.error ? 'failed' : 'complete', progress: 100 },
             backMatter: { status: backMatter.error ? 'failed' : 'complete', progress: 100 },
             coverBrief: { status: coverBrief.error ? 'failed' : 'complete', progress: 100 },
-            seriesDescription: { status: seriesDescription.error ? 'failed' : 'complete', progress: 100 }
+            seriesDescription: { status: seriesDescription.error ? 'failed' : 'complete', progress: 100 },
+            audiobookNarration: { status: audiobookNarration.error ? 'failed' : 'complete', progress: 100 },
+            audiobookPronunciation: { status: audiobookPronunciation.error ? 'failed' : 'complete', progress: 100 },
+            audiobookTiming: { status: audiobookTiming.error ? 'failed' : 'complete', progress: 100 },
+            audiobookSamples: { status: audiobookSamples.error ? 'failed' : 'complete', progress: 100 },
+            audiobookMetadata: { status: audiobookMetadata.error ? 'failed' : 'complete', progress: 100 }
           },
           // Include the actual asset data in the status response
           bookDescription: combinedAssets.bookDescription,
@@ -195,10 +278,42 @@ export default {
           backMatter: combinedAssets.backMatter,
           coverBrief: combinedAssets.coverBrief,
           seriesDescription: combinedAssets.seriesDescription,
+          audiobookNarration: combinedAssets.audiobookNarration,
+          audiobookPronunciation: combinedAssets.audiobookPronunciation,
+          audiobookTiming: combinedAssets.audiobookTiming,
+          audiobookSamples: combinedAssets.audiobookSamples,
+          audiobookMetadata: combinedAssets.audiobookMetadata,
           errors: errors.length > 0 ? errors : undefined
         });
 
         console.log(`[Asset Queue] Asset generation complete for ${reportId}`);
+
+        // Send asset generation complete email
+        try {
+          // Get manuscript ID from manuscriptKey (format: userId/manuscriptId/filename)
+          const parts = manuscriptKey.split('/');
+          const manuscriptId = parts.length >= 2 ? parts[1] : null;
+
+          if (manuscriptId) {
+            const manuscript = await env.DB.prepare(
+              'SELECT m.title, u.email, u.full_name FROM manuscripts m JOIN users u ON m.user_id = u.id WHERE m.id = ?'
+            ).bind(manuscriptId).first();
+
+            if (manuscript) {
+              await sendAssetGenerationCompleteEmail({
+                to: manuscript.email,
+                userName: manuscript.full_name || 'Author',
+                manuscriptTitle: manuscript.title,
+                reportId,
+                env
+              });
+              console.log(`[Asset Queue] Asset generation complete email sent to ${manuscript.email}`);
+            }
+          }
+        } catch (emailError) {
+          console.error(`[Asset Queue] Failed to send asset generation complete email:`, emailError);
+          // Don't fail the asset generation if email fails
+        }
 
         // Acknowledge successful processing
         message.ack();

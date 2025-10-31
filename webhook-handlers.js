@@ -5,6 +5,7 @@
 
 import Stripe from 'stripe';
 import { calculateStripeFee, logCost } from './cost-utils.js';
+import { sendPaymentConfirmationEmail, sendPaymentFailedEmail } from './email-service.js';
 
 /**
  * Main webhook handler
@@ -283,6 +284,30 @@ async function handlePaymentSucceeded(env, invoice) {
 
     console.log('[Webhook] Payment succeeded:', paymentId);
 
+    // Send payment confirmation email
+    try {
+      const user = await env.DB.prepare(
+        'SELECT email, full_name FROM users WHERE id = ?'
+      ).bind(subscription.user_id).first();
+
+      if (user) {
+        await sendPaymentConfirmationEmail({
+          to: user.email,
+          userName: user.full_name || 'Subscriber',
+          amount: amountUSD,
+          currency: invoice.currency.toUpperCase(),
+          invoiceId: invoice.id,
+          periodStart: new Date(invoice.period_start * 1000).toLocaleDateString(),
+          periodEnd: new Date(invoice.period_end * 1000).toLocaleDateString(),
+          env
+        });
+        console.log(`[Webhook] Payment confirmation email sent to ${user.email}`);
+      }
+    } catch (emailError) {
+      console.error('[Webhook] Failed to send payment confirmation email:', emailError);
+      // Don't fail the payment if email fails
+    }
+
     // Log Stripe fee cost
     try {
       const stripeFee = calculateStripeFee(amountUSD);
@@ -340,5 +365,30 @@ async function handlePaymentFailed(env, invoice) {
     `).bind(timestamp, subscription.id).run();
 
     console.log('[Webhook] Payment failed:', invoice.id);
+
+    // Send payment failed email (critical - always sent)
+    try {
+      const user = await env.DB.prepare(
+        'SELECT email, full_name, subscription_tier FROM users WHERE id = ?'
+      ).bind(subscription.user_id).first();
+
+      if (user) {
+        const amountUSD = invoice.amount_due / 100;
+        await sendPaymentFailedEmail({
+          to: user.email,
+          userName: user.full_name || 'Subscriber',
+          amount: amountUSD,
+          currency: invoice.currency.toUpperCase(),
+          failureReason: invoice.status_transitions?.finalized_at ? 'Card declined' : 'Payment processing error',
+          retryDate: invoice.next_payment_attempt ? new Date(invoice.next_payment_attempt * 1000).toLocaleDateString() : 'N/A',
+          planName: user.subscription_tier || 'Unknown',
+          env
+        });
+        console.log(`[Webhook] Payment failed email sent to ${user.email}`);
+      }
+    } catch (emailError) {
+      console.error('[Webhook] Failed to send payment failed email:', emailError);
+      // Don't fail the webhook if email fails
+    }
   }
 }

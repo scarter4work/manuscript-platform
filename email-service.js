@@ -396,12 +396,453 @@ export async function sendDMCAOwnerNotification(ownerData, env) {
 }
 
 // ============================================================================
+// EMAIL PREFERENCE CHECKING & LOGGING
+// ============================================================================
+
+/**
+ * Check if user has enabled this email type
+ */
+async function checkEmailPreference(userId, emailType, env) {
+  try {
+    const prefs = await env.DB.prepare(
+      `SELECT ${emailType} FROM email_preferences WHERE user_id = ?`
+    ).bind(userId).first();
+
+    // If no preferences found, default to enabled (except for optional ones)
+    if (!prefs) return true;
+
+    return prefs[emailType] === 1;
+  } catch (error) {
+    console.error('[Email] Error checking preferences:', error);
+    return true; // Default to sending on error
+  }
+}
+
+/**
+ * Log email send attempt
+ */
+async function logEmail({ userId, toEmail, subject, emailType, status, errorMessage, env }) {
+  try {
+    const now = Math.floor(Date.now() / 1000);
+    await env.DB.prepare(`
+      INSERT INTO email_log (id, user_id, to_email, subject, email_type, status, sent_at, created_at, error_message)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      crypto.randomUUID(),
+      userId || null,
+      toEmail,
+      subject,
+      emailType,
+      status,
+      status === 'sent' ? now : null,
+      now,
+      errorMessage || null
+    ).run();
+  } catch (error) {
+    console.error('[Email] Error logging email:', error);
+  }
+}
+
+/**
+ * Send email with preference checking and logging
+ */
+async function sendNotificationEmail({ userId, to, subject, html, emailType, env }) {
+  // Check user preferences (skip for critical emails)
+  const criticalTypes = ['payment_failed', 'dmca_notification'];
+  if (userId && !criticalTypes.includes(emailType)) {
+    const enabled = await checkEmailPreference(userId, emailType, env);
+    if (!enabled) {
+      console.log(`[Email] Skipped ${emailType} for user ${userId} (disabled in preferences)`);
+      return true;
+    }
+  }
+
+  // Send email
+  const success = await sendEmail({ to, subject, html, env });
+
+  // Log result
+  await logEmail({
+    userId,
+    toEmail: to,
+    subject,
+    emailType,
+    status: success ? 'sent' : 'failed',
+    errorMessage: success ? null : 'MailChannels API error',
+    env
+  });
+
+  return success;
+}
+
+// ============================================================================
+// ANALYSIS & ASSET NOTIFICATIONS (MAN-17)
+// ============================================================================
+
+/**
+ * Email when manuscript analysis is complete
+ */
+export async function sendAnalysisCompleteEmail(data, env) {
+  const { userEmail, manuscriptTitle, manuscriptId, reportId } = data;
+
+  const content = `
+    <p>Great news! Your manuscript analysis is complete.</p>
+
+    <div class="info-box" style="border-left-color: #28a745; background: #d4edda;">
+      <p><strong>✓ Analysis Complete:</strong> ${manuscriptTitle}</p>
+    </div>
+
+    <p>Your comprehensive analysis report includes:</p>
+    <ul>
+      <li><strong>Developmental Editing</strong> - Plot, character, and pacing analysis</li>
+      <li><strong>Line Editing</strong> - Prose quality improvements</li>
+      <li><strong>Copy Editing</strong> - Grammar and style corrections</li>
+    </ul>
+
+    <p>
+      <a href="https://dashboard.scarter4workmanuscripthub.com/dashboard-spa.html#report/${reportId}" class="button">
+        View Analysis Report
+      </a>
+    </p>
+
+    <p><strong>Next Steps:</strong></p>
+    <ol>
+      <li>Review the detailed analysis and recommendations</li>
+      <li>Download the annotated manuscript with inline edits</li>
+      <li>Generate marketing assets for your manuscript</li>
+    </ol>
+  `;
+
+  const html = generateEmailTemplate('Analysis Complete', content);
+
+  return await sendNotificationEmail({
+    userId: data.userId,
+    to: userEmail,
+    subject: `✅ Analysis Complete: ${manuscriptTitle}`,
+    html,
+    emailType: 'analysis_complete',
+    env
+  });
+}
+
+/**
+ * Email when asset generation is complete
+ */
+export async function sendAssetGenerationCompleteEmail(data, env) {
+  const { userEmail, manuscriptTitle, manuscriptId, assetTypes } = data;
+
+  const assetList = assetTypes.map(type => {
+    const names = {
+      description: 'Book Description',
+      keywords: 'Amazon Keywords',
+      categories: 'BISAC Categories',
+      author_bio: 'Author Biography',
+      back_matter: 'Back Matter',
+      cover_design: 'Cover Design Brief',
+      series_description: 'Series Description'
+    };
+    return `<li>${names[type] || type}</li>`;
+  }).join('');
+
+  const content = `
+    <p>Your marketing assets are ready!</p>
+
+    <div class="info-box" style="border-left-color: #28a745; background: #d4edda;">
+      <p><strong>✓ Assets Generated:</strong> ${manuscriptTitle}</p>
+    </div>
+
+    <p><strong>Generated Assets:</strong></p>
+    <ul>
+      ${assetList}
+    </ul>
+
+    <p>
+      <a href="https://dashboard.scarter4workmanuscripthub.com/dashboard-spa.html#assets/${manuscriptId}" class="button">
+        View & Download Assets
+      </a>
+    </p>
+
+    <p><strong>What you can do now:</strong></p>
+    <ol>
+      <li>Review and customize the generated content</li>
+      <li>Download assets for your publishing platform</li>
+      <li>Copy keywords and categories for Amazon KDP</li>
+    </ol>
+  `;
+
+  const html = generateEmailTemplate('Marketing Assets Ready', content);
+
+  return await sendNotificationEmail({
+    userId: data.userId,
+    to: userEmail,
+    subject: `🎨 Marketing Assets Ready: ${manuscriptTitle}`,
+    html,
+    emailType: 'asset_generation_complete',
+    env
+  });
+}
+
+// ============================================================================
+// PAYMENT NOTIFICATIONS (MAN-17)
+// ============================================================================
+
+/**
+ * Email for successful payment/subscription
+ */
+export async function sendPaymentConfirmationEmail(data, env) {
+  const { userEmail, planName, amount, interval, nextBillingDate } = data;
+
+  const content = `
+    <p>Thank you for your subscription!</p>
+
+    <div class="info-box" style="border-left-color: #28a745; background: #d4edda;">
+      <p><strong>✓ Payment Confirmed</strong></p>
+    </div>
+
+    <div class="info-box">
+      <p class="metadata"><strong>Plan:</strong> ${planName}</p>
+      <p class="metadata"><strong>Amount:</strong> $${amount}</p>
+      <p class="metadata"><strong>Billing:</strong> ${interval}</p>
+      ${nextBillingDate ? `<p class="metadata"><strong>Next Billing Date:</strong> ${nextBillingDate}</p>` : ''}
+    </div>
+
+    <p>
+      <a href="https://dashboard.scarter4workmanuscripthub.com/billing.html" class="button">
+        Manage Subscription
+      </a>
+    </p>
+
+    <p><strong>What's included in your plan:</strong></p>
+    <ul>
+      <li>AI-powered manuscript analysis</li>
+      <li>Marketing asset generation</li>
+      <li>Priority support</li>
+      ${planName.includes('Enterprise') ? '<li>Team collaboration (5 members)</li>' : ''}
+    </ul>
+  `;
+
+  const html = generateEmailTemplate('Payment Confirmation', content);
+
+  return await sendNotificationEmail({
+    userId: data.userId,
+    to: userEmail,
+    subject: `✅ Payment Confirmed - ${planName}`,
+    html,
+    emailType: 'payment_confirmation',
+    env
+  });
+}
+
+/**
+ * Email when payment fails (CRITICAL - always send)
+ */
+export async function sendPaymentFailedEmail(data, env) {
+  const { userEmail, planName, amount, reason, retryDate } = data;
+
+  const content = `
+    <div class="warning-box">
+      <p><strong>⚠️ Payment Failed</strong></p>
+    </div>
+
+    <p>We were unable to process your payment for your ${planName} subscription.</p>
+
+    <div class="info-box">
+      <p class="metadata"><strong>Plan:</strong> ${planName}</p>
+      <p class="metadata"><strong>Amount:</strong> $${amount}</p>
+      <p class="metadata"><strong>Reason:</strong> ${reason || 'Payment declined'}</p>
+      ${retryDate ? `<p class="metadata"><strong>Retry Date:</strong> ${retryDate}</p>` : ''}
+    </div>
+
+    <p><strong>Action Required:</strong></p>
+    <ol>
+      <li>Update your payment method in the billing portal</li>
+      <li>Ensure your card has sufficient funds</li>
+      <li>Check that your billing information is correct</li>
+    </ol>
+
+    <p>
+      <a href="https://dashboard.scarter4workmanuscripthub.com/billing.html" class="button">
+        Update Payment Method
+      </a>
+    </p>
+
+    <div class="warning-box">
+      <p><strong>Important:</strong> Your subscription will be cancelled if payment is not received within 7 days.</p>
+    </div>
+  `;
+
+  const html = generateEmailTemplate('Payment Failed - Action Required', content);
+
+  return await sendNotificationEmail({
+    userId: data.userId,
+    to: userEmail,
+    subject: `⚠️ Payment Failed - Action Required`,
+    html,
+    emailType: 'payment_failed',
+    env
+  });
+}
+
+/**
+ * Email for usage warnings
+ */
+export async function sendUsageWarningEmail(data, env) {
+  const { userEmail, manuscriptsUsed, manuscriptsLimit, percentageUsed, planName } = data;
+
+  const content = `
+    <div class="warning-box">
+      <p><strong>⚠️ Manuscript Limit Warning</strong></p>
+    </div>
+
+    <p>You're approaching your manuscript limit for the ${planName} plan.</p>
+
+    <div class="info-box">
+      <p class="metadata"><strong>Usage:</strong> ${manuscriptsUsed} of ${manuscriptsLimit} manuscripts (${percentageUsed}%)</p>
+      <p class="metadata"><strong>Current Plan:</strong> ${planName}</p>
+    </div>
+
+    ${percentageUsed >= 100 ? `
+      <div class="warning-box">
+        <p><strong>Limit Reached:</strong> You've reached your manuscript limit. Upgrade to continue analyzing manuscripts.</p>
+      </div>
+    ` : `
+      <p>You have ${manuscriptsLimit - manuscriptsUsed} manuscripts remaining this month.</p>
+    `}
+
+    <p><strong>Options:</strong></p>
+    <ol>
+      <li>Upgrade to a higher plan for more manuscripts</li>
+      <li>Wait until your limit resets next billing cycle</li>
+      <li>Delete old manuscripts to free up space</li>
+    </ol>
+
+    <p>
+      <a href="https://dashboard.scarter4workmanuscripthub.com/billing.html" class="button">
+        Upgrade Plan
+      </a>
+    </p>
+  `;
+
+  const html = generateEmailTemplate('Usage Warning', content);
+
+  return await sendNotificationEmail({
+    userId: data.userId,
+    to: userEmail,
+    subject: `⚠️ ${percentageUsed >= 100 ? 'Limit Reached' : 'Approaching Limit'} - ${manuscriptsUsed}/${manuscriptsLimit} Manuscripts`,
+    html,
+    emailType: 'usage_warning',
+    env
+  });
+}
+
+// ============================================================================
+// TEAM COLLABORATION EMAILS (MAN-13 + MAN-17)
+// ============================================================================
+
+/**
+ * Email for team invitations
+ */
+export async function sendTeamInvitationEmail(data, env) {
+  const { toEmail, teamName, inviterName, role, invitationToken } = data;
+
+  const roleDescriptions = {
+    admin: 'manage the team and all manuscripts',
+    editor: 'view and edit shared manuscripts',
+    viewer: 'view shared manuscripts (read-only)'
+  };
+
+  const content = `
+    <p>${inviterName} has invited you to join their team on ManuscriptHub!</p>
+
+    <div class="info-box">
+      <p class="metadata"><strong>Team:</strong> ${teamName}</p>
+      <p class="metadata"><strong>Your Role:</strong> ${role.charAt(0).toUpperCase() + role.slice(1)}</p>
+      <p class="metadata"><strong>Permissions:</strong> You can ${roleDescriptions[role]}</p>
+    </div>
+
+    <p><strong>What is team collaboration?</strong></p>
+    <p>Collaborate with editors, co-authors, and reviewers. Share manuscripts, get feedback, and work together on your writing projects.</p>
+
+    <p>
+      <a href="https://dashboard.scarter4workmanuscripthub.com/teams/accept-invitation/${invitationToken}" class="button">
+        Accept Invitation
+      </a>
+    </p>
+
+    <p><small>This invitation expires in 7 days.</small></p>
+  `;
+
+  const html = generateEmailTemplate('Team Invitation', content);
+
+  return await sendNotificationEmail({
+    userId: null, // Recipient might not be a user yet
+    to: toEmail,
+    subject: `👥 You've been invited to join ${teamName}`,
+    html,
+    emailType: 'team_invitation',
+    env
+  });
+}
+
+/**
+ * Email for team activity updates
+ */
+export async function sendTeamActivityEmail(data, env) {
+  const { userEmail, teamName, activityType, actorName, details } = data;
+
+  const activityMessages = {
+    member_added: `${actorName} added a new member to ${teamName}`,
+    member_removed: `${actorName} removed a member from ${teamName}`,
+    manuscript_shared: `${actorName} shared a manuscript with ${teamName}`,
+    role_changed: `${actorName} changed your role in ${teamName}`
+  };
+
+  const content = `
+    <p>${activityMessages[activityType] || 'Team activity update'}</p>
+
+    <div class="info-box">
+      <p class="metadata"><strong>Team:</strong> ${teamName}</p>
+      <p class="metadata"><strong>Activity:</strong> ${activityType.replace('_', ' ').toUpperCase()}</p>
+      ${details ? `<p class="metadata"><strong>Details:</strong> ${details}</p>` : ''}
+    </div>
+
+    <p>
+      <a href="https://dashboard.scarter4workmanuscripthub.com/teams.html" class="button">
+        View Team Dashboard
+      </a>
+    </p>
+  `;
+
+  const html = generateEmailTemplate('Team Activity', content);
+
+  return await sendNotificationEmail({
+    userId: data.userId,
+    to: userEmail,
+    subject: `Team Update: ${teamName}`,
+    html,
+    emailType: 'team_activity',
+    env
+  });
+}
+
+// ============================================================================
 // EXPORTS
 // ============================================================================
 
 export const emailService = {
   sendEmail,
+  sendNotificationEmail,
+  // DMCA
   sendDMCARequestNotification,
   sendDMCAStatusUpdate,
   sendDMCAOwnerNotification,
+  // Analysis & Assets
+  sendAnalysisCompleteEmail,
+  sendAssetGenerationCompleteEmail,
+  // Payments
+  sendPaymentConfirmationEmail,
+  sendPaymentFailedEmail,
+  sendUsageWarningEmail,
+  // Team Collaboration
+  sendTeamInvitationEmail,
+  sendTeamActivityEmail,
 };

@@ -481,6 +481,8 @@
     <nav class="main-nav">
         <div class="main-nav-content" id="mainNav">
             <a onclick="app.navigate('library')" class="main-nav-item" style="cursor: pointer;">📚 My Manuscripts</a>
+            <a href="/teams.html" class="main-nav-item" id="navTeams" style="display: none;">👥 Teams</a>
+            <a href="/email-preferences.html" class="main-nav-item">📧 Email Preferences</a>
             <a href="/billing.html" class="main-nav-item">💳 Billing</a>
             <!-- Admin links populated by JavaScript -->
         </div>
@@ -1036,6 +1038,11 @@
 
                 if (response.ok) {
                     const data = await response.json();
+
+                    // Show Teams link for Enterprise users
+                    if (data.subscriptionTier === 'enterprise') {
+                        document.getElementById('navTeams').style.display = 'block';
+                    }
 
                     // Initialize the app (loads admin navigation, manuscripts, etc.)
                     if (window.app && typeof window.app.init === 'function') {

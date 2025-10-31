@@ -15,6 +15,7 @@
 import { DevelopmentalAgent } from './developmental-agent.js';
 import { LineEditingAgent } from './line-editing-agent.js';
 import { CopyEditingAgent } from './copy-editing-agent.js';
+import { sendAnalysisCompleteEmail } from './email-service.js';
 
 export default {
   /**
@@ -148,6 +149,27 @@ export default {
         }
 
         console.log(`[Queue Consumer] Analysis complete for ${reportId}`);
+
+        // Send analysis complete email
+        try {
+          const manuscript = await env.DB.prepare(
+            'SELECT m.title, u.email, u.full_name FROM manuscripts m JOIN users u ON m.user_id = u.id WHERE m.id = ?'
+          ).bind(manuscriptId).first();
+
+          if (manuscript) {
+            await sendAnalysisCompleteEmail({
+              to: manuscript.email,
+              userName: manuscript.full_name || 'Author',
+              manuscriptTitle: manuscript.title,
+              reportId,
+              env
+            });
+            console.log(`[Queue Consumer] Analysis complete email sent to ${manuscript.email}`);
+          }
+        } catch (emailError) {
+          console.error(`[Queue Consumer] Failed to send analysis complete email:`, emailError);
+          // Don't fail the analysis if email fails
+        }
 
         // Phase D: Automatically queue asset generation after analysis completes
         console.log(`[Queue Consumer] Queueing asset generation for ${reportId}...`);
