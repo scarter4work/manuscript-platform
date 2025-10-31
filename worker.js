@@ -18,6 +18,7 @@ import { MarketAnalysisAgent } from './market-analysis-agent.js';
 import { SocialMediaAgent } from './social-media-agent.js';
 import { authHandlers } from './auth-handlers.js';
 import { manuscriptHandlers } from './manuscript-handlers.js';
+import { audiobookHandlers } from './audiobook-handlers.js';
 import { teamHandlers } from './team-handlers.js';
 import { emailPreferenceHandlers } from './email-preference-handlers.js';
 import queueConsumer from './queue-consumer.js';
@@ -232,6 +233,30 @@ export default {
       if (path.match(/^\/manuscripts\/.+\/reanalyze$/) && request.method === 'POST') {
         const manuscriptId = path.match(/^\/manuscripts\/(.+)\/reanalyze$/)[1];
         return addCorsHeaders(await manuscriptHandlers.reanalyzeManuscript(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // ========================================================================
+      // AUDIOBOOK ASSET ROUTES (MAN-18)
+      // ========================================================================
+
+      // GET /manuscripts/:id/audiobook - Get all audiobook assets
+      if (path.match(/^\/manuscripts\/[^/]+\/audiobook$/) && request.method === 'GET') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await audiobookHandlers.getAudiobookAssets(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // GET /manuscripts/:id/audiobook/:assetType - Get specific audiobook asset
+      if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/[^/]+$/) && request.method === 'GET') {
+        const pathParts = path.split('/');
+        const manuscriptId = pathParts[2];
+        const assetType = pathParts[4];
+        return addCorsHeaders(await audiobookHandlers.getAudiobookAsset(request, env, manuscriptId, assetType), rateLimitHeaders);
+      }
+
+      // POST /manuscripts/:id/audiobook/regenerate - Regenerate audiobook assets
+      if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/regenerate$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[2];
+        return addCorsHeaders(await audiobookHandlers.regenerateAudiobookAssets(request, env, manuscriptId), rateLimitHeaders);
       }
 
       // ========================================================================
@@ -680,6 +705,11 @@ export default {
               'GET /list/{authorId}',
               'GET /get/{key}',
               'DELETE /delete/{key}'
+            ],
+            audiobook: [
+              'GET /manuscripts/:id/audiobook - Get all audiobook assets',
+              'GET /manuscripts/:id/audiobook/:assetType - Get specific asset (narration/pronunciation/timing/samples/metadata)',
+              'POST /manuscripts/:id/audiobook/regenerate - Regenerate audiobook assets'
             ],
             analysis: [
               'POST /analyze/developmental',
