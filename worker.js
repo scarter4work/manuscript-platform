@@ -21,6 +21,7 @@ import { manuscriptHandlers } from './manuscript-handlers.js';
 import { audiobookHandlers } from './audiobook-handlers.js';
 import { reviewHandlers } from './review-handlers.js';
 import { publishingHandlers } from './publishing-handlers.js';
+import { publicAPIHandlers } from './public-api-handlers.js';
 import { teamHandlers } from './team-handlers.js';
 import { emailPreferenceHandlers } from './email-preference-handlers.js';
 import queueConsumer from './queue-consumer.js';
@@ -327,6 +328,48 @@ export default {
       if (path.match(/^\/manuscripts\/[^/]+\/publishing\/package$/) && request.method === 'POST') {
         const manuscriptId = path.split('/')[2];
         return addCorsHeaders(await publishingHandlers.generatePublishingPackage(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // ========================================================================
+      // PUBLIC API ROUTES (MAN-14) - Enterprise tier programmatic access
+      // ========================================================================
+
+      // POST /api/v1/manuscripts - Upload manuscript via API
+      if (path === '/api/v1/manuscripts' && request.method === 'POST') {
+        return addCorsHeaders(await publicAPIHandlers.apiUploadManuscript(request, env), rateLimitHeaders);
+      }
+
+      // GET /api/v1/manuscripts - List manuscripts via API
+      if (path === '/api/v1/manuscripts' && request.method === 'GET') {
+        return addCorsHeaders(await publicAPIHandlers.apiListManuscripts(request, env), rateLimitHeaders);
+      }
+
+      // POST /api/v1/manuscripts/:id/analyze - Trigger analysis via API
+      if (path.match(/^\/api\/v1\/manuscripts\/[^/]+\/analyze$/) && request.method === 'POST') {
+        const manuscriptId = path.split('/')[4];
+        return addCorsHeaders(await publicAPIHandlers.apiAnalyzeManuscript(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // GET /api/v1/manuscripts/:id/status - Get analysis status via API
+      if (path.match(/^\/api\/v1\/manuscripts\/[^/]+\/status$/) && request.method === 'GET') {
+        const manuscriptId = path.split('/')[4];
+        return addCorsHeaders(await publicAPIHandlers.apiGetManuscriptStatus(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // GET /api/v1/manuscripts/:id/results - Get analysis results via API
+      if (path.match(/^\/api\/v1\/manuscripts\/[^/]+\/results$/) && request.method === 'GET') {
+        const manuscriptId = path.split('/')[4];
+        return addCorsHeaders(await publicAPIHandlers.apiGetManuscriptResults(request, env, manuscriptId), rateLimitHeaders);
+      }
+
+      // POST /api/v1/webhooks - Configure webhooks
+      if (path === '/api/v1/webhooks' && request.method === 'POST') {
+        return addCorsHeaders(await publicAPIHandlers.apiConfigureWebhook(request, env), rateLimitHeaders);
+      }
+
+      // GET /api/v1/usage - Get API usage statistics
+      if (path === '/api/v1/usage' && request.method === 'GET') {
+        return addCorsHeaders(await publicAPIHandlers.apiGetUsage(request, env), rateLimitHeaders);
       }
 
       // ========================================================================
@@ -794,6 +837,15 @@ export default {
               'POST /manuscripts/:id/publishing/formats - Prepare manuscript formats',
               'POST /manuscripts/:id/publishing/strategy - Generate distribution strategy',
               'POST /manuscripts/:id/publishing/package - Generate complete publishing package'
+            ],
+            api: [
+              'POST /api/v1/manuscripts - Upload manuscript',
+              'GET /api/v1/manuscripts - List manuscripts',
+              'POST /api/v1/manuscripts/:id/analyze - Trigger analysis',
+              'GET /api/v1/manuscripts/:id/status - Get analysis status',
+              'GET /api/v1/manuscripts/:id/results - Get analysis results',
+              'POST /api/v1/webhooks - Configure webhooks',
+              'GET /api/v1/usage - Get API usage statistics'
             ],
             analysis: [
               'POST /analyze/developmental',
