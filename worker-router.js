@@ -21,6 +21,7 @@ import registerAnalysisRoutes from './routes/analysis.js';
 import registerAssetRoutes from './routes/assets.js';
 import registerDMCARoutes from './routes/dmca.js';
 import registerResultsRoutes from './routes/results.js';
+import registerPublicAPIRoutes from './routes/public-api.js';
 import queueConsumer from './queue-consumer.js';
 import assetConsumer from './asset-generation-consumer.js';
 
@@ -182,6 +183,9 @@ registerDMCARoutes(app);
 
 // Phase 3: Results routes
 registerResultsRoutes(app);
+
+// MAN-14: Public API routes (Enterprise tier)
+registerPublicAPIRoutes(app);
 
 // ============================================================================
 // 404 HANDLER
