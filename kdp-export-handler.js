@@ -1,5 +1,6 @@
 // KDP Export Handler (MAN-15)
 // Generates a KDP-ready export package for manual upload to Amazon KDP
+// Cache bust test - deployed successfully
 
 /**
  * Generate KDP export package
