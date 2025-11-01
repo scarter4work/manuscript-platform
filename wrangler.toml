@@ -55,10 +55,11 @@ bucket_name = "marketing-assets"
 binding = "BACKUPS"
 bucket_name = "manuscript-platform-backups"
 
-# Scheduled CRON trigger for automated backups
-# Runs daily at 3 AM UTC
+# Scheduled CRON triggers
+# - Documentation monitoring (MAN-50): Daily at 2 AM UTC
+# - Automated backups: Daily at 3 AM UTC
 [triggers]
-crons = ["0 3 * * *"]
+crons = ["0 2 * * *", "0 3 * * *"]
 
 # Note: Custom domain is configured via Cloudflare Dashboard
 # Go to Workers & Pages > manuscript-upload-api > Custom Domains

@@ -25,6 +25,7 @@ import registerPublicAPIRoutes from './routes/public-api.js';
 import registerKDPRoutes from './routes/kdp.js';
 import queueConsumer from './queue-consumer.js';
 import assetConsumer from './asset-generation-consumer.js';
+import { handleScheduled } from './scheduled-doc-monitor.js';
 
 // Create Hono app instance
 const app = new Hono();
@@ -306,5 +307,14 @@ export default {
     } catch (error) {
       console.error(`[Queue Router] Error processing queue ${queueName}:`, error);
     }
+  },
+
+  /**
+   * Scheduled Handler (Cron Jobs)
+   * Daily documentation monitoring at 2 AM UTC
+   */
+  async scheduled(event, env, ctx) {
+    console.log('[Scheduled] Cron job triggered:', event.cron);
+    return await handleScheduled(event, env, ctx);
   },
 };
