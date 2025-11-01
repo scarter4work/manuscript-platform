@@ -95,7 +95,11 @@
       "Bash(chmod:*)",
       "Bash(https://api.github.com/repos/scarter4work/manuscript-platform/issues )",
       "Bash(./migrate-linear-to-github.sh:*)",
-      "mcp__cloudflare__worker_list"
+      "mcp__cloudflare__worker_list",
+      "mcp__cloudflare__worker_get",
+      "mcp__cloudflare__analytics_get",
+      "mcp__cloudflare__zones_list",
+      "mcp__cloudflare__route_list"
     ],
     "deny": [],
     "ask": []
