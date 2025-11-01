@@ -2,15 +2,15 @@
  * Cover Processor with Spine Calculator (MAN-43)
  *
  * Processes cover images and calculates spine width for print books
+ * Uses basic image handling suitable for Cloudflare Workers
  */
 
-import sharp from 'sharp';
-import PDFDocument from 'pdfkit';
+import { PDFDocument } from 'pdf-lib';
 
 /**
  * Paper types and their PPI (pages per inch) for spine calculation
  */
-const PAPER_TYPES = {
+export const PAPER_TYPES = {
   white_50: { ppi: 442, name: 'White 50# (0.0025")' },
   white_55: { ppi: 400, name: 'White 55# (0.0028")' },
   white_60: { ppi: 352, name: 'White 60# (0.0033")' },
@@ -60,6 +60,26 @@ export function calculateSpineWidth(pageCount, paperType = 'cream_60') {
 }
 
 /**
+ * Detect image format from buffer signature
+ */
+function detectImageFormat(buffer) {
+  if (!buffer || buffer.length < 12) return null;
+
+  // Check file signatures
+  if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) {
+    return 'jpeg';
+  }
+  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+    return 'png';
+  }
+  if (buffer[0] === 0x49 && buffer[1] === 0x49 || buffer[0] === 0x4D && buffer[1] === 0x4D) {
+    return 'tiff';
+  }
+
+  return null;
+}
+
+/**
  * Validate cover image against platform requirements
  *
  * @param {Buffer} imageBuffer - Cover image buffer
@@ -75,67 +95,36 @@ export async function validateCoverImage(imageBuffer, requirements = {}) {
   };
 
   try {
-    const metadata = await sharp(imageBuffer).metadata();
+    // Detect format from buffer
+    const format = detectImageFormat(imageBuffer);
 
-    validation.info = {
-      format: metadata.format,
-      width: metadata.width,
-      height: metadata.height,
-      colorSpace: metadata.space,
-      hasAlpha: metadata.hasAlpha,
-      resolution: metadata.density,
-    };
+    if (!format) {
+      validation.errors.push('Unable to detect image format');
+      validation.valid = false;
+      return validation;
+    }
+
+    validation.info.format = format;
+    validation.info.fileSize = imageBuffer.length;
+    validation.info.fileSizeMB = (imageBuffer.length / (1024 * 1024)).toFixed(2);
 
     // Check format
     const allowedFormats = requirements.formats || ['jpeg', 'jpg', 'png', 'tiff'];
-    if (!allowedFormats.includes(metadata.format.toLowerCase())) {
-      validation.errors.push(`Invalid format: ${metadata.format}. Allowed: ${allowedFormats.join(', ')}`);
+    if (!allowedFormats.includes(format)) {
+      validation.errors.push(`Invalid format: ${format}. Allowed: ${allowedFormats.join(', ')}`);
       validation.valid = false;
     }
 
-    // Check minimum dimensions
-    if (requirements.minWidth && metadata.width < requirements.minWidth) {
-      validation.errors.push(`Width ${metadata.width}px is below minimum ${requirements.minWidth}px`);
+    // File size validation
+    if (requirements.maxSize && imageBuffer.length > requirements.maxSize) {
+      validation.errors.push(`File size ${validation.info.fileSizeMB}MB exceeds maximum ${(requirements.maxSize / (1024 * 1024)).toFixed(0)}MB`);
       validation.valid = false;
     }
 
-    if (requirements.minHeight && metadata.height < requirements.minHeight) {
-      validation.errors.push(`Height ${metadata.height}px is below minimum ${requirements.minHeight}px`);
-      validation.valid = false;
-    }
+    // Note: Detailed dimension validation would require image decoding library
+    // For now, we do basic format and size validation
+    validation.warnings.push('Detailed image dimension validation not available in Workers environment');
 
-    // Check aspect ratio if specified
-    if (requirements.aspectRatio) {
-      const actualRatio = metadata.height / metadata.width;
-      const expectedRatio = requirements.aspectRatio;
-      const tolerance = 0.05; // 5% tolerance
-
-      if (Math.abs(actualRatio - expectedRatio) > tolerance) {
-        validation.warnings.push(
-          `Aspect ratio ${actualRatio.toFixed(2)} differs from recommended ${expectedRatio.toFixed(2)}`
-        );
-      }
-    }
-
-    // Check for transparency (usually not allowed for print covers)
-    if (metadata.hasAlpha && requirements.noTransparency) {
-      validation.errors.push('Cover image contains transparency, which is not allowed for print');
-      validation.valid = false;
-    }
-
-    // Check color space (should be RGB for most platforms)
-    if (requirements.colorSpace && metadata.space !== requirements.colorSpace) {
-      validation.warnings.push(
-        `Color space is ${metadata.space}, recommended: ${requirements.colorSpace}`
-      );
-    }
-
-    // Check resolution (DPI)
-    if (requirements.minDPI && metadata.density && metadata.density < requirements.minDPI) {
-      validation.warnings.push(
-        `Resolution ${metadata.density} DPI is below recommended ${requirements.minDPI} DPI`
-      );
-    }
   } catch (error) {
     validation.valid = false;
     validation.errors.push(`Failed to process image: ${error.message}`);
@@ -145,52 +134,19 @@ export async function validateCoverImage(imageBuffer, requirements = {}) {
 }
 
 /**
- * Resize and optimize cover image to meet platform requirements
+ * Process cover image - pass through for now
+ * In production, use Cloudflare Image Resizing API at the edge
  *
  * @param {Buffer} imageBuffer - Original cover image
  * @param {Object} options - Resize options
  * @returns {Promise<Buffer>} - Processed cover image
  */
 export async function processCoverImage(imageBuffer, options = {}) {
-  const {
-    width = null,
-    height = null,
-    format = 'jpeg',
-    quality = 95,
-    colorSpace = 'srgb',
-    removeAlpha = true,
-  } = options;
-
-  let processor = sharp(imageBuffer);
-
-  // Resize if dimensions specified
-  if (width || height) {
-    processor = processor.resize(width, height, {
-      fit: 'cover',
-      position: 'center',
-    });
-  }
-
-  // Remove alpha channel if requested
-  if (removeAlpha) {
-    processor = processor.flatten({ background: { r: 255, g: 255, b: 255 } });
-  }
-
-  // Set color space
-  if (colorSpace === 'srgb') {
-    processor = processor.toColorspace('srgb');
-  }
-
-  // Convert to specified format
-  if (format === 'jpeg' || format === 'jpg') {
-    processor = processor.jpeg({ quality, mozjpeg: true });
-  } else if (format === 'png') {
-    processor = processor.png({ quality, compressionLevel: 9 });
-  } else if (format === 'tiff') {
-    processor = processor.tiff({ quality, compression: 'lzw' });
-  }
-
-  return await processor.toBuffer();
+  // For now, return the original buffer unchanged
+  // In production, consider using Cloudflare's Image Resizing:
+  // https://developers.cloudflare.com/images/image-resizing/
+  console.log('[CoverProcessor] Passing through cover image (no processing)');
+  return imageBuffer;
 }
 
 /**
@@ -208,8 +164,11 @@ export async function generatePrintCover(frontCover, backCover = null, options =
     pageCount,
     paperType = 'cream_60',
     bleed = 9, // 0.125" bleed
-    barcodePosition = null, // {x, y, width, height} for barcode placement
   } = options;
+
+  if (!pageCount) {
+    throw new Error('Page count is required for print cover generation');
+  }
 
   // Calculate spine width
   const spine = calculateSpineWidth(pageCount, paperType);
@@ -220,69 +179,65 @@ export async function generatePrintCover(frontCover, backCover = null, options =
   const totalWidth = (trimWidth * 2) + spine.spineWidthPoints + (bleed * 2);
   const totalHeight = trimHeight + (bleed * 2);
 
-  return new Promise((resolve, reject) => {
-    const chunks = [];
+  // Create PDF
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([totalWidth, totalHeight]);
 
-    const doc = new PDFDocument({
-      size: [totalWidth, totalHeight],
-      margins: { top: 0, bottom: 0, left: 0, right: 0 },
-      info: {
-        Title: 'Print Cover',
-        Creator: 'ManuscriptHub Cover Generator',
-      },
+  try {
+    // Embed front cover image
+    let frontImage;
+    if (detectImageFormat(frontCover) === 'jpeg') {
+      frontImage = await pdfDoc.embedJpg(frontCover);
+    } else if (detectImageFormat(frontCover) === 'png') {
+      frontImage = await pdfDoc.embedPng(frontCover);
+    } else {
+      throw new Error('Front cover must be JPEG or PNG');
+    }
+
+    // Position front cover on right side
+    const frontX = bleed + trimWidth + spine.spineWidthPoints;
+    const frontY = bleed;
+
+    page.drawImage(frontImage, {
+      x: frontX,
+      y: frontY,
+      width: trimWidth,
+      height: trimHeight,
     });
 
-    doc.on('data', chunk => chunks.push(chunk));
-    doc.on('end', () => {
-      const pdfBuffer = Buffer.concat(chunks);
-      console.log(`[CoverProcessor] Generated cover PDF: ${pdfBuffer.length} bytes`);
-      resolve(pdfBuffer);
-    });
-    doc.on('error', reject);
+    // Embed and position back cover if provided
+    if (backCover) {
+      let backImage;
+      if (detectImageFormat(backCover) === 'jpeg') {
+        backImage = await pdfDoc.embedJpg(backCover);
+      } else if (detectImageFormat(backCover) === 'png') {
+        backImage = await pdfDoc.embedPng(backCover);
+      } else {
+        throw new Error('Back cover must be JPEG or PNG');
+      }
 
-    try {
-      // Add front cover (right side)
-      const frontX = bleed + trimWidth + spine.spineWidthPoints;
-      const frontY = bleed;
+      const backX = bleed;
+      const backY = bleed;
 
-      doc.image(frontCover, frontX, frontY, {
+      page.drawImage(backImage, {
+        x: backX,
+        y: backY,
         width: trimWidth,
         height: trimHeight,
       });
-
-      // Add back cover (left side) if provided
-      if (backCover) {
-        const backX = bleed;
-        const backY = bleed;
-
-        doc.image(backCover, backX, backY, {
-          width: trimWidth,
-          height: trimHeight,
-        });
-      } else {
-        // Fill with white if no back cover
-        doc.rect(bleed, bleed, trimWidth, trimHeight).fill('white');
-      }
-
-      // Add spine area (center)
-      const spineX = bleed + trimWidth;
-      const spineY = bleed;
-
-      doc.rect(spineX, spineY, spine.spineWidthPoints, trimHeight).fill('white');
-
-      // Add barcode placeholder if specified
-      if (barcodePosition) {
-        const { x, y, width, height } = barcodePosition;
-        doc.rect(x, y, width, height).fill('white');
-        doc.fontSize(8).fillColor('black').text('ISBN Barcode', x, y + height + 5);
-      }
-
-      doc.end();
-    } catch (error) {
-      doc.end();
-      reject(error);
     }
-  });
+
+    // Spine area in the middle (left as white/empty for now)
+    // In production, you could add spine text here
+
+  } catch (error) {
+    console.error('[CoverProcessor] Error generating print cover:', error);
+    throw error;
+  }
+
+  const pdfBytes = await pdfDoc.save();
+  console.log(`[CoverProcessor] Generated cover PDF: ${pdfBytes.length} bytes`);
+  return Buffer.from(pdfBytes);
 }
 
 export default {

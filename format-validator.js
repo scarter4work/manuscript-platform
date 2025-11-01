@@ -4,7 +4,7 @@
  * Validates manuscripts, covers, and exports against platform-specific requirements
  */
 
-import sharp from 'sharp';
+// import sharp from 'sharp'; // Disabled: not compatible with Workers
 import { validateEPUB } from './epub-generator.js';
 import { validatePrintPDF } from './pdf-generator.js';
 import { validateCoverImage } from './cover-processor.js';

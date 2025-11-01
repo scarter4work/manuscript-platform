@@ -23,6 +23,7 @@ import registerDMCARoutes from './routes/dmca.js';
 import registerResultsRoutes from './routes/results.js';
 import registerPublicAPIRoutes from './routes/public-api.js';
 import registerKDPRoutes from './routes/kdp.js';
+import exportsRoutes from './routes/exports.js';
 import queueConsumer from './queue-consumer.js';
 import assetConsumer from './asset-generation-consumer.js';
 import { handleScheduled } from './scheduled-doc-monitor.js';
@@ -191,6 +192,9 @@ registerPublicAPIRoutes(app);
 
 // MAN-15: KDP Export routes
 registerKDPRoutes(app);
+
+// MAN-40, MAN-41, MAN-42: Multi-Platform Export routes
+app.route('/exports', exportsRoutes);
 
 // ============================================================================
 // 404 HANDLER

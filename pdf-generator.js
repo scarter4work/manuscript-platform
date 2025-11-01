@@ -3,9 +3,12 @@
  *
  * Generates print-ready PDFs with proper margins, bleeds, and trim sizes
  * for platforms like IngramSpark and Amazon KDP Print
+ *
+ * Uses pdf-lib which is Workers-compatible
  */
 
-import PDFDocument from 'pdfkit';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import mammoth from 'mammoth';
 
 /**
  * Standard trim sizes in points (72 points = 1 inch)
@@ -18,245 +21,213 @@ export const TRIM_SIZES = {
   '6.14x9.21': { width: 6.14 * 72, height: 9.21 * 72, name: '6.14" x 9.21" (A5)' },
   '7x10': { width: 7 * 72, height: 10 * 72, name: '7" x 10"' },
   '8x10': { width: 8 * 72, height: 10 * 72, name: '8" x 10"' },
-  '8.5x11': { width: 8.5 * 72, height: 11 * 72, name: '8.5" x 11" (Letter)' },
+  '8.5x11': { width: 8.5 * 72, height: 11 * 72, name: '8.5" x 11"' },
 };
 
 /**
- * Calculate page margins based on trim size and bleed
- *
- * @param {Object} trimSize - Trim size object
- * @param {number} bleed - Bleed amount in points (default: 0.125" = 9pts)
- * @returns {Object} - Margin specifications
+ * Parse DOCX to extract text content for PDF
  */
-function calculateMargins(trimSize, bleed = 9) {
-  // Standard margins for print books
-  const baseMargin = {
-    top: 0.75 * 72, // 0.75 inches
-    bottom: 0.75 * 72,
-    left: 1 * 72, // 1 inch for binding
-    right: 0.75 * 72,
-  };
+async function parseDocxForPDF(docxBuffer) {
+  try {
+    const result = await mammoth.extractRawText({ buffer: docxBuffer });
+    const text = result.value;
 
-  // Adjust for bleed if specified
-  if (bleed > 0) {
+    // Split by double line breaks or "Chapter" headings
+    const chapterRegex = /(Chapter\s+\d+[^\n]*\n)/gi;
+    const parts = text.split(chapterRegex);
+
+    const chapters = [];
+    for (let i = 0; i < parts.length; i++) {
+      if (parts[i].match(/Chapter\s+\d+/i)) {
+        const title = parts[i].trim();
+        const content = parts[i + 1] || '';
+        chapters.push({ title, content: content.trim() });
+        i++; // Skip the content part since we already processed it
+      }
+    }
+
+    if (chapters.length === 0) {
+      // No chapter headings found, treat as single chapter
+      chapters.push({
+        title: 'Chapter 1',
+        content: text
+      });
+    }
+
+    return { chapters };
+  } catch (error) {
+    console.error('[PDF] Error parsing DOCX:', error);
     return {
-      top: baseMargin.top + bleed,
-      bottom: baseMargin.bottom + bleed,
-      left: baseMargin.left + bleed,
-      right: baseMargin.right + bleed,
+      chapters: [{
+        title: 'Chapter 1',
+        content: 'Content extraction failed. Please ensure the manuscript is a valid DOCX file.'
+      }]
     };
   }
-
-  return baseMargin;
 }
 
 /**
- * Generate print-ready PDF from manuscript content
+ * Generate print PDF with specific formatting
  *
  * @param {Object} options - PDF generation options
- * @param {string} options.trimSize - Trim size key (e.g., '6x9')
- * @param {string} options.title - Book title
- * @param {string} options.author - Author name
- * @param {Array<Object>} options.chapters - Array of {title, content} objects
- * @param {number} options.bleed - Bleed amount in points (0 for no bleed)
- * @param {Object} options.metadata - Additional metadata
- * @param {boolean} options.includeBleedMarks - Include crop/bleed marks
- * @returns {Promise<Buffer>} - PDF file buffer
+ * @returns {Promise<Buffer>} - PDF buffer
  */
 export async function generatePrintPDF(options) {
   const {
+    title = 'Untitled',
+    author = 'Unknown Author',
     trimSize = '6x9',
-    title,
-    author,
     chapters = [],
-    bleed = 0, // No bleed by default
-    metadata = {},
-    includeBleedMarks = false,
+    bleed = 0,
   } = options;
 
-  // Validate trim size
-  if (!TRIM_SIZES[trimSize]) {
-    throw new Error(`Invalid trim size: ${trimSize}. Available: ${Object.keys(TRIM_SIZES).join(', ')}`);
-  }
+  const size = TRIM_SIZES[trimSize] || TRIM_SIZES['6x9'];
+  const pdfDoc = await PDFDocument.create();
 
-  const size = TRIM_SIZES[trimSize];
-  const margins = calculateMargins(size, bleed);
+  // Set PDF metadata
+  pdfDoc.setTitle(title);
+  pdfDoc.setAuthor(author);
+  pdfDoc.setCreator('ManuscriptHub PDF Generator');
 
-  // Calculate page size with bleed
+  // Embed standard font
+  const font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+  const boldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+
+  // Page dimensions
   const pageWidth = size.width + (bleed * 2);
   const pageHeight = size.height + (bleed * 2);
+  const margin = 54 + bleed; // 0.75" margins + bleed
+  const textWidth = pageWidth - (margin * 2);
+  const textHeight = pageHeight - (margin * 2);
 
-  return new Promise((resolve, reject) => {
-    const chunks = [];
+  for (const chapter of chapters) {
+    // Add chapter title page
+    let page = pdfDoc.addPage([pageWidth, pageHeight]);
+    let yPosition = pageHeight - margin - 100;
 
-    // Create PDF document
-    const doc = new PDFDocument({
-      size: [pageWidth, pageHeight],
-      margins,
-      info: {
-        Title: title,
-        Author: author,
-        Creator: 'ManuscriptHub PDF Generator',
-        Producer: 'ManuscriptHub',
-        CreationDate: new Date(),
-      },
-      autoFirstPage: false, // We'll manually add pages for better control
+    page.drawText(chapter.title, {
+      x: pageWidth / 2 - (chapter.title.length * 6),
+      y: yPosition,
+      size: 18,
+      font: boldFont,
+      color: rgb(0, 0, 0),
     });
 
-    // Collect PDF data
-    doc.on('data', chunk => chunks.push(chunk));
-    doc.on('end', () => {
-      const pdfBuffer = Buffer.concat(chunks);
-      resolve(pdfBuffer);
-    });
-    doc.on('error', reject);
+    yPosition -= 60;
 
-    try {
-      // Add title page
-      doc.addPage();
-      doc.font('Helvetica-Bold').fontSize(24);
-      doc.text(title, {
-        align: 'center',
-        valign: 'center',
-      });
+    // Split chapter content into paragraphs
+    const paragraphs = chapter.content.split(/\n\n+/);
 
-      doc.moveDown(2);
+    for (const paragraph of paragraphs) {
+      if (!paragraph.trim()) continue;
 
-      doc.font('Helvetica').fontSize(16);
-      doc.text(`by ${author}`, {
-        align: 'center',
-      });
+      // Word wrap
+      const words = paragraph.split(/\s+/);
+      let line = '';
+      const fontSize = 12;
+      const lineHeight = fontSize * 1.5;
 
-      // Add copyright page
-      doc.addPage();
-      doc.font('Helvetica').fontSize(10);
+      for (const word of words) {
+        const testLine = line + word + ' ';
+        const textWidth = font.widthOfTextAtSize(testLine, fontSize);
 
-      const copyrightText = metadata.copyright ||
-        `Copyright © ${new Date().getFullYear()} ${author}\nAll rights reserved.`;
+        if (textWidth > textWidth && line !== '') {
+          // Draw line
+          page.drawText(line.trim(), {
+            x: margin,
+            y: yPosition,
+            size: fontSize,
+            font: font,
+            color: rgb(0, 0, 0),
+          });
 
-      doc.text(copyrightText, {
-        align: 'center',
-      });
+          line = word + ' ';
+          yPosition -= lineHeight;
 
-      if (metadata.isbn) {
-        doc.moveDown(2);
-        doc.text(`ISBN: ${metadata.isbn}`, {
-          align: 'center',
-        });
-      }
-
-      // Add table of contents if requested
-      if (metadata.includeTOC && chapters.length > 0) {
-        doc.addPage();
-        doc.font('Helvetica-Bold').fontSize(18);
-        doc.text('Contents', {
-          align: 'center',
-        });
-
-        doc.moveDown(2);
-        doc.font('Helvetica').fontSize(12);
-
-        chapters.forEach((chapter, index) => {
-          if (!chapter.excludeFromTOC) {
-            doc.text(`${chapter.title || `Chapter ${index + 1}`}`, {
-              continued: true,
-            });
-            doc.text(`..... ${index + 3}`, {
-              align: 'right',
-            });
+          // Check if we need a new page
+          if (yPosition < margin + 50) {
+            page = pdfDoc.addPage([pageWidth, pageHeight]);
+            yPosition = pageHeight - margin;
           }
-        });
+        } else {
+          line = testLine;
+        }
       }
 
-      // Add chapters
-      chapters.forEach((chapter, index) => {
-        doc.addPage();
-
-        // Chapter title
-        doc.font('Helvetica-Bold').fontSize(18);
-        doc.text(chapter.title || `Chapter ${index + 1}`, {
-          align: 'center',
+      // Draw remaining line
+      if (line.trim()) {
+        page.drawText(line.trim(), {
+          x: margin,
+          y: yPosition,
+          size: fontSize,
+          font: font,
+          color: rgb(0, 0, 0),
         });
-
-        doc.moveDown(2);
-
-        // Chapter content
-        doc.font('Times-Roman').fontSize(12);
-
-        // Split content by paragraphs
-        const paragraphs = (chapter.content || '').split('\n\n');
-
-        paragraphs.forEach((paragraph, pIndex) => {
-          if (paragraph.trim()) {
-            // First paragraph of chapter doesn't indent
-            const indent = pIndex === 0 ? 0 : 20;
-
-            doc.text(paragraph.trim(), {
-              indent,
-              align: 'justify',
-            });
-
-            doc.moveDown(0.5);
-          }
-        });
-      });
-
-      // Add bleed marks if requested
-      if (includeBleedMarks && bleed > 0) {
-        // This would draw crop marks at the corners
-        // Simplified for now - production would add proper crop marks
-        console.log('[PDFGenerator] Bleed marks requested but not yet implemented');
+        yPosition -= lineHeight * 1.5; // Extra space between paragraphs
       }
 
-      // Finalize PDF
-      doc.end();
-    } catch (error) {
-      doc.end();
-      reject(error);
+      // Check if we need a new page
+      if (yPosition < margin + 50) {
+        page = pdfDoc.addPage([pageWidth, pageHeight]);
+        yPosition = pageHeight - margin;
+      }
     }
+  }
+
+  const pdfBytes = await pdfDoc.save();
+  console.log(`[PDF] Generated print PDF: ${pdfBytes.length} bytes, ${pdfDoc.getPageCount()} pages`);
+  return Buffer.from(pdfBytes);
+}
+
+/**
+ * Generate interior PDF for print books
+ *
+ * @param {string} platform - Platform identifier (kdp, ingramspark)
+ * @param {Object} options - PDF generation options
+ * @returns {Promise<Buffer>} - PDF buffer
+ */
+export async function generateInteriorPDF(platform, options) {
+  const {
+    trimSize = '6x9',
+    title = 'Untitled',
+    author = 'Unknown Author',
+    chapters = [],
+    metadata = {},
+  } = options;
+
+  // IngramSpark requires bleed, KDP doesn't
+  const bleed = platform === 'ingramspark' ? 9 : 0; // 0.125" = 9 points
+
+  return await generatePrintPDF({
+    title,
+    author,
+    trimSize,
+    chapters,
+    bleed,
+    metadata,
   });
 }
 
 /**
- * Generate interior PDF optimized for specific platform
- *
- * @param {string} platform - Platform name (kdp, ingramspark, etc.)
- * @param {Object} options - PDF generation options
- * @returns {Promise<Buffer>} - PDF file buffer
+ * Generate interior PDF from DOCX
  */
-export async function generateInteriorPDF(platform, options) {
-  // Platform-specific defaults
-  const platformDefaults = {
-    kdp: {
-      trimSize: '6x9',
-      bleed: 0, // KDP doesn't require bleed for interior
-      includeBleedMarks: false,
-    },
-    ingramspark: {
-      trimSize: '6x9',
-      bleed: 9, // 0.125" bleed required
-      includeBleedMarks: true,
-    },
-    d2d: {
-      trimSize: '6x9',
-      bleed: 0,
-      includeBleedMarks: false,
-    },
-  };
+export async function generateInteriorPDFFromDOCX(platform, docxBuffer, options = {}) {
+  console.log('[PDF] Generating interior PDF from DOCX...');
 
-  const defaults = platformDefaults[platform] || {};
-  const mergedOptions = { ...defaults, ...options };
+  // Parse DOCX to extract chapters
+  const parsed = await parseDocxForPDF(docxBuffer);
 
-  console.log(`[PDFGenerator] Generating ${platform} interior PDF with trim size ${mergedOptions.trimSize}...`);
-
-  return await generatePrintPDF(mergedOptions);
+  return await generateInteriorPDF(platform, {
+    ...options,
+    chapters: parsed.chapters,
+  });
 }
 
 /**
- * Validate PDF for platform requirements
+ * Validate PDF file
  *
  * @param {Buffer} pdfBuffer - PDF file buffer
- * @param {string} platform - Platform name
+ * @param {string} platform - Platform identifier (optional)
  * @returns {Promise<Object>} - Validation result
  */
 export async function validatePrintPDF(pdfBuffer, platform = null) {
@@ -267,40 +238,55 @@ export async function validatePrintPDF(pdfBuffer, platform = null) {
     info: {},
   };
 
-  // Basic checks
-  if (!pdfBuffer || pdfBuffer.length === 0) {
+  try {
+    // Load and validate PDF structure
+    const pdfDoc = await PDFDocument.load(pdfBuffer);
+
+    validation.info.pageCount = pdfDoc.getPageCount();
+    validation.info.fileSize = pdfBuffer.length;
+    validation.info.fileSizeMB = (pdfBuffer.length / (1024 * 1024)).toFixed(2);
+
+    // Check page count
+    if (pdfDoc.getPageCount() < 24) {
+      validation.errors.push('PDF has less than 24 pages (minimum for most POD platforms)');
+      validation.valid = false;
+    }
+
+    if (pdfDoc.getPageCount() > 828) {
+      validation.errors.push('PDF exceeds 828 pages (maximum for KDP)');
+      validation.valid = false;
+    }
+
+    // Check if page count is even (required for print books)
+    if (pdfDoc.getPageCount() % 2 !== 0) {
+      validation.warnings.push('Page count is odd - print books typically require even page counts');
+    }
+
+    // File size check
+    if (pdfBuffer.length > 650 * 1024 * 1024) {
+      validation.errors.push('PDF exceeds 650MB maximum');
+      validation.valid = false;
+    }
+
+    // Get first page dimensions
+    const firstPage = pdfDoc.getPage(0);
+    const { width, height } = firstPage.getSize();
+    validation.info.pageWidth = width;
+    validation.info.pageHeight = height;
+    validation.info.pageDimensions = `${(width / 72).toFixed(2)}" x ${(height / 72).toFixed(2)}"`;
+
+  } catch (error) {
     validation.valid = false;
-    validation.errors.push('PDF buffer is empty');
-    return validation;
-  }
-
-  validation.info.fileSize = pdfBuffer.length;
-  validation.info.fileSizeMB = (pdfBuffer.length / (1024 * 1024)).toFixed(2);
-
-  // Check PDF signature (%PDF)
-  const pdfSignature = pdfBuffer.slice(0, 4).toString('ascii');
-  if (!pdfSignature.startsWith('%PDF')) {
-    validation.valid = false;
-    validation.errors.push('Invalid PDF file: missing PDF signature');
-  }
-
-  // Size checks
-  if (pdfBuffer.length > 650 * 1024 * 1024) {
-    validation.warnings.push('PDF exceeds 650MB, may be rejected by some platforms');
-  }
-
-  // Platform-specific validation
-  if (platform === 'ingramspark') {
-    // IngramSpark requires PDF/X-1a or PDF/X-3
-    validation.warnings.push('Note: IngramSpark requires PDF/X-1a:2001 or PDF/X-3:2002 compliance');
+    validation.errors.push(`Failed to validate PDF: ${error.message}`);
   }
 
   return validation;
 }
 
 export default {
+  TRIM_SIZES,
   generatePrintPDF,
   generateInteriorPDF,
+  generateInteriorPDFFromDOCX,
   validatePrintPDF,
-  TRIM_SIZES,
 };

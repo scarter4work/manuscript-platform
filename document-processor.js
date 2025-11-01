@@ -6,7 +6,7 @@
  */
 
 import { generateEPUB, generateEPUBFromDOCX } from './epub-generator.js';
-import { generatePrintPDF, generateInteriorPDF, TRIM_SIZES } from './pdf-generator.js';
+import { generatePrintPDF, generateInteriorPDF, generateInteriorPDFFromDOCX, TRIM_SIZES } from './pdf-generator.js';
 import { calculateSpineWidth, processCoverImage, generatePrintCover, PAPER_TYPES } from './cover-processor.js';
 import { validateExportPackage, validateManuscript, validateCover } from './format-validator.js';
 
@@ -167,19 +167,11 @@ async function generatePrintPackage(exportPackage, options) {
 
   console.log(`[DocumentProcessor] Generating print PDF for ${platform} (${trimSize}, ${pageCount} pages)...`);
 
-  // Parse manuscript to extract chapters
-  // For now, using placeholder. In production, parse DOCX properly
-  const chapters = [
-    { title: 'Chapter 1', content: 'Chapter content extracted from manuscript...' },
-    // ... more chapters
-  ];
-
-  // Generate interior PDF
-  const interiorPDF = await generateInteriorPDF(platform, {
+  // Generate interior PDF from DOCX
+  const interiorPDF = await generateInteriorPDFFromDOCX(platform, manuscriptBuffer, {
     trimSize,
     title: metadata.title,
     author: metadata.author,
-    chapters,
     metadata,
   });
 

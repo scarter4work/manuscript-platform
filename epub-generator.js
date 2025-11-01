@@ -2,30 +2,56 @@
  * EPUB Generator (MAN-43)
  *
  * Generates EPUB files from edited manuscripts for ebook distribution
+ * Uses JSZip to manually assemble EPUB structure (Workers-compatible)
  */
 
-import Epub from 'epub-gen-memory';
-import { Document, Packer, Paragraph, TextRun } from 'docx';
+import JSZip from 'jszip';
+import mammoth from 'mammoth';
 
 /**
  * Parse DOCX content to extract chapters and metadata
  *
  * @param {Buffer} docxBuffer - DOCX file buffer
- * @returns {Promise<Object>} - Parsed content with chapters and metadata
+ * @returns {Promise<Object>} - Parsed content with chapters and HTML
  */
 async function parseDocxContent(docxBuffer) {
-  // For now, return a simple structure
-  // In production, use mammoth or similar to properly parse DOCX
-  return {
-    title: 'Manuscript',
-    author: 'Author',
-    chapters: [
-      {
+  try {
+    const result = await mammoth.convertToHtml({ buffer: docxBuffer });
+
+    // Split content by chapter headings (h1, h2, or "Chapter" text)
+    const html = result.value;
+    const chapters = [];
+
+    // Simple chapter splitting - split by <h1> tags
+    const h1Regex = /<h1[^>]*>(.*?)<\/h1>/gi;
+    const parts = html.split(h1Regex);
+
+    if (parts.length > 1) {
+      // Has chapter headings
+      for (let i = 1; i < parts.length; i += 2) {
+        const title = parts[i].replace(/<[^>]*>/g, '').trim() || `Chapter ${Math.floor(i / 2) + 1}`;
+        const content = parts[i + 1] || '';
+        chapters.push({ title, content });
+      }
+    } else {
+      // No chapter headings, treat as single chapter
+      chapters.push({
         title: 'Chapter 1',
-        content: '<p>Chapter content will be extracted from DOCX here.</p>',
-      },
-    ],
-  };
+        content: html
+      });
+    }
+
+    return { chapters };
+  } catch (error) {
+    console.error('[EPUB] Error parsing DOCX:', error);
+    // Fallback to basic chapter structure
+    return {
+      chapters: [{
+        title: 'Chapter 1',
+        content: '<p>Content extracted from manuscript.</p>'
+      }]
+    };
+  }
 }
 
 /**
@@ -44,8 +70,8 @@ async function parseDocxContent(docxBuffer) {
  */
 export async function generateEPUB(options) {
   const {
-    title,
-    author,
+    title = 'Untitled',
+    author = 'Unknown Author',
     description = '',
     publisher = 'ManuscriptHub',
     language = 'en',
@@ -54,157 +80,165 @@ export async function generateEPUB(options) {
     metadata = {},
   } = options;
 
-  // Validate required fields
-  if (!title || !author) {
-    throw new Error('Title and author are required for EPUB generation');
-  }
+  const zip = new JSZip();
+  const uuid = crypto.randomUUID();
 
-  if (chapters.length === 0) {
-    throw new Error('At least one chapter is required for EPUB generation');
-  }
+  // 1. Add mimetype file (MUST be first and uncompressed)
+  zip.file('mimetype', 'application/epub+zip', { compression: 'STORE' });
 
-  // Prepare EPUB options
-  const epubOptions = {
-    title,
-    author,
-    publisher,
-    description,
-    language,
-    tocTitle: 'Table of Contents',
-    appendChapterTitles: true,
-    date: metadata.publicationDate || new Date().toISOString(),
-    version: 3, // EPUB 3.0
-  };
+  // 2. Add META-INF/container.xml
+  const containerXml = `<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+  <rootfiles>
+    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+  </rootfiles>
+</container>`;
+  zip.file('META-INF/container.xml', containerXml);
 
-  // Add cover if provided
+  // 3. Add cover image if provided
+  let coverImagePath = null;
   if (cover) {
-    epubOptions.cover = cover;
+    coverImagePath = 'OEBPS/images/cover.jpg';
+    zip.file(coverImagePath, cover);
   }
 
-  // Format chapters for epub-gen
-  const formattedChapters = chapters.map((chapter, index) => ({
-    title: chapter.title || `Chapter ${index + 1}`,
-    data: chapter.content || '',
-    excludeFromToc: chapter.excludeFromToc || false,
-    beforeToc: chapter.beforeToc || false, // For front matter
-  }));
+  // 4. Generate content.opf (package document)
+  const manifestItems = chapters.map((ch, i) =>
+    `    <item id="chapter${i + 1}" href="chapter${i + 1}.xhtml" media-type="application/xhtml+xml"/>`
+  ).join('\n');
 
-  // Add front matter if provided
-  if (metadata.dedication) {
-    formattedChapters.unshift({
-      title: 'Dedication',
-      data: `<div class="dedication">${metadata.dedication}</div>`,
-      beforeToc: true,
-    });
+  const spineItems = chapters.map((ch, i) =>
+    `    <itemref idref="chapter${i + 1}"/>`
+  ).join('\n');
+
+  const coverManifest = cover ? `    <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg"/>
+    <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>` : '';
+
+  const coverSpine = cover ? `    <itemref idref="cover"/>` : '';
+
+  const contentOpf = `<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="uid">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:identifier id="uid">urn:uuid:${uuid}</dc:identifier>
+    <dc:title>${escapeXml(title)}</dc:title>
+    <dc:creator>${escapeXml(author)}</dc:creator>
+    <dc:language>${language}</dc:language>
+    <dc:publisher>${escapeXml(publisher)}</dc:publisher>
+    ${description ? `<dc:description>${escapeXml(description)}</dc:description>` : ''}
+    <meta property="dcterms:modified">${new Date().toISOString().split('.')[0]}Z</meta>
+    ${cover ? `<meta name="cover" content="cover-image"/>` : ''}
+  </metadata>
+  <manifest>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+${coverManifest}
+${manifestItems}
+  </manifest>
+  <spine toc="ncx">
+${coverSpine}
+${spineItems}
+  </spine>
+</package>`;
+  zip.file('OEBPS/content.opf', contentOpf);
+
+  // 5. Generate toc.ncx (navigation)
+  const navPoints = chapters.map((ch, i) => `    <navPoint id="chapter${i + 1}" playOrder="${i + 1}">
+      <navLabel>
+        <text>${escapeXml(ch.title)}</text>
+      </navLabel>
+      <content src="chapter${i + 1}.xhtml"/>
+    </navPoint>`).join('\n');
+
+  const tocNcx = `<?xml version="1.0" encoding="UTF-8"?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
+  <head>
+    <meta name="dtb:uid" content="urn:uuid:${uuid}"/>
+    <meta name="dtb:depth" content="1"/>
+    <meta name="dtb:totalPageCount" content="0"/>
+    <meta name="dtb:maxPageNumber" content="0"/>
+  </head>
+  <docTitle>
+    <text>${escapeXml(title)}</text>
+  </docTitle>
+  <navMap>
+${navPoints}
+  </navMap>
+</ncx>`;
+  zip.file('OEBPS/toc.ncx', tocNcx);
+
+  // 6. Generate cover page if cover provided
+  if (cover) {
+    const coverXhtml = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Cover</title>
+  <style type="text/css">
+    body { margin: 0; padding: 0; text-align: center; }
+    img { max-width: 100%; max-height: 100%; }
+  </style>
+</head>
+<body>
+  <img src="images/cover.jpg" alt="Cover"/>
+</body>
+</html>`;
+    zip.file('OEBPS/cover.xhtml', coverXhtml);
   }
 
-  if (metadata.foreword) {
-    formattedChapters.unshift({
-      title: 'Foreword',
-      data: `<div class="foreword">${metadata.foreword}</div>`,
-      beforeToc: true,
-    });
+  // 7. Generate chapter files
+  for (let i = 0; i < chapters.length; i++) {
+    const chapter = chapters[i];
+    const chapterXhtml = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>${escapeXml(chapter.title)}</title>
+  <style type="text/css">
+    body { font-family: serif; margin: 2em; line-height: 1.6; }
+    h1 { text-align: center; margin-bottom: 2em; }
+    p { text-indent: 1.5em; margin: 0; }
+    p:first-of-type { text-indent: 0; }
+  </style>
+</head>
+<body>
+  <h1>${escapeXml(chapter.title)}</h1>
+  ${chapter.content}
+</body>
+</html>`;
+    zip.file(`OEBPS/chapter${i + 1}.xhtml`, chapterXhtml);
   }
 
-  // Add back matter if provided
-  if (metadata.acknowledgments) {
-    formattedChapters.push({
-      title: 'Acknowledgments',
-      data: `<div class="acknowledgments">${metadata.acknowledgments}</div>`,
-      excludeFromToc: false,
-    });
-  }
+  // 8. Generate EPUB file
+  const epubBuffer = await zip.generateAsync({
+    type: 'nodebuffer',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 9 }
+  });
 
-  if (metadata.aboutAuthor) {
-    formattedChapters.push({
-      title: 'About the Author',
-      data: `<div class="about-author">${metadata.aboutAuthor}</div>`,
-      excludeFromToc: false,
-    });
-  }
-
-  // Custom CSS for better formatting
-  const css = `
-    body {
-      font-family: "Georgia", "Times New Roman", serif;
-      font-size: 1em;
-      line-height: 1.6;
-      margin: 0;
-      padding: 1em;
-    }
-
-    h1 {
-      font-size: 2em;
-      font-weight: bold;
-      margin-top: 2em;
-      margin-bottom: 1em;
-      text-align: center;
-      page-break-before: always;
-    }
-
-    h2 {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin-top: 1.5em;
-      margin-bottom: 0.75em;
-    }
-
-    p {
-      margin: 0;
-      text-indent: 1.5em;
-      margin-bottom: 0.5em;
-    }
-
-    p.first {
-      text-indent: 0;
-    }
-
-    .dedication, .foreword, .acknowledgments, .about-author {
-      margin-top: 2em;
-      text-align: center;
-      font-style: italic;
-    }
-
-    .chapter-break {
-      page-break-after: always;
-    }
-  `;
-
-  epubOptions.css = css;
-  epubOptions.content = formattedChapters;
-
-  try {
-    // Generate EPUB
-    console.log(`[EPUBGenerator] Generating EPUB for "${title}" by ${author}...`);
-
-    const epubBuffer = await new Epub(epubOptions, cover).genEpub();
-
-    console.log(`[EPUBGenerator] EPUB generated successfully: ${epubBuffer.length} bytes`);
-
-    return epubBuffer;
-  } catch (error) {
-    console.error('[EPUBGenerator] Error generating EPUB:', error);
-    throw new Error(`Failed to generate EPUB: ${error.message}`);
-  }
+  console.log(`[EPUB] Generated EPUB: ${epubBuffer.length} bytes, ${chapters.length} chapters`);
+  return epubBuffer;
 }
 
 /**
- * Generate EPUB from DOCX manuscript
+ * Generate EPUB from DOCX file
  *
  * @param {Buffer} docxBuffer - DOCX file buffer
- * @param {Buffer} coverBuffer - Cover image buffer
+ * @param {Buffer} coverBuffer - Cover image buffer (optional)
  * @param {Object} metadata - Book metadata
  * @returns {Promise<Buffer>} - EPUB file buffer
  */
 export async function generateEPUBFromDOCX(docxBuffer, coverBuffer, metadata = {}) {
+  console.log('[EPUB] Generating EPUB from DOCX...');
+
   // Parse DOCX to extract chapters
   const parsed = await parseDocxContent(docxBuffer);
 
   // Generate EPUB
   return await generateEPUB({
-    title: metadata.title || parsed.title,
-    author: metadata.author || parsed.author,
+    title: metadata.title || 'Untitled',
+    author: metadata.author || 'Unknown Author',
     description: metadata.description || '',
+    publisher: metadata.publisher || 'ManuscriptHub',
+    language: metadata.language || 'en',
     cover: coverBuffer,
     chapters: parsed.chapters,
     metadata,
@@ -212,7 +246,7 @@ export async function generateEPUBFromDOCX(docxBuffer, coverBuffer, metadata = {
 }
 
 /**
- * Validate EPUB structure (basic checks)
+ * Validate EPUB file
  *
  * @param {Buffer} epubBuffer - EPUB file buffer
  * @returns {Promise<Object>} - Validation result
@@ -225,34 +259,61 @@ export async function validateEPUB(epubBuffer) {
     info: {},
   };
 
-  // Basic file size check
-  if (!epubBuffer || epubBuffer.length === 0) {
+  try {
+    // Basic ZIP validation
+    const zip = await JSZip.loadAsync(epubBuffer);
+
+    // Check for required files
+    const requiredFiles = ['mimetype', 'META-INF/container.xml'];
+    for (const file of requiredFiles) {
+      if (!zip.files[file]) {
+        validation.errors.push(`Missing required file: ${file}`);
+        validation.valid = false;
+      }
+    }
+
+    // Check mimetype content
+    if (zip.files['mimetype']) {
+      const mimetypeContent = await zip.files['mimetype'].async('string');
+      if (mimetypeContent !== 'application/epub+zip') {
+        validation.errors.push('Invalid mimetype content');
+        validation.valid = false;
+      }
+    }
+
+    validation.info.fileSize = epubBuffer.length;
+    validation.info.fileSizeMB = (epubBuffer.length / (1024 * 1024)).toFixed(2);
+    validation.info.fileCount = Object.keys(zip.files).length;
+
+    // File size warnings
+    if (epubBuffer.length > 100 * 1024 * 1024) {
+      validation.warnings.push('EPUB is quite large (>100MB)');
+    }
+
+    if (epubBuffer.length > 650 * 1024 * 1024) {
+      validation.errors.push('EPUB exceeds 650MB maximum for most platforms');
+      validation.valid = false;
+    }
+
+  } catch (error) {
     validation.valid = false;
-    validation.errors.push('EPUB buffer is empty');
-    return validation;
-  }
-
-  validation.info.fileSize = epubBuffer.length;
-  validation.info.fileSizeMB = (epubBuffer.length / (1024 * 1024)).toFixed(2);
-
-  // Check minimum size (valid EPUB should be at least a few KB)
-  if (epubBuffer.length < 1000) {
-    validation.valid = false;
-    validation.errors.push('EPUB file size too small, likely corrupt');
-  }
-
-  // Check magic number (ZIP file signature: PK)
-  if (epubBuffer[0] !== 0x50 || epubBuffer[1] !== 0x4B) {
-    validation.valid = false;
-    validation.errors.push('Invalid EPUB file: not a valid ZIP archive');
-  }
-
-  // Size warnings
-  if (epubBuffer.length > 50 * 1024 * 1024) {
-    validation.warnings.push('EPUB file is quite large (>50MB), may have compatibility issues');
+    validation.errors.push(`Failed to validate EPUB: ${error.message}`);
   }
 
   return validation;
+}
+
+/**
+ * Escape XML special characters
+ */
+function escapeXml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 export default {

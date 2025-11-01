@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Collaboration - Manuscript Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .main-nav {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .main-nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            padding: 0 30px;
+        }
+
+        .main-nav-item {
+            padding: 18px 25px;
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .main-nav-item:hover {
+            background: #f8f9ff;
+            color: #667eea;
+        }
+
+        .main-nav-item.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .team-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .team-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .team-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .team-description {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .team-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .member-list {
+            margin-top: 20px;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .member-email {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .member-role {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .role-admin {
+            background: #ffd6d6;
+            color: #c93a3a;
+        }
+
+        .role-editor {
+            background: #fff4cc;
+            color: #b38600;
+        }
+
+        .role-viewer {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-enterprise {
+            background: #ffd700;
+            color: #856404;
+        }
+
+        .activity-item {
+            padding: 12px;
+            border-left: 3px solid #667eea;
+            background: #f8f9ff;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .activity-time {
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #f8f9ff;
+        }
+
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="app-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>👥 Team Collaboration</h1>
+                <p>Manage your teams and shared manuscripts</p>
+            </div>
+            <div class="user-info" id="userInfo">
+                <!-- User info populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="main-nav-content">
+            <a href="/dashboard-spa.html" class="main-nav-item">📚 My Manuscripts</a>
+            <a href="/teams.html" class="main-nav-item active">👥 Teams</a>
+            <a href="/billing.html" class="main-nav-item">💳 Billing</a>
+        </div>
+    </nav>
+
+    <!-- Main content container -->
+    <div class="container">
+        <!-- VIEW: Teams List -->
+        <div id="viewTeams" class="view active">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">Your Teams</h2>
+                    <button class="btn" onclick="showCreateTeamModal()">
+                        ➕ Create Team
+                    </button>
+                </div>
+
+                <!-- Enterprise tier notice -->
+                <div id="enterpriseNotice" class="alert alert-info" style="display: none;">
+                    <strong>Enterprise Feature</strong>: Team collaboration is available on the Enterprise plan.
+                    <a href="/billing.html" style="color: #0c5460; text-decoration: underline;">Upgrade now</a>
+                </div>
+
+                <!-- Loading State -->
+                <div id="teamsLoading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading teams...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="teamsEmpty" style="display: none;" class="empty-state">
+                    <div class="empty-state-icon">👥</div>
+                    <h3 style="color: #666; margin-bottom: 15px;">No Teams Yet</h3>
+                    <p style="color: #999; margin-bottom: 30px;">
+                        Create your first team to collaborate with editors, co-authors, and reviewers.
+                    </p>
+                    <button class="btn" onclick="showCreateTeamModal()">
+                        Create Your First Team
+                    </button>
+                </div>
+
+                <!-- Teams Grid -->
+                <div id="teamsList" class="team-grid" style="display: none;">
+                    <!-- Teams will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: Team Details -->
+        <div id="viewTeamDetails" class="view">
+            <div class="card">
+                <button class="btn btn-secondary btn-small" onclick="app.navigate('teams')">
+                    ← Back to Teams
+                </button>
+
+                <div style="margin-top: 20px; margin-bottom: 30px;">
+                    <h2 id="teamDetailsName" style="margin-bottom: 10px;"></h2>
+                    <p id="teamDetailsDescription" style="color: #666;"></p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('members')">Members</div>
+                    <div class="tab" onclick="switchTab('manuscripts')">Shared Manuscripts</div>
+                    <div class="tab" onclick="switchTab('activity')">Activity</div>
+                </div>
+
+                <!-- Tab: Members -->
+                <div id="tabMembers" class="tab-content active">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Team Members</h3>
+                        <button class="btn btn-small" onclick="showInviteMemberModal()">
+                            ➕ Invite Member
+                        </button>
+                    </div>
+                    <div id="membersList" class="member-list">
+                        <!-- Members will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Tab: Manuscripts -->
+                <div id="tabManuscripts" class="tab-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Shared Manuscripts</h3>
+                        <button class="btn btn-small" onclick="showShareManuscriptModal()">
+                            ➕ Share Manuscript
+                        </button>
+                    </div>
+                    <div id="manuscriptsList">
+                        <!-- Manuscripts will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Tab: Activity -->
+                <div id="tabActivity" class="tab-content">
+                    <h3 style="margin-bottom: 20px;">Recent Activity</h3>
+                    <div id="activityList">
+                        <!-- Activity will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Create Team -->
+    <div id="modalCreateTeam" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Create New Team</div>
+            <form onsubmit="createTeam(event)">
+                <div class="form-group">
+                    <label for="teamName">Team Name *</label>
+                    <input type="text" id="teamName" required maxlength="100" placeholder="e.g., Editorial Team">
+                </div>
+                <div class="form-group">
+                    <label for="teamDescription">Description</label>
+                    <textarea id="teamDescription" rows="3" placeholder="Brief description of this team's purpose"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="teamMaxMembers">Max Members</label>
+                    <input type="number" id="teamMaxMembers" value="5" min="2" max="5">
+                    <small style="color: #666; font-size: 0.85em;">Enterprise tier allows up to 5 members per team</small>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalCreateTeam')">Cancel</button>
+                    <button type="submit" class="btn">Create Team</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Invite Member -->
+    <div id="modalInviteMember" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Invite Team Member</div>
+            <form onsubmit="inviteMember(event)">
+                <div class="form-group">
+                    <label for="inviteEmail">Email Address *</label>
+                    <input type="email" id="inviteEmail" required placeholder="member@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="inviteRole">Role *</label>
+                    <select id="inviteRole" required>
+                        <option value="viewer">Viewer - Can view shared manuscripts</option>
+                        <option value="editor">Editor - Can view and edit shared manuscripts</option>
+                        <option value="admin">Admin - Can manage team and members</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalInviteMember')">Cancel</button>
+                    <button type="submit" class="btn">Send Invitation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Share Manuscript -->
+    <div id="modalShareManuscript" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Share Manuscript with Team</div>
+            <form onsubmit="shareManuscript(event)">
+                <div class="form-group">
+                    <label for="shareManuscriptId">Manuscript *</label>
+                    <select id="shareManuscriptId" required>
+                        <option value="">Select a manuscript...</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sharePermissionLevel">Permission Level *</label>
+                    <select id="sharePermissionLevel" required>
+                        <option value="view">View - Read-only access</option>
+                        <option value="comment">Comment - Can view and comment (coming soon)</option>
+                        <option value="edit">Edit - Can modify manuscript metadata</option>
+                    </select>
+                </div>
+                <div class="alert alert-warning">
+                    <strong>Note:</strong> Team members will be able to access this manuscript according to the permission level you set.
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalShareManuscript')">Cancel</button>
+                    <button type="submit" class="btn">Share Manuscript</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api.scarter4workmanuscripthub.com';
+
+        // App state
+        const app = {
+            currentView: 'teams',
+            currentTeam: null,
+            user: null,
+            teams: [],
+            manuscripts: []
+        };
+
+        // Navigate between views
+        app.navigate = function(view) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1)).classList.add('active');
+            app.currentView = view;
+
+            if (view === 'teams') {
+                loadTeams();
+            } else if (view === 'teamDetails') {
+                loadTeamDetails(app.currentTeam);
+            }
+        };
+
+        // Initialize
+        async function init() {
+            await loadUserInfo();
+            await loadTeams();
+        }
+
+        // Load user info
+        async function loadUserInfo() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                app.user = await response.json();
+                document.getElementById('userInfo').innerHTML = `
+                    <div style="font-weight: 600;">${app.user.fullName || app.user.email}</div>
+                    <div style="font-size: 0.9em; opacity: 0.8;">${app.user.subscriptionTier || 'Free'} Plan</div>
+                `;
+
+                // Show enterprise notice if not on enterprise tier
+                if (app.user.subscriptionTier !== 'enterprise') {
+                    document.getElementById('enterpriseNotice').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Load teams
+        async function loadTeams() {
+            try {
+                document.getElementById('teamsLoading').style.display = 'block';
+                document.getElementById('teamsEmpty').style.display = 'none';
+                document.getElementById('teamsList').style.display = 'none';
+
+                const response = await fetch(`${API_BASE}/teams`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load teams');
+                }
+
+                const data = await response.json();
+                app.teams = data.teams || [];
+
+                document.getElementById('teamsLoading').style.display = 'none';
+
+                if (app.teams.length === 0) {
+                    document.getElementById('teamsEmpty').style.display = 'block';
+                } else {
+                    document.getElementById('teamsList').style.display = 'grid';
+                    renderTeams();
+                }
+            } catch (error) {
+                console.error('Error loading teams:', error);
+                document.getElementById('teamsLoading').innerHTML = '<p style="color: #dc3545;">Error loading teams. Please try again.</p>';
+            }
+        }
+
+        // Render teams
+        function renderTeams() {
+            const container = document.getElementById('teamsList');
+            container.innerHTML = app.teams.map(team => `
+                <div class="team-card" onclick="viewTeam('${team.id}')">
+                    <div class="team-name">${escapeHtml(team.name)}</div>
+                    <div class="team-description">${escapeHtml(team.description || 'No description')}</div>
+                    <div class="team-stats">
+                        <div class="stat-item">👥 ${team.member_count || 0} members</div>
+                        <div class="stat-item">📄 ${team.shared_manuscripts_count || 0} shared</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // View team details
+        function viewTeam(teamId) {
+            app.currentTeam = teamId;
+            app.navigate('teamDetails');
+        }
+
+        // Load team details
+        async function loadTeamDetails(teamId) {
+            try {
+                const response = await fetch(`${API_BASE}/teams/${teamId}`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load team details');
+                }
+
+                const data = await response.json();
+                const team = data.team;
+
+                document.getElementById('teamDetailsName').textContent = team.name;
+                document.getElementById('teamDetailsDescription').textContent = team.description || 'No description';
+
+                // Load members
+                renderMembers(team.members || []);
+
+                // Load shared manuscripts
+                loadTeamManuscripts(teamId);
+
+                // Load activity
+                loadTeamActivity(teamId);
+            } catch (error) {
+                console.error('Error loading team details:', error);
+                alert('Error loading team details');
+            }
+        }
+
+        // Render members
+        function renderMembers(members) {
+            const container = document.getElementById('membersList');
+            container.innerHTML = members.map(member => `
+                <div class="member-item">
+                    <div class="member-info">
+                        <div class="member-name">
+                            ${escapeHtml(member.full_name || member.email)}
+                            <span class="member-role role-${member.role}">${member.role}</span>
+                        </div>
+                        <div class="member-email">${escapeHtml(member.email)}</div>
+                    </div>
+                    ${member.role !== 'admin' && app.user.id !== member.user_id ? `
+                        <button class="btn btn-danger btn-small" onclick="removeMember('${member.user_id}')">
+                            Remove
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Load team manuscripts
+        async function loadTeamManuscripts(teamId) {
+            try {
+                const response = await fetch(`${API_BASE}/teams/${teamId}/manuscripts`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) throw new Error('Failed to load manuscripts');
+
+                const data = await response.json();
+                const manuscripts = data.manuscripts || [];
+
+                const container = document.getElementById('manuscriptsList');
+                if (manuscripts.length === 0) {
+                    container.innerHTML = '<p style="color: #666; text-align: center; padding: 40px;">No manuscripts shared yet</p>';
+                } else {
+                    container.innerHTML = manuscripts.map(m => `
+                        <div class="member-item">
+                            <div class="member-info">
+                                <div class="member-name">${escapeHtml(m.title)}</div>
+                                <div class="member-email">
+                                    Permission: ${m.permission_level} |
+                                    ${m.word_count ? `${m.word_count.toLocaleString()} words` : 'N/A'}
+                                </div>
+                            </div>
+                            <a href="/dashboard-spa.html#manuscript/${m.manuscript_id}" class="btn btn-small">View</a>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading team manuscripts:', error);
+            }
+        }
+
+        // Load team activity
+        async function loadTeamActivity(teamId) {
+            try {
+                const response = await fetch(`${API_BASE}/teams/${teamId}/activity`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) throw new Error('Failed to load activity');
+
+                const data = await response.json();
+                const activities = data.activities || [];
+
+                const container = document.getElementById('activityList');
+                if (activities.length === 0) {
+                    container.innerHTML = '<p style="color: #666; text-align: center; padding: 40px;">No activity yet</p>';
+                } else {
+                    container.innerHTML = activities.map(a => `
+                        <div class="activity-item">
+                            <div>${getActivityDescription(a)}</div>
+                            <div class="activity-time">${formatDate(a.timestamp)}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading activity:', error);
+            }
+        }
+
+        // Get activity description
+        function getActivityDescription(activity) {
+            const actions = {
+                'invited_member': `Invited ${activity.metadata?.email || 'a member'}`,
+                'member_joined': `${activity.metadata?.name || 'A member'} joined the team`,
+                'removed_member': `Removed ${activity.metadata?.email || 'a member'}`,
+                'shared_manuscript': `Shared manuscript "${activity.metadata?.title || 'Untitled'}"`,
+                'unshared_manuscript': `Unshared manuscript "${activity.metadata?.title || 'Untitled'}"`
+            };
+            return actions[activity.action] || activity.action;
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+        }
+
+        // Show modals
+        function showCreateTeamModal() {
+            if (app.user.subscriptionTier !== 'enterprise') {
+                alert('Team collaboration requires an Enterprise plan. Please upgrade your subscription.');
+                window.location.href = '/billing.html';
+                return;
+            }
+            document.getElementById('modalCreateTeam').classList.add('active');
+        }
+
+        function showInviteMemberModal() {
+            document.getElementById('modalInviteMember').classList.add('active');
+        }
+
+        async function showShareManuscriptModal() {
+            // Load user's manuscripts
+            try {
+                const response = await fetch(`${API_BASE}/manuscripts`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                app.manuscripts = data.manuscripts || [];
+
+                const select = document.getElementById('shareManuscriptId');
+                select.innerHTML = '<option value="">Select a manuscript...</option>' +
+                    app.manuscripts.map(m => `<option value="${m.id}">${escapeHtml(m.title)}</option>`).join('');
+
+                document.getElementById('modalShareManuscript').classList.add('active');
+            } catch (error) {
+                console.error('Error loading manuscripts:', error);
+                alert('Error loading manuscripts');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Create team
+        async function createTeam(event) {
+            event.preventDefault();
+
+            const data = {
+                name: document.getElementById('teamName').value,
+                description: document.getElementById('teamDescription').value,
+                maxMembers: parseInt(document.getElementById('teamMaxMembers').value)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/teams`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to create team');
+                }
+
+                closeModal('modalCreateTeam');
+                await loadTeams();
+                alert('Team created successfully!');
+            } catch (error) {
+                console.error('Error creating team:', error);
+                alert(error.message);
+            }
+        }
+
+        // Invite member
+        async function inviteMember(event) {
+            event.preventDefault();
+
+            const data = {
+                email: document.getElementById('inviteEmail').value,
+                role: document.getElementById('inviteRole').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/teams/${app.currentTeam}/invite`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to send invitation');
+                }
+
+                closeModal('modalInviteMember');
+                alert('Invitation sent successfully!');
+                loadTeamDetails(app.currentTeam);
+            } catch (error) {
+                console.error('Error inviting member:', error);
+                alert(error.message);
+            }
+        }
+
+        // Share manuscript
+        async function shareManuscript(event) {
+            event.preventDefault();
+
+            const data = {
+                manuscriptId: document.getElementById('shareManuscriptId').value,
+                permissionLevel: document.getElementById('sharePermissionLevel').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/teams/${app.currentTeam}/share-manuscript`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to share manuscript');
+                }
+
+                closeModal('modalShareManuscript');
+                alert('Manuscript shared successfully!');
+                loadTeamManuscripts(app.currentTeam);
+            } catch (error) {
+                console.error('Error sharing manuscript:', error);
+                alert(error.message);
+            }
+        }
+
+        // Remove member
+        async function removeMember(userId) {
+            if (!confirm('Are you sure you want to remove this member?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/teams/${app.currentTeam}/members/${userId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to remove member');
+                }
+
+                alert('Member removed successfully');
+                loadTeamDetails(app.currentTeam);
+            } catch (error) {
+                console.error('Error removing member:', error);
+                alert(error.message);
+            }
+        }
+
+        // Utility functions
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp * 1000);
+            const now = new Date();
+            const diff = now - date;
+
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)} minutes ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)} hours ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
