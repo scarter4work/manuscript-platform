@@ -31,7 +31,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-optional
 
       - name: Validate deployment
         run: npx wrangler deploy --dry-run --outdir=./dist
