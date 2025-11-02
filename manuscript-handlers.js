@@ -21,7 +21,7 @@ import { initCache } from './db-cache.js';
  * Checks: direct ownership, team sharing, or individual sharing
  * Returns: { hasAccess: boolean, permissionLevel: string, isOwner: boolean }
  */
-async function checkManuscriptAccess(manuscriptId, userId, env) {
+export async function checkManuscriptAccess(manuscriptId, userId, env) {
   // Check ownership first
   const manuscript = await env.DB.prepare(
     'SELECT user_id FROM manuscripts WHERE id = ?'

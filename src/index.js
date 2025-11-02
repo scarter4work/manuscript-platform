@@ -1,19 +1,14 @@
 /**
  * Main entry point for the Manuscript Platform Worker
- * Orchestrates middleware, routing, and request handling
+ * Clean, modular architecture with middleware and routing
  */
 
-import { getAllHeaders, addCorsHeaders, handlePreflight } from './middleware/cors.js';
+import { getAllHeaders, addCorsHeaders as addCorsHeadersUtil, handlePreflight } from './middleware/cors.js';
 import { applyRateLimiting } from './middleware/rate-limiter.js';
 import { handleError } from './middleware/error-handler.js';
 import { routeRequest } from './router/router.js';
 import queueConsumer from '../queue-consumer.js';
 import assetConsumer from '../asset-generation-consumer.js';
-
-// Import all legacy handlers from worker.js that still need to be accessible
-// These are exported from worker.js and re-imported here temporarily
-// TODO: Refactor these into handler modules in future iterations
-import * as legacyWorker from '../worker.js';
 
 export default {
   /**
@@ -23,7 +18,7 @@ export default {
     console.log('Incoming request:', request.method, request.url);
 
     try {
-      // Handle CORS preflight requests
+      // Handle CORS preflight
       const preflightResponse = handlePreflight(request);
       if (preflightResponse) {
         return preflightResponse;
@@ -31,63 +26,29 @@ export default {
 
       const url = new URL(request.url);
       const path = url.pathname;
-
-      // Track request start time for monitoring
       const requestStartTime = Date.now();
+
+      // Get all headers (CORS + security)
+      const allHeaders = getAllHeaders(request);
 
       // Apply rate limiting
       const rateLimitResult = await applyRateLimiting(request, env, path);
       if (rateLimitResult.response) {
-        // Rate limit exceeded
-        return addCorsHeaders(rateLimitResult.response, request, rateLimitResult.headers);
+        return addCorsHeadersUtil(rateLimitResult.response, request, rateLimitResult.headers);
       }
 
-      // Create wrapper for addCorsHeaders that includes request context
-      const addCorsHeadersWithContext = (response, extraHeaders = {}) => {
-        return addCorsHeaders(response, request, extraHeaders);
-      };
-
-      // Get all headers for legacy handlers
-      const allHeaders = getAllHeaders(request);
-
-      // Prepare legacy handlers object
-      const legacyHandlers = {
-        allHeaders,
-        handleManuscriptUpload: legacyWorker.handleManuscriptUpload,
-        handleMarketingUpload: legacyWorker.handleMarketingUpload,
-        handleFileGet: legacyWorker.handleFileGet,
-        handleFileList: legacyWorker.handleFileList,
-        handleFileDelete: legacyWorker.handleFileDelete,
-        handleDevelopmentalAnalysis: legacyWorker.handleDevelopmentalAnalysis,
-        handleLineEditingAnalysis: legacyWorker.handleLineEditingAnalysis,
-        handleCopyEditingAnalysis: legacyWorker.handleCopyEditingAnalysis,
-        handleStartAnalysis: legacyWorker.handleStartAnalysis,
-        handleAnalysisStatus: legacyWorker.handleAnalysisStatus,
-        handleAssetStatus: legacyWorker.handleAssetStatus,
-        handleDMCASubmission: legacyWorker.handleDMCASubmission,
-        handleGenerateAssets: legacyWorker.handleGenerateAssets,
-        handleGetAssets: legacyWorker.handleGetAssets,
-        handleFormatManuscript: legacyWorker.handleFormatManuscript,
-        handleDownloadFormatted: legacyWorker.handleDownloadFormatted,
-        handleMarketAnalysis: legacyWorker.handleMarketAnalysis,
-        handleGetMarketAnalysis: legacyWorker.handleGetMarketAnalysis,
-        handleGenerateSocialMedia: legacyWorker.handleGenerateSocialMedia,
-        handleGetSocialMedia: legacyWorker.handleGetSocialMedia,
-        handleGetAnalysis: legacyWorker.handleGetAnalysis,
-        handleGetAnalysisResults: legacyWorker.handleGetAnalysisResults,
-        handleGenerateReport: legacyWorker.handleGenerateReport,
-        handleGenerateAnnotatedManuscript: legacyWorker.handleGenerateAnnotatedManuscript,
-        handleDebugReportId: legacyWorker.handleDebugReportId,
-        handleRoot: legacyWorker.handleRoot,
+      // Helper to add CORS headers with context
+      const addCorsHeaders = (response, extraHeaders = {}) => {
+        return addCorsHeadersUtil(response, request, extraHeaders);
       };
 
       // Route the request
       const response = await routeRequest(
         request,
         env,
-        addCorsHeadersWithContext,
+        addCorsHeaders,
         rateLimitResult.headers,
-        legacyHandlers
+        allHeaders
       );
 
       if (response) {
@@ -103,7 +64,7 @@ export default {
         }
       );
 
-      return addCorsHeaders(notFoundResponse, request, rateLimitResult.headers);
+      return addCorsHeaders(notFoundResponse, rateLimitResult.headers);
 
     } catch (error) {
       // Global error handler
