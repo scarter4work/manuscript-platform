@@ -1,7 +1,7 @@
 // Legacy format handler functions extracted from worker.js
 // These handlers manage manuscript formatting to EPUB and PDF
 
-import { FormattingAgent } from '../../formatting-agent.js';
+import { FormattingAgent } from '../agents/formatting-agent.js';
 
 // Format manuscript to EPUB and PDF
 async function handleFormatManuscript(request, env, corsHeaders) {

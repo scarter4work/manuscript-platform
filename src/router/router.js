@@ -3,21 +3,21 @@
  * Maps incoming requests to appropriate handlers
  */
 
-import { authHandlers } from '../../auth-handlers.js';
-import { manuscriptHandlers } from '../../manuscript-handlers.js';
-import { audiobookHandlers } from '../../audiobook-handlers.js';
-import { audiobookGenerationHandlers } from '../../audiobook-generation-handlers.js';
-import { reviewHandlers } from '../../review-handlers.js';
-import { publishingHandlers } from '../../publishing-handlers.js';
-import { publicAPIHandlers } from '../../public-api-handlers.js';
-import { teamHandlers } from '../../team-handlers.js';
-import { emailPreferenceHandlers } from '../../email-preference-handlers.js';
-import { handleStripeWebhook } from '../../webhook-handlers.js';
-import { progressHandlers } from '../../progress-tracker.js';
-import { coverHandlers } from '../../cover-handlers.js';
-import { packageHandlers } from '../../package-handlers.js';
-import { metadataHandlers } from '../../metadata-handlers.js';
-import { seriesHandlers } from '../../series-handlers.js';
+import { authHandlers } from '../handlers/auth-handlers.js';
+import { manuscriptHandlers } from '../handlers/manuscript-handlers.js';
+import { audiobookHandlers } from '../handlers/audiobook-handlers.js';
+import { audiobookGenerationHandlers } from '../handlers/audiobook-generation-handlers.js';
+import { reviewHandlers } from '../handlers/review-handlers.js';
+import { publishingHandlers } from '../handlers/publishing-handlers.js';
+import { publicAPIHandlers } from '../handlers/public-api-handlers.js';
+import { teamHandlers } from '../handlers/team-handlers.js';
+import { emailPreferenceHandlers } from '../handlers/email-preference-handlers.js';
+import { handleStripeWebhook } from '../handlers/webhook-handlers.js';
+import { progressHandlers } from '../services/progress-tracker.js';
+import { coverHandlers } from '../handlers/cover-handlers.js';
+import { packageHandlers } from '../handlers/package-handlers.js';
+import { metadataHandlers } from '../handlers/metadata-handlers.js';
+import { seriesHandlers } from '../handlers/series-handlers.js';
 
 // Legacy handlers (extracted from worker.js)
 import * as manuscriptLegacy from '../handlers/legacy-manuscript-handlers.js';
@@ -655,133 +655,133 @@ async function routeLegacyHandlers(path, method, request, env, addCorsHeaders, r
 
   // Admin routes with dynamic imports
   if (path === '/admin/dmca/requests' && method === 'GET') {
-    const { getDMCARequests } = await import('../../dmca-admin-handlers.js');
+    const { getDMCARequests } = await import('../handlers/dmca-admin-handlers.js');
     return await getDMCARequests(request, env, allHeaders);
   }
 
   if (path === '/admin/dmca/stats' && method === 'GET') {
-    const { getDMCAStats } = await import('../../dmca-admin-handlers.js');
+    const { getDMCAStats } = await import('../handlers/dmca-admin-handlers.js');
     return await getDMCAStats(request, env, allHeaders);
   }
 
   if (path === '/admin/dmca/status' && method === 'PATCH') {
-    const { updateDMCAStatus } = await import('../../dmca-admin-handlers.js');
+    const { updateDMCAStatus } = await import('../handlers/dmca-admin-handlers.js');
     return await updateDMCAStatus(request, env, allHeaders);
   }
 
   if (path === '/admin/dmca/resolve' && method === 'POST') {
-    const { resolveDMCARequest } = await import('../../dmca-admin-handlers.js');
+    const { resolveDMCARequest } = await import('../handlers/dmca-admin-handlers.js');
     return await resolveDMCARequest(request, env, allHeaders);
   }
 
   if (path === '/admin/users' && method === 'GET') {
-    const { listUsers } = await import('../../admin-handlers.js');
+    const { listUsers } = await import('../handlers/admin-handlers.js');
     return await listUsers(request, env, allHeaders);
   }
 
   if (path.match(/^\/admin\/users\/[^\/]+$/) && method === 'GET') {
     const userId = path.split('/')[3];
-    const { getUserDetails } = await import('../../admin-handlers.js');
+    const { getUserDetails } = await import('../handlers/admin-handlers.js');
     return await getUserDetails(request, env, allHeaders, userId);
   }
 
   if (path.match(/^\/admin\/users\/[^\/]+$/) && method === 'PATCH') {
     const userId = path.split('/')[3];
-    const { updateUser } = await import('../../admin-handlers.js');
+    const { updateUser } = await import('../handlers/admin-handlers.js');
     return await updateUser(request, env, allHeaders, userId);
   }
 
   if (path.match(/^\/admin\/users\/[^\/]+\/subscription$/) && method === 'POST') {
     const userId = path.split('/')[3];
-    const { adjustUserSubscription } = await import('../../admin-handlers.js');
+    const { adjustUserSubscription } = await import('../handlers/admin-handlers.js');
     return await adjustUserSubscription(request, env, allHeaders, userId);
   }
 
   if (path === '/admin/manuscripts' && method === 'GET') {
-    const { listAllManuscripts } = await import('../../admin-handlers.js');
+    const { listAllManuscripts } = await import('../handlers/admin-handlers.js');
     return await listAllManuscripts(request, env, allHeaders);
   }
 
   if (path.match(/^\/admin\/manuscripts\/[^\/]+$/) && method === 'DELETE') {
     const manuscriptId = path.split('/')[3];
-    const { adminDeleteManuscript } = await import('../../admin-handlers.js');
+    const { adminDeleteManuscript } = await import('../handlers/admin-handlers.js');
     return await adminDeleteManuscript(request, env, allHeaders, manuscriptId);
   }
 
   if (path === '/admin/analytics/overview' && method === 'GET') {
-    const { getAnalyticsOverview } = await import('../../admin-handlers.js');
+    const { getAnalyticsOverview } = await import('../handlers/admin-handlers.js');
     return await getAnalyticsOverview(request, env, allHeaders);
   }
 
   if (path === '/admin/analytics/activity' && method === 'GET') {
-    const { getRecentActivity } = await import('../../admin-handlers.js');
+    const { getRecentActivity } = await import('../handlers/admin-handlers.js');
     return await getRecentActivity(request, env, allHeaders);
   }
 
   if (path === '/admin/billing/transactions' && method === 'GET') {
-    const { listPaymentTransactions } = await import('../../admin-billing-handlers.js');
+    const { listPaymentTransactions } = await import('../handlers/admin-billing-handlers.js');
     return await listPaymentTransactions(request, env, allHeaders);
   }
 
   if (path.match(/^\/admin\/billing\/transactions\/[^\/]+$/) && method === 'GET') {
     const transactionId = path.split('/')[4];
-    const { getTransactionDetails } = await import('../../admin-billing-handlers.js');
+    const { getTransactionDetails } = await import('../handlers/admin-billing-handlers.js');
     return await getTransactionDetails(request, env, allHeaders, transactionId);
   }
 
   if (path === '/admin/billing/subscriptions/stats' && method === 'GET') {
-    const { getSubscriptionStats } = await import('../../admin-billing-handlers.js');
+    const { getSubscriptionStats } = await import('../handlers/admin-billing-handlers.js');
     return await getSubscriptionStats(request, env, allHeaders);
   }
 
   if (path === '/admin/billing/revenue' && method === 'GET') {
-    const { getRevenueAnalytics } = await import('../../admin-billing-handlers.js');
+    const { getRevenueAnalytics } = await import('../handlers/admin-billing-handlers.js');
     return await getRevenueAnalytics(request, env, allHeaders);
   }
 
   if (path === '/admin/billing/failed-payments' && method === 'GET') {
-    const { getFailedPayments } = await import('../../admin-billing-handlers.js');
+    const { getFailedPayments } = await import('../handlers/admin-billing-handlers.js');
     return await getFailedPayments(request, env, allHeaders);
   }
 
   if (path === '/admin/billing/refund' && method === 'POST') {
-    const { issueRefund } = await import('../../admin-billing-handlers.js');
+    const { issueRefund } = await import('../handlers/admin-billing-handlers.js');
     return await issueRefund(request, env, allHeaders);
   }
 
   if (path === '/admin/billing/cancel-subscription' && method === 'POST') {
-    const { cancelSubscription } = await import('../../admin-billing-handlers.js');
+    const { cancelSubscription } = await import('../handlers/admin-billing-handlers.js');
     return await cancelSubscription(request, env, allHeaders);
   }
 
   // Payment routes
   if (path === '/payments/create-checkout-session' && method === 'POST') {
-    const { createCheckoutSession } = await import('../../payment-handlers.js');
+    const { createCheckoutSession } = await import('../handlers/payment-handlers.js');
     return await createCheckoutSession(request, env, allHeaders);
   }
 
   if (path === '/payments/create-payment-intent' && method === 'POST') {
-    const { createPaymentIntent } = await import('../../payment-handlers.js');
+    const { createPaymentIntent } = await import('../handlers/payment-handlers.js');
     return await createPaymentIntent(request, env, allHeaders);
   }
 
   if (path === '/payments/create-portal-session' && method === 'POST') {
-    const { createPortalSession } = await import('../../payment-handlers.js');
+    const { createPortalSession } = await import('../handlers/payment-handlers.js');
     return await createPortalSession(request, env, allHeaders);
   }
 
   if (path === '/payments/subscription' && method === 'GET') {
-    const { getSubscription } = await import('../../payment-handlers.js');
+    const { getSubscription } = await import('../handlers/payment-handlers.js');
     return await getSubscription(request, env, allHeaders);
   }
 
   if (path === '/payments/history' && method === 'GET') {
-    const { getPaymentHistory } = await import('../../payment-handlers.js');
+    const { getPaymentHistory } = await import('../handlers/payment-handlers.js');
     return await getPaymentHistory(request, env, allHeaders);
   }
 
   if (path === '/payments/can-upload' && method === 'GET') {
-    const { checkCanUpload } = await import('../../payment-handlers.js');
+    const { checkCanUpload } = await import('../handlers/payment-handlers.js');
     return await checkCanUpload(request, env, allHeaders);
   }
 

@@ -5,7 +5,7 @@
  * Supports Claude API, Cloudflare services, Stripe fees, and email costs.
  */
 
-import { sendEmail } from './email-service.js';
+import { sendEmail } from '../services/email-service.js';
 
 // ============================================================================
 // COST CONSTANTS

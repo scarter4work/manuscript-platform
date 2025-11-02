@@ -1,8 +1,8 @@
 // Public API Handlers
 // RESTful API endpoints for Enterprise tier programmatic access
 
-import { authenticateAPIKey, APIKeyManager } from './api-key-manager.js';
-import { WebhookManager } from './webhook-manager.js';
+import { authenticateAPIKey, APIKeyManager } from '../managers/api-key-manager.js';
+import { WebhookManager } from '../managers/webhook-manager.js';
 
 /**
  * POST /api/v1/manuscripts

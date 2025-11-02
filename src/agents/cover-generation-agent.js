@@ -6,7 +6,7 @@ import OpenAI from 'openai';
 import {
   validateRequiredFields,
   storeAsset
-} from './agent-utils.js';
+} from '../utils/agent-utils.js';
 import { logCost } from './cost-utils.js';
 
 export class CoverGenerationAgent {

@@ -6,8 +6,8 @@
  * MAN-28/MAN-39: Now includes KV caching for admin stats
  */
 
-import { assertAuthenticated } from './error-handling.js';
-import { initCache } from './db-cache.js';
+import { assertAuthenticated } from '../utils/error-handling.js';
+import { initCache } from '../utils/db-cache.js';
 
 /**
  * Get cost overview statistics

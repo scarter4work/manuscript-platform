@@ -7,7 +7,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     console.log('Processing manuscript upload...');
 
     // Import auth utilities
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
 
     // Get authenticated user (REQUIRED)
     const userId = await getUserFromRequest(request, env);

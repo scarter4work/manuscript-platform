@@ -8,7 +8,7 @@ import {
   callClaudeWithRetry,
   validateRequiredFields,
   storeAsset
-} from './agent-utils.js';
+} from '../utils/agent-utils.js';
 
 export class CoverDesignAgent {
   constructor(env) {

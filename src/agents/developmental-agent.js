@@ -1,8 +1,8 @@
 // Developmental Editing Agent
 // Analyzes manuscript structure, plot, pacing, and character development
 
-import { extractText, analyzeStructure } from './text-extraction.js';
-import { callClaudeWithCostTracking, AGENT_CONFIG } from './agent-utils.js';
+import { extractText, analyzeStructure } from '../utils/text-extraction.js';
+import { callClaudeWithCostTracking, AGENT_CONFIG } from '../utils/agent-utils.js';
 
 export class DevelopmentalAgent {
   constructor(env) {

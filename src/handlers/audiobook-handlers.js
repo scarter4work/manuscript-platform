@@ -9,8 +9,8 @@
  * All endpoints require authentication and manuscript access.
  */
 
-import { getUserFromRequest } from './auth-utils.js';
-import { initCache } from './db-cache.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
+import { initCache } from '../utils/db-cache.js';
 
 /**
  * Helper: Check if user can access a manuscript

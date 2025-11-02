@@ -1,11 +1,11 @@
 // Legacy analysis handler functions extracted from worker.js
 // These handlers manage AI analysis, report generation, and status tracking
 
-import { DevelopmentalAgent } from '../../developmental-agent.js';
-import { LineEditingAgent } from '../../line-editing-agent.js';
-import { CopyEditingAgent } from '../../copy-editing-agent.js';
-import { ReportGenerator } from '../../report-generator.js';
-import { AnnotatedManuscriptGenerator } from '../../annotated-manuscript-generator.js';
+import { DevelopmentalAgent } from '../agents/developmental-agent.js';
+import { LineEditingAgent } from '../agents/line-editing-agent.js';
+import { CopyEditingAgent } from '../agents/copy-editing-agent.js';
+import { ReportGenerator } from '../generators/report-generator.js';
+import { AnnotatedManuscriptGenerator } from '../generators/annotated-manuscript-generator.js';
 
 // Handle developmental analysis request
 async function handleDevelopmentalAnalysis(request, env, corsHeaders) {

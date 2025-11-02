@@ -2,10 +2,10 @@
 // Endpoints for review monitoring, sentiment analysis, response suggestions, and trend detection
 
 import { checkManuscriptAccess } from './manuscript-handlers.js';
-import { ReviewMonitoringAgent, structureReviewData } from './review-monitoring-agent.js';
-import { ReviewSentimentAgent } from './review-sentiment-agent.js';
-import { ReviewResponseAgent } from './review-response-agent.js';
-import { ReviewTrendAgent } from './review-trend-agent.js';
+import { ReviewMonitoringAgent, structureReviewData } from '../agents/review-monitoring-agent.js';
+import { ReviewSentimentAgent } from '../agents/review-sentiment-agent.js';
+import { ReviewResponseAgent } from '../agents/review-response-agent.js';
+import { ReviewTrendAgent } from '../agents/review-trend-agent.js';
 
 /**
  * Get review monitoring configuration and status for a manuscript

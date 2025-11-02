@@ -9,7 +9,7 @@
  * - Billing and subscription management
  */
 
-import { getUserFromRequest } from './auth-utils.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
 
 // ============================================================================
 // MIDDLEWARE: ADMIN AUTHORIZATION

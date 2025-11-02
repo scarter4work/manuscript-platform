@@ -10,7 +10,7 @@
 export async function getDMCARequests(request, env, corsHeaders) {
   try {
     // Import auth utilities
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
 
     // Get authenticated user
     const userId = await getUserFromRequest(request, env);
@@ -87,7 +87,7 @@ export async function getDMCARequests(request, env, corsHeaders) {
 export async function getDMCAStats(request, env, corsHeaders) {
   try {
     // Import auth utilities
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
 
     // Get authenticated user
     const userId = await getUserFromRequest(request, env);
@@ -151,7 +151,7 @@ export async function getDMCAStats(request, env, corsHeaders) {
 export async function updateDMCAStatus(request, env, corsHeaders) {
   try {
     // Import auth utilities
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
 
     // Get authenticated user
     const userId = await getUserFromRequest(request, env);
@@ -253,7 +253,7 @@ export async function updateDMCAStatus(request, env, corsHeaders) {
 export async function resolveDMCARequest(request, env, corsHeaders) {
   try {
     // Import auth utilities
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
 
     // Get authenticated user
     const userId = await getUserFromRequest(request, env);

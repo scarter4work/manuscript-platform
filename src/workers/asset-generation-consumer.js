@@ -20,19 +20,19 @@
  * can poll for progress. Results are stored in R2 for later retrieval.
  */
 
-import { BookDescriptionAgent } from './book-description-agent.js';
-import { KeywordAgent } from './keyword-agent.js';
-import { CategoryAgent } from './category-agent.js';
-import { AuthorBioAgent } from './author-bio-agent.js';
-import { BackMatterAgent } from './back-matter-agent.js';
-import { CoverDesignAgent } from './cover-design-agent.js';
-import { SeriesDescriptionAgent } from './series-description-agent.js';
-import { AudiobookNarrationAgent } from './audiobook-narration-agent.js';
-import { AudiobookPronunciationAgent } from './audiobook-pronunciation-agent.js';
-import { AudiobookTimingAgent } from './audiobook-timing-agent.js';
-import { AudiobookSampleAgent } from './audiobook-sample-agent.js';
-import { AudiobookMetadataAgent } from './audiobook-metadata-agent.js';
-import { sendAssetGenerationCompleteEmail } from './email-service.js';
+import { BookDescriptionAgent } from '../agents/book-description-agent.js';
+import { KeywordAgent } from '../agents/keyword-agent.js';
+import { CategoryAgent } from '../agents/category-agent.js';
+import { AuthorBioAgent } from '../agents/author-bio-agent.js';
+import { BackMatterAgent } from '../agents/back-matter-agent.js';
+import { CoverDesignAgent } from '../agents/cover-design-agent.js';
+import { SeriesDescriptionAgent } from '../agents/series-description-agent.js';
+import { AudiobookNarrationAgent } from '../agents/audiobook-narration-agent.js';
+import { AudiobookPronunciationAgent } from '../agents/audiobook-pronunciation-agent.js';
+import { AudiobookTimingAgent } from '../agents/audiobook-timing-agent.js';
+import { AudiobookSampleAgent } from '../agents/audiobook-sample-agent.js';
+import { AudiobookMetadataAgent } from '../agents/audiobook-metadata-agent.js';
+import { sendAssetGenerationCompleteEmail } from '../services/email-service.js';
 
 export default {
   /**

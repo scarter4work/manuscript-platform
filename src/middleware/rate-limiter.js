@@ -1,5 +1,5 @@
-import { applyRateLimit } from '../../rate-limiter.js';
-import { getUserFromRequest } from '../../auth-utils.js';
+import { applyRateLimit } from '../utils/rate-limiter.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
 
 /**
  * Apply rate limiting middleware

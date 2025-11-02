@@ -1,7 +1,7 @@
 // Legacy market handler functions extracted from worker.js
 // These handlers manage market analysis for manuscripts
 
-import { MarketAnalysisAgent } from '../../market-analysis-agent.js';
+import { MarketAnalysisAgent } from '../agents/market-analysis-agent.js';
 
 /**
  * Handle market analysis request

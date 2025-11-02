@@ -7,7 +7,7 @@
  * Verify admin authorization (shared utility)
  */
 async function verifyAdmin(request, env) {
-  const { getUserFromRequest } = await import('./auth-utils.js');
+  const { getUserFromRequest } = await import('../utils/auth-utils.js');
 
   const userId = await getUserFromRequest(request, env);
   if (!userId) {

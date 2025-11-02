@@ -1,8 +1,8 @@
 // Cover Handlers
 // API endpoints for cover image upload, validation, and processing
 
-import { getUserFromRequest } from './auth-utils.js';
-import { validateCoverImage, calculateSpineWidth, PAPER_TYPES } from './cover-processor.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
+import { validateCoverImage, calculateSpineWidth, PAPER_TYPES } from '../processors/cover-processor.js';
 import {
   validateCover,
   validateCoverMultiPlatform,
@@ -10,7 +10,7 @@ import {
   getRecommendedDimensions,
   getSupportedPlatforms,
   getValidationSummary,
-} from './cover-validator.js';
+} from '../validators/cover-validator.js';
 
 /**
  * Upload and validate cover image for a manuscript

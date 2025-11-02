@@ -31,8 +31,8 @@ import {
   clearRateLimit,
   generateVerificationToken,
   validateVerificationToken
-} from './auth-utils.js';
-import { initCache } from './db-cache.js';
+} from '../utils/auth-utils.js';
+import { initCache } from '../utils/db-cache.js';
 
 // ============================================================================
 // CORS HEADERS

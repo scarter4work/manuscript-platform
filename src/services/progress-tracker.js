@@ -1,7 +1,7 @@
 // Progress Tracking Handler
 // Manages publication progress across multiple platforms with per-platform checklists
 
-import { getUserFromRequest } from './auth-utils.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
 
 /**
  * Verify user session and return auth result

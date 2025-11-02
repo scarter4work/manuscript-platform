@@ -1,7 +1,7 @@
 // Series Management Handlers
 // API handlers for series management features
 
-import { getUserFromRequest } from './auth-utils.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
 import {
   createSeries,
   getSeries,
@@ -17,7 +17,7 @@ import {
   generateSeriesBackmatter,
   getSeriesPerformance,
   generateSeriesMarketingCopy,
-} from './series-manager.js';
+} from '../managers/series-manager.js';
 
 /**
  * Create a new series

@@ -1,9 +1,9 @@
 // Queue consumer for async manuscript analysis
 // This runs each analysis job in the background
 
-import { DevelopmentalAgent } from './developmental-agent.js';
-import { LineEditingAgent } from './line-editing-agent.js';
-import { CopyEditingAgent } from './copy-editing-agent.js';
+import { DevelopmentalAgent } from '../agents/developmental-agent.js';
+import { LineEditingAgent } from '../agents/line-editing-agent.js';
+import { CopyEditingAgent } from '../agents/copy-editing-agent.js';
 
 export default {
   async queue(batch, env) {

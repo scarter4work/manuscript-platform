@@ -2,7 +2,7 @@
 // Manages creation and bundling of platform-specific export packages
 
 import { strToU8, zipSync } from 'fflate';
-import { getUserFromRequest } from './auth-utils.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
 
 /**
  * Platform-specific file requirements

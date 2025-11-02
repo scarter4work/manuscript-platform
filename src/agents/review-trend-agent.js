@@ -6,7 +6,7 @@ import {
   validateRequiredFields,
   storeAsset,
   AGENT_CONFIG
-} from './agent-utils.js';
+} from '../utils/agent-utils.js';
 
 export class ReviewTrendAgent {
   constructor(env) {

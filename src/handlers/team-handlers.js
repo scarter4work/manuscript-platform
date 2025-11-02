@@ -12,9 +12,9 @@
  * Some endpoints require team admin role.
  */
 
-import { getUserFromRequest } from './auth-utils.js';
-import { sendTeamInvitationEmail } from './email-service.js';
-import { initCache } from './db-cache.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
+import { sendTeamInvitationEmail } from '../services/email-service.js';
+import { initCache } from '../utils/db-cache.js';
 
 /**
  * Verify user has required team role

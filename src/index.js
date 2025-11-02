@@ -7,8 +7,8 @@ import { getAllHeaders, addCorsHeaders as addCorsHeadersUtil, handlePreflight } 
 import { applyRateLimiting } from './middleware/rate-limiter.js';
 import { handleError } from './middleware/error-handler.js';
 import { routeRequest } from './router/router.js';
-import queueConsumer from '../queue-consumer.js';
-import assetConsumer from '../asset-generation-consumer.js';
+import queueConsumer from './workers/queue-consumer.js';
+import assetConsumer from './workers/asset-generation-consumer.js';
 
 export default {
   /**

@@ -13,7 +13,7 @@
  */
 
 import { getUserFromRequest } from './auth-helpers.js';
-import { initCache, CacheKeys, CacheTTL } from './db-cache.js';
+import { initCache, CacheKeys, CacheTTL } from '../utils/db-cache.js';
 import { CursorPagination, QueryMonitor, parseJsonField } from './db-utils.js';
 
 export const manuscriptHandlers = {

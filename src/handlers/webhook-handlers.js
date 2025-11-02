@@ -4,8 +4,8 @@
  */
 
 import Stripe from 'stripe';
-import { calculateStripeFee, logCost } from './cost-utils.js';
-import { sendPaymentConfirmationEmail, sendPaymentFailedEmail } from './email-service.js';
+import { calculateStripeFee, logCost } from '../utils/cost-utils.js';
+import { sendPaymentConfirmationEmail, sendPaymentFailedEmail } from '../services/email-service.js';
 
 /**
  * Main webhook handler

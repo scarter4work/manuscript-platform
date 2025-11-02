@@ -2,9 +2,9 @@
 // Endpoints for multi-platform publishing support
 
 import { checkManuscriptAccess } from './manuscript-handlers.js';
-import { PlatformMetadataAgent } from './platform-metadata-agent.js';
-import { FormatConversionAgent } from './format-conversion-agent.js';
-import { DistributionAgent } from './distribution-agent.js';
+import { PlatformMetadataAgent } from '../agents/platform-metadata-agent.js';
+import { FormatConversionAgent } from '../agents/format-conversion-agent.js';
+import { DistributionAgent } from '../agents/distribution-agent.js';
 
 /**
  * Generate platform-specific metadata

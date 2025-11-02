@@ -1,8 +1,8 @@
 // Line Editing Agent
 // Focuses on prose quality, sentence-level improvements, and style
 
-import { extractText } from './text-extraction.js';
-import { callClaudeWithCostTracking, AGENT_CONFIG } from './agent-utils.js';
+import { extractText } from '../utils/text-extraction.js';
+import { callClaudeWithCostTracking, AGENT_CONFIG } from '../utils/agent-utils.js';
 
 export class LineEditingAgent {
   constructor(env) {

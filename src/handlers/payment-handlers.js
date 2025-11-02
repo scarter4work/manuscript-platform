@@ -52,7 +52,7 @@ function getStripeClient(env) {
  */
 export async function createCheckoutSession(request, env, corsHeaders) {
   try {
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
     const userId = await getUserFromRequest(request, env);
 
     if (!userId) {
@@ -148,7 +148,7 @@ export async function createCheckoutSession(request, env, corsHeaders) {
  */
 export async function createPaymentIntent(request, env, corsHeaders) {
   try {
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
     const userId = await getUserFromRequest(request, env);
 
     if (!userId) {
@@ -211,7 +211,7 @@ export async function createPaymentIntent(request, env, corsHeaders) {
  */
 export async function createPortalSession(request, env, corsHeaders) {
   try {
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
     const userId = await getUserFromRequest(request, env);
 
     if (!userId) {
@@ -268,7 +268,7 @@ export async function createPortalSession(request, env, corsHeaders) {
  */
 export async function getSubscription(request, env, corsHeaders) {
   try {
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
     const userId = await getUserFromRequest(request, env);
 
     if (!userId) {
@@ -326,7 +326,7 @@ export async function getSubscription(request, env, corsHeaders) {
  */
 export async function getPaymentHistory(request, env, corsHeaders) {
   try {
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
     const userId = await getUserFromRequest(request, env);
 
     if (!userId) {
@@ -373,7 +373,7 @@ export async function getPaymentHistory(request, env, corsHeaders) {
  */
 export async function checkCanUpload(request, env, corsHeaders) {
   try {
-    const { getUserFromRequest } = await import('./auth-utils.js');
+    const { getUserFromRequest } = await import('../utils/auth-utils.js');
     const userId = await getUserFromRequest(request, env);
 
     if (!userId) {

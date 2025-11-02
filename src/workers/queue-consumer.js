@@ -12,10 +12,10 @@
  * when analysis completes.
  */
 
-import { DevelopmentalAgent } from './developmental-agent.js';
-import { LineEditingAgent } from './line-editing-agent.js';
-import { CopyEditingAgent } from './copy-editing-agent.js';
-import { sendAnalysisCompleteEmail } from './email-service.js';
+import { DevelopmentalAgent } from '../agents/developmental-agent.js';
+import { LineEditingAgent } from '../agents/line-editing-agent.js';
+import { CopyEditingAgent } from '../agents/copy-editing-agent.js';
+import { sendAnalysisCompleteEmail } from '../services/email-service.js';
 
 export default {
   /**

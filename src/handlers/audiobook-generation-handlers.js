@@ -2,7 +2,7 @@
 // On-demand generation of audiobook production materials
 // Complements audiobook-handlers.js which retrieves pre-generated assets
 
-import { getUserFromRequest } from './auth-utils.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
 import {
   formatForNarration,
   calculateNarrationTime,
@@ -12,7 +12,7 @@ import {
   selectSamplePassages,
   generateNarratorBrief,
   READING_SPEEDS,
-} from './audiobook-processor.js';
+} from '../processors/audiobook-processor.js';
 import {
   generateACXMetadata,
   generateFindawayMetadata,
@@ -20,7 +20,7 @@ import {
   generatePronunciationDocument,
   generateACXChecklist,
   exportToCSV,
-} from './audiobook-metadata.js';
+} from '../metadata/audiobook-metadata.js';
 
 /**
  * Generate narration script from manuscript

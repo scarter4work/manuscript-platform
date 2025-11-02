@@ -1,4 +1,4 @@
-import { logError } from '../../logging.js';
+import { logError } from '../utils/logging.js';
 import { addCorsHeaders } from './cors.js';
 
 /**

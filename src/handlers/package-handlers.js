@@ -1,13 +1,13 @@
 // Package Handlers
 // API endpoints for downloading platform-specific export packages
 
-import { getUserFromRequest } from './auth-utils.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
 import {
   createPlatformPackage,
   createAllPlatformsBundle,
   getAvailablePlatforms,
   getPlatformInfo,
-} from './package-manager.js';
+} from '../managers/package-manager.js';
 
 /**
  * Download a specific platform package

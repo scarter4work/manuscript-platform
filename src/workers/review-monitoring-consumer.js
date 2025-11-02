@@ -1,10 +1,10 @@
 // Review Monitoring Queue Consumer
 // Handles background jobs for review fetching, sentiment analysis, and trend detection
 
-import { ReviewMonitoringAgent, structureReviewData } from './review-monitoring-agent.js';
-import { ReviewSentimentAgent } from './review-sentiment-agent.js';
-import { ReviewTrendAgent } from './review-trend-agent.js';
-import { sendEmail } from './email-service.js';
+import { ReviewMonitoringAgent, structureReviewData } from '../agents/review-monitoring-agent.js';
+import { ReviewSentimentAgent } from '../agents/review-sentiment-agent.js';
+import { ReviewTrendAgent } from '../agents/review-trend-agent.js';
+import { sendEmail } from '../services/email-service.js';
 
 /**
  * Queue consumer for REVIEW_QUEUE

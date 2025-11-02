@@ -1,7 +1,7 @@
 // Legacy social media handler functions extracted from worker.js
 // These handlers manage social media marketing generation
 
-import { SocialMediaAgent } from '../../social-media-agent.js';
+import { SocialMediaAgent } from '../agents/social-media-agent.js';
 
 /**
  * Handle social media marketing generation (Phase 5)

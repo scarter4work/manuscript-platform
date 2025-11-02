@@ -1,7 +1,7 @@
 // Metadata Optimization Handlers
 // API handlers for metadata optimization features
 
-import { getUserFromRequest } from './auth-utils.js';
+import { getUserFromRequest } from '../utils/auth-utils.js';
 import {
   generatePricingRecommendations,
   generateSEOKeywords,
@@ -10,7 +10,7 @@ import {
   generateABTestSuggestions,
   analyzeCompetitivePosition,
   generateOptimizationReport,
-} from './metadata-optimizer.js';
+} from '../optimizers/metadata-optimizer.js';
 
 /**
  * Get complete optimization report for a manuscript
