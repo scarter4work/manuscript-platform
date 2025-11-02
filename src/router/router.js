@@ -6,12 +6,18 @@
 import { authHandlers } from '../../auth-handlers.js';
 import { manuscriptHandlers } from '../../manuscript-handlers.js';
 import { audiobookHandlers } from '../../audiobook-handlers.js';
+import { audiobookGenerationHandlers } from '../../audiobook-generation-handlers.js';
 import { reviewHandlers } from '../../review-handlers.js';
 import { publishingHandlers } from '../../publishing-handlers.js';
 import { publicAPIHandlers } from '../../public-api-handlers.js';
 import { teamHandlers } from '../../team-handlers.js';
 import { emailPreferenceHandlers } from '../../email-preference-handlers.js';
 import { handleStripeWebhook } from '../../webhook-handlers.js';
+import { progressHandlers } from '../../progress-tracker.js';
+import { coverHandlers } from '../../cover-handlers.js';
+import { packageHandlers } from '../../package-handlers.js';
+import { metadataHandlers } from '../../metadata-handlers.js';
+import { seriesHandlers } from '../../series-handlers.js';
 
 // Legacy handlers (extracted from worker.js)
 import * as manuscriptLegacy from '../handlers/legacy-manuscript-handlers.js';
@@ -123,6 +129,53 @@ export async function routeRequest(request, env, addCorsHeaders, rateLimitHeader
   if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/regenerate$/) && method === 'POST') {
     const manuscriptId = path.split('/')[2];
     return addCorsHeaders(await audiobookHandlers.regenerateAudiobookAssets(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // ========================================================================
+  // AUDIOBOOK GENERATION ROUTES (On-demand generation)
+  // ========================================================================
+
+  if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/generate-script$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await audiobookGenerationHandlers.generateNarrationScript(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/calculate-timing$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await audiobookGenerationHandlers.getChapterTiming(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/generate-pronunciation$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await audiobookGenerationHandlers.getPronunciationGuide(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/generate-samples$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await audiobookGenerationHandlers.generateSamplePassages(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/generate-narrator-brief$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await audiobookGenerationHandlers.getNarratorBrief(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/generate-acx-metadata$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await audiobookGenerationHandlers.getACXMetadata(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  if (path.match(/^\/manuscripts\/[^/]+\/audiobook\/generate-findaway-metadata$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await audiobookGenerationHandlers.getFindawayMetadata(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  if (path === '/audiobook/acx-checklist' && method === 'GET') {
+    return addCorsHeaders(await audiobookGenerationHandlers.getACXChecklist(request, env), rateLimitHeaders);
+  }
+
+  if (path === '/audiobook/export-csv' && method === 'POST') {
+    return addCorsHeaders(await audiobookGenerationHandlers.exportMetadataCSV(request, env), rateLimitHeaders);
   }
 
   // ========================================================================
@@ -285,6 +338,255 @@ export async function routeRequest(request, env, addCorsHeaders, rateLimitHeader
 
   if (path.match(/^\/unsubscribe\/[^/]+$/) && method === 'GET') {
     return await emailPreferenceHandlers.unsubscribeByToken(request, env);
+  }
+
+  // ========================================================================
+  // PROGRESS TRACKING ROUTES
+  // ========================================================================
+
+  // POST /manuscripts/:id/progress/:platform - Initialize progress tracking for a platform
+  if (path.match(/^\/manuscripts\/[^/]+\/progress\/[^/]+$/) && method === 'POST') {
+    const parts = path.split('/');
+    const manuscriptId = parts[2];
+    const platform = parts[4];
+    return addCorsHeaders(await progressHandlers.initializeProgress(request, env, manuscriptId, platform), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/progress - Get progress for all platforms
+  if (path.match(/^\/manuscripts\/[^/]+\/progress$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await progressHandlers.getProgress(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/progress/:platform - Get progress for specific platform
+  if (path.match(/^\/manuscripts\/[^/]+\/progress\/[^/]+$/) && method === 'GET') {
+    const parts = path.split('/');
+    const manuscriptId = parts[2];
+    const platform = parts[4];
+    return addCorsHeaders(await progressHandlers.getProgress(request, env, manuscriptId, platform), rateLimitHeaders);
+  }
+
+  // PATCH /manuscripts/:id/progress/:platform/checklist/:itemKey - Update checklist item
+  if (path.match(/^\/manuscripts\/[^/]+\/progress\/[^/]+\/checklist\/[^/]+$/) && method === 'PATCH') {
+    const parts = path.split('/');
+    const manuscriptId = parts[2];
+    const platform = parts[4];
+    const itemKey = parts[6];
+    return addCorsHeaders(await progressHandlers.updateChecklistItem(request, env, manuscriptId, platform, itemKey), rateLimitHeaders);
+  }
+
+  // PATCH /manuscripts/:id/progress/:platform/status - Update platform status
+  if (path.match(/^\/manuscripts\/[^/]+\/progress\/[^/]+\/status$/) && method === 'PATCH') {
+    const parts = path.split('/');
+    const manuscriptId = parts[2];
+    const platform = parts[4];
+    return addCorsHeaders(await progressHandlers.updatePlatformStatus(request, env, manuscriptId, platform), rateLimitHeaders);
+  }
+
+  // ========================================================================
+  // COVER IMAGE ROUTES
+  // ========================================================================
+
+  // POST /manuscripts/:id/cover - Upload cover image
+  if (path.match(/^\/manuscripts\/[^/]+\/cover$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await coverHandlers.uploadCover(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/cover - Get cover image
+  if (path.match(/^\/manuscripts\/[^/]+\/cover$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return await coverHandlers.getCover(request, env, manuscriptId); // No CORS - direct image response
+  }
+
+  // DELETE /manuscripts/:id/cover - Delete cover image
+  if (path.match(/^\/manuscripts\/[^/]+\/cover$/) && method === 'DELETE') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await coverHandlers.deleteCover(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /cover/specs - Get cover specifications for platforms
+  if (path === '/cover/specs' && method === 'GET') {
+    return addCorsHeaders(await coverHandlers.getCoverSpecifications(request, env), rateLimitHeaders);
+  }
+
+  // POST /cover/spine-calculator - Calculate spine width for print covers
+  if (path === '/cover/spine-calculator' && method === 'POST') {
+    return addCorsHeaders(await coverHandlers.calculateSpine(request, env), rateLimitHeaders);
+  }
+
+  // ========================================================================
+  // PACKAGE DOWNLOAD ROUTES
+  // ========================================================================
+
+  // GET /manuscripts/:id/packages - Get available packages
+  if (path.match(/^\/manuscripts\/[^/]+\/packages$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await packageHandlers.getAvailablePackages(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/packages/all - Download all platforms bundle
+  if (path.match(/^\/manuscripts\/[^/]+\/packages\/all$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return await packageHandlers.downloadAllPlatformsBundle(request, env, manuscriptId); // No CORS - file download
+  }
+
+  // GET /manuscripts/:id/packages/analytics - Get download analytics
+  if (path.match(/^\/manuscripts\/[^/]+\/packages\/analytics$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await packageHandlers.getPackageAnalytics(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/packages/:platform - Download specific platform package
+  if (path.match(/^\/manuscripts\/[^/]+\/packages\/[^/]+$/) && method === 'GET' && !path.endsWith('/all') && !path.endsWith('/analytics')) {
+    const parts = path.split('/');
+    const manuscriptId = parts[2];
+    const platform = parts[4];
+    return await packageHandlers.downloadPlatformPackage(request, env, manuscriptId, platform); // No CORS - file download
+  }
+
+  // ========================================================================
+  // METADATA OPTIMIZATION ROUTES
+  // ========================================================================
+
+  // GET /manuscripts/:id/metadata/optimize - Get complete optimization report
+  if (path.match(/^\/manuscripts\/[^/]+\/metadata\/optimize$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await metadataHandlers.getOptimizationReport(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/metadata/keywords - Get keyword recommendations
+  if (path.match(/^\/manuscripts\/[^/]+\/metadata\/keywords$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await metadataHandlers.getKeywordRecommendations(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/metadata/categories - Get BISAC category recommendations
+  if (path.match(/^\/manuscripts\/[^/]+\/metadata\/categories$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await metadataHandlers.getCategoryRecommendations(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // POST /manuscripts/:id/metadata/pricing - Get pricing recommendations
+  if (path.match(/^\/manuscripts\/[^/]+\/metadata\/pricing$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await metadataHandlers.getPricingRecommendations(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // POST /manuscripts/:id/metadata/description - Optimize book description
+  if (path.match(/^\/manuscripts\/[^/]+\/metadata\/description$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await metadataHandlers.optimizeBookDescription(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/metadata/ab-test - Generate A/B test suggestions
+  if (path.match(/^\/manuscripts\/[^/]+\/metadata\/ab-test$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await metadataHandlers.getABTestSuggestions(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // POST /manuscripts/:id/metadata/competitive - Get competitive analysis
+  if (path.match(/^\/manuscripts\/[^/]+\/metadata\/competitive$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await metadataHandlers.getCompetitiveAnalysis(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // PATCH /manuscripts/:id/metadata - Update manuscript metadata
+  if (path.match(/^\/manuscripts\/[^/]+\/metadata$/) && method === 'PATCH') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await metadataHandlers.updateManuscriptMetadata(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // ========================================================================
+  // SERIES MANAGEMENT ROUTES
+  // ========================================================================
+
+  // POST /series - Create new series
+  if (path === '/series' && method === 'POST') {
+    return addCorsHeaders(await seriesHandlers.handleCreateSeries(request, env), rateLimitHeaders);
+  }
+
+  // GET /series - List all series for user
+  if (path === '/series' && method === 'GET') {
+    return addCorsHeaders(await seriesHandlers.handleListSeries(request, env), rateLimitHeaders);
+  }
+
+  // GET /series/:id - Get series details
+  if (path.match(/^\/series\/[^/]+$/) && method === 'GET') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleGetSeries(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // PATCH /series/:id - Update series
+  if (path.match(/^\/series\/[^/]+$/) && method === 'PATCH') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleUpdateSeries(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // DELETE /series/:id - Delete series
+  if (path.match(/^\/series\/[^/]+$/) && method === 'DELETE') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleDeleteSeries(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // POST /series/:id/manuscripts - Add manuscript to series
+  if (path.match(/^\/series\/[^/]+\/manuscripts$/) && method === 'POST') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleAddManuscriptToSeries(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // DELETE /series/:id/manuscripts/:manuscriptId - Remove manuscript from series
+  if (path.match(/^\/series\/[^/]+\/manuscripts\/[^/]+$/) && method === 'DELETE') {
+    const parts = path.split('/');
+    const seriesId = parts[2];
+    const manuscriptId = parts[4];
+    return addCorsHeaders(await seriesHandlers.handleRemoveManuscriptFromSeries(request, env, seriesId, manuscriptId), rateLimitHeaders);
+  }
+
+  // PATCH /series/:id/manuscripts/:manuscriptId - Update manuscript in series
+  if (path.match(/^\/series\/[^/]+\/manuscripts\/[^/]+$/) && method === 'PATCH') {
+    const parts = path.split('/');
+    const seriesId = parts[2];
+    const manuscriptId = parts[4];
+    return addCorsHeaders(await seriesHandlers.handleUpdateSeriesManuscript(request, env, seriesId, manuscriptId), rateLimitHeaders);
+  }
+
+  // POST /series/:id/bundles - Create series bundle
+  if (path.match(/^\/series\/[^/]+\/bundles$/) && method === 'POST') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleCreateBundle(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // POST /series/:id/reading-orders - Create custom reading order
+  if (path.match(/^\/series\/[^/]+\/reading-orders$/) && method === 'POST') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleCreateReadingOrder(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // GET /series/:id/read-through - Get read-through rate
+  if (path.match(/^\/series\/[^/]+\/read-through$/) && method === 'GET') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleGetReadThroughRate(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // GET /series/:id/backmatter/:bookNumber - Generate backmatter for book
+  if (path.match(/^\/series\/[^/]+\/backmatter\/[^/]+$/) && method === 'GET') {
+    const parts = path.split('/');
+    const seriesId = parts[2];
+    const bookNumber = parts[4];
+    return addCorsHeaders(await seriesHandlers.handleGenerateBackmatter(request, env, seriesId, bookNumber), rateLimitHeaders);
+  }
+
+  // GET /series/:id/performance - Get series performance metrics
+  if (path.match(/^\/series\/[^/]+\/performance$/) && method === 'GET') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleGetPerformance(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // GET /series/:id/marketing - Generate series marketing copy
+  if (path.match(/^\/series\/[^/]+\/marketing$/) && method === 'GET') {
+    const seriesId = path.split('/')[2];
+    return addCorsHeaders(await seriesHandlers.handleGenerateMarketing(request, env, seriesId), rateLimitHeaders);
   }
 
   // ========================================================================
