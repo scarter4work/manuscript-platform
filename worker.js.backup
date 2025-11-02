@@ -1,7 +1,6 @@
 // Cloudflare Worker for handling manuscript uploads
 // Deploy this via Cloudflare Dashboard > Workers & Pages
 
-// AI Agents
 import { DevelopmentalAgent } from './developmental-agent.js';
 import { LineEditingAgent } from './line-editing-agent.js';
 import { CopyEditingAgent } from './copy-editing-agent.js';
@@ -17,8 +16,6 @@ import { SeriesDescriptionAgent } from './series-description-agent.js';
 import { FormattingAgent } from './formatting-agent.js';
 import { MarketAnalysisAgent } from './market-analysis-agent.js';
 import { SocialMediaAgent } from './social-media-agent.js';
-
-// Handler modules
 import { authHandlers } from './auth-handlers.js';
 import { manuscriptHandlers } from './manuscript-handlers.js';
 import { audiobookHandlers } from './audiobook-handlers.js';
@@ -27,54 +24,137 @@ import { publishingHandlers } from './publishing-handlers.js';
 import { publicAPIHandlers } from './public-api-handlers.js';
 import { teamHandlers } from './team-handlers.js';
 import { emailPreferenceHandlers } from './email-preference-handlers.js';
-import { handleStripeWebhook } from './webhook-handlers.js';
-
-// Queue consumers
 import queueConsumer from './queue-consumer.js';
 import assetConsumer from './asset-generation-consumer.js';
-
-// Utilities
+import { handleStripeWebhook } from './webhook-handlers.js';
 import { initSentry, captureError } from './sentry-config.js';
 import { logError, logInfo, logWarning, logRequest, logSecurity } from './logging.js';
-
-// Middleware (new modular architecture)
-import { getAllHeaders, addCorsHeaders as addCorsHeadersUtil, handlePreflight } from './src/middleware/cors.js';
-import { applyRateLimiting } from './src/middleware/rate-limiter.js';
-import { handleError as handleErrorUtil } from './src/middleware/error-handler.js';
+import { applyRateLimit, createRateLimitHeaders } from './rate-limiter.js';
+import { getUserFromRequest } from './auth-utils.js';
 
 export default {
   async fetch(request, env, ctx) {
     console.log('Incoming request:', request.method, request.url);
 
+    // CORS headers - Update with your actual domain
+    const allowedOrigins = [
+      'https://scarter4workmanuscripthub.com',
+      'https://www.scarter4workmanuscripthub.com',
+      'https://api.scarter4workmanuscripthub.com',
+      'https://dashboard.scarter4workmanuscripthub.com', // Custom domain for dashboard
+      'https://dce046dd.manuscript-platform.pages.dev', // Cloudflare Pages deployment
+      'https://manuscript-platform.pages.dev', // Custom domain (if configured)
+      'http://localhost:8000', // for local testing
+      'http://localhost:3000', // for local React dev
+      'http://localhost:8787', // for local wrangler dev
+    ];
+
+    const origin = request.headers.get('Origin');
+
+    // Determine allowed origin (reject unknown origins for security)
+    const allowedOrigin = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': allowedOrigin,
+      'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Filename, X-Author-Id, X-File-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true', // Important for cookie-based auth
+      'Access-Control-Max-Age': '86400',
+    };
+
+    // Security headers (OWASP recommended)
+    const securityHeaders = {
+      // Content Security Policy - Prevents XSS attacks
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com;",
+      // Prevent clickjacking attacks
+      'X-Frame-Options': 'DENY',
+      // Prevent MIME type sniffing
+      'X-Content-Type-Options': 'nosniff',
+      // Enable browser XSS protection
+      'X-XSS-Protection': '1; mode=block',
+      // Enforce HTTPS (only add in production)
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+      // Control referrer information
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      // Control browser features and APIs
+      'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
+    };
+
+    // Combine CORS and security headers
+    const allHeaders = { ...corsHeaders, ...securityHeaders };
+
+    // Helper function to add CORS, security, and rate limit headers to any response
+    const addCorsHeaders = (response, extraHeaders = {}) => {
+      const newHeaders = new Headers(response.headers);
+      Object.entries({ ...allHeaders, ...extraHeaders }).forEach(([key, value]) => {
+        newHeaders.set(key, value);
+      });
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: newHeaders
+      });
+    };
+
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: allHeaders });
+    }
+
+    const url = new URL(request.url);
+    const path = url.pathname;
+    console.log('Request path:', path);
+
+    // Track request start time for monitoring
+    const requestStartTime = Date.now();
+
     try {
-      // Handle CORS preflight using middleware
-      const preflightResponse = handlePreflight(request);
-      if (preflightResponse) {
-        return preflightResponse;
+      // ========================================================================
+      // RATE LIMITING (MAN-25)
+      // ========================================================================
+
+      // Get user info if authenticated (for user-specific rate limits)
+      let userId = null;
+      let userTier = null;
+
+      // Try to get user from session (don't fail if not authenticated)
+      try {
+        userId = await getUserFromRequest(request, env);
+        if (userId) {
+          // Get user tier from database
+          const user = await env.DB.prepare(
+            'SELECT role, subscription_tier FROM users WHERE id = ?'
+          ).bind(userId).first();
+
+          if (user) {
+            // Map role to tier for rate limiting
+            if (user.role === 'admin') {
+              userTier = 'ADMIN';
+            } else if (user.subscription_tier) {
+              userTier = user.subscription_tier.toUpperCase();
+            } else {
+              userTier = 'FREE';
+            }
+          }
+        }
+      } catch (authError) {
+        // Not authenticated or session invalid - continue with IP-only rate limiting
+        console.log('[RateLimit] No valid session, applying IP-only limits');
       }
 
-      const url = new URL(request.url);
-      const path = url.pathname;
-      console.log('Request path:', path);
+      // Apply rate limiting (skip for webhooks and static assets)
+      let rateLimitHeaders = {};
+      if (!path.startsWith('/webhooks/') && !path.startsWith('/assets/')) {
+        const rateLimitResult = await applyRateLimit(request, env, userId, userTier);
 
-      // Get all headers (CORS + security) using middleware
-      const allHeaders = getAllHeaders(request);
+        if (rateLimitResult.response) {
+          // Rate limit exceeded - return 429 response
+          return addCorsHeaders(rateLimitResult.response, rateLimitHeaders);
+        }
 
-      // Helper function to add CORS and security headers to responses
-      const addCorsHeaders = (response, extraHeaders = {}) => {
-        return addCorsHeadersUtil(response, request, extraHeaders);
-      };
-
-      // Track request start time for monitoring
-      const requestStartTime = Date.now();
-
-      // Apply rate limiting using middleware
-      const rateLimitResult = await applyRateLimiting(request, env, path);
-      if (rateLimitResult.response) {
-        // Rate limit exceeded - return 429 response
-        return addCorsHeaders(rateLimitResult.response, rateLimitResult.headers);
+        // Store rate limit headers to add to successful responses
+        rateLimitHeaders = rateLimitResult.headers;
       }
-      const rateLimitHeaders = rateLimitResult.headers;
 
       // ========================================================================
       // AUTHENTICATION ROUTES (Phase A)
@@ -801,8 +881,24 @@ export default {
       return new Response('Not Found', { status: 404, headers: allHeaders });
 
     } catch (error) {
-      // Use centralized error handler middleware
-      return await handleErrorUtil(error, request, env, rateLimitHeaders);
+      // Log error with structured logging
+      logError('request_error', error, {
+        path,
+        method: request.method,
+        url: request.url
+      });
+
+      // Capture error in Sentry
+      captureError(error, {
+        path,
+        method: request.method,
+        url: request.url
+      }, env);
+
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { ...allHeaders, 'Content-Type': 'application/json' }
+      });
     }
   },
 
