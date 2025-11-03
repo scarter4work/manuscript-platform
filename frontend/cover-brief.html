@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cover Design Brief Generator - Manuscript Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .color-swatch {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+      display: inline-block;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .brief-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .ai-prompt {
+      background: #f9fafb;
+      border-left: 4px solid #3b82f6;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen p-8">
+    <div class="max-w-5xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Cover Design Brief Generator</h1>
+        <p class="text-gray-600">AI-powered cover design briefs for professional designers and AI art tools</p>
+      </div>
+
+      <!-- Generation Form -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Generate Cover Brief</h2>
+
+        <div class="space-y-4">
+          <!-- Manuscript Selection -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Select Manuscript</label>
+            <select id="manuscript-select" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Loading manuscripts...</option>
+            </select>
+          </div>
+
+          <!-- Genre Override -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Genre (optional - override manuscript genre)</label>
+            <select id="genre-select" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Use manuscript genre</option>
+              <option value="thriller">Thriller</option>
+              <option value="mystery">Mystery</option>
+              <option value="romance">Romance</option>
+              <option value="fantasy">Fantasy</option>
+              <option value="sci-fi">Science Fiction</option>
+              <option value="literary">Literary Fiction</option>
+              <option value="horror">Horror</option>
+              <option value="nonfiction">Nonfiction</option>
+            </select>
+          </div>
+
+          <!-- Generate Button -->
+          <button
+            id="generate-btn"
+            onclick="generateBrief()"
+            class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            Generate Cover Design Brief
+          </button>
+
+          <!-- Loading State -->
+          <div id="loading" class="hidden text-center py-4">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="mt-2 text-gray-600">Generating cover brief with AI... This may take 30-60 seconds</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Container -->
+      <div id="results-container" class="hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-semibold">Your Cover Design Brief</h2>
+          <div class="space-x-2">
+            <button onclick="copyBrief()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
+              Copy All
+            </button>
+            <button onclick="downloadBrief()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+              Download
+            </button>
+          </div>
+        </div>
+
+        <!-- Visual Concept -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Visual Concept</h3>
+          <div class="space-y-2">
+            <p><strong>Main Imagery:</strong> <span id="main-imagery"></span></p>
+            <p><strong>Composition:</strong> <span id="composition"></span></p>
+            <p><strong>Focal Point:</strong> <span id="focal-point"></span></p>
+          </div>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Color Palette</h3>
+          <div id="color-palette" class="mb-4"></div>
+          <p><strong>Overall:</strong> <span id="color-overall"></span></p>
+        </div>
+
+        <!-- Typography -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Typography</h3>
+          <div class="space-y-2">
+            <p><strong>Title Font:</strong> <span id="title-font"></span></p>
+            <p><strong>Author Font:</strong> <span id="author-font"></span></p>
+            <p><strong>Hierarchy:</strong> <span id="hierarchy"></span></p>
+            <p><strong>Placement:</strong> <span id="placement"></span></p>
+          </div>
+        </div>
+
+        <!-- Mood & Atmosphere -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Mood & Atmosphere</h3>
+          <p id="mood-atmosphere"></p>
+        </div>
+
+        <!-- Genre Conventions -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Genre Conventions</h3>
+          <ul id="genre-conventions" class="list-disc list-inside space-y-1"></ul>
+        </div>
+
+        <!-- Design Elements -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Key Design Elements</h3>
+          <ul id="design-elements" class="list-disc list-inside space-y-1"></ul>
+        </div>
+
+        <!-- AI Art Prompts -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">AI Art Prompts</h3>
+
+          <div class="mb-4">
+            <h4 class="font-semibold mb-2 flex justify-between items-center">
+              Midjourney
+              <button onclick="copyPrompt('midjourney')" class="text-sm px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Copy</button>
+            </h4>
+            <div class="ai-prompt" id="midjourney-prompt"></div>
+          </div>
+
+          <div class="mb-4">
+            <h4 class="font-semibold mb-2 flex justify-between items-center">
+              DALL-E 3
+              <button onclick="copyPrompt('dalle')" class="text-sm px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Copy</button>
+            </h4>
+            <div class="ai-prompt" id="dalle-prompt"></div>
+          </div>
+
+          <div>
+            <h4 class="font-semibold mb-2 flex justify-between items-center">
+              Stable Diffusion
+              <button onclick="copyPrompt('stable-diffusion')" class="text-sm px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Copy</button>
+            </h4>
+            <div class="ai-prompt" id="stable-diffusion-prompt"></div>
+          </div>
+        </div>
+
+        <!-- Designer Brief -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Designer Brief</h3>
+          <p id="designer-brief" class="whitespace-pre-wrap"></p>
+        </div>
+
+        <!-- DIY Guidance -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">DIY Guidance (Canva / Self-Design)</h3>
+          <p class="mb-2"><strong>Template:</strong> <span id="canva-template"></span></p>
+          <div class="mb-2">
+            <strong>Key Tips:</strong>
+            <ul id="diy-tips" class="list-disc list-inside mt-1 space-y-1"></ul>
+          </div>
+          <div>
+            <strong>Common Mistakes to Avoid:</strong>
+            <ul id="diy-mistakes" class="list-disc list-inside mt-1 space-y-1"></ul>
+          </div>
+        </div>
+
+        <!-- Comparable Covers -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Comparable Covers (for Reference)</h3>
+          <ul id="comparable-covers" class="space-y-2"></ul>
+        </div>
+
+        <!-- Target Audience Appeal -->
+        <div class="brief-section">
+          <h3 class="text-xl font-semibold mb-3">Target Audience Appeal</h3>
+          <p id="target-audience"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+    let currentBrief = null;
+
+    // Load manuscripts on page load
+    async function loadManuscripts() {
+      try {
+        const response = await fetch(`${API_BASE}/manuscripts`, {
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load manuscripts');
+        }
+
+        const data = await response.json();
+        const select = document.getElementById('manuscript-select');
+
+        if (!data.manuscripts || data.manuscripts.length === 0) {
+          select.innerHTML = '<option value="">No manuscripts found. Upload a manuscript first.</option>';
+          return;
+        }
+
+        select.innerHTML = '<option value="">Select a manuscript...</option>' +
+          data.manuscripts.map(m =>
+            `<option value="${m.id}">${m.title || 'Untitled'} (${m.genre || 'No genre'})</option>`
+          ).join('');
+      } catch (error) {
+        console.error('Error loading manuscripts:', error);
+        document.getElementById('manuscript-select').innerHTML =
+          '<option value="">Error loading manuscripts</option>';
+      }
+    }
+
+    // Generate cover brief
+    async function generateBrief() {
+      const manuscriptId = document.getElementById('manuscript-select').value;
+      const genre = document.getElementById('genre-select').value;
+
+      if (!manuscriptId) {
+        alert('Please select a manuscript');
+        return;
+      }
+
+      const btn = document.getElementById('generate-btn');
+      const loading = document.getElementById('loading');
+
+      btn.disabled = true;
+      loading.classList.remove('hidden');
+      document.getElementById('results-container').classList.add('hidden');
+
+      try {
+        const body = {};
+        if (genre) {
+          body.genre = genre;
+        }
+
+        const response = await fetch(`${API_BASE}/manuscripts/${manuscriptId}/cover/generate-brief`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to generate brief');
+        }
+
+        const result = await response.json();
+        currentBrief = result.brief;
+        displayBrief(result.brief);
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error generating cover brief: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        loading.classList.add('hidden');
+      }
+    }
+
+    // Display the cover brief
+    function displayBrief(brief) {
+      // Visual Concept
+      document.getElementById('main-imagery').textContent = brief.visualConcept?.mainImagery || 'N/A';
+      document.getElementById('composition').textContent = brief.visualConcept?.composition || 'N/A';
+      document.getElementById('focal-point').textContent = brief.visualConcept?.focalPoint || 'N/A';
+
+      // Color Palette with swatches
+      const colorPalette = document.getElementById('color-palette');
+      colorPalette.innerHTML = '';
+
+      if (brief.colorPalette) {
+        const colors = [
+          { label: 'Primary', value: brief.colorPalette.primary },
+          { label: 'Secondary', value: brief.colorPalette.secondary },
+          { label: 'Accent', value: brief.colorPalette.accent }
+        ];
+
+        colors.forEach(color => {
+          const hexMatch = color.value?.match(/#[0-9A-Fa-f]{6}/);
+          const hex = hexMatch ? hexMatch[0] : '#cccccc';
+
+          const div = document.createElement('div');
+          div.className = 'mb-2';
+          div.innerHTML = `
+            <span class="color-swatch" style="background-color: ${hex}"></span>
+            <strong>${color.label}:</strong> ${color.value || 'N/A'}
+          `;
+          colorPalette.appendChild(div);
+        });
+
+        document.getElementById('color-overall').textContent = brief.colorPalette.overall || 'N/A';
+      }
+
+      // Typography
+      document.getElementById('title-font').textContent = brief.typography?.titleFont || 'N/A';
+      document.getElementById('author-font').textContent = brief.typography?.authorFont || 'N/A';
+      document.getElementById('hierarchy').textContent = brief.typography?.hierarchy || 'N/A';
+      document.getElementById('placement').textContent = brief.typography?.placement || 'N/A';
+
+      // Mood & Atmosphere
+      document.getElementById('mood-atmosphere').textContent = brief.moodAtmosphere || 'N/A';
+
+      // Genre Conventions
+      const conventions = document.getElementById('genre-conventions');
+      conventions.innerHTML = '';
+      if (brief.genreConventions && brief.genreConventions.length > 0) {
+        brief.genreConventions.forEach(conv => {
+          const li = document.createElement('li');
+          li.textContent = conv;
+          conventions.appendChild(li);
+        });
+      }
+
+      // Design Elements
+      const elements = document.getElementById('design-elements');
+      elements.innerHTML = '';
+      if (brief.designElements && brief.designElements.length > 0) {
+        brief.designElements.forEach(elem => {
+          const li = document.createElement('li');
+          li.textContent = elem;
+          elements.appendChild(li);
+        });
+      }
+
+      // AI Art Prompts
+      document.getElementById('midjourney-prompt').textContent = brief.aiArtPrompts?.midjourney || 'Not available';
+      document.getElementById('dalle-prompt').textContent = brief.aiArtPrompts?.dalle || 'Not available';
+      document.getElementById('stable-diffusion-prompt').textContent = brief.aiArtPrompts?.stableDiffusion || 'Not available';
+
+      // Designer Brief
+      document.getElementById('designer-brief').textContent = brief.designerBrief || 'N/A';
+
+      // DIY Guidance
+      document.getElementById('canva-template').textContent = brief.diyGuidance?.canvaTemplate || 'N/A';
+
+      const tips = document.getElementById('diy-tips');
+      tips.innerHTML = '';
+      if (brief.diyGuidance?.keyTips) {
+        brief.diyGuidance.keyTips.forEach(tip => {
+          const li = document.createElement('li');
+          li.textContent = tip;
+          tips.appendChild(li);
+        });
+      }
+
+      const mistakes = document.getElementById('diy-mistakes');
+      mistakes.innerHTML = '';
+      if (brief.diyGuidance?.commonMistakes) {
+        brief.diyGuidance.commonMistakes.forEach(mistake => {
+          const li = document.createElement('li');
+          li.textContent = mistake;
+          mistakes.appendChild(li);
+        });
+      }
+
+      // Comparable Covers
+      const covers = document.getElementById('comparable-covers');
+      covers.innerHTML = '';
+      if (brief.comparableCovers && brief.comparableCovers.length > 0) {
+        brief.comparableCovers.forEach(cover => {
+          const li = document.createElement('li');
+          li.textContent = cover;
+          covers.appendChild(li);
+        });
+      }
+
+      // Target Audience
+      document.getElementById('target-audience').textContent = brief.targetAudienceAppeal || 'N/A';
+
+      // Show results
+      document.getElementById('results-container').classList.remove('hidden');
+
+      // Scroll to results
+      document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Copy specific AI prompt
+    async function copyPrompt(type) {
+      const promptMap = {
+        'midjourney': 'midjourney-prompt',
+        'dalle': 'dalle-prompt',
+        'stable-diffusion': 'stable-diffusion-prompt'
+      };
+
+      const element = document.getElementById(promptMap[type]);
+      const text = element.textContent;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        alert(`${type} prompt copied to clipboard!`);
+      } catch (error) {
+        console.error('Copy failed:', error);
+        alert('Failed to copy. Please select and copy manually.');
+      }
+    }
+
+    // Copy entire brief
+    async function copyBrief() {
+      if (!currentBrief) return;
+
+      const text = formatBriefAsText(currentBrief);
+
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('Cover brief copied to clipboard!');
+      } catch (error) {
+        console.error('Copy failed:', error);
+        alert('Failed to copy. Please download instead.');
+      }
+    }
+
+    // Download brief as text file
+    function downloadBrief() {
+      if (!currentBrief) return;
+
+      const text = formatBriefAsText(currentBrief);
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cover-design-brief.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Format brief as plain text
+    function formatBriefAsText(brief) {
+      let text = '='.repeat(60) + '\n';
+      text += 'COVER DESIGN BRIEF\n';
+      text += '='.repeat(60) + '\n\n';
+
+      text += 'VISUAL CONCEPT\n';
+      text += '-'.repeat(60) + '\n';
+      text += `Main Imagery: ${brief.visualConcept?.mainImagery || 'N/A'}\n`;
+      text += `Composition: ${brief.visualConcept?.composition || 'N/A'}\n`;
+      text += `Focal Point: ${brief.visualConcept?.focalPoint || 'N/A'}\n\n`;
+
+      text += 'COLOR PALETTE\n';
+      text += '-'.repeat(60) + '\n';
+      text += `Primary: ${brief.colorPalette?.primary || 'N/A'}\n`;
+      text += `Secondary: ${brief.colorPalette?.secondary || 'N/A'}\n`;
+      text += `Accent: ${brief.colorPalette?.accent || 'N/A'}\n`;
+      text += `Overall: ${brief.colorPalette?.overall || 'N/A'}\n\n`;
+
+      text += 'TYPOGRAPHY\n';
+      text += '-'.repeat(60) + '\n';
+      text += `Title Font: ${brief.typography?.titleFont || 'N/A'}\n`;
+      text += `Author Font: ${brief.typography?.authorFont || 'N/A'}\n`;
+      text += `Hierarchy: ${brief.typography?.hierarchy || 'N/A'}\n`;
+      text += `Placement: ${brief.typography?.placement || 'N/A'}\n\n`;
+
+      text += 'MOOD & ATMOSPHERE\n';
+      text += '-'.repeat(60) + '\n';
+      text += `${brief.moodAtmosphere || 'N/A'}\n\n`;
+
+      text += 'GENRE CONVENTIONS\n';
+      text += '-'.repeat(60) + '\n';
+      if (brief.genreConventions) {
+        brief.genreConventions.forEach(conv => {
+          text += `- ${conv}\n`;
+        });
+      }
+      text += '\n';
+
+      text += 'KEY DESIGN ELEMENTS\n';
+      text += '-'.repeat(60) + '\n';
+      if (brief.designElements) {
+        brief.designElements.forEach(elem => {
+          text += `- ${elem}\n`;
+        });
+      }
+      text += '\n';
+
+      text += 'AI ART PROMPTS\n';
+      text += '-'.repeat(60) + '\n';
+      text += 'Midjourney:\n' + (brief.aiArtPrompts?.midjourney || 'N/A') + '\n\n';
+      text += 'DALL-E 3:\n' + (brief.aiArtPrompts?.dalle || 'N/A') + '\n\n';
+      text += 'Stable Diffusion:\n' + (brief.aiArtPrompts?.stableDiffusion || 'N/A') + '\n\n';
+
+      text += 'DESIGNER BRIEF\n';
+      text += '-'.repeat(60) + '\n';
+      text += `${brief.designerBrief || 'N/A'}\n\n`;
+
+      text += 'DIY GUIDANCE (Canva / Self-Design)\n';
+      text += '-'.repeat(60) + '\n';
+      text += `Template: ${brief.diyGuidance?.canvaTemplate || 'N/A'}\n\n`;
+      text += 'Key Tips:\n';
+      if (brief.diyGuidance?.keyTips) {
+        brief.diyGuidance.keyTips.forEach(tip => {
+          text += `- ${tip}\n`;
+        });
+      }
+      text += '\nCommon Mistakes to Avoid:\n';
+      if (brief.diyGuidance?.commonMistakes) {
+        brief.diyGuidance.commonMistakes.forEach(mistake => {
+          text += `- ${mistake}\n`;
+        });
+      }
+      text += '\n';
+
+      text += 'COMPARABLE COVERS\n';
+      text += '-'.repeat(60) + '\n';
+      if (brief.comparableCovers) {
+        brief.comparableCovers.forEach(cover => {
+          text += `- ${cover}\n`;
+        });
+      }
+      text += '\n';
+
+      text += 'TARGET AUDIENCE APPEAL\n';
+      text += '-'.repeat(60) + '\n';
+      text += `${brief.targetAudienceAppeal || 'N/A'}\n\n`;
+
+      text += '='.repeat(60) + '\n';
+      text += 'Generated by Manuscript Platform - Cover Brief Generator\n';
+      text += '='.repeat(60) + '\n';
+
+      return text;
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', loadManuscripts);
+  </script>
+</body>
+</html>

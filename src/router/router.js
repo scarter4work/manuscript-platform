@@ -416,6 +416,30 @@ export async function routeRequest(request, env, addCorsHeaders, rateLimitHeader
     return addCorsHeaders(await coverHandlers.calculateSpine(request, env), rateLimitHeaders);
   }
 
+  // POST /manuscripts/:id/cover/generate-brief - Generate AI cover design brief
+  if (path.match(/^\/manuscripts\/[^/]+\/cover\/generate-brief$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await coverHandlers.generateCoverBrief(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/cover/brief - Get cover design brief
+  if (path.match(/^\/manuscripts\/[^/]+\/cover\/brief$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await coverHandlers.getCoverBrief(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // POST /manuscripts/:id/cover/midjourney-prompt - Get Midjourney/AI prompts from brief
+  if (path.match(/^\/manuscripts\/[^/]+\/cover\/midjourney-prompt$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    return addCorsHeaders(await coverHandlers.generateMidjourneyPrompt(request, env, manuscriptId), rateLimitHeaders);
+  }
+
+  // GET /cover/templates/:genre - Get genre-specific cover design templates
+  if (path.match(/^\/cover\/templates\/[^/]+$/) && method === 'GET') {
+    const genre = path.split('/')[3];
+    return addCorsHeaders(await coverHandlers.getGenreTemplates(request, env, genre), rateLimitHeaders);
+  }
+
   // ========================================================================
   // PACKAGE DOWNLOAD ROUTES
   // ========================================================================
