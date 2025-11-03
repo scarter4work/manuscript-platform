@@ -18,6 +18,7 @@ import { coverHandlers } from '../handlers/cover-handlers.js';
 import { packageHandlers } from '../handlers/package-handlers.js';
 import { metadataHandlers } from '../handlers/metadata-handlers.js';
 import { seriesHandlers } from '../handlers/series-handlers.js';
+import { authorBioHandlers } from '../handlers/author-bio-handlers.js';
 
 // Legacy handlers (extracted from worker.js)
 import * as manuscriptLegacy from '../handlers/legacy-manuscript-handlers.js';
@@ -587,6 +588,41 @@ export async function routeRequest(request, env, addCorsHeaders, rateLimitHeader
   if (path.match(/^\/series\/[^/]+\/marketing$/) && method === 'GET') {
     const seriesId = path.split('/')[2];
     return addCorsHeaders(await seriesHandlers.handleGenerateMarketing(request, env, seriesId), rateLimitHeaders);
+  }
+
+  // ========================================================================
+  // AUTHOR BIO ROUTES
+  // ========================================================================
+
+  // POST /manuscripts/:id/author-bio/generate - Generate author bio variations
+  if (path.match(/^\/manuscripts\/[^/]+\/author-bio\/generate$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    request.params = { manuscriptId };
+    return addCorsHeaders(await authorBioHandlers.generateBio(request, env), rateLimitHeaders);
+  }
+
+  // POST /manuscripts/:id/author-bio/generate-all - Generate complete bio package (all lengths)
+  if (path.match(/^\/manuscripts\/[^/]+\/author-bio\/generate-all$/) && method === 'POST') {
+    const manuscriptId = path.split('/')[2];
+    request.params = { manuscriptId };
+    return addCorsHeaders(await authorBioHandlers.generateCompleteBioPackage(request, env), rateLimitHeaders);
+  }
+
+  // GET /manuscripts/:id/author-bio - Get author bios for manuscript
+  if (path.match(/^\/manuscripts\/[^/]+\/author-bio$/) && method === 'GET') {
+    const manuscriptId = path.split('/')[2];
+    request.params = { manuscriptId };
+    return addCorsHeaders(await authorBioHandlers.getAuthorBios(request, env), rateLimitHeaders);
+  }
+
+  // PATCH /author/profile - Update author profile
+  if (path === '/author/profile' && method === 'PATCH') {
+    return addCorsHeaders(await authorBioHandlers.updateAuthorProfile(request, env), rateLimitHeaders);
+  }
+
+  // GET /author/profile - Get author profile
+  if (path === '/author/profile' && method === 'GET') {
+    return addCorsHeaders(await authorBioHandlers.getAuthorProfile(request, env), rateLimitHeaders);
   }
 
   // ========================================================================

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author Bio Generator - ManuscriptHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .breadcrumb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .bio-result {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .bio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .bio-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .bio-text {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .bio-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .length-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>✍️ Author Bio Generator</h1>
+                <p>AI-Powered Professional Author Bios</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="breadcrumb">
+        <div class="breadcrumb-content">
+            <a href="/dashboard-spa.html">📚 My Manuscripts</a>
+            <span>›</span>
+            <span>Author Bio Generator</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Generation Form -->
+        <div id="generation-form" class="card">
+            <h2>Generate Author Bio</h2>
+
+            <div class="info-box">
+                <p>📝 Create professional author bios in multiple lengths and styles. Perfect for Amazon author pages, book back matter, and your website.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="manuscript-select">Select Manuscript (for genre context)</label>
+                <select id="manuscript-select">
+                    <option value="">Loading manuscripts...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="author-name">Author Name *</label>
+                <input type="text" id="author-name" placeholder="Jane Author" required>
+            </div>
+
+            <div class="form-group">
+                <label for="genre">Genre</label>
+                <select id="genre">
+                    <option value="general">General</option>
+                    <option value="thriller">Thriller</option>
+                    <option value="mystery">Mystery</option>
+                    <option value="romance">Romance</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="sci-fi">Science Fiction</option>
+                    <option value="literary">Literary Fiction</option>
+                    <option value="horror">Horror</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Bio Length</label>
+                <div class="length-tabs">
+                    <div class="tab active" data-length="short">Short (50-100 words)</div>
+                    <div class="tab" data-length="medium">Medium (150-250 words)</div>
+                    <div class="tab" data-length="long">Long (300-500 words)</div>
+                    <div class="tab" data-length="all">All Lengths</div>
+                </div>
+                <input type="hidden" id="bio-length" value="short">
+            </div>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">Optional: Author Profile Info</h3>
+            <p style="color: #666; margin-bottom: 20px; font-size: 14px;">The more details you provide, the better the AI can craft your bio</p>
+
+            <div class="form-group">
+                <label for="previous-works">Previous Works (comma-separated)</label>
+                <input type="text" id="previous-works" placeholder="Book Title 1, Book Title 2">
+            </div>
+
+            <div class="form-group">
+                <label for="awards">Awards & Recognition (comma-separated)</label>
+                <input type="text" id="awards" placeholder="Bestseller Award, Literary Prize">
+            </div>
+
+            <div class="form-group">
+                <label for="credentials">Credentials & Background</label>
+                <textarea id="credentials" placeholder="MFA in Creative Writing, Former journalist, PhD in History"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" placeholder="Seattle, Washington">
+            </div>
+
+            <div class="form-group">
+                <label for="website">Website</label>
+                <input type="text" id="website" placeholder="https://janeauthor.com">
+            </div>
+
+            <div class="form-group">
+                <label for="existing-bio">Existing Bio Notes</label>
+                <textarea id="existing-bio" placeholder="Any notes about yourself you'd like to include..."></textarea>
+            </div>
+
+            <button class="btn" onclick="generateBio()" id="generate-btn">
+                🎨 Generate Author Bio
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="card hidden">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Generating professional author bio...</p>
+                <p style="font-size: 14px; color: #999; margin-top: 10px;">This may take 30-60 seconds</p>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="card hidden">
+            <h2>Generated Author Bios</h2>
+            <p style="color: #666; margin-bottom: 20px;">Select your favorite variation or download all</p>
+            <div id="bio-variations"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost'
+            ? 'http://localhost:8787'
+            : 'https://manuscript-upload-api.scarter4work.workers.dev';
+
+        let manuscripts = [];
+        let currentLength = 'short';
+        let generatedBios = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadManuscripts();
+            await loadAuthorProfile();
+            setupLengthTabs();
+        });
+
+        // Load manuscripts for selection
+        async function loadManuscripts() {
+            try {
+                const response = await fetch(`${API_BASE}/manuscripts`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) throw new Error('Failed to load manuscripts');
+
+                const data = await response.json();
+                manuscripts = data.manuscripts || [];
+
+                const select = document.getElementById('manuscript-select');
+                select.innerHTML = '<option value="">Select a manuscript (optional)</option>';
+                manuscripts.forEach(ms => {
+                    const option = document.createElement('option');
+                    option.value = ms.id;
+                    option.textContent = `${ms.title} (${ms.genre})`;
+                    option.dataset.genre = ms.genre;
+                    select.appendChild(option);
+                });
+
+                // Auto-select genre when manuscript selected
+                select.addEventListener('change', (e) => {
+                    const selected = e.target.selectedOptions[0];
+                    if (selected.dataset.genre) {
+                        document.getElementById('genre').value = selected.dataset.genre;
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error loading manuscripts:', error);
+            }
+        }
+
+        // Load author profile
+        async function loadAuthorProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/author/profile`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const profile = data.profile;
+
+                document.getElementById('author-name').value = profile.full_name || '';
+                document.getElementById('location').value = profile.location || '';
+                document.getElementById('website').value = profile.website || '';
+                document.getElementById('existing-bio').value = profile.bio || '';
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        // Setup length tabs
+        function setupLengthTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentLength = tab.dataset.length;
+                    document.getElementById('bio-length').value = currentLength;
+                });
+            });
+        }
+
+        // Generate bio
+        async function generateBio() {
+            const manuscriptId = document.getElementById('manuscript-select').value;
+            const authorName = document.getElementById('author-name').value.trim();
+            const genre = document.getElementById('genre').value;
+            const length = document.getElementById('bio-length').value;
+
+            if (!authorName) {
+                alert('Please enter author name');
+                return;
+            }
+
+            if (!manuscriptId) {
+                alert('Please select a manuscript');
+                return;
+            }
+
+            const btn = document.getElementById('generate-btn');
+            btn.disabled = true;
+
+            document.getElementById('generation-form').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+
+            try {
+                const body = {
+                    authorName,
+                    genre,
+                    length: length !== 'all' ? length : undefined,
+                    previousWorks: document.getElementById('previous-works').value.split(',').map(s => s.trim()).filter(s => s),
+                    awards: document.getElementById('awards').value.split(',').map(s => s.trim()).filter(s => s),
+                    credentials: document.getElementById('credentials').value.trim(),
+                    location: document.getElementById('location').value.trim(),
+                    website: document.getElementById('website').value.trim(),
+                    existingBio: document.getElementById('existing-bio').value.trim()
+                };
+
+                const endpoint = length === 'all'
+                    ? `${API_BASE}/manuscripts/${manuscriptId}/author-bio/generate-all`
+                    : `${API_BASE}/manuscripts/${manuscriptId}/author-bio/generate`;
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to generate bio');
+                }
+
+                const result = await response.json();
+                generatedBios = result;
+
+                displayResults(result);
+
+            } catch (error) {
+                console.error('Error generating bio:', error);
+                alert('Error: ' + error.message);
+                document.getElementById('generation-form').classList.remove('hidden');
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
+        // Display results
+        function displayResults(result) {
+            const container = document.getElementById('bio-variations');
+            container.innerHTML = '';
+
+            if (result.package) {
+                // All lengths generated
+                ['short', 'medium', 'long'].forEach(length => {
+                    const lengthData = result.package[length];
+                    if (lengthData && lengthData.variations) {
+                        const header = document.createElement('h3');
+                        header.style.marginTop = '30px';
+                        header.style.marginBottom = '15px';
+                        header.textContent = `${length.charAt(0).toUpperCase() + length.slice(1)} Bios (${lengthData.lengthSpec.wordCount} words)`;
+                        container.appendChild(header);
+
+                        lengthData.variations.forEach(variation => {
+                            container.appendChild(createBioCard(variation, length));
+                        });
+                    }
+                });
+            } else if (result.bio) {
+                // Single length generated
+                result.bio.variations.forEach(variation => {
+                    container.appendChild(createBioCard(variation, result.bio.length));
+                });
+            }
+
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Create bio card
+        function createBioCard(variation, length) {
+            const card = document.createElement('div');
+            card.className = 'bio-result';
+
+            card.innerHTML = `
+                <div class="bio-header">
+                    <h4 style="margin: 0;">${variation.approach.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h4>
+                    <div class="bio-meta">
+                        <span>📏 ${variation.wordCount} words</span>
+                        <span>🎭 ${variation.tone}</span>
+                    </div>
+                </div>
+                <div class="bio-text">${variation.text}</div>
+                <div class="bio-actions">
+                    <button class="btn btn-small" onclick="copyBio('${variation.id}', this)">📋 Copy</button>
+                    <button class="btn btn-small btn-secondary" onclick="downloadBio('${variation.id}', '${length}')">💾 Download</button>
+                </div>
+            `;
+
+            card.dataset.bioId = variation.id;
+            card.dataset.bioText = variation.text;
+
+            return card;
+        }
+
+        // Copy bio to clipboard
+        function copyBio(bioId, button) {
+            const card = document.querySelector(`[data-bio-id="${bioId}"]`);
+            const text = card.dataset.bioText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Download bio as text file
+        function downloadBio(bioId, length) {
+            const card = document.querySelector(`[data-bio-id="${bioId}"]`);
+            const text = card.dataset.bioText;
+            const authorName = document.getElementById('author-name').value;
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${authorName.replace(/\s+/g, '_')}_bio_${length}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Generate another bio
+        function generateAnother() {
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('generation-form').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
