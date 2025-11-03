@@ -30,7 +30,7 @@
     "vite": "^7.1.12",
     "vite-plugin-static-copy": "^3.1.4",
     "vitest": "^3.2.4",
-    "wrangler": "^4.42.2"
+    "wrangler": "^4.45.3"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
