@@ -63,10 +63,15 @@ services:
       - key: SESSION_DURATION
         value: 1800
 
+  # Redis service for session storage
+  - type: redis
+    name: manuscript-redis
+    region: oregon
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
 databases:
   - name: manuscript-db
     databaseName: manuscript_platform
-    plan: free
-
-  - name: manuscript-redis
     plan: free
