@@ -70,4 +70,3 @@ databases:
 
   - name: manuscript-redis
     plan: starter
-    maxmemoryPolicy: allkeys-lru
