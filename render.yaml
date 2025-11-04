@@ -5,7 +5,7 @@ services:
     runtime: node
     env: node
     region: oregon
-    plan: starter
+    plan: free
     buildCommand: npm install
     startCommand: node server.js
     envVars:
@@ -66,7 +66,7 @@ services:
 databases:
   - name: manuscript-db
     databaseName: manuscript_platform
-    plan: starter
+    plan: free
 
   - name: manuscript-redis
-    plan: starter
+    plan: free
