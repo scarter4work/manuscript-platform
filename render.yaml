@@ -5,7 +5,7 @@ services:
     runtime: node
     env: node
     region: oregon
-    plan: free
+    plan: standard
     buildCommand: npm install
     startCommand: node server.js
     envVars:
