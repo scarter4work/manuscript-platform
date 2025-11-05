@@ -23,6 +23,7 @@ export async function createSessionStore(env) {
   const redisClient = createClient({
     url: redisUrl,
     socket: {
+      connectTimeout: 10000, // 10 second timeout
       reconnectStrategy: (retries) => {
         if (retries > 10) {
           console.error('Redis reconnection failed after 10 attempts');
@@ -45,8 +46,21 @@ export async function createSessionStore(env) {
     console.log('Redis Client Reconnecting...');
   });
 
-  // Connect to Redis
-  await redisClient.connect();
+  // Connect to Redis with timeout and better error handling
+  try {
+    console.log(`Connecting to Redis at ${redisUrl.replace(/:[^:]*@/, ':****@')}...`);
+    await Promise.race([
+      redisClient.connect(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Redis connection timeout after 10s')), 10000)
+      )
+    ]);
+    console.log('✓ Redis connected successfully');
+  } catch (error) {
+    console.error('❌ Redis connection failed:', error.message);
+    console.error('Redis URL format:', redisUrl.replace(/:[^:]*@/, ':****@'));
+    throw new Error(`Failed to connect to Redis: ${error.message}`);
+  }
 
   // Create Redis store
   const store = new RedisStore({
