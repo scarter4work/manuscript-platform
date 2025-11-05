@@ -237,10 +237,16 @@ export function createStorageAdapter(env) {
   };
 
   // Validate configuration
-  const required = ['endpoint', 'region', 'accessKeyId', 'secretAccessKey'];
-  for (const key of required) {
+  const envVarMap = {
+    endpoint: 'B2_ENDPOINT',
+    region: 'B2_REGION',
+    accessKeyId: 'B2_ACCESS_KEY_ID',
+    secretAccessKey: 'B2_SECRET_ACCESS_KEY'
+  };
+
+  for (const key in envVarMap) {
     if (!config[key]) {
-      throw new Error(`B2_${key.toUpperCase()} environment variable is required`);
+      throw new Error(`${envVarMap[key]} environment variable is required`);
     }
   }
 
