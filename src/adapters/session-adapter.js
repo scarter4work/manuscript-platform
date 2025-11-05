@@ -4,7 +4,7 @@
  */
 
 import session from 'express-session';
-import createRedisStore from 'connect-redis';
+import RedisStore from 'connect-redis';
 import { createClient } from 'redis';
 
 /**
@@ -13,8 +13,8 @@ import { createClient } from 'redis';
  * @returns {Promise<Object>}
  */
 export async function createSessionStore(env) {
-  // Initialize RedisStore with session
-  const RedisStore = createRedisStore(session);
+  // Initialize RedisStore constructor (connect-redis v7 API)
+  const RedisStoreConstructor = RedisStore(session);
   const redisUrl = env.REDIS_URL;
 
   if (!redisUrl) {
@@ -65,7 +65,7 @@ export async function createSessionStore(env) {
   }
 
   // Create Redis store
-  const store = new RedisStore({
+  const store = new RedisStoreConstructor({
     client: redisClient,
     prefix: 'manuscript:sess:',
     ttl: parseInt(env.SESSION_DURATION || '1800', 10), // 30 minutes default
