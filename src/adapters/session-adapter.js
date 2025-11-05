@@ -4,7 +4,7 @@
  */
 
 import session from 'express-session';
-import RedisStore from 'connect-redis';
+import createRedisStore from 'connect-redis';
 import { createClient } from 'redis';
 
 /**
@@ -13,6 +13,8 @@ import { createClient } from 'redis';
  * @returns {Promise<Object>}
  */
 export async function createSessionStore(env) {
+  // Initialize RedisStore with session
+  const RedisStore = createRedisStore(session);
   const redisUrl = env.REDIS_URL;
 
   if (!redisUrl) {
