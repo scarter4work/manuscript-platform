@@ -13,8 +13,6 @@ import { createClient } from 'redis';
  * @returns {Promise<Object>}
  */
 export async function createSessionStore(env) {
-  // Initialize RedisStore constructor (connect-redis v7 API)
-  const RedisStoreConstructor = RedisStore(session);
   const redisUrl = env.REDIS_URL;
 
   if (!redisUrl) {
@@ -64,8 +62,8 @@ export async function createSessionStore(env) {
     throw new Error(`Failed to connect to Redis: ${error.message}`);
   }
 
-  // Create Redis store
-  const store = new RedisStoreConstructor({
+  // Create Redis store (connect-redis v7 with ESM)
+  const store = new RedisStore({
     client: redisClient,
     prefix: 'manuscript:sess:',
     ttl: parseInt(env.SESSION_DURATION || '1800', 10), // 30 minutes default
