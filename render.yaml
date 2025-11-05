@@ -68,7 +68,6 @@ services:
     name: manuscript-redis
     region: oregon
     plan: free
-    maxmemoryPolicy: allkeys-lru
     ipAllowList: []
 
 databases:

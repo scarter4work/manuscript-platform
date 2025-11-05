@@ -8,21 +8,29 @@ AI-powered platform for indie authors to edit, publish, and market manuscripts. 
 
 ## Architecture
 
-**Stack:**
-- Cloudflare Workers (serverless edge compute)
-- R2 (object storage for manuscripts/assets)
-- D1 (SQLite metadata - planned)
-- Vectorize (comp title matching - planned)
+**Primary Stack (Production on Render):**
+- Express.js on Node.js (Render Web Service)
+- PostgreSQL (Render Managed Database)
+- Redis (Render Session Storage)
+- Backblaze B2 (Object storage for manuscripts/assets)
 - Claude API (AI manuscript analysis)
 
-**Buckets:**
-- `manuscripts-raw` - Original uploads
-- `manuscripts-processed` - AI-analyzed with feedback
-- `marketing-assets` - Covers, photos, promotional materials
+**Legacy Stack (Cloudflare - Development):**
+- Cloudflare Workers (serverless edge compute)
+- R2 (object storage for manuscripts/assets)
+- D1 (SQLite metadata)
+- Vectorize (comp title matching - planned)
+
+**Storage Buckets (Backblaze B2):**
+- `manuscript-raw` - Original uploads
+- `manuscript-processed` - AI-analyzed with feedback
+- `manuscript-marketing-assets` - Covers, photos, promotional materials
+- `manuscript-platform-backups` - Database backups
 
 **Domains:**
-- API: `api.scarter4workmanuscripthub.com`
-- Frontend: TBD
+- API (Production): `api.scarter4workmanuscripthub.com` (Render)
+- API (Development): `manuscript-upload-api.scarter4work.workers.dev` (Cloudflare)
+- Frontend: `scarter4workmanuscripthub.com`
 
 ## Current State
 
@@ -32,18 +40,31 @@ AI-powered platform for indie authors to edit, publish, and market manuscripts. 
 - ✅ Developmental editing agent (plot, character, pacing)
 - ✅ Line editing agent (prose improvement)
 - ✅ Copy editing agent (grammar, consistency)
+- ✅ Enhanced Metadata System (Issue #51 - 49 genres, 24 content warnings, word count validation)
+- ✅ Author Bio Generator (Issue #43)
+- ✅ Cover Design Brief Generator (Issue #46)
+- ✅ Multi-Platform Export Packages (Issue #58 - D2D, IngramSpark, Apple Books)
 
-**In Progress:**
-- GitHub Issues migration from Linear
-- CI/CD pipeline configuration
-- Cross-platform build fixes
+**Completed (MVP Features):**
+- ✅ Query Letters & Synopsis Management (Issue #49 - AI generation, version tracking)
+- ✅ Submission Package Bundler (Issue #50 - Package templates, ZIP downloads)
+- ✅ Nuanced Submission Response System (Issue #52 - 8 response types, feedback tracking, R&R workflow)
+
+**🎉 MVP MILESTONE: ALL 4 MVP FEATURES COMPLETE! 🎉**
+- ✅ Issue #51 - Enhanced Manuscript Metadata System
+- ✅ Issue #49 - Query Letters & Synopsis Management
+- ✅ Issue #50 - Submission Package Bundler
+- ✅ Issue #52 - Nuanced Submission Response System
 
 **Key Files:**
-- `worker.js` - Main API routes and handlers
-- `developmental-agent.js` - Developmental editing implementation
-- `line-editing-agent.js` - Line editing implementation
-- `copy-editing-agent.js` - Copy editing implementation
+- `server.js` - Express.js server (Render production)
+- `worker.js` - Cloudflare Worker entry point (Cloudflare development)
+- `render.yaml` - Render deployment configuration
 - `wrangler.toml` - Cloudflare configuration
+- `src/adapters/` - Database, storage, and session adapters (D1→PostgreSQL, R2→B2, KV→Redis)
+- `src/router/router.js` - Platform-agnostic routing layer
+- `src/handlers/` - API request handlers
+- `src/generators/` - AI content generation modules
 
 ## Agile Development Workflow
 
@@ -77,6 +98,10 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 ### Platform-Specific Rules
 **"I'm not on Linux, I'm on Windows, and I have to deal with it"**
 
+- Use **Render MCP** for Render deployment operations (deployments, logs, services)
+  - **TODO**: Install Render MCP server (not currently configured)
+  - Check deployment status, view logs, manage services
+  - Prefer MCP over manual API calls or web console checks
 - Use **Cloudflare MCP** for Cloudflare operations (not bash/wrangler)
 - Use **Windows MCP** for desktop operations when needed
 - Bash commands may not work as expected - prefer MCP tools
@@ -101,6 +126,45 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 - `POST /analyze/developmental` - Trigger analysis (JSON: manuscriptKey, genre)
 - `GET /analysis/{manuscriptKey}` - Get results
 
+### Enhanced Metadata (Issue #51)
+- `GET /genres` - Get genre taxonomy (49 genres, hierarchical)
+- `GET /genres/:id` - Get specific genre with subgenres
+- `GET /genres/:id/subgenres` - Get subgenres
+- `GET /content-warnings` - Get content warnings (24 warnings, 6 categories)
+- `PATCH /manuscripts/:id/enhanced-metadata` - Update metadata
+- `GET /manuscripts/:id/validate-genre` - Validate word count vs genre
+- `GET /manuscripts/:id/metadata-history` - Get change history
+
+### Query Letters & Synopsis (Issue #49)
+- `POST /manuscripts/:id/documents/generate` - AI generate query letter or synopsis
+- `POST /manuscripts/:id/documents/generate-all` - Generate all 3 documents
+- `GET /manuscripts/:id/documents` - List supporting documents
+- `GET /manuscripts/:id/documents/:docId` - Get specific document
+- `PUT /manuscripts/:id/documents/:docId` - Update (creates new version)
+- `DELETE /manuscripts/:id/documents/:docId` - Delete document
+- `GET /manuscripts/:id/documents/:docType/versions` - Version history
+
+### Submission Packages (Issue #50)
+- `POST /manuscripts/:id/packages` - Create submission package
+- `GET /manuscripts/:id/packages` - List packages
+- `GET /manuscripts/:id/packages/:pkgId` - Get package details
+- `PUT /manuscripts/:id/packages/:pkgId` - Update package
+- `DELETE /manuscripts/:id/packages/:pkgId` - Delete package
+- `GET /manuscripts/:id/packages/:pkgId/download` - Download as ZIP
+- `POST /manuscripts/:id/packages/:pkgId/duplicate` - Duplicate package
+- `GET /manuscripts/:id/packages/templates` - Get package templates
+
+### Submission Tracking (Issue #52)
+- `POST /manuscripts/:id/submissions` - Create submission
+- `GET /manuscripts/:id/submissions` - List submissions
+- `GET /submissions/:id` - Get submission details
+- `PATCH /submissions/:id/response` - Update response (8 types)
+- `POST /submissions/:id/feedback` - Add categorized feedback
+- `GET /submissions/:id/feedback` - Get all feedback
+- `PATCH /submissions/:id/feedback/:fbId` - Mark feedback as addressed
+- `POST /submissions/:id/resubmit` - Create R&R resubmission
+- `GET /manuscripts/:id/feedback-summary` - Aggregate feedback summary
+
 ## Security Notes
 **Current**: Development mode (no auth)
 **Production TODO**:
@@ -117,6 +181,65 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 - Claude API: ~$2-4 per manuscript analysis
 
 ## Recent Activity Log
+
+### 2025-11-04 (Render Migration)
+- **Render Deployment Configuration**
+  - Created `server.js` Express.js adapter for Render
+  - Implemented platform adapters: database (D1→PostgreSQL), storage (R2→Backblaze B2), session (KV→Redis)
+  - Fixed `render.yaml` configuration issues:
+    - Removed unsupported `maxmemoryPolicy` field from Redis service config
+    - Changed plan from deprecated `starter` to `standard` (web) and `free` (database/Redis)
+    - Moved Redis from `databases` to `services` section
+  - Deployment targets: PostgreSQL database, Redis cache, Express web service
+  - **TODO**: Configure Render MCP server for deployment monitoring
+
+### 2025-11-03 (MVP COMPLETION DAY! 🎉)
+- **COMPLETED Issue #51**: Enhanced Manuscript Metadata System
+  - Database migration: 3 new tables (genres, content_warning_types, manuscript_metadata_history)
+  - Added 10 metadata columns to manuscripts table
+  - Seed data: 49 genres (Fiction/Nonfiction hierarchy), 24 content warnings
+  - 7 API endpoints for metadata management
+  - Frontend UI: metadata.html (670 lines)
+  - Word count validation against genre norms
+
+- **COMPLETED Issue #49**: Query Letters & Synopsis Management System
+  - Database migration: supporting_documents table with version tracking
+  - AI Generators: query-letter-generator.js (220 lines), synopsis-generator.js (350 lines)
+  - 7 API endpoints for document generation and management
+  - Frontend UI: documents.html (230 lines)
+  - Query letters (250-500 words), Short synopsis (500w), Long synopsis (2500w)
+  - Version management with rollback capability
+
+- **COMPLETED Issue #50**: Submission Package Bundler
+  - Database migration: submission_packages, package_document_map tables
+  - Package handlers: submission-package-handlers.js (650 lines)
+  - 8 API endpoints for package CRUD operations
+  - Frontend UI: packages.html (480 lines)
+  - Package templates: agent query, full manuscript, query only, contest
+  - Client-side ZIP generation using JSZip library
+  - Document selection interface with ordering
+
+- **COMPLETED Issue #52**: Nuanced Submission Response System
+  - Database migration: submissions table enhancement, submission_feedback table
+  - Response handlers: submission-response-handlers.js (750 lines)
+  - 9 API endpoints for submission lifecycle
+  - Frontend UI: submissions.html (520 lines)
+  - 8 response types (form rejection, R&R, request full, offer, etc.)
+  - 10 categorized feedback types (plot, character, pacing, etc.)
+  - R&R workflow with revision tracking and resubmission linking
+  - Feedback summary dashboard with aggregate statistics
+  - Color-coded response badges
+
+- **🎉 MVP MILESTONE ACHIEVED**: All 4 MVP features (#51, #49, #50, #52) complete and deployed!
+  - Complete traditional publishing workflow from metadata to submission tracking
+  - Total code added: ~4,600 lines across 3 sessions
+  - All deployments successful, zero errors
+  - All database migrations applied successfully
+
+### 2025-11-02
+- Completed Issue #58: Multi-Platform Export Packages UI
+- Completed Issue #46: AI Cover Design Brief Generator
+- Completed Issue #43: Author Bio Generator
 
 ### 2025-11-01
 - Set up CLAUDE.md for project memory
