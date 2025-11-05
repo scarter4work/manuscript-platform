@@ -107,7 +107,7 @@ async function initializeAdapters() {
 
   } catch (error) {
     console.error('Failed to initialize adapters:', error);
-    process.exit(1);
+    throw error; // Don't exit, let caller handle it
   }
 }
 
@@ -261,13 +261,21 @@ app.use((err, req, res, next) => {
 // Initialize and start server
 async function start() {
   try {
-    await initializeAdapters();
-
-    app.listen(PORT, () => {
+    // Start HTTP server FIRST so Render sees it as "deployed"
+    const server = app.listen(PORT, () => {
       console.log(`\n✓ Server running on port ${PORT}`);
       console.log(`✓ Environment: ${NODE_ENV}`);
-      console.log(`✓ Health check: http://localhost:${PORT}/health\n`);
+      console.log(`✓ Health check: http://localhost:${PORT}/health`);
+      console.log('⏳ Initializing adapters...\n');
     });
+
+    // Initialize adapters in background
+    initializeAdapters().catch(error => {
+      console.error('Failed to initialize adapters:', error);
+      console.error('Server will continue running but API requests will fail until adapters are ready');
+      // TODO: Add retry logic here
+    });
+
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
