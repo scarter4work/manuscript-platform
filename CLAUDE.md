@@ -99,9 +99,12 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 **"I'm not on Linux, I'm on Windows, and I have to deal with it"**
 
 - Use **Render MCP** for Render deployment operations (deployments, logs, services)
-  - **TODO**: Install Render MCP server (not currently configured)
+  - ✅ **Configured**: MCP server at `~/.claude/mcp.json`
+  - Endpoint: `https://mcp.render.com/mcp` (SSE transport)
+  - API token stored in MCP config (rotate regularly)
   - Check deployment status, view logs, manage services
   - Prefer MCP over manual API calls or web console checks
+  - **Note**: Requires Claude Code restart after config changes
 - Use **Cloudflare MCP** for Cloudflare operations (not bash/wrangler)
 - Use **Windows MCP** for desktop operations when needed
 - Bash commands may not work as expected - prefer MCP tools
@@ -191,7 +194,8 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
     - Changed plan from deprecated `starter` to `standard` (web) and `free` (database/Redis)
     - Moved Redis from `databases` to `services` section
   - Deployment targets: PostgreSQL database, Redis cache, Express web service
-  - **TODO**: Configure Render MCP server for deployment monitoring
+  - ✅ **Configured Render MCP server** at `~/.claude/mcp.json` for deployment monitoring
+  - API token rotated for security
 
 ### 2025-11-03 (MVP COMPLETION DAY! 🎉)
 - **COMPLETED Issue #51**: Enhanced Manuscript Metadata System
