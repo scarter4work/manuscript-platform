@@ -175,6 +175,24 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 
 ## Recent Activity Log
 
+### 2025-11-05 (Login Fixes & Redis Rate Limiting)
+- **Fixed Critical Login Failures**
+  - Resolved `ReferenceError: origin is not defined` in auth-handlers.js
+  - Moved origin declaration outside try block for proper error handling
+  - Fixed CORS headers in error responses
+
+- **Refactored Rate Limiting for Redis**
+  - Replaced Cloudflare KV (env.SESSIONS) with direct Redis client usage (env.REDIS)
+  - Rewrote isRateLimited(), recordLoginAttempt(), clearRateLimit()
+  - Uses native Redis commands: get, set (with EX), del
+  - Proper error handling with graceful degradation
+  - Rate limiting now fully functional on Render deployment
+
+- **Test Infrastructure Fixes**
+  - Fixed Vitest configuration to work with Node.js environment (was Cloudflare Workers)
+  - Installed Windows-specific optional dependencies (@rollup/rollup-win32-x64-msvc, @esbuild/win32-x64)
+  - All 125 tests passing
+
 ### 2025-11-04 (Render Migration)
 - **Render Deployment Configuration**
   - Created `server.js` Express.js adapter for Render
