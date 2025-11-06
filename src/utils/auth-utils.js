@@ -212,7 +212,7 @@ export async function verifyPassword(password, hash) {
  * Create a new session for a user
  *
  * @param {string} userId - User ID
- * @param {Object} env - Cloudflare environment (for KV access)
+ * @param {Object} env - Environment with Redis client
  * @param {boolean} rememberMe - Extend session duration
  * @returns {Promise<string>} Session ID
  */
@@ -227,12 +227,21 @@ export async function createSession(userId, env, rememberMe = false) {
     rememberMe
   };
 
-  // Store in KV with TTL
-  await env.SESSIONS.put(
-    `session:${sessionId}`,
-    JSON.stringify(sessionData),
-    { expirationTtl: duration }
-  );
+  // Store in Redis with TTL
+  if (env.REDIS) {
+    try {
+      await env.REDIS.set(
+        `session:${sessionId}`,
+        JSON.stringify(sessionData),
+        { EX: duration }
+      );
+    } catch (error) {
+      console.error('Failed to create session in Redis:', error);
+      // Continue anyway - session won't persist but login can succeed
+    }
+  } else {
+    console.warn('Session storage not available: Redis not configured');
+  }
 
   return sessionId;
 }
@@ -241,7 +250,7 @@ export async function createSession(userId, env, rememberMe = false) {
  * Validate a session and return user ID
  *
  * @param {string} sessionId - Session ID from cookie
- * @param {Object} env - Cloudflare environment
+ * @param {Object} env - Environment with Redis client
  * @returns {Promise<string|null>} User ID if valid, null otherwise
  */
 export async function validateSession(sessionId, env) {
@@ -249,8 +258,13 @@ export async function validateSession(sessionId, env) {
     return null;
   }
 
+  if (!env.REDIS) {
+    console.warn('Session validation skipped: Redis not configured');
+    return null;
+  }
+
   try {
-    const sessionData = await env.SESSIONS.get(`session:${sessionId}`);
+    const sessionData = await env.REDIS.get(`session:${sessionId}`);
 
     if (!sessionData) {
       return null;
@@ -261,7 +275,7 @@ export async function validateSession(sessionId, env) {
     // Check if session is expired
     if (session.expiresAt < Date.now()) {
       // Clean up expired session
-      await env.SESSIONS.delete(`session:${sessionId}`);
+      await env.REDIS.del(`session:${sessionId}`);
       return null;
     }
 
@@ -269,11 +283,11 @@ export async function validateSession(sessionId, env) {
     const duration = session.rememberMe ? AUTH_CONFIG.SESSION_DURATION_REMEMBER : AUTH_CONFIG.SESSION_DURATION;
     session.expiresAt = Date.now() + (duration * 1000);
 
-    // Update session in KV with refreshed TTL
-    await env.SESSIONS.put(
+    // Update session in Redis with refreshed TTL
+    await env.REDIS.set(
       `session:${sessionId}`,
       JSON.stringify(session),
-      { expirationTtl: duration }
+      { EX: duration }
     );
 
     return session.userId;
@@ -287,7 +301,7 @@ export async function validateSession(sessionId, env) {
  * Destroy a session (logout)
  *
  * @param {string} sessionId - Session ID to destroy
- * @param {Object} env - Cloudflare environment
+ * @param {Object} env - Environment with Redis client
  * @returns {Promise<void>}
  */
 export async function destroySession(sessionId, env) {
@@ -295,7 +309,17 @@ export async function destroySession(sessionId, env) {
     return;
   }
 
-  await env.SESSIONS.delete(`session:${sessionId}`);
+  if (!env.REDIS) {
+    console.warn('Session destruction skipped: Redis not configured');
+    return;
+  }
+
+  try {
+    await env.REDIS.del(`session:${sessionId}`);
+  } catch (error) {
+    console.error('Failed to destroy session:', error);
+    // Don't throw - logout should succeed even if Redis fails
+  }
 }
 
 /**
