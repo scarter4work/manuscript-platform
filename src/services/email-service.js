@@ -1,19 +1,21 @@
 /**
  * Email Service for Manuscript Platform
- * Uses MailChannels API (free for Cloudflare Workers)
+ * Uses Resend API (Render-compatible email delivery)
  *
  * Handles:
  * - DMCA notification emails
  * - User verification emails
  * - Password reset emails
  * - Admin alerts
+ * - Payment notifications
+ * - Team invitations
  */
+
+import { Resend } from 'resend';
 
 // ============================================================================
 // CONFIGURATION
 // ============================================================================
-
-const MAILCHANNELS_API = 'https://api.mailchannels.net/tx/v1/send';
 
 // Email configuration (defaults, can be overridden by environment variables)
 const EMAIL_CONFIG = {
@@ -38,7 +40,7 @@ function getEmailConfig(env) {
 // ============================================================================
 
 /**
- * Send an email using MailChannels API
+ * Send an email using Resend API
  *
  * @param {Object} params - Email parameters
  * @param {string} params.to - Recipient email
@@ -53,55 +55,42 @@ export async function sendEmail({ to, subject, html, text, replyTo, env }) {
   try {
     const config = getEmailConfig(env);
 
-    const payload = {
-      personalizations: [
-        {
-          to: [{ email: to }],
-        },
-      ],
-      from: {
-        email: config.FROM_EMAIL,
-        name: config.FROM_NAME,
-      },
+    // Initialize Resend client
+    const apiKey = env?.RESEND_API_KEY || process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error('[Email] RESEND_API_KEY not configured');
+      return false;
+    }
+
+    const resend = new Resend(apiKey);
+
+    // Prepare email payload
+    const emailPayload = {
+      from: `${config.FROM_NAME} <${config.FROM_EMAIL}>`,
+      to: to,
       subject: subject,
-      content: [
-        {
-          type: 'text/html',
-          value: html,
-        },
-      ],
+      html: html,
     };
 
     // Add plain text version if provided
     if (text) {
-      payload.content.push({
-        type: 'text/plain',
-        value: text,
-      });
+      emailPayload.text = text;
     }
 
     // Add reply-to if provided
     if (replyTo) {
-      payload.reply_to = {
-        email: replyTo,
-      };
+      emailPayload.reply_to = replyTo;
     }
 
-    const response = await fetch(MAILCHANNELS_API, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+    // Send email via Resend
+    const { data, error } = await resend.emails.send(emailPayload);
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('[Email] MailChannels error:', error);
+    if (error) {
+      console.error('[Email] Resend error:', error);
       return false;
     }
 
-    console.log(`[Email] Sent email to ${to}: ${subject}`);
+    console.log(`[Email] Sent email to ${to}: ${subject} (ID: ${data?.id})`);
     return true;
   } catch (error) {
     console.error('[Email] Send error:', error);
