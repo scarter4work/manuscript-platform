@@ -5,10 +5,11 @@
  * - Plain text (.txt) - Full support
  * - Microsoft Word (.docx) - Full support
  * - PDF (.pdf) - Limited support (recommend converting to .docx)
- * - EPUB (.epub) - Planned
+ * - EPUB (.epub) - Full support
  */
 
 import mammoth from 'mammoth';
+import JSZip from 'jszip';
 
 /**
  * Extract text from manuscript buffer based on content type
@@ -113,15 +114,131 @@ async function extractFromPDF(buffer) {
 
 /**
  * Extract text from EPUB file
- * Note: This is a placeholder. For production, use epub parser
+ * EPUB files are ZIP archives containing XHTML files
  */
 async function extractFromEPUB(buffer) {
-  // TODO: Implement EPUB extraction
-  // Options:
-  // 1. epub-parser: npm install epub-parser
-  // 2. Extract and parse XHTML files from ZIP
+  try {
+    const zip = await JSZip.loadAsync(buffer);
+    let fullText = '';
+    let chapterCount = 0;
 
-  throw new Error('EPUB extraction not yet implemented. Please convert to .docx or .txt format.');
+    // Find and parse content.opf to get reading order
+    const opfFile = Object.keys(zip.files).find(name => name.endsWith('.opf'));
+    let spine = [];
+
+    if (opfFile) {
+      const opfContent = await zip.files[opfFile].async('string');
+      spine = parseSpineFromOPF(opfContent);
+    }
+
+    // Extract text from all HTML/XHTML files
+    const contentFiles = Object.keys(zip.files).filter(name =>
+      name.match(/\.(xhtml|html|htm)$/i) && !name.startsWith('__MACOSX')
+    );
+
+    // Sort by spine order if available, otherwise by filename
+    const filesToProcess = spine.length > 0
+      ? spine.filter(f => contentFiles.includes(f))
+      : contentFiles.sort();
+
+    for (const filename of filesToProcess) {
+      if (zip.files[filename] && !zip.files[filename].dir) {
+        const content = await zip.files[filename].async('string');
+        const text = stripHTMLTags(content);
+
+        if (text.trim().length > 100) { // Filter out very short files (metadata, etc.)
+          fullText += text + '\n\n';
+          chapterCount++;
+        }
+      }
+    }
+
+    if (!fullText.trim()) {
+      throw new Error('No text content found in EPUB file');
+    }
+
+    const wordCount = countWords(fullText);
+
+    console.log(`[EPUB Extraction] Successfully extracted ${wordCount} words from ${chapterCount} chapters`);
+
+    return fullText;
+  } catch (error) {
+    console.error('[EPUB Extraction] Error:', error);
+
+    if (error.message.includes('encrypted') || error.message.includes('DRM')) {
+      throw new Error('This EPUB file appears to be DRM-protected. Please upload a DRM-free version.');
+    }
+
+    throw new Error(`Failed to extract text from EPUB: ${error.message}`);
+  }
+}
+
+/**
+ * Parse spine (reading order) from OPF file
+ */
+function parseSpineFromOPF(opfContent) {
+  const spine = [];
+  const spineMatch = opfContent.match(/<spine[^>]*>([\s\S]*?)<\/spine>/i);
+
+  if (spineMatch) {
+    const itemrefRegex = /<itemref[^>]*idref=["']([^"']+)["']/gi;
+    let match;
+
+    while ((match = itemrefRegex.exec(spineMatch[1])) !== null) {
+      spine.push(match[1]);
+    }
+
+    // Map idrefs to actual file paths
+    const manifestItems = {};
+    const manifestMatch = opfContent.match(/<manifest[^>]*>([\s\S]*?)<\/manifest>/i);
+
+    if (manifestMatch) {
+      const itemRegex = /<item[^>]*id=["']([^"']+)["'][^>]*href=["']([^"']+)["']/gi;
+      let itemMatch;
+
+      while ((itemMatch = itemRegex.exec(manifestMatch[1])) !== null) {
+        manifestItems[itemMatch[1]] = itemMatch[2];
+      }
+    }
+
+    return spine.map(id => manifestItems[id]).filter(Boolean);
+  }
+
+  return [];
+}
+
+/**
+ * Strip HTML tags and extract plain text
+ */
+function stripHTMLTags(html) {
+  // Remove script and style tags entirely
+  let text = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  text = text.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+
+  // Remove HTML comments
+  text = text.replace(/<!--[\s\S]*?-->/g, '');
+
+  // Replace common block elements with newlines
+  text = text.replace(/<\/?(p|div|br|h[1-6]|li|tr)[^>]*>/gi, '\n');
+
+  // Remove all other HTML tags
+  text = text.replace(/<[^>]+>/g, ' ');
+
+  // Decode common HTML entities
+  text = text.replace(/&nbsp;/g, ' ');
+  text = text.replace(/&lt;/g, '<');
+  text = text.replace(/&gt;/g, '>');
+  text = text.replace(/&amp;/g, '&');
+  text = text.replace(/&quot;/g, '"');
+  text = text.replace(/&apos;/g, "'");
+  text = text.replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
+
+  // Clean up whitespace
+  text = text.replace(/\n\s*\n/g, '\n\n'); // Multiple newlines to double newline
+  text = text.replace(/[ \t]+/g, ' '); // Multiple spaces to single space
+  text = text.trim();
+
+  return text;
 }
 
 /**
