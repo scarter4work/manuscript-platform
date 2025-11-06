@@ -239,7 +239,7 @@ export async function handleLogin(request, env) {
 
     // Fetch user from database
     const user = await env.DB.prepare(
-      'SELECT id, email, password_hash, role, email_verified FROM users WHERE email = ?'
+      'SELECT id, email, password_hash, email_verified FROM users WHERE email = ?'
     ).bind(normalizedEmail).first();
 
     // Verify user exists and password matches
@@ -286,7 +286,6 @@ export async function handleLogin(request, env) {
     return jsonResponse({
       userId: user.id,
       email: user.email,
-      role: user.role,
       message: 'Login successful'
     }, 200, {
       'Set-Cookie': createSessionCookie(sessionId, rememberMe)
