@@ -2,15 +2,17 @@
  * Authentication Utilities for Manuscript Platform
  *
  * Handles user authentication, session management, and security
- * Uses bcrypt for password hashing and Cloudflare KV for sessions
+ * Uses bcrypt for password hashing and Redis for sessions
  *
  * Security Features:
  * - bcrypt password hashing (cost factor 12)
  * - Secure session tokens (crypto.randomUUID)
  * - HttpOnly, Secure, SameSite cookies
- * - Session expiration (24 hours default)
+ * - Session expiration (30 minutes default, 30 days with remember me)
  * - Audit logging for all auth events
  */
+
+import bcrypt from 'bcryptjs';
 
 // ============================================================================
 // CONFIGURATION
@@ -94,110 +96,28 @@ export function validateEmail(email) {
 
 // ============================================================================
 // PASSWORD HASHING
-// Note: In production, use a proper bcrypt library
-// For now, using a simplified approach with Web Crypto API
 // ============================================================================
 
 /**
- * Hash a password using PBKDF2 (alternative to bcrypt for Workers)
- *
- * In production, consider using:
- * - @cloudflare/workers-types with bcrypt WASM
- * - Or PBKDF2 with high iteration count (this implementation)
+ * Hash a password using bcrypt
  *
  * @param {string} password - Plain text password
- * @returns {Promise<string>} Hashed password as hex string
+ * @returns {Promise<string>} Hashed password
  */
 export async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-
-  // Generate random salt (16 bytes)
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-
-  // Import password as key material
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    data,
-    { name: 'PBKDF2' },
-    false,
-    ['deriveBits']
-  );
-
-  // Derive key using PBKDF2 with 100,000 iterations (equivalent to bcrypt cost 12)
-  const derivedBits = await crypto.subtle.deriveBits(
-    {
-      name: 'PBKDF2',
-      salt: salt,
-      iterations: 100000,
-      hash: 'SHA-256'
-    },
-    keyMaterial,
-    256 // 32 bytes output
-  );
-
-  // Combine salt + hash for storage
-  const hashArray = new Uint8Array(derivedBits);
-  const combined = new Uint8Array(salt.length + hashArray.length);
-  combined.set(salt);
-  combined.set(hashArray, salt.length);
-
-  // Return as hex string
-  return Array.from(combined).map(b => b.toString(16).padStart(2, '0')).join('');
+  return await bcrypt.hash(password, AUTH_CONFIG.BCRYPT_COST);
 }
 
 /**
- * Verify a password against a hash
+ * Verify a password against a bcrypt hash
  *
  * @param {string} password - Plain text password
- * @param {string} hash - Stored hash (hex string)
+ * @param {string} hash - Stored bcrypt hash
  * @returns {Promise<boolean>} True if password matches
  */
 export async function verifyPassword(password, hash) {
   try {
-    // Convert hex string back to bytes
-    const combined = new Uint8Array(hash.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-
-    // Extract salt (first 16 bytes)
-    const salt = combined.slice(0, 16);
-    const storedHash = combined.slice(16);
-
-    // Hash the input password with the same salt
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-
-    const keyMaterial = await crypto.subtle.importKey(
-      'raw',
-      data,
-      { name: 'PBKDF2' },
-      false,
-      ['deriveBits']
-    );
-
-    const derivedBits = await crypto.subtle.deriveBits(
-      {
-        name: 'PBKDF2',
-        salt: salt,
-        iterations: 100000,
-        hash: 'SHA-256'
-      },
-      keyMaterial,
-      256
-    );
-
-    const hashArray = new Uint8Array(derivedBits);
-
-    // Compare hashes (constant-time comparison to prevent timing attacks)
-    if (hashArray.length !== storedHash.length) {
-      return false;
-    }
-
-    let diff = 0;
-    for (let i = 0; i < hashArray.length; i++) {
-      diff |= hashArray[i] ^ storedHash[i];
-    }
-
-    return diff === 0;
+    return await bcrypt.compare(password, hash);
   } catch (error) {
     console.error('Password verification error:', error);
     return false;
