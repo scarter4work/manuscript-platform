@@ -81,8 +81,9 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 ### Build System Notes
 - Project uses npm (Node v22.20.0, npm 10.9.3)
 - Platform: **Windows** (Git Bash/MSYS)
-- Recent fix: Removed platform-specific Rollup dependency for cross-platform builds
-- `.npmrc` configured to skip optional dependencies
+- Testing requires optional dependencies: `@rollup/rollup-win32-x64-msvc`, `@esbuild/win32-x64`
+- `.npmrc` allows optional dependencies (required for Vitest + native modules on Windows)
+- Vitest configured for Node.js environment (was Cloudflare Workers)
 
 ### Platform-Specific Rules
 **"I'm not on Linux, I'm on Windows, and I have to deal with it"**

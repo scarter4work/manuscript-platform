@@ -1,17 +1,9 @@
-import { defineWorkersConfig } from '@cloudflare/vitest-pool-workers/config';
+import { defineConfig } from 'vitest/config';
 
-export default defineWorkersConfig({
+export default defineConfig({
   test: {
-    poolOptions: {
-      workers: {
-        wrangler: { configPath: './wrangler.toml' },
-        miniflare: {
-          // Miniflare options
-          compatibilityDate: '2024-01-01',
-          compatibilityFlags: ['nodejs_compat'],
-        },
-      },
-    },
+    globals: true,
+    environment: 'node',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -23,7 +15,12 @@ export default defineWorkersConfig({
         'frontend/**',
         'test-*.js',
         'create-*.js',
+        'migrations/**',
+        'delete_deployments/**',
+        'edit_agent_by_example/**',
       ],
     },
+    // Timeout for long-running tests (AI API calls, etc.)
+    testTimeout: 30000,
   },
 });

@@ -50,5 +50,9 @@
     "redis": "^5.9.0",
     "sharp": "^0.34.4",
     "stripe": "^19.1.0"
+  },
+  "optionalDependencies": {
+    "@esbuild/win32-x64": "^0.25.12",
+    "@rollup/rollup-win32-x64-msvc": "^4.52.5"
   }
 }
