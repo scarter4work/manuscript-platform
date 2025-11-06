@@ -214,10 +214,10 @@ export async function handleRegister(request, env) {
  * - 500: { error: 'Internal server error' }
  */
 export async function handleLogin(request, env) {
-  try {
-    // Get origin for CORS
-    const origin = request.headers.get('Origin');
+  // Get origin for CORS (declare outside try block so it's available in catch)
+  const origin = request.headers.get('Origin');
 
+  try {
     // Get IP address for rate limiting
     const ipAddress = request.headers.get('CF-Connecting-IP') || 'unknown';
 

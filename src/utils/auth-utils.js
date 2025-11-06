@@ -336,7 +336,7 @@ export async function getUserFromRequest(request, env) {
 export function createSessionCookie(sessionId, rememberMe = false) {
   const maxAge = rememberMe ? AUTH_CONFIG.SESSION_DURATION_REMEMBER : AUTH_CONFIG.SESSION_DURATION;
 
-  return `session_id=${sessionId}; Path=/; Domain=.scarter4workmanuscripthub.com; HttpOnly; Secure; SameSite=None; Max-Age=${maxAge}`;
+  return `session_id=${sessionId}; Path=/; Domain=.selfpubhub.co; HttpOnly; Secure; SameSite=None; Max-Age=${maxAge}`;
 }
 
 /**
@@ -345,7 +345,7 @@ export function createSessionCookie(sessionId, rememberMe = false) {
  * @returns {string} Set-Cookie header value
  */
 export function clearSessionCookie() {
-  return 'session_id=; Path=/; Domain=.scarter4workmanuscripthub.com; HttpOnly; Secure; SameSite=None; Max-Age=0';
+  return 'session_id=; Path=/; Domain=.selfpubhub.co; HttpOnly; Secure; SameSite=None; Max-Age=0';
 }
 
 // ============================================================================
@@ -401,6 +401,12 @@ export async function logAuthEvent(env, userId, action, request, metadata = {}) 
  * @returns {Promise<boolean>} True if rate limited
  */
 export async function isRateLimited(ipAddress, env) {
+  // Skip rate limiting if SESSIONS store not available (Redis/KV)
+  if (!env.SESSIONS) {
+    console.warn('Rate limiting disabled: SESSIONS store not configured');
+    return false;
+  }
+
   const key = `rate_limit:login:${ipAddress}`;
   const attempts = await env.SESSIONS.get(key);
 
@@ -429,6 +435,12 @@ export async function isRateLimited(ipAddress, env) {
  * @returns {Promise<void>}
  */
 export async function recordLoginAttempt(ipAddress, env) {
+  // Skip rate limiting if SESSIONS store not available (Redis/KV)
+  if (!env.SESSIONS) {
+    console.warn('Rate limiting disabled: SESSIONS store not configured');
+    return;
+  }
+
   const key = `rate_limit:login:${ipAddress}`;
   const attempts = await env.SESSIONS.get(key);
 
@@ -452,6 +464,11 @@ export async function recordLoginAttempt(ipAddress, env) {
  * @returns {Promise<void>}
  */
 export async function clearRateLimit(ipAddress, env) {
+  // Skip rate limiting if SESSIONS store not available (Redis/KV)
+  if (!env.SESSIONS) {
+    return;
+  }
+
   const key = `rate_limit:login:${ipAddress}`;
   await env.SESSIONS.delete(key);
 }
