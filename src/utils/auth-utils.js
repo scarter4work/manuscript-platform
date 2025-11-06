@@ -150,10 +150,10 @@ export async function createSession(userId, env, rememberMe = false) {
   // Store in Redis with TTL
   if (env.REDIS) {
     try {
-      await env.REDIS.set(
+      await env.REDIS.setEx(
         `session:${sessionId}`,
-        JSON.stringify(sessionData),
-        { EX: duration }
+        duration,
+        JSON.stringify(sessionData)
       );
     } catch (error) {
       console.error('Failed to create session in Redis:', error);
@@ -204,10 +204,10 @@ export async function validateSession(sessionId, env) {
     session.expiresAt = Date.now() + (duration * 1000);
 
     // Update session in Redis with refreshed TTL
-    await env.REDIS.set(
+    await env.REDIS.setEx(
       `session:${sessionId}`,
-      JSON.stringify(session),
-      { EX: duration }
+      duration,
+      JSON.stringify(session)
     );
 
     return session.userId;
@@ -402,10 +402,10 @@ export async function recordLoginAttempt(ipAddress, env) {
 
     // Store with TTL matching the rate limit window (EX = seconds)
     const ttlSeconds = Math.ceil(AUTH_CONFIG.RATE_LIMIT.LOGIN_WINDOW / 1000);
-    await env.REDIS.set(
+    await env.REDIS.setEx(
       key,
-      JSON.stringify(attemptData),
-      { EX: ttlSeconds }
+      ttlSeconds,
+      JSON.stringify(attemptData)
     );
   } catch (error) {
     console.error('Failed to record login attempt:', error);
