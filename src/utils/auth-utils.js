@@ -397,80 +397,99 @@ export async function logAuthEvent(env, userId, action, request, metadata = {}) 
  * Check if an IP has exceeded rate limits for login attempts
  *
  * @param {string} ipAddress - IP address to check
- * @param {Object} env - Cloudflare environment (KV for rate limiting)
+ * @param {Object} env - Environment with Redis client
  * @returns {Promise<boolean>} True if rate limited
  */
 export async function isRateLimited(ipAddress, env) {
-  // Skip rate limiting if SESSIONS store not available (Redis/KV)
-  if (!env.SESSIONS) {
-    console.warn('Rate limiting disabled: SESSIONS store not configured');
+  // Skip rate limiting if Redis not available
+  if (!env.REDIS) {
+    console.warn('Rate limiting disabled: Redis not configured');
     return false;
   }
 
   const key = `rate_limit:login:${ipAddress}`;
-  const attempts = await env.SESSIONS.get(key);
 
-  if (!attempts) {
+  try {
+    const attempts = await env.REDIS.get(key);
+
+    if (!attempts) {
+      return false;
+    }
+
+    const attemptData = JSON.parse(attempts);
+
+    // Check if within time window and exceeded max attempts
+    const now = Date.now();
+    if (attemptData.timestamp + AUTH_CONFIG.RATE_LIMIT.LOGIN_WINDOW > now) {
+      return attemptData.count >= AUTH_CONFIG.RATE_LIMIT.LOGIN_ATTEMPTS;
+    }
+
+    // Window expired, reset
+    await env.REDIS.del(key);
     return false;
+  } catch (error) {
+    console.error('Rate limit check error:', error);
+    return false; // Fail open - don't block on Redis errors
   }
-
-  const attemptData = JSON.parse(attempts);
-
-  // Check if within time window and exceeded max attempts
-  const now = Date.now();
-  if (attemptData.timestamp + AUTH_CONFIG.RATE_LIMIT.LOGIN_WINDOW > now) {
-    return attemptData.count >= AUTH_CONFIG.RATE_LIMIT.LOGIN_ATTEMPTS;
-  }
-
-  // Window expired, reset
-  await env.SESSIONS.delete(key);
-  return false;
 }
 
 /**
  * Record a failed login attempt
  *
  * @param {string} ipAddress - IP address
- * @param {Object} env - Cloudflare environment
+ * @param {Object} env - Environment with Redis client
  * @returns {Promise<void>}
  */
 export async function recordLoginAttempt(ipAddress, env) {
-  // Skip rate limiting if SESSIONS store not available (Redis/KV)
-  if (!env.SESSIONS) {
-    console.warn('Rate limiting disabled: SESSIONS store not configured');
+  // Skip rate limiting if Redis not available
+  if (!env.REDIS) {
+    console.warn('Rate limiting disabled: Redis not configured');
     return;
   }
 
   const key = `rate_limit:login:${ipAddress}`;
-  const attempts = await env.SESSIONS.get(key);
 
-  let attemptData = attempts ? JSON.parse(attempts) : { count: 0, timestamp: Date.now() };
+  try {
+    const attempts = await env.REDIS.get(key);
 
-  attemptData.count++;
+    let attemptData = attempts ? JSON.parse(attempts) : { count: 0, timestamp: Date.now() };
 
-  // Store with TTL matching the rate limit window
-  await env.SESSIONS.put(
-    key,
-    JSON.stringify(attemptData),
-    { expirationTtl: Math.ceil(AUTH_CONFIG.RATE_LIMIT.LOGIN_WINDOW / 1000) }
-  );
+    attemptData.count++;
+
+    // Store with TTL matching the rate limit window (EX = seconds)
+    const ttlSeconds = Math.ceil(AUTH_CONFIG.RATE_LIMIT.LOGIN_WINDOW / 1000);
+    await env.REDIS.set(
+      key,
+      JSON.stringify(attemptData),
+      { EX: ttlSeconds }
+    );
+  } catch (error) {
+    console.error('Failed to record login attempt:', error);
+    // Don't throw - rate limiting failures shouldn't block login attempts
+  }
 }
 
 /**
  * Clear rate limit for an IP (on successful login)
  *
  * @param {string} ipAddress - IP address
- * @param {Object} env - Cloudflare environment
+ * @param {Object} env - Environment with Redis client
  * @returns {Promise<void>}
  */
 export async function clearRateLimit(ipAddress, env) {
-  // Skip rate limiting if SESSIONS store not available (Redis/KV)
-  if (!env.SESSIONS) {
+  // Skip rate limiting if Redis not available
+  if (!env.REDIS) {
     return;
   }
 
   const key = `rate_limit:login:${ipAddress}`;
-  await env.SESSIONS.delete(key);
+
+  try {
+    await env.REDIS.del(key);
+  } catch (error) {
+    console.error('Failed to clear rate limit:', error);
+    // Don't throw - this is a cleanup operation
+  }
 }
 
 // ============================================================================
