@@ -282,11 +282,10 @@ export async function handleLogin(request, env) {
     // Create session
     const sessionId = await createSession(user.id, env, rememberMe);
 
-    // Update last login timestamp
-    const now = Math.floor(Date.now() / 1000);
+    // Update last login timestamp (use PostgreSQL NOW() instead of Unix timestamp)
     await env.DB.prepare(
-      'UPDATE users SET last_login = ? WHERE id = ?'
-    ).bind(now, user.id).run();
+      'UPDATE users SET last_login = NOW() WHERE id = ?'
+    ).bind(user.id).run();
 
     // Log successful login
     await logAuthEvent(env, user.id, 'login', request, {
