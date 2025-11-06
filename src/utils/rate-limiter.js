@@ -7,7 +7,7 @@
  * - Ensure fair resource allocation
  * - Support tier-based limits (Free, Pro, Enterprise)
  *
- * Uses Cloudflare Workers KV for distributed rate limiting with sliding window algorithm
+ * Uses Redis for distributed rate limiting with sliding window algorithm
  */
 
 // ============================================================================
@@ -111,8 +111,8 @@ export async function checkRateLimit({ type, identifier, endpoint, tier, env }) 
   // Generate KV key
   const key = generateRateLimitKey(type, identifier, endpoint);
 
-  // Get current request count from KV
-  const data = await env.SESSIONS.get(key);
+  // Get current request count from Redis
+  const data = await env.REDIS.get(key);
   const now = Date.now();
 
   if (!data) {
@@ -153,10 +153,10 @@ export async function checkRateLimit({ type, identifier, endpoint, tier, env }) 
 
   // Increment counter
   limitData.count++;
-  await env.SESSIONS.put(
+  await env.REDIS.setEx(
     key,
-    JSON.stringify(limitData),
-    { expirationTtl: Math.ceil(window) }
+    Math.ceil(window),
+    JSON.stringify(limitData)
   );
 
   return {
@@ -176,10 +176,10 @@ async function recordRequest(key, env, window, now) {
     reset: now + (window * 1000),
   };
 
-  await env.SESSIONS.put(
+  await env.REDIS.setEx(
     key,
-    JSON.stringify(limitData),
-    { expirationTtl: Math.ceil(window) }
+    Math.ceil(window),
+    JSON.stringify(limitData)
   );
 }
 
@@ -382,7 +382,7 @@ export async function getRateLimitStats({ type, identifier, env }) {
 
   for (const endpoint of endpoints) {
     const key = `rate_limit:${type}:${identifier}:${endpoint}`;
-    const data = await env.SESSIONS.get(key);
+    const data = await env.REDIS.get(key);
 
     if (data) {
       const limitData = JSON.parse(data);
@@ -416,7 +416,7 @@ export async function clearRateLimits({ type, identifier, env }) {
 
   const deletePromises = endpoints.map(endpoint => {
     const key = `rate_limit:${type}:${identifier}:${endpoint}`;
-    return env.SESSIONS.delete(key);
+    return env.REDIS.del(key);
   });
 
   await Promise.all(deletePromises);
