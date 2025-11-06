@@ -17,10 +17,10 @@ const MAILCHANNELS_API = 'https://api.mailchannels.net/tx/v1/send';
 
 // Email configuration (defaults, can be overridden by environment variables)
 const EMAIL_CONFIG = {
-  FROM_EMAIL: 'noreply@scarter4workmanuscripthub.com',
+  FROM_EMAIL: 'noreply@selfpubhub.co',
   FROM_NAME: 'ManuscriptHub',
   ADMIN_EMAIL: 'scarter4work@yahoo.com', // Admin email for notifications
-  REPLY_TO: 'support@scarter4workmanuscripthub.com',
+  REPLY_TO: 'support@selfpubhub.co',
 };
 
 // Get email config from environment or use defaults
@@ -209,8 +209,8 @@ function generateEmailTemplate(title, content) {
     <div class="footer">
       <p>ManuscriptHub - Professional Manuscript Analysis Platform</p>
       <p>
-        <a href="https://dashboard.scarter4workmanuscripthub.com">Dashboard</a> |
-        <a href="https://dashboard.scarter4workmanuscripthub.com/dmca-request.html">Submit DMCA Request</a>
+        <a href="https://dashboard.selfpubhub.co">Dashboard</a> |
+        <a href="https://dashboard.selfpubhub.co/dmca-request.html">Submit DMCA Request</a>
       </p>
       <p style="margin-top: 10px;">
         This is an automated message. Please do not reply to this email.
@@ -246,7 +246,7 @@ export async function sendDMCARequestNotification(dmcaData, env) {
     </div>
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/admin-dmca.html" class="button">
+      <a href="https://dashboard.selfpubhub.co/admin-dmca.html" class="button">
         Review DMCA Request
       </a>
     </p>
@@ -312,7 +312,7 @@ export async function sendDMCAStatusUpdate(dmcaData, env) {
     ` : ''}
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/dmca-request.html" class="button">
+      <a href="https://dashboard.selfpubhub.co/dmca-request.html" class="button">
         Submit Another Request
       </a>
     </p>
@@ -377,12 +377,12 @@ export async function sendDMCAOwnerNotification(ownerData, env) {
     ` : ''}
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com" class="button">
+      <a href="https://dashboard.selfpubhub.co" class="button">
         View Dashboard
       </a>
     </p>
 
-    <p><strong>Questions?</strong> Contact us at support@scarter4workmanuscripthub.com</p>
+    <p><strong>Questions?</strong> Contact us at support@selfpubhub.co</p>
   `;
 
   const html = generateEmailTemplate('DMCA Notice - Your Manuscript', content);
@@ -499,7 +499,7 @@ export async function sendAnalysisCompleteEmail(data, env) {
     </ul>
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/dashboard-spa.html#report/${reportId}" class="button">
+      <a href="https://dashboard.selfpubhub.co/dashboard-spa.html#report/${reportId}" class="button">
         View Analysis Report
       </a>
     </p>
@@ -556,7 +556,7 @@ export async function sendAssetGenerationCompleteEmail(data, env) {
     </ul>
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/dashboard-spa.html#assets/${manuscriptId}" class="button">
+      <a href="https://dashboard.selfpubhub.co/dashboard-spa.html#assets/${manuscriptId}" class="button">
         View & Download Assets
       </a>
     </p>
@@ -606,7 +606,7 @@ export async function sendPaymentConfirmationEmail(data, env) {
     </div>
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/billing.html" class="button">
+      <a href="https://dashboard.selfpubhub.co/billing.html" class="button">
         Manage Subscription
       </a>
     </p>
@@ -660,7 +660,7 @@ export async function sendPaymentFailedEmail(data, env) {
     </ol>
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/billing.html" class="button">
+      <a href="https://dashboard.selfpubhub.co/billing.html" class="button">
         Update Payment Method
       </a>
     </p>
@@ -716,7 +716,7 @@ export async function sendUsageWarningEmail(data, env) {
     </ol>
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/billing.html" class="button">
+      <a href="https://dashboard.selfpubhub.co/billing.html" class="button">
         Upgrade Plan
       </a>
     </p>
@@ -763,7 +763,7 @@ export async function sendTeamInvitationEmail(data, env) {
     <p>Collaborate with editors, co-authors, and reviewers. Share manuscripts, get feedback, and work together on your writing projects.</p>
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/teams/accept-invitation/${invitationToken}" class="button">
+      <a href="https://dashboard.selfpubhub.co/teams/accept-invitation/${invitationToken}" class="button">
         Accept Invitation
       </a>
     </p>
@@ -806,7 +806,7 @@ export async function sendTeamActivityEmail(data, env) {
     </div>
 
     <p>
-      <a href="https://dashboard.scarter4workmanuscripthub.com/teams.html" class="button">
+      <a href="https://dashboard.selfpubhub.co/teams.html" class="button">
         View Team Dashboard
       </a>
     </p>
@@ -825,12 +825,71 @@ export async function sendTeamActivityEmail(data, env) {
 }
 
 // ============================================================================
+// AUTHENTICATION EMAILS
+// ============================================================================
+
+/**
+ * Email for email verification (registration)
+ */
+export async function sendEmailVerification(data, env) {
+  const { userEmail, userName, verificationToken } = data;
+
+  const verificationUrl = `${env.FRONTEND_URL || 'https://selfpubhub.co'}/verify-email.html?token=${verificationToken}`;
+
+  const content = `
+    <p>Welcome to ManuscriptHub, ${userName || 'Author'}!</p>
+
+    <p>Thank you for registering your account. To get started, please verify your email address by clicking the button below:</p>
+
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="${verificationUrl}" class="button">
+        Verify Email Address
+      </a>
+    </div>
+
+    <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
+    <p style="word-break: break-all; color: #007bff; font-size: 14px;">${verificationUrl}</p>
+
+    <div class="info-box">
+      <p><strong>Why verify?</strong></p>
+      <ul style="margin: 5px 0;">
+        <li>Secure your account</li>
+        <li>Receive important notifications</li>
+        <li>Enable password reset functionality</li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+      <p style="color: #666; font-size: 12px; margin: 5px 0;">
+        <strong>Security Notice:</strong> This verification link expires in 24 hours.
+      </p>
+      <p style="color: #666; font-size: 12px; margin: 5px 0;">
+        If you didn't create this account, please ignore this email or contact support.
+      </p>
+    </div>
+  `;
+
+  const html = generateEmailTemplate('Verify Your Email', content);
+
+  return await sendNotificationEmail({
+    userId: data.userId,
+    to: userEmail,
+    subject: `📧 Verify Your Email - ManuscriptHub`,
+    html,
+    emailType: 'email_verification',
+    env
+  });
+}
+
+// ============================================================================
 // EXPORTS
 // ============================================================================
 
 export const emailService = {
   sendEmail,
   sendNotificationEmail,
+  // Authentication
+  sendEmailVerification,
   // DMCA
   sendDMCARequestNotification,
   sendDMCAStatusUpdate,

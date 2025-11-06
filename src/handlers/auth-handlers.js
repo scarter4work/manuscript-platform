@@ -33,6 +33,7 @@ import {
   validateVerificationToken
 } from '../utils/auth-utils.js';
 import { initCache } from '../utils/db-cache.js';
+import { sendEmailVerification } from '../services/email-service.js';
 
 // ============================================================================
 // CORS HEADERS
@@ -176,15 +177,25 @@ export async function handleRegister(request, env) {
       email: normalizedEmail
     });
 
-    // TODO: Send verification email
-    // In production, integrate with Cloudflare Email Routing or SendGrid
-    // For now, return the token in the response (development only)
+    // Send verification email
+    try {
+      await sendEmailVerification({
+        userId,
+        userEmail: normalizedEmail,
+        userName: normalizedEmail.split('@')[0], // Use email prefix as name for now
+        verificationToken
+      }, env);
+      console.log(`Verification email sent to: ${normalizedEmail}`);
+    } catch (emailError) {
+      console.error('Failed to send verification email:', emailError);
+      // Don't fail registration if email fails - user can request resend
+    }
 
     return jsonResponse({
       userId,
-      message: 'Registration successful. Please verify your email.',
-      // DEVELOPMENT ONLY: Include verification token in response
-      // Remove this in production and send via email
+      message: 'Registration successful. Please check your email to verify your account.',
+      // DEVELOPMENT ONLY: Include verification token in response for testing
+      // Remove this line in production once email delivery is confirmed
       verificationToken: verificationToken
     }, 201);
 
@@ -256,8 +267,8 @@ export async function handleLogin(request, env) {
       return errorResponse('Invalid credentials', 400, origin);
     }
 
-    // Check if email is verified
-    if (user.email_verified !== 1) {
+    // Check if email is verified (handle both BOOLEAN and INTEGER types)
+    if (!user.email_verified) {
       await logAuthEvent(env, user.id, 'login_failed', request, {
         reason: 'email_not_verified'
       });
@@ -385,7 +396,7 @@ export async function handleGetMe(request, env) {
       role: user.role,
       createdAt: user.created_at,
       lastLogin: user.last_login,
-      emailVerified: user.email_verified === 1
+      emailVerified: !!user.email_verified
     }, 200, { 'X-Cache': 'HIT' }, origin);
 
   } catch (error) {
@@ -632,6 +643,83 @@ export async function handleVerifyResetToken(request, env) {
   }
 }
 
+/**
+ * POST /auth/resend-verification
+ * Resend email verification link
+ *
+ * Request body:
+ * - email: string (required)
+ *
+ * Response:
+ * - 200: { message: 'Verification email sent' }
+ * - 400: { error: 'Invalid email' }
+ * - 409: { error: 'Email already verified' }
+ * - 500: { error: 'Internal server error' }
+ */
+export async function handleResendVerification(request, env) {
+  try {
+    // Parse request body
+    const { email } = await request.json();
+
+    // Validate email
+    if (!email || !validateEmail(email)) {
+      return errorResponse('Invalid email address');
+    }
+
+    // Normalize email
+    const normalizedEmail = email.toLowerCase();
+
+    // Find user by email
+    const user = await env.DB.prepare(
+      'SELECT id, email_verified FROM users WHERE email = ?'
+    ).bind(normalizedEmail).first();
+
+    if (!user) {
+      // Don't reveal if email exists for security
+      return jsonResponse({
+        message: 'If the email is registered and not verified, a verification link has been sent'
+      });
+    }
+
+    // Check if already verified
+    if (user.email_verified) {
+      return errorResponse('Email is already verified. You can log in now.', 409);
+    }
+
+    // Generate new verification token
+    const verificationToken = await generateVerificationToken(user.id, 'email_verification', env);
+
+    // Send verification email
+    try {
+      await sendEmailVerification({
+        userId: user.id,
+        userEmail: normalizedEmail,
+        userName: normalizedEmail.split('@')[0],
+        verificationToken
+      }, env);
+      console.log(`Verification email resent to: ${normalizedEmail}`);
+    } catch (emailError) {
+      console.error('Failed to resend verification email:', emailError);
+      return errorResponse('Failed to send verification email. Please try again later.', 500);
+    }
+
+    // Log resend event
+    await logAuthEvent(env, user.id, 'verification_resent', request, {
+      email: normalizedEmail
+    });
+
+    return jsonResponse({
+      message: 'Verification email sent. Please check your inbox.',
+      // DEVELOPMENT ONLY: Include token for testing
+      verificationToken: verificationToken
+    });
+
+  } catch (error) {
+    console.error('Resend verification error:', error);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
 // ============================================================================
 // EMAIL FUNCTIONS
 // ============================================================================
@@ -767,6 +855,7 @@ export const authHandlers = {
   logout: handleLogout,
   getMe: handleGetMe,
   verifyEmail: handleVerifyEmail,
+  resendVerification: handleResendVerification,
   passwordResetRequest: handlePasswordResetRequest,
   passwordReset: handlePasswordReset,
   verifyResetToken: handleVerifyResetToken

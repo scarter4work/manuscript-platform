@@ -10,6 +10,7 @@ import {
   handleLogout,
   handleGetMe,
   handleVerifyEmail,
+  handleResendVerification,
   handlePasswordResetRequest,
   handlePasswordReset,
   handleVerifyResetToken,
@@ -75,6 +76,10 @@ export default function registerAuthRoutes(app) {
   // GET /auth/verify-email - Email verification
   // Public endpoint - uses token from query parameter
   app.get('/auth/verify-email', wrapHandler(handleVerifyEmail));
+
+  // POST /auth/resend-verification - Resend verification email
+  // Public endpoint - sends verification email
+  app.post('/auth/resend-verification', wrapHandler(handleResendVerification));
 
   // POST /auth/password-reset-request - Request password reset
   // Public endpoint - sends reset email

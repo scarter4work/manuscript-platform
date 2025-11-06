@@ -86,7 +86,7 @@ export function requireAdmin(request) {
 export function requireEmailVerified(request) {
   assertAuthenticated(request.userId, 'Authentication required');
 
-  const isVerified = request.user && request.user.email_verified === 1;
+  const isVerified = request.user && !!request.user.email_verified;
   assertAuthorized(
     isVerified,
     'Email verification required. Please check your email for the verification link.'
