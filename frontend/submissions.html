@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Tracking - ManuscriptHub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .header h1 { font-size: 2em; margin-bottom: 5px; }
+        .header p { font-size: 0.9em; opacity: 0.9; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        h2 { margin-bottom: 20px; color: #333; }
+        h3 { margin: 20px 0 10px; color: #667eea; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #667eea; }
+        .btn { padding: 14px 28px; font-size: 16px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: #6c757d; color: white; margin-left: 10px; }
+        .btn-small { padding: 8px 16px; font-size: 14px; margin-right: 10px; }
+        .submission-item { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #667eea; }
+        .submission-item.pending { border-left-color: #ffc107; }
+        .submission-item.form_rejection { border-left-color: #dc3545; }
+        .submission-item.personal_rejection { border-left-color: #fd7e14; }
+        .submission-item.revise_resubmit { border-left-color: #17a2b8; }
+        .submission-item.request_full { border-left-color: #20c997; }
+        .submission-item.hold { border-left-color: #6c757d; }
+        .submission-item.waitlist { border-left-color: #e83e8c; }
+        .submission-item.offer { border-left-color: #28a745; }
+        .submission-item.withdrawn { border-left-color: #adb5bd; }
+        .submission-meta { font-size: 0.9em; color: #666; margin: 10px 0; }
+        .badge { display: inline-block; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; margin: 5px 5px 5px 0; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-form_rejection { background: #f8d7da; color: #721c24; }
+        .badge-personal_rejection { background: #ffe5d0; color: #975500; }
+        .badge-revise_resubmit { background: #d1ecf1; color: #0c5460; }
+        .badge-request_full { background: #d4edda; color: #155724; }
+        .badge-hold { background: #e2e3e5; color: #383d41; }
+        .badge-waitlist { background: #f8d7da; color: #721c24; }
+        .badge-offer { background: #c3e6cb; color: #155724; }
+        .badge-withdrawn { background: #e2e3e5; color: #495057; }
+        .feedback-item { background: white; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #667eea; }
+        .feedback-item.addressed { opacity: 0.7; border-left-color: #28a745; }
+        .loading { display: none; text-align: center; padding: 20px; }
+        .loading.active { display: block; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .alert-success { background: #d1fae5; border: 2px solid #10b981; color: #065f46; }
+        .alert-error { background: #fecaca; border: 2px solid #ef4444; color: #991b1b; }
+        .hidden { display: none; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .feedback-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+        .feedback-category { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; }
+        .feedback-category h4 { color: #667eea; margin-bottom: 10px; }
+        .feedback-category .count { font-size: 2em; font-weight: bold; color: #333; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Submission Tracking</h1>
+        <p>Track publisher/agent submissions and responses</p>
+    </div>
+
+    <div class="container">
+        <!-- Manuscript Selection -->
+        <div class="card">
+            <h2>Select Manuscript</h2>
+            <div class="form-group">
+                <select id="manuscriptSelect">
+                    <option value="">-- Select manuscript --</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Create Submission Section -->
+        <div id="createSection" class="hidden">
+            <div class="card">
+                <h2>Create New Submission</h2>
+                <div class="form-group">
+                    <label>Publisher/Agent Name</label>
+                    <input type="text" id="publisherName" placeholder="Jane Doe Literary Agency">
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Publisher Type</label>
+                        <select id="publisherType">
+                            <option value="agent">Agent</option>
+                            <option value="publisher">Publisher</option>
+                            <option value="magazine">Magazine</option>
+                            <option value="contest">Contest</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Submission Type</label>
+                        <select id="submissionType">
+                            <option value="query">Query Only</option>
+                            <option value="partial">Partial (Query + Sample)</option>
+                            <option value="full">Full Manuscript</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createSubmission()">Create Submission</button>
+            </div>
+        </div>
+
+        <!-- Feedback Summary -->
+        <div id="feedbackSummarySection" class="hidden">
+            <div class="card">
+                <h2>Feedback Summary</h2>
+                <div id="feedbackSummary" class="feedback-summary"></div>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #667eea;">Loading...</p>
+        </div>
+
+        <!-- Submissions List -->
+        <div id="submissionsSection" class="hidden">
+            <div class="card">
+                <h2>Your Submissions</h2>
+                <div id="submissionsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Response Update Modal -->
+    <div id="responseModal" class="modal">
+        <div class="modal-content">
+            <h2>Update Response</h2>
+            <div class="form-group">
+                <label>Response Type</label>
+                <select id="responseType">
+                    <option value="pending">Pending</option>
+                    <option value="form_rejection">Form Rejection</option>
+                    <option value="personal_rejection">Personalized Rejection</option>
+                    <option value="revise_resubmit">Revise & Resubmit (R&R)</option>
+                    <option value="request_full">Request Full Manuscript</option>
+                    <option value="hold">Hold</option>
+                    <option value="waitlist">Waitlist</option>
+                    <option value="offer">Offer</option>
+                    <option value="withdrawn">Withdrawn</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Feedback Text (optional)</label>
+                <textarea id="responseFeedback" rows="4" placeholder="Any feedback from publisher/agent..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Response Notes (optional)</label>
+                <textarea id="responseNotes" rows="3" placeholder="Your notes about this response..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveResponse()">Save Response</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <h2>Add Feedback</h2>
+            <div class="form-group">
+                <label>Feedback Type</label>
+                <select id="feedbackType">
+                    <option value="plot">Plot</option>
+                    <option value="character">Character</option>
+                    <option value="pacing">Pacing</option>
+                    <option value="voice">Voice</option>
+                    <option value="dialogue">Dialogue</option>
+                    <option value="worldbuilding">Worldbuilding</option>
+                    <option value="marketability">Marketability</option>
+                    <option value="length">Length</option>
+                    <option value="genre_fit">Genre Fit</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Feedback Text</label>
+                <textarea id="feedbackText" rows="4" placeholder="What feedback did you receive?"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveFeedback()">Add Feedback</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let authToken = localStorage.getItem('authToken');
+        let currentManuscriptId = null;
+        let currentSubmissionId = null;
+
+        if (!authToken) window.location.href = '/login.html';
+
+        async function init() {
+            const res = await fetch(`${API_BASE}/manuscripts`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            const data = await res.json();
+            const select = document.getElementById('manuscriptSelect');
+            (data.manuscripts || []).forEach(ms => {
+                const opt = document.createElement('option');
+                opt.value = ms.id;
+                opt.textContent = ms.title || ms.original_filename;
+                select.appendChild(opt);
+            });
+        }
+
+        document.getElementById('manuscriptSelect').addEventListener('change', async (e) => {
+            currentManuscriptId = e.target.value;
+            if (currentManuscriptId) {
+                await loadSubmissions();
+                await loadFeedbackSummary();
+                document.getElementById('createSection').classList.remove('hidden');
+                document.getElementById('submissionsSection').classList.remove('hidden');
+                document.getElementById('feedbackSummarySection').classList.remove('hidden');
+            } else {
+                document.getElementById('createSection').classList.add('hidden');
+                document.getElementById('submissionsSection').classList.add('hidden');
+                document.getElementById('feedbackSummarySection').classList.add('hidden');
+            }
+        });
+
+        async function createSubmission() {
+            const publisherName = document.getElementById('publisherName').value;
+            const publisherType = document.getElementById('publisherType').value;
+            const submissionType = document.getElementById('submissionType').value;
+
+            if (!publisherName) {
+                showAlert('Publisher name is required', 'error');
+                return;
+            }
+
+            showLoading(true);
+            try {
+                const res = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/submissions`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        publisherName: publisherName,
+                        publisherType: publisherType,
+                        submissionType: submissionType
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showAlert('Submission created successfully!', 'success');
+                    document.getElementById('publisherName').value = '';
+                    await loadSubmissions();
+                } else {
+                    showAlert(data.error || 'Failed to create submission', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+            showLoading(false);
+        }
+
+        async function loadSubmissions() {
+            try {
+                const res = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/submissions`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await res.json();
+                displaySubmissions(data.submissions || []);
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+            }
+        }
+
+        function displaySubmissions(submissions) {
+            const container = document.getElementById('submissionsList');
+            if (submissions.length === 0) {
+                container.innerHTML = '<p>No submissions yet. Create one above!</p>';
+                return;
+            }
+
+            container.innerHTML = submissions.map(sub => {
+                const responseLabel = sub.response_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                return `
+                    <div class="submission-item ${sub.response_type}">
+                        <h3>${sub.publisher_name}</h3>
+                        <div class="submission-meta">
+                            <strong>Type:</strong> ${sub.publisher_type} |
+                            <strong>Submitted:</strong> ${new Date(sub.submission_date * 1000).toLocaleDateString()}
+                            ${sub.response_date ? `| <strong>Response:</strong> ${new Date(sub.response_date * 1000).toLocaleDateString()}` : ''}
+                        </div>
+                        <span class="badge badge-${sub.response_type}">${responseLabel}</span>
+                        ${sub.is_resubmission ? '<span class="badge" style="background: #17a2b8; color: white;">Resubmission</span>' : ''}
+                        ${sub.feedback_count > 0 ? `<span class="badge" style="background: #667eea; color: white;">${sub.feedback_count} Feedback Items</span>` : ''}
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-primary btn-small" onclick="openResponseModal('${sub.id}')">Update Response</button>
+                            <button class="btn btn-secondary btn-small" onclick="openFeedbackModal('${sub.id}')">Add Feedback</button>
+                            ${sub.response_type === 'revise_resubmit' ? `<button class="btn btn-secondary btn-small" onclick="createResubmission('${sub.id}')">Create Resubmission</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadFeedbackSummary() {
+            try {
+                const res = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/feedback-summary`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await res.json();
+                displayFeedbackSummary(data.summary || []);
+            } catch (error) {
+                console.error('Error loading feedback summary:', error);
+            }
+        }
+
+        function displayFeedbackSummary(summary) {
+            const container = document.getElementById('feedbackSummary');
+            if (summary.length === 0) {
+                container.innerHTML = '<p>No feedback yet.</p>';
+                return;
+            }
+
+            container.innerHTML = summary.map(cat => `
+                <div class="feedback-category">
+                    <h4>${cat.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h4>
+                    <div class="count">${cat.count}</div>
+                    <div style="font-size: 0.9em; color: #666;">${cat.addressed} addressed</div>
+                </div>
+            `).join('');
+        }
+
+        function openResponseModal(submissionId) {
+            currentSubmissionId = submissionId;
+            document.getElementById('responseModal').classList.add('active');
+        }
+
+        function openFeedbackModal(submissionId) {
+            currentSubmissionId = submissionId;
+            document.getElementById('feedbackModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('responseModal').classList.remove('active');
+            document.getElementById('feedbackModal').classList.remove('active');
+            currentSubmissionId = null;
+        }
+
+        async function saveResponse() {
+            const responseType = document.getElementById('responseType').value;
+            const feedbackText = document.getElementById('responseFeedback').value;
+            const responseNotes = document.getElementById('responseNotes').value;
+
+            showLoading(true);
+            try {
+                const res = await fetch(`${API_BASE}/submissions/${currentSubmissionId}/response`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        responseType: responseType,
+                        responseDate: Math.floor(Date.now() / 1000),
+                        feedbackText: feedbackText || null,
+                        responseNotes: responseNotes || null
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showAlert('Response updated successfully!', 'success');
+                    closeModal();
+                    await loadSubmissions();
+                    await loadFeedbackSummary();
+                } else {
+                    showAlert(data.error || 'Failed to update response', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+            showLoading(false);
+        }
+
+        async function saveFeedback() {
+            const feedbackType = document.getElementById('feedbackType').value;
+            const feedbackText = document.getElementById('feedbackText').value;
+
+            if (!feedbackText) {
+                showAlert('Feedback text is required', 'error');
+                return;
+            }
+
+            showLoading(true);
+            try {
+                const res = await fetch(`${API_BASE}/submissions/${currentSubmissionId}/feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        feedbackType: feedbackType,
+                        feedbackText: feedbackText
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showAlert('Feedback added successfully!', 'success');
+                    document.getElementById('feedbackText').value = '';
+                    closeModal();
+                    await loadSubmissions();
+                    await loadFeedbackSummary();
+                } else {
+                    showAlert(data.error || 'Failed to add feedback', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+            showLoading(false);
+        }
+
+        async function createResubmission(originalId) {
+            const revisionNotes = prompt('What revisions did you make?');
+            if (!revisionNotes) return;
+
+            showLoading(true);
+            try {
+                const res = await fetch(`${API_BASE}/submissions/${originalId}/resubmit`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ revisionNotes: revisionNotes })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showAlert('Resubmission created successfully!', 'success');
+                    await loadSubmissions();
+                } else {
+                    showAlert(data.error || 'Failed to create resubmission', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+            showLoading(false);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('active', show);
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

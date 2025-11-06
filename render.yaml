@@ -49,15 +49,15 @@ services:
       - key: B2_BUCKET_BACKUPS
         value: manuscript-platform-backups
       - key: FRONTEND_URL
-        value: https://scarter4workmanuscripthub.com
+        value: https://selfpubhub.co
       - key: EMAIL_FROM_ADDRESS
-        value: noreply@scarter4workmanuscripthub.com
+        value: noreply@selfpubhub.co
       - key: EMAIL_FROM_NAME
         value: ManuscriptHub
       - key: EMAIL_ADMIN_ADDRESS
         value: scarter4work@yahoo.com
       - key: EMAIL_REPLY_TO_ADDRESS
-        value: support@scarter4workmanuscripthub.com
+        value: support@selfpubhub.co
       - key: MAX_FILE_SIZE
         value: 52428800
       - key: SESSION_DURATION

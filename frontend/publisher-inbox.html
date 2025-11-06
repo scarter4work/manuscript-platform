@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publisher Inbox - Manuscript Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Publisher Inbox</h1>
+            <p class="text-gray-600">Manage incoming submissions, assignments, and ratings</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-6 border-b border-gray-200">
+            <nav class="flex space-x-8">
+                <button onclick="switchTab('inbox')" id="tab-inbox" class="tab-button border-b-2 border-blue-500 text-blue-600 py-4 px-1 font-medium">
+                    Inbox
+                </button>
+                <button onclick="switchTab('assignments')" id="tab-assignments" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 font-medium">
+                    Assignments
+                </button>
+                <button onclick="switchTab('stats')" id="tab-stats" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 font-medium">
+                    Statistics
+                </button>
+            </nav>
+        </div>
+
+        <!-- Inbox Tab -->
+        <div id="inbox-tab" class="tab-content">
+            <!-- Filters -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Genre Filter</label>
+                        <select id="genreFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">All Genres</option>
+                            <option value="fiction">Fiction</option>
+                            <option value="non-fiction">Non-Fiction</option>
+                            <option value="mystery">Mystery</option>
+                            <option value="romance">Romance</option>
+                            <option value="sci-fi">Sci-Fi</option>
+                            <option value="fantasy">Fantasy</option>
+                            <option value="thriller">Thriller</option>
+                            <option value="literary">Literary</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Status Filter</label>
+                        <select id="statusFilter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="in_review">In Review</option>
+                            <option value="awaiting_decision">Awaiting Decision</option>
+                            <option value="responded">Responded</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                        <select id="sortBy" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="date_desc">Newest First</option>
+                            <option value="date_asc">Oldest First</option>
+                            <option value="title">Title (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <button onclick="loadInbox()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Apply Filters
+                    </button>
+                    <button onclick="batchReject()" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                        Batch Reject Selected
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submissions List -->
+            <div id="submissionsList" class="space-y-4">
+                <!-- Submissions will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Assignments Tab -->
+        <div id="assignments-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-2xl font-bold mb-4">My Assignments</h2>
+                <div id="assignmentsList" class="space-y-4">
+                    <!-- Assignments will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Tab -->
+        <div id="stats-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-2xl font-bold mb-6">Publisher Statistics</h2>
+                <div id="statsContent">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div id="ratingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Rate Submission</h3>
+                <button onclick="closeRatingModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Overall Score (1-10)</label>
+                    <input type="number" id="overallScore" min="1" max="10" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Plot Score (1-10)</label>
+                    <input type="number" id="plotScore" min="1" max="10" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Writing Quality Score (1-10)</label>
+                    <input type="number" id="writingQualityScore" min="1" max="10" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Marketability Score (1-10)</label>
+                    <input type="number" id="marketabilityScore" min="1" max="10" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Voice Score (1-10)</label>
+                    <input type="number" id="voiceScore" min="1" max="10" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Recommendation</label>
+                    <select id="recommendation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="pass">Pass</option>
+                        <option value="consider">Consider</option>
+                        <option value="request_full">Request Full</option>
+                        <option value="revise_resubmit">Revise & Resubmit</option>
+                        <option value="offer">Make Offer</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Strengths</label>
+                    <textarea id="strengths" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Weaknesses</label>
+                    <textarea id="weaknesses" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Internal Notes</label>
+                    <textarea id="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button onclick="closeRatingModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button onclick="submitRating()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Submit Rating
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div id="alert" class="hidden fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 max-w-md">
+        <div id="alertMessage" class="text-sm"></div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let authToken = localStorage.getItem('auth_token') || 'demo-token';
+        let selectedSubmissions = [];
+        let currentRatingSubmissionId = null;
+
+        // Tab switching
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('border-blue-500', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById(`tab-${tab}`).classList.add('border-blue-500', 'text-blue-600');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`${tab}-tab`).classList.remove('hidden');
+
+            // Load data for the tab
+            if (tab === 'inbox') loadInbox();
+            if (tab === 'assignments') loadAssignments();
+            if (tab === 'stats') loadStats();
+        }
+
+        // Load inbox
+        async function loadInbox() {
+            try {
+                const genre = document.getElementById('genreFilter').value;
+                const status = document.getElementById('statusFilter').value;
+                const sortBy = document.getElementById('sortBy').value;
+
+                let url = `${API_BASE}/publisher/inbox?sortBy=${sortBy}`;
+                if (genre) url += `&genre=${genre}`;
+                if (status) url += `&status=${status}`;
+
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load inbox');
+
+                const data = await response.json();
+                renderSubmissions(data.submissions);
+
+            } catch (error) {
+                console.error('Error loading inbox:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Render submissions
+        function renderSubmissions(submissions) {
+            const container = document.getElementById('submissionsList');
+
+            if (!submissions || submissions.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-gray-500">No submissions found</div>';
+                return;
+            }
+
+            container.innerHTML = submissions.map(sub => `
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start space-x-4 flex-1">
+                            <input type="checkbox" class="mt-1" onchange="toggleSelection('${sub.id}')">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">${sub.title}</h3>
+                                <p class="text-sm text-gray-600 mb-2">by ${sub.author || 'Unknown'}</p>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">${sub.genre || 'Unknown'}</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded">${sub.status || 'pending'}</span>
+                                    ${sub.assignment_count > 0 ? `<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">${sub.assignment_count} assignments</span>` : ''}
+                                    ${sub.rating_count > 0 ? `<span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">${sub.rating_count} ratings (avg: ${sub.avg_score?.toFixed(1) || 'N/A'})</span>` : ''}
+                                </div>
+                                <p class="text-sm text-gray-500">Submitted ${new Date(sub.created_at * 1000).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-2 ml-4">
+                            <button onclick="openRatingModal('${sub.id}')" class="px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                                Rate
+                            </button>
+                            <button onclick="viewConsensus('${sub.id}')" class="px-3 py-1 bg-purple-600 text-white text-sm rounded-md hover:bg-purple-700">
+                                Consensus
+                            </button>
+                            <button onclick="viewDiscussion('${sub.id}')" class="px-3 py-1 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
+                                Discuss
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle submission selection
+        function toggleSelection(submissionId) {
+            const index = selectedSubmissions.indexOf(submissionId);
+            if (index === -1) {
+                selectedSubmissions.push(submissionId);
+            } else {
+                selectedSubmissions.splice(index, 1);
+            }
+        }
+
+        // Batch reject
+        async function batchReject() {
+            if (selectedSubmissions.length === 0) {
+                showAlert('No submissions selected', 'error');
+                return;
+            }
+
+            if (!confirm(`Reject ${selectedSubmissions.length} submission(s)?`)) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/publisher/batch-reject`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ submissionIds: selectedSubmissions })
+                });
+
+                if (!response.ok) throw new Error('Failed to batch reject');
+
+                const data = await response.json();
+                showAlert(`Rejected ${data.results.filter(r => r.success).length} submission(s)`, 'success');
+                selectedSubmissions = [];
+                loadInbox();
+
+            } catch (error) {
+                console.error('Error batch rejecting:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Open rating modal
+        function openRatingModal(submissionId) {
+            currentRatingSubmissionId = submissionId;
+            document.getElementById('ratingModal').classList.remove('hidden');
+        }
+
+        // Close rating modal
+        function closeRatingModal() {
+            document.getElementById('ratingModal').classList.add('hidden');
+            currentRatingSubmissionId = null;
+        }
+
+        // Submit rating
+        async function submitRating() {
+            try {
+                const rating = {
+                    overallScore: parseFloat(document.getElementById('overallScore').value),
+                    plotScore: parseFloat(document.getElementById('plotScore').value) || null,
+                    writingQualityScore: parseFloat(document.getElementById('writingQualityScore').value) || null,
+                    marketabilityScore: parseFloat(document.getElementById('marketabilityScore').value) || null,
+                    voiceScore: parseFloat(document.getElementById('voiceScore').value) || null,
+                    recommendation: document.getElementById('recommendation').value,
+                    strengths: document.getElementById('strengths').value || null,
+                    weaknesses: document.getElementById('weaknesses').value || null,
+                    notes: document.getElementById('notes').value || null
+                };
+
+                if (!rating.overallScore || rating.overallScore < 1 || rating.overallScore > 10) {
+                    showAlert('Overall score must be between 1 and 10', 'error');
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/submissions/${currentRatingSubmissionId}/rate`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(rating)
+                });
+
+                if (!response.ok) throw new Error('Failed to submit rating');
+
+                showAlert('Rating submitted successfully', 'success');
+                closeRatingModal();
+                loadInbox();
+
+            } catch (error) {
+                console.error('Error submitting rating:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // View consensus
+        async function viewConsensus(submissionId) {
+            try {
+                const response = await fetch(`${API_BASE}/submissions/${submissionId}/consensus`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load consensus');
+
+                const data = await response.json();
+                if (!data.consensus) {
+                    alert('No ratings yet for this submission');
+                    return;
+                }
+
+                const consensus = data.consensus;
+                alert(`Consensus for Submission:\n\nTotal Readers: ${consensus.total_readers}\nAverage Overall Score: ${consensus.avg_overall_score?.toFixed(1)}\nPlot: ${consensus.avg_plot_score?.toFixed(1)}\nWriting: ${consensus.avg_writing_quality_score?.toFixed(1)}\nMarketability: ${consensus.avg_marketability_score?.toFixed(1)}\nVoice: ${consensus.avg_voice_score?.toFixed(1)}\n\nRecommendation: ${consensus.consensus_recommendation}\n\nPass: ${consensus.pass_count}\nConsider: ${consensus.consider_count}\nRequest Full: ${consensus.request_full_count}\nR&R: ${consensus.rr_count}\nOffer: ${consensus.offer_count}`);
+
+            } catch (error) {
+                console.error('Error loading consensus:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // View discussion
+        async function viewDiscussion(submissionId) {
+            try {
+                const response = await fetch(`${API_BASE}/submissions/${submissionId}/discussion`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load discussion');
+
+                const data = await response.json();
+                console.log('Discussion:', data.comments);
+                alert(`Discussion has ${data.comments.length} comment(s). Check console for details.`);
+
+            } catch (error) {
+                console.error('Error loading discussion:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Load assignments
+        async function loadAssignments() {
+            document.getElementById('assignmentsList').innerHTML = '<p class="text-gray-500">Assignments feature coming soon...</p>';
+        }
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/publisher/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load stats');
+
+                const data = await response.json();
+                const stats = data.stats;
+
+                document.getElementById('statsContent').innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h3 class="text-sm font-medium text-blue-900 mb-2">Total Submissions</h3>
+                            <p class="text-3xl font-bold text-blue-600">${stats.total_submissions || 0}</p>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <h3 class="text-sm font-medium text-green-900 mb-2">Pending</h3>
+                            <p class="text-3xl font-bold text-green-600">${stats.pending_count || 0}</p>
+                        </div>
+                        <div class="bg-purple-50 p-6 rounded-lg">
+                            <h3 class="text-sm font-medium text-purple-900 mb-2">In Review</h3>
+                            <p class="text-3xl font-bold text-purple-600">${stats.in_review_count || 0}</p>
+                        </div>
+                        <div class="bg-yellow-50 p-6 rounded-lg">
+                            <h3 class="text-sm font-medium text-yellow-900 mb-2">Accepted</h3>
+                            <p class="text-3xl font-bold text-yellow-600">${stats.accepted_count || 0}</p>
+                        </div>
+                        <div class="bg-red-50 p-6 rounded-lg">
+                            <h3 class="text-sm font-medium text-red-900 mb-2">Rejected</h3>
+                            <p class="text-3xl font-bold text-red-600">${stats.rejected_count || 0}</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="text-sm font-medium text-gray-900 mb-2">Ratings Given</h3>
+                            <p class="text-3xl font-bold text-gray-600">${stats.ratings_given || 0}</p>
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            const alertMessage = document.getElementById('alertMessage');
+
+            alert.className = `fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 max-w-md ${
+                type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`;
+            alertMessage.textContent = message;
+            alert.classList.remove('hidden');
+
+            setTimeout(() => {
+                alert.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Initialize
+        loadInbox();
+    </script>
+</body>
+</html>

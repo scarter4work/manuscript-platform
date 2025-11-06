@@ -226,7 +226,7 @@ export function validateRequiredFields(obj, requiredFields, objectName) {
 /**
  * Store generated content in R2 with consistent metadata
  *
- * @param {R2Bucket} bucket - R2 bucket to store in
+ * @param {Object} bucket (Deprecated: R2Bucket) - R2 bucket to store in
  * @param {string} manuscriptKey - Key for the manuscript
  * @param {string} assetType - Type of asset (e.g., 'cover-brief')
  * @param {Object} content - Content to store

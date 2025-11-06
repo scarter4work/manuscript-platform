@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Letters & Synopsis - ManuscriptHub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .header h1 { font-size: 2em; margin-bottom: 5px; }
+        .header p { font-size: 0.9em; opacity: 0.9; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        h2 { margin-bottom: 20px; color: #333; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #667eea; }
+        .btn { padding: 14px 28px; font-size: 16px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: #6c757d; color: white; margin-left: 10px; }
+        .document { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #667eea; }
+        .document h3 { color: #667eea; margin-bottom: 10px; }
+        .document-meta { font-size: 0.9em; color: #666; margin: 10px 0; }
+        .document-content { white-space: pre-wrap; line-height: 1.6; max-height: 300px; overflow-y: auto; background: white; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .loading { display: none; text-align: center; padding: 20px; }
+        .loading.active { display: block; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .alert-success { background: #d1fae5; border: 2px solid #10b981; color: #065f46; }
+        .alert-error { background: #fecaca; border: 2px solid #ef4444; color: #991b1b; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Query Letters & Synopsis</h1>
+        <p>Generate professional submission documents with AI</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>Select Manuscript</h2>
+            <div class="form-group">
+                <select id="manuscriptSelect">
+                    <option value="">-- Select manuscript --</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="generationForm" style="display: none;">
+            <div class="card">
+                <h2>Author Information</h2>
+                <div class="form-group">
+                    <label>Author Name</label>
+                    <input type="text" id="authorName" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label>Previous Works (comma-separated)</label>
+                    <input type="text" id="previousWorks" placeholder="Book Title 1, Book Title 2">
+                </div>
+                <div class="form-group">
+                    <label>Awards & Recognition</label>
+                    <input type="text" id="awards" placeholder="Award 1, Award 2">
+                </div>
+                <div class="form-group">
+                    <label>Credentials/Background</label>
+                    <input type="text" id="credentials" placeholder="MFA in Creative Writing, Published in...">
+                </div>
+                <div class="form-group">
+                    <label>Target Agent (optional, for query letter)</label>
+                    <input type="text" id="targetAgent" placeholder="Agent Name">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Generate Documents</h2>
+                <div class="grid">
+                    <button class="btn btn-primary" onclick="generateDoc('query_letter')">Generate Query Letter</button>
+                    <button class="btn btn-primary" onclick="generateDoc('short_synopsis')">Generate Short Synopsis</button>
+                    <button class="btn btn-primary" onclick="generateDoc('long_synopsis')">Generate Long Synopsis</button>
+                    <button class="btn btn-secondary" onclick="generateAll()">Generate All Three</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #667eea;">Generating with AI...</p>
+        </div>
+
+        <div id="documentsDisplay"></div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let authToken = localStorage.getItem('authToken');
+        let currentManuscriptId = null;
+
+        if (!authToken) window.location.href = '/login.html';
+
+        async function init() {
+            const res = await fetch(`${API_BASE}/manuscripts`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            const data = await res.json();
+            const select = document.getElementById('manuscriptSelect');
+            (data.manuscripts || []).forEach(ms => {
+                const opt = document.createElement('option');
+                opt.value = ms.id;
+                opt.textContent = ms.title || ms.original_filename;
+                select.appendChild(opt);
+            });
+        }
+
+        document.getElementById('manuscriptSelect').addEventListener('change', async (e) => {
+            currentManuscriptId = e.target.value;
+            if (currentManuscriptId) {
+                document.getElementById('generationForm').style.display = 'block';
+                await loadDocuments();
+            }
+        });
+
+        function getAuthorInfo() {
+            return {
+                authorName: document.getElementById('authorName').value,
+                previousWorks: document.getElementById('previousWorks').value.split(',').map(s => s.trim()).filter(Boolean),
+                awards: document.getElementById('awards').value.split(',').map(s => s.trim()).filter(Boolean),
+                credentials: document.getElementById('credentials').value,
+            };
+        }
+
+        async function generateDoc(docType) {
+            if (!currentManuscriptId) return;
+
+            showLoading(true);
+            try {
+                const res = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/documents/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        documentType: docType,
+                        authorInfo: getAuthorInfo(),
+                        targetAgent: document.getElementById('targetAgent').value
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showAlert('Document generated successfully!', 'success');
+                    await loadDocuments();
+                } else {
+                    showAlert(data.error || 'Failed to generate', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+            showLoading(false);
+        }
+
+        async function generateAll() {
+            if (!currentManuscriptId) return;
+
+            showLoading(true);
+            try {
+                const res = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/documents/generate-all`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        authorInfo: getAuthorInfo(),
+                        targetAgent: document.getElementById('targetAgent').value
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showAlert(`Generated all 3 documents! (${data.totalWords} total words)`, 'success');
+                    await loadDocuments();
+                } else {
+                    showAlert(data.error || 'Failed to generate', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+            showLoading(false);
+        }
+
+        async function loadDocuments() {
+            if (!currentManuscriptId) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/documents`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await res.json();
+                displayDocuments(data.documents || []);
+            } catch (error) {
+                console.error('Error loading documents:', error);
+            }
+        }
+
+        function displayDocuments(docs) {
+            const container = document.getElementById('documentsDisplay');
+            if (docs.length === 0) {
+                container.innerHTML = '<div class="card"><p>No documents yet. Generate some above!</p></div>';
+                return;
+            }
+
+            container.innerHTML = docs.map(doc => {
+                const typeName = doc.document_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                return `
+                    <div class="document">
+                        <h3>${typeName}</h3>
+                        <div class="document-meta">
+                            <strong>Word Count:</strong> ${doc.word_count} words |
+                            <strong>Version:</strong> ${doc.version_number} |
+                            <strong>Generated:</strong> ${new Date(doc.created_at * 1000).toLocaleDateString()}
+                        </div>
+                        <div class="document-content">${doc.content}</div>
+                        <button class="btn btn-primary" onclick="copyDoc('${doc.id}')">Copy</button>
+                        <button class="btn btn-secondary" onclick="downloadDoc('${doc.id}', '${typeName}')">Download</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function copyDoc(docId) {
+            const doc = document.querySelector(`[onclick="copyDoc('${docId}')"]`).closest('.document');
+            const content = doc.querySelector('.document-content').textContent;
+            navigator.clipboard.writeText(content).then(() => showAlert('Copied to clipboard!', 'success'));
+        }
+
+        function downloadDoc(docId, name) {
+            const doc = document.querySelector(`[onclick="downloadDoc('${docId}', '${name}')"]`).closest('.document');
+            const content = doc.querySelector('.document-content').textContent;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${name}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('active', show);
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -2,24 +2,18 @@
 
 ## Project Overview
 
-AI-powered platform for indie authors to edit, publish, and market manuscripts. Built on Cloudflare's edge infrastructure.
+AI-powered platform for indie authors to edit, publish, and market manuscripts. Built on Render's cloud infrastructure with PostgreSQL, Redis, and Backblaze B2 storage.
 
 **Revenue Model**: 15-20% of author royalties (authors pay nothing upfront)
 
 ## Architecture
 
-**Primary Stack (Production on Render):**
+**Production Stack (Render):**
 - Express.js on Node.js (Render Web Service)
 - PostgreSQL (Render Managed Database)
 - Redis (Render Session Storage)
 - Backblaze B2 (Object storage for manuscripts/assets)
 - Claude API (AI manuscript analysis)
-
-**Legacy Stack (Cloudflare - Development):**
-- Cloudflare Workers (serverless edge compute)
-- R2 (object storage for manuscripts/assets)
-- D1 (SQLite metadata)
-- Vectorize (comp title matching - planned)
 
 **Storage Buckets (Backblaze B2):**
 - `manuscript-raw` - Original uploads
@@ -27,16 +21,14 @@ AI-powered platform for indie authors to edit, publish, and market manuscripts. 
 - `manuscript-marketing-assets` - Covers, photos, promotional materials
 - `manuscript-platform-backups` - Database backups
 
-**Domains:**
-- API (Production): `api.scarter4workmanuscripthub.com` (Render)
-- API (Development): `manuscript-upload-api.scarter4work.workers.dev` (Cloudflare)
-- Frontend: `scarter4workmanuscripthub.com`
+**Domain:**
+- Production: `selfpubhub.co` (both frontend and API served from same origin)
 
 ## Current State
 
 **Completed:**
 - ✅ Manuscript upload system (PDF, DOCX, TXT, EPUB)
-- ✅ R2 storage with metadata
+- ✅ Backblaze B2 storage with PostgreSQL metadata
 - ✅ Developmental editing agent (plot, character, pacing)
 - ✅ Line editing agent (prose improvement)
 - ✅ Copy editing agent (grammar, consistency)
@@ -58,10 +50,8 @@ AI-powered platform for indie authors to edit, publish, and market manuscripts. 
 
 **Key Files:**
 - `server.js` - Express.js server (Render production)
-- `worker.js` - Cloudflare Worker entry point (Cloudflare development)
 - `render.yaml` - Render deployment configuration
-- `wrangler.toml` - Cloudflare configuration
-- `src/adapters/` - Database, storage, and session adapters (D1→PostgreSQL, R2→B2, KV→Redis)
+- `src/adapters/` - Database, storage, and session adapters for Render infrastructure
 - `src/router/router.js` - Platform-agnostic routing layer
 - `src/handlers/` - API request handlers
 - `src/generators/` - AI content generation modules
@@ -71,7 +61,7 @@ AI-powered platform for indie authors to edit, publish, and market manuscripts. 
 ### Definition of Done (DoD)
 Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 
-1. ✓ Cloudflare build succeeds
+1. ✓ Render deployment succeeds
 2. ✓ Integration tests pass
 3. ✓ Zero deployment errors
 
@@ -90,7 +80,6 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 
 ### Build System Notes
 - Project uses npm (Node v22.20.0, npm 10.9.3)
-- Wrangler version: 4.45.2
 - Platform: **Windows** (Git Bash/MSYS)
 - Recent fix: Removed platform-specific Rollup dependency for cross-platform builds
 - `.npmrc` configured to skip optional dependencies
@@ -105,7 +94,6 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
   - Check deployment status, view logs, manage services
   - Prefer MCP over manual API calls or web console checks
   - **Note**: Requires Claude Code restart after config changes
-- Use **Cloudflare MCP** for Cloudflare operations (not bash/wrangler)
 - Use **Windows MCP** for desktop operations when needed
 - Bash commands may not work as expected - prefer MCP tools
 - PowerShell available via `mcp__windows-mcp__Powershell-Tool` if needed
@@ -169,18 +157,19 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 - `GET /manuscripts/:id/feedback-summary` - Aggregate feedback summary
 
 ## Security Notes
-**Current**: Development mode (no auth)
+**Current**: Cookie-based authentication with httpOnly, secure cookies
 **Production TODO**:
-- Authentication (Cloudflare Access or JWT)
-- Rate limiting
+- Rate limiting (implemented with Redis)
 - File virus scanning
 - API key rotation
-- Data encryption
+- Enhanced data encryption
 - GDPR compliance
 
 ## Cost Structure
-- Cloudflare Workers: Free up to 100K requests/day
-- R2: $0.015/GB storage
+- Render Web Service: $7/month (Starter plan)
+- PostgreSQL Database: $7/month (Starter plan)
+- Redis: Free tier
+- Backblaze B2: $0.005/GB storage + $0.01/GB egress
 - Claude API: ~$2-4 per manuscript analysis
 
 ## Recent Activity Log
@@ -249,6 +238,37 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 - Set up CLAUDE.md for project memory
 - Established GitHub workflow rules
 - Noted Claude Code 2.0.31 stability issues
+
+## Deprecated/Legacy Infrastructure
+
+**Cloudflare Stack (Deprecated as of 2025-11-05)**
+
+The platform was originally built on Cloudflare's edge infrastructure but has been **fully migrated to Render**. The following components are no longer in active use:
+
+**Deprecated Files:**
+- `wrangler.toml` - Cloudflare Workers configuration (no longer used)
+- `dist/worker.js` - Compiled Cloudflare Worker bundle (build artifact, can be deleted)
+- `src/router/worker-router.js` - Cloudflare Worker entry point (replaced by `server.js`)
+
+**Deprecated Services:**
+- Cloudflare Workers (serverless compute) → Replaced by Express.js on Render
+- R2 (object storage) → Replaced by Backblaze B2
+- D1 (SQLite database) → Replaced by PostgreSQL on Render
+- KV (key-value store) → Replaced by Redis on Render
+- Vectorize (vector search) → Not yet implemented on new stack
+
+**Migration Notes:**
+- All data has been migrated from D1 to PostgreSQL
+- Storage adapters implemented to abstract Backblaze B2 API
+- Session management migrated from KV to Redis
+- Frontend API URLs updated from `manuscript-upload-api.scarter4work.workers.dev` to `selfpubhub.co`
+- CORS configuration updated to support same-origin deployment
+
+**Why We Migrated:**
+- Render provides a more traditional Node.js environment with better debugging
+- PostgreSQL offers more robust relational database features than D1 (SQLite)
+- Backblaze B2 is more cost-effective than R2 for large file storage
+- Consolidated infrastructure reduces complexity
 
 ---
 

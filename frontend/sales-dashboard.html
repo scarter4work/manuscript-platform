@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales & Royalty Dashboard - Manuscript Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="bg-gradient-to-r from-green-600 to-emerald-700 rounded-lg shadow-xl p-8 mb-8">
+        <h1 class="text-4xl font-bold text-white mb-2">Sales & Royalty Dashboard</h1>
+        <p class="text-green-100">Track sales, royalties, and performance across all platforms</p>
+      </div>
+
+      <div id="alertContainer" class="mb-6"></div>
+
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <p class="text-gray-600 text-sm mb-1">Total Units Sold (30 days)</p>
+          <p class="text-3xl font-bold text-green-600" id="totalUnits">0</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <p class="text-gray-600 text-sm mb-1">Total Revenue (30 days)</p>
+          <p class="text-3xl font-bold text-blue-600" id="totalRevenue">$0</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <p class="text-gray-600 text-sm mb-1">Total Royalties (30 days)</p>
+          <p class="text-3xl font-bold text-purple-600" id="totalRoyalties">$0</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <p class="text-gray-600 text-sm mb-1">Books Published</p>
+          <p class="text-3xl font-bold text-indigo-600" id="booksPublished">0</p>
+        </div>
+      </div>
+
+      <!-- Sales Trend Chart -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-4">Sales Trend (Last 30 Days)</h2>
+        <canvas id="salesTrendChart" height="80"></canvas>
+      </div>
+
+      <!-- Platform Breakdown -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold mb-4">Platform Performance</h2>
+          <div id="platformPerformance" class="space-y-3"></div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold mb-4">Format Breakdown</h2>
+          <canvas id="formatChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Book Performance Table -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-4">Book Performance</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200" id="booksTable">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Units Sold</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Revenue</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Royalties</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="booksTableBody" class="bg-white divide-y divide-gray-200"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Royalty Summary -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-4">Royalty Summary</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center p-4 bg-green-50 rounded-lg">
+            <p class="text-gray-600 text-sm mb-1">Total Earned</p>
+            <p class="text-2xl font-bold text-green-600" id="totalEarned">$0</p>
+          </div>
+          <div class="text-center p-4 bg-yellow-50 rounded-lg">
+            <p class="text-gray-600 text-sm mb-1">Pending Payment</p>
+            <p class="text-2xl font-bold text-yellow-600" id="pendingPayment">$0</p>
+          </div>
+          <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <p class="text-gray-600 text-sm mb-1">Total Paid</p>
+            <p class="text-2xl font-bold text-blue-600" id="totalPaid">$0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4">Actions</h2>
+        <div class="space-x-4">
+          <button id="seedDataBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+            Seed Sample Data (Testing)
+          </button>
+          <button id="exportBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
+            Export Sales (CSV)
+          </button>
+          <button id="refreshBtn" class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">
+            Refresh Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = window.location.origin;
+    const getAuthHeaders = () => ({
+      'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+      'Content-Type': 'application/json'
+    });
+
+    let salesTrendChart = null;
+    let formatChart = null;
+
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+
+    async function loadDashboard() {
+      try {
+        showAlert('Loading sales data...', 'info');
+
+        // Load sales overview
+        const overviewResponse = await fetch(API_BASE_URL + '/dashboard/sales-overview', {
+          headers: getAuthHeaders()
+        });
+        const overviewData = await overviewResponse.json();
+
+        if (overviewData.success) {
+          displaySalesOverview(overviewData);
+        }
+
+        // Load royalty summary
+        const royaltyResponse = await fetch(API_BASE_URL + '/dashboard/royalty-summary', {
+          headers: getAuthHeaders()
+        });
+        const royaltyData = await royaltyResponse.json();
+
+        if (royaltyData.success) {
+          displayRoyaltySummary(royaltyData.summary);
+        }
+
+        dismissAlert();
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+        showAlert('Failed to load dashboard data', 'error');
+      }
+    }
+
+    function displaySalesOverview(data) {
+      // Update summary cards
+      document.getElementById('totalUnits').textContent = data.totals.last30DaysUnits.toLocaleString();
+      document.getElementById('totalRevenue').textContent = '$' + data.totals.last30DaysRevenue.toFixed(2);
+      document.getElementById('totalRoyalties').textContent = '$' + data.totals.last30DaysRoyalties.toFixed(2);
+      document.getElementById('booksPublished').textContent = data.totals.booksPublished;
+
+      // Display sales trend chart
+      if (data.salesTrend && data.salesTrend.length > 0) {
+        displaySalesTrendChart(data.salesTrend);
+      }
+
+      // Display platform performance
+      if (data.platformPerformance && data.platformPerformance.length > 0) {
+        displayPlatformPerformance(data.platformPerformance);
+      }
+
+      // Display book performance table
+      if (data.overview && data.overview.length > 0) {
+        displayBooksTable(data.overview);
+      }
+
+      // Display recent activity for format breakdown
+      if (data.recentActivity && data.recentActivity.length > 0) {
+        displayFormatChart(data.recentActivity);
+      }
+    }
+
+    function displaySalesTrendChart(salesTrend) {
+      const ctx = document.getElementById('salesTrendChart').getContext('2d');
+
+      if (salesTrendChart) {
+        salesTrendChart.destroy();
+      }
+
+      const dates = salesTrend.map(s => s.sale_day);
+      const units = salesTrend.map(s => s.units);
+      const revenue = salesTrend.map(s => s.revenue);
+
+      salesTrendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [
+            {
+              label: 'Units Sold',
+              data: units,
+              borderColor: 'rgb(34, 197, 94)',
+              backgroundColor: 'rgba(34, 197, 94, 0.1)',
+              yAxisID: 'y'
+            },
+            {
+              label: 'Revenue ($)',
+              data: revenue,
+              borderColor: 'rgb(59, 130, 246)',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: { display: true, text: 'Units Sold' }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: { display: true, text: 'Revenue ($)' },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        }
+      });
+    }
+
+    function displayPlatformPerformance(platforms) {
+      const container = document.getElementById('platformPerformance');
+      container.innerHTML = platforms.map(platform => `
+        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+          <div>
+            <p class="font-semibold">${platform.platform.toUpperCase()}</p>
+            <p class="text-sm text-gray-600">${platform.total_units} units</p>
+          </div>
+          <div class="text-right">
+            <p class="font-bold text-green-600">$${platform.total_royalties.toFixed(2)}</p>
+            <p class="text-sm text-gray-600">${(platform.avg_royalty_rate * 100).toFixed(0)}% avg</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function displayFormatChart(recentActivity) {
+      const ctx = document.getElementById('formatChart').getContext('2d');
+
+      if (formatChart) {
+        formatChart.destroy();
+      }
+
+      // Aggregate by format
+      const formatData = {};
+      recentActivity.forEach(activity => {
+        if (!formatData[activity.format]) {
+          formatData[activity.format] = 0;
+        }
+        formatData[activity.format] += activity.units_sold_30d;
+      });
+
+      formatChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(formatData),
+          datasets: [{
+            data: Object.values(formatData),
+            backgroundColor: [
+              'rgb(59, 130, 246)',
+              'rgb(34, 197, 94)',
+              'rgb(168, 85, 247)',
+              'rgb(251, 191, 36)'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+
+    function displayBooksTable(books) {
+      const tbody = document.getElementById('booksTableBody');
+      tbody.innerHTML = books.map(book => `
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">${book.manuscript_title}</td>
+          <td class="px-6 py-4 whitespace-nowrap">${book.total_units_sold.toLocaleString()}</td>
+          <td class="px-6 py-4 whitespace-nowrap">$${book.total_revenue.toFixed(2)}</td>
+          <td class="px-6 py-4 whitespace-nowrap">$${book.total_royalties.toFixed(2)}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <button onclick="viewBookDetails('${book.manuscript_id}')" class="text-blue-600 hover:underline">
+              View Details
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function displayRoyaltySummary(summary) {
+      document.getElementById('totalEarned').textContent = '$' + summary.totalEarned.toFixed(2);
+      document.getElementById('pendingPayment').textContent = '$' + summary.totalPending.toFixed(2);
+      document.getElementById('totalPaid').textContent = '$' + summary.totalEarned.toFixed(2); // Using totalEarned as proxy
+    }
+
+    async function viewBookDetails(manuscriptId) {
+      window.location.href = `/sales-details.html?manuscript=${manuscriptId}`;
+    }
+
+    document.getElementById('seedDataBtn').addEventListener('click', async () => {
+      const manuscriptId = prompt('Enter manuscript ID to seed data for:');
+      if (!manuscriptId) return;
+
+      try {
+        showAlert('Generating sample sales data...', 'info');
+
+        const response = await fetch(API_BASE_URL + '/sales/seed', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ manuscriptId })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          showAlert('Sample data created! Refreshing dashboard...', 'success');
+          setTimeout(loadDashboard, 1500);
+        } else {
+          showAlert(data.error || 'Failed to seed data', 'error');
+        }
+      } catch (error) {
+        showAlert('Error seeding data', 'error');
+      }
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const manuscriptId = prompt('Enter manuscript ID to export sales for:');
+      if (!manuscriptId) return;
+
+      window.open(`${API_BASE_URL}/manuscripts/${manuscriptId}/sales/export`, '_blank');
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', loadDashboard);
+
+    function showAlert(message, type) {
+      const container = document.getElementById('alertContainer');
+      const colors = { success: 'green', error: 'red', info: 'blue', warning: 'yellow' };
+      const color = colors[type] || 'blue';
+      const alert = document.createElement('div');
+      alert.className = `bg-${color}-50 border border-${color}-200 text-${color}-800 px-4 py-3 rounded relative mb-4`;
+      alert.id = 'activeAlert';
+      alert.innerHTML = `<span class="block sm:inline">${message}</span>`;
+      container.innerHTML = '';
+      container.appendChild(alert);
+      if (type !== 'error') setTimeout(dismissAlert, 3000);
+    }
+
+    function dismissAlert() {
+      const alert = document.getElementById('activeAlert');
+      if (alert) alert.remove();
+    }
+  </script>
+</body>
+</html>

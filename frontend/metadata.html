@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Metadata - ManuscriptHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .label-help {
+            font-weight: normal;
+            font-size: 0.9em;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #f5f5f5;
+            border-color: #667eea;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+            flex: 1;
+        }
+
+        .severity-badge {
+            font-size: 0.75em;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+
+        .severity-mild {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .severity-moderate {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .severity-severe {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .validation-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .validation-valid {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            color: #065f46;
+        }
+
+        .validation-warning {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .validation-error {
+            background: #fecaca;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .subgenre-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .pill {
+            padding: 6px 12px;
+            background: #e0e7ff;
+            color: #4338ca;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pill button {
+            background: none;
+            border: none;
+            color: #4338ca;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.1em;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fecaca;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-box strong {
+            color: #0284c7;
+        }
+
+        .range-display {
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>Enhanced Metadata</h1>
+                <p>Set genre, age category, content warnings, and more</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Manuscript Selection -->
+        <div class="card">
+            <h2>Select Manuscript</h2>
+            <div class="form-group">
+                <label for="manuscriptSelect">Choose manuscript to update metadata:</label>
+                <select id="manuscriptSelect">
+                    <option value="">-- Select a manuscript --</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Metadata Form -->
+        <div id="metadataForm" style="display: none;">
+            <!-- Genre Selection -->
+            <div class="card">
+                <h2>Genre & Classification</h2>
+
+                <div class="form-group">
+                    <label for="primaryGenre">Primary Genre <span class="label-help">(Required)</span></label>
+                    <select id="primaryGenre">
+                        <option value="">-- Select primary genre --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="subGenres">Sub-Genres <span class="label-help">(Up to 3)</span></label>
+                    <select id="subGenres">
+                        <option value="">-- Select sub-genre to add --</option>
+                    </select>
+                    <div id="selectedSubgenres" class="subgenre-pills"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ageCategory">Age Category <span class="label-help">(Required)</span></label>
+                    <select id="ageCategory">
+                        <option value="">-- Select age category --</option>
+                        <option value="adult">Adult (18+)</option>
+                        <option value="young_adult">Young Adult (13-18)</option>
+                        <option value="middle_grade">Middle Grade (8-12)</option>
+                        <option value="childrens">Children's (4-8)</option>
+                        <option value="all_ages">All Ages</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Word Count & Status -->
+            <div class="card">
+                <h2>Manuscript Details</h2>
+
+                <div class="form-group">
+                    <label for="wordCount">Word Count</label>
+                    <input type="number" id="wordCount" placeholder="Enter word count" min="0">
+                    <div id="wordCountValidation"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="completionStatus">Completion Status</label>
+                    <select id="completionStatus">
+                        <option value="complete">Complete</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="revision">In Revision</option>
+                        <option value="outline">Outline Only</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="percentageGroup" style="display: none;">
+                    <label for="completionPercentage">Completion Percentage: <span id="percentageDisplay">50</span>%</label>
+                    <input type="range" id="completionPercentage" min="0" max="100" value="50">
+                    <div class="range-display" id="percentageValue">50%</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="publicationStatus">Publication Status</label>
+                    <select id="publicationStatus">
+                        <option value="unpublished">Unpublished</option>
+                        <option value="self_published">Self-Published</option>
+                        <option value="traditionally_published">Traditionally Published</option>
+                        <option value="previously_published">Previously Published</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Content Warnings -->
+            <div class="card">
+                <h2>Content Warnings</h2>
+                <p style="color: #666; margin-bottom: 15px;">Select all content warnings that apply to help readers make informed choices.</p>
+
+                <h3>Violence</h3>
+                <div id="warnings-violence" class="checkbox-group"></div>
+
+                <h3>Sexual Content</h3>
+                <div id="warnings-sexual" class="checkbox-group"></div>
+
+                <h3>Substance Use</h3>
+                <div id="warnings-substance" class="checkbox-group"></div>
+
+                <h3>Mental Health</h3>
+                <div id="warnings-mental_health" class="checkbox-group"></div>
+
+                <h3>Discrimination & Abuse</h3>
+                <div id="warnings-discrimination" class="checkbox-group"></div>
+
+                <h3>Other</h3>
+                <div id="warnings-other" class="checkbox-group"></div>
+            </div>
+
+            <!-- Series Information -->
+            <div class="card">
+                <h2>Series Information</h2>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="isStandalone" style="width: auto; margin-right: 8px;">
+                        This is a standalone book (not part of a series)
+                    </label>
+                </div>
+
+                <div id="seriesFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="seriesName">Series Name</label>
+                        <input type="text" id="seriesName" placeholder="Enter series name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookNumber">Book Number in Series</label>
+                        <input type="number" id="bookNumber" placeholder="e.g., 1, 2, 3" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card">
+                <button class="btn btn-primary" id="saveMetadata">Save Metadata</button>
+                <button class="btn btn-secondary" id="validateButton" style="margin-left: 10px;">Validate</button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #667eea;">Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let authToken = localStorage.getItem('authToken');
+        let currentManuscriptId = null;
+        let availableGenres = [];
+        let availableWarnings = [];
+        let selectedSubgenres = [];
+        let selectedWarnings = [];
+
+        // Check authentication
+        if (!authToken) {
+            window.location.href = '/login.html';
+        }
+
+        // Fetch genres and warnings on page load
+        async function initializeData() {
+            try {
+                showLoading(true);
+
+                // Fetch genres
+                const genresResponse = await fetch(`${API_BASE}/genres`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const genresData = await genresResponse.json();
+                availableGenres = genresData.genres || [];
+                populateGenres(availableGenres);
+
+                // Fetch content warnings
+                const warningsResponse = await fetch(`${API_BASE}/content-warnings`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const warningsData = await warningsResponse.json();
+                availableWarnings = warningsData.warnings || [];
+                populateContentWarnings(warningsData.categorized || {});
+
+                // Fetch manuscripts
+                const manuscriptsResponse = await fetch(`${API_BASE}/manuscripts`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const manuscriptsData = await manuscriptsResponse.json();
+                populateManuscripts(manuscriptsData.manuscripts || []);
+
+                showLoading(false);
+            } catch (error) {
+                console.error('Error initializing:', error);
+                showAlert('Failed to load data. Please refresh the page.', 'error');
+                showLoading(false);
+            }
+        }
+
+        function populateGenres(genres) {
+            const primarySelect = document.getElementById('primaryGenre');
+            primarySelect.innerHTML = '<option value="">-- Select primary genre --</option>';
+
+            genres.forEach(genre => {
+                const option = document.createElement('option');
+                option.value = genre.id;
+                option.textContent = genre.name;
+                primarySelect.appendChild(option);
+
+                // Add subgenres as sub-options
+                if (genre.subgenres && genre.subgenres.length > 0) {
+                    genre.subgenres.forEach(sub => {
+                        const subOption = document.createElement('option');
+                        subOption.value = sub.id;
+                        subOption.textContent = `  └─ ${sub.name}`;
+                        primarySelect.appendChild(subOption);
+                    });
+                }
+            });
+        }
+
+        function updateSubgenreOptions(primaryGenreId) {
+            const subGenreSelect = document.getElementById('subGenres');
+            subGenreSelect.innerHTML = '<option value="">-- Select sub-genre to add --</option>';
+
+            if (!primaryGenreId) return;
+
+            // Find the selected primary genre
+            const primaryGenre = findGenreById(primaryGenreId, availableGenres);
+            if (primaryGenre && primaryGenre.subgenres) {
+                primaryGenre.subgenres.forEach(sub => {
+                    if (!selectedSubgenres.find(s => s.id === sub.id)) {
+                        const option = document.createElement('option');
+                        option.value = sub.id;
+                        option.textContent = sub.name;
+                        subGenreSelect.appendChild(option);
+                    }
+                });
+            }
+        }
+
+        function findGenreById(id, genres) {
+            for (const genre of genres) {
+                if (genre.id === id) return genre;
+                if (genre.subgenres) {
+                    const found = findGenreById(id, genre.subgenres);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        function addSubgenre() {
+            const select = document.getElementById('subGenres');
+            const genreId = select.value;
+            if (!genreId) return;
+
+            if (selectedSubgenres.length >= 3) {
+                showAlert('Maximum 3 sub-genres allowed', 'error');
+                return;
+            }
+
+            const genre = findGenreById(genreId, availableGenres);
+            if (genre && !selectedSubgenres.find(s => s.id === genre.id)) {
+                selectedSubgenres.push(genre);
+                renderSubgenrePills();
+                updateSubgenreOptions(document.getElementById('primaryGenre').value);
+            }
+
+            select.value = '';
+        }
+
+        function removeSubgenre(genreId) {
+            selectedSubgenres = selectedSubgenres.filter(s => s.id !== genreId);
+            renderSubgenrePills();
+            updateSubgenreOptions(document.getElementById('primaryGenre').value);
+        }
+
+        function renderSubgenrePills() {
+            const container = document.getElementById('selectedSubgenres');
+            container.innerHTML = selectedSubgenres.map(genre => `
+                <div class="pill">
+                    ${genre.name}
+                    <button onclick="removeSubgenre('${genre.id}')">&times;</button>
+                </div>
+            `).join('');
+        }
+
+        function populateContentWarnings(categorized) {
+            Object.entries(categorized).forEach(([category, warnings]) => {
+                const container = document.getElementById(`warnings-${category}`);
+                if (!container) return;
+
+                container.innerHTML = warnings.map(warning => `
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="warning-${warning.id}" value="${warning.id}">
+                        <label for="warning-${warning.id}">
+                            ${warning.name}
+                            <span class="severity-badge severity-${warning.severity}">${warning.severity}</span>
+                        </label>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function populateManuscripts(manuscripts) {
+            const select = document.getElementById('manuscriptSelect');
+            manuscripts.forEach(ms => {
+                const option = document.createElement('option');
+                option.value = ms.id;
+                option.textContent = ms.title || ms.original_filename || ms.id;
+                select.appendChild(option);
+            });
+        }
+
+        async function loadManuscriptMetadata(manuscriptId) {
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE}/manuscripts/${manuscriptId}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+                const manuscript = data.manuscript;
+
+                // Populate form fields
+                document.getElementById('primaryGenre').value = manuscript.primary_genre || '';
+                document.getElementById('ageCategory').value = manuscript.age_category || '';
+                document.getElementById('wordCount').value = manuscript.word_count || '';
+                document.getElementById('completionStatus').value = manuscript.completion_status || 'complete';
+                document.getElementById('completionPercentage').value = manuscript.completion_percentage || 100;
+                document.getElementById('publicationStatus').value = manuscript.publication_status || 'unpublished';
+
+                // Sub-genres
+                selectedSubgenres = [];
+                if (manuscript.sub_genres) {
+                    try {
+                        const subGenreIds = JSON.parse(manuscript.sub_genres);
+                        subGenreIds.forEach(id => {
+                            const genre = findGenreById(id, availableGenres);
+                            if (genre) selectedSubgenres.push(genre);
+                        });
+                    } catch (e) {}
+                }
+                renderSubgenrePills();
+                updateSubgenreOptions(manuscript.primary_genre);
+
+                // Content warnings
+                if (manuscript.content_warnings) {
+                    try {
+                        const warnings = JSON.parse(manuscript.content_warnings);
+                        warnings.forEach(id => {
+                            const checkbox = document.getElementById(`warning-${id}`);
+                            if (checkbox) checkbox.checked = true;
+                        });
+                    } catch (e) {}
+                }
+
+                // Series info
+                if (manuscript.series_info) {
+                    try {
+                        const seriesInfo = JSON.parse(manuscript.series_info);
+                        document.getElementById('isStandalone').checked = seriesInfo.is_standalone || false;
+                        document.getElementById('seriesName').value = seriesInfo.series_name || '';
+                        document.getElementById('bookNumber').value = seriesInfo.book_number || '';
+                        toggleSeriesFields();
+                    } catch (e) {}
+                }
+
+                document.getElementById('metadataForm').style.display = 'block';
+                showLoading(false);
+
+                // Validate on load
+                validateMetadata();
+            } catch (error) {
+                console.error('Error loading manuscript:', error);
+                showAlert('Failed to load manuscript metadata', 'error');
+                showLoading(false);
+            }
+        }
+
+        async function saveMetadata() {
+            if (!currentManuscriptId) return;
+
+            try {
+                showLoading(true);
+
+                // Gather selected warnings
+                const warnings = [];
+                document.querySelectorAll('[id^="warning-"]:checked').forEach(checkbox => {
+                    warnings.push(checkbox.value);
+                });
+
+                const metadata = {
+                    primary_genre: document.getElementById('primaryGenre').value || null,
+                    sub_genres: selectedSubgenres.map(s => s.id),
+                    age_category: document.getElementById('ageCategory').value || null,
+                    content_warnings: warnings,
+                    completion_status: document.getElementById('completionStatus').value,
+                    completion_percentage: parseInt(document.getElementById('completionPercentage').value),
+                    word_count: parseInt(document.getElementById('wordCount').value) || null,
+                    publication_status: document.getElementById('publicationStatus').value,
+                    series_info: {
+                        is_standalone: document.getElementById('isStandalone').checked,
+                        series_name: document.getElementById('seriesName').value || null,
+                        book_number: parseInt(document.getElementById('bookNumber').value) || null
+                    }
+                };
+
+                const response = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/enhanced-metadata`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(metadata)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Metadata saved successfully!', 'success');
+                    validateMetadata();
+                } else {
+                    showAlert(data.error || 'Failed to save metadata', 'error');
+                }
+
+                showLoading(false);
+            } catch (error) {
+                console.error('Error saving metadata:', error);
+                showAlert('Failed to save metadata', 'error');
+                showLoading(false);
+            }
+        }
+
+        async function validateMetadata() {
+            if (!currentManuscriptId) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/validate-genre`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    displayValidation(data.validation);
+                }
+            } catch (error) {
+                console.error('Error validating:', error);
+            }
+        }
+
+        function displayValidation(validation) {
+            const container = document.getElementById('wordCountValidation');
+
+            let cssClass = 'validation-valid';
+            if (validation.status === 'missing_word_count' || validation.metadata_completeness !== 'complete') {
+                cssClass = 'validation-error';
+            } else if (validation.status === 'word_count_too_low' || validation.status === 'word_count_too_high') {
+                cssClass = 'validation-warning';
+            }
+
+            const html = `
+                <div class="validation-box ${cssClass}">
+                    <strong>Validation Status: ${validation.status.replace(/_/g, ' ').toUpperCase()}</strong>
+                    ${validation.warnings.length > 0 ? `<ul style="margin: 10px 0 0 20px;">${validation.warnings.map(w => `<li>${w}</li>`).join('')}</ul>` : ''}
+                    ${validation.recommendations.length > 0 ? `<p style="margin-top: 10px;"><strong>Recommendations:</strong></p><ul style="margin: 5px 0 0 20px;">${validation.recommendations.map(r => `<li>${r}</li>`).join('')}</ul>` : ''}
+                    ${validation.genreExpectations.min ? `<p style="margin-top: 10px;"><strong>Genre Range:</strong> ${validation.genreExpectations.min.toLocaleString()} - ${validation.genreExpectations.max.toLocaleString()} words</p>` : ''}
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function toggleSeriesFields() {
+            const isStandalone = document.getElementById('isStandalone').checked;
+            document.getElementById('seriesFields').style.display = isStandalone ? 'none' : 'block';
+        }
+
+        function togglePercentageField() {
+            const status = document.getElementById('completionStatus').value;
+            const group = document.getElementById('percentageGroup');
+            group.style.display = (status === 'in_progress') ? 'block' : 'none';
+        }
+
+        function updatePercentageDisplay() {
+            const value = document.getElementById('completionPercentage').value;
+            document.getElementById('percentageDisplay').textContent = value;
+            document.getElementById('percentageValue').textContent = value + '%';
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('active', show);
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+
+        // Event listeners
+        document.getElementById('manuscriptSelect').addEventListener('change', (e) => {
+            currentManuscriptId = e.target.value;
+            if (currentManuscriptId) {
+                loadManuscriptMetadata(currentManuscriptId);
+            }
+        });
+
+        document.getElementById('primaryGenre').addEventListener('change', (e) => {
+            updateSubgenreOptions(e.target.value);
+            validateMetadata();
+        });
+
+        document.getElementById('subGenres').addEventListener('change', addSubgenre);
+        document.getElementById('saveMetadata').addEventListener('click', saveMetadata);
+        document.getElementById('validateButton').addEventListener('click', validateMetadata);
+        document.getElementById('isStandalone').addEventListener('change', toggleSeriesFields);
+        document.getElementById('completionStatus').addEventListener('change', togglePercentageField);
+        document.getElementById('completionPercentage').addEventListener('input', updatePercentageDisplay);
+        document.getElementById('wordCount').addEventListener('blur', validateMetadata);
+        document.getElementById('ageCategory').addEventListener('change', validateMetadata);
+
+        // Initialize
+        initializeData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Windows & Deadlines - Manuscript Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Submission Windows & Deadlines</h1>
+            <p class="text-gray-600">Track publisher submission windows and manage deadlines</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-6 border-b border-gray-200">
+            <nav class="flex space-x-8">
+                <button onclick="switchTab('open')" id="tab-open" class="tab-button border-b-2 border-blue-500 text-blue-600 py-4 px-1 font-medium">
+                    Open Now
+                </button>
+                <button onclick="switchTab('opening-soon')" id="tab-opening-soon" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 font-medium">
+                    Opening Soon
+                </button>
+                <button onclick="switchTab('deadlines')" id="tab-deadlines" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 font-medium">
+                    My Deadlines
+                </button>
+                <button onclick="switchTab('publishers')" id="tab-publishers" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 font-medium">
+                    All Publishers
+                </button>
+            </nav>
+        </div>
+
+        <!-- Open Now Tab -->
+        <div id="open-tab" class="tab-content">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Genre</label>
+                <select id="genreFilter" onchange="loadOpenWindows()" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Genres</option>
+                    <option value="fiction">Fiction</option>
+                    <option value="non-fiction">Non-Fiction</option>
+                    <option value="mystery">Mystery</option>
+                    <option value="romance">Romance</option>
+                    <option value="sci-fi">Sci-Fi</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="thriller">Thriller</option>
+                    <option value="literary">Literary</option>
+                </select>
+            </div>
+            <div id="openWindowsList" class="space-y-4">
+                <!-- Open windows will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Opening Soon Tab -->
+        <div id="opening-soon-tab" class="tab-content hidden">
+            <div id="openingSoonList" class="space-y-4">
+                <!-- Opening soon windows will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Deadlines Tab -->
+        <div id="deadlines-tab" class="tab-content hidden">
+            <div class="mb-4 flex justify-between items-center">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Show deadlines within</label>
+                    <select id="daysFilter" onchange="loadDeadlines()" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="7">Next 7 days</option>
+                        <option value="14">Next 14 days</option>
+                        <option value="30" selected>Next 30 days</option>
+                        <option value="60">Next 60 days</option>
+                    </select>
+                </div>
+                <button onclick="showAddDeadlineModal()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    + Add Deadline
+                </button>
+            </div>
+            <div id="deadlinesList" class="space-y-4">
+                <!-- Deadlines will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Publishers Tab -->
+        <div id="publishers-tab" class="tab-content hidden">
+            <div class="mb-4 flex justify-between items-center">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Type</label>
+                    <select id="publisherTypeFilter" onchange="loadPublishers()" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Types</option>
+                        <option value="traditional_publisher">Traditional Publisher</option>
+                        <option value="indie_press">Indie Press</option>
+                        <option value="literary_agent">Literary Agent</option>
+                        <option value="magazine">Magazine</option>
+                        <option value="anthology">Anthology</option>
+                        <option value="contest">Contest</option>
+                    </select>
+                </div>
+                <button onclick="showAddPublisherModal()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    + Add Publisher
+                </button>
+            </div>
+            <div id="publishersList" class="space-y-4">
+                <!-- Publishers will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Deadline Modal -->
+    <div id="addDeadlineModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Add Deadline</h3>
+                <button onclick="closeAddDeadlineModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Submission ID</label>
+                    <input type="text" id="deadlineSubmissionId" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Deadline Type</label>
+                    <select id="deadlineType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="response_expected">Response Expected</option>
+                        <option value="revise_resubmit">Revise & Resubmit</option>
+                        <option value="contract_expires">Contract Expires</option>
+                        <option value="contest">Contest</option>
+                        <option value="window_closes">Window Closes</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Deadline Date</label>
+                    <input type="date" id="deadlineDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Deadline Name</label>
+                    <input type="text" id="deadlineName" placeholder="e.g., R&R for Novel Submission" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea id="deadlineDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button onclick="closeAddDeadlineModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button onclick="submitDeadline()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Add Deadline
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Publisher Modal -->
+    <div id="addPublisherModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Add Publisher</h3>
+                <button onclick="closeAddPublisherModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Publisher Name</label>
+                    <input type="text" id="publisherName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Publisher Type</label>
+                    <select id="publisherType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="traditional_publisher">Traditional Publisher</option>
+                        <option value="indie_press">Indie Press</option>
+                        <option value="literary_agent">Literary Agent</option>
+                        <option value="magazine">Magazine</option>
+                        <option value="anthology">Anthology</option>
+                        <option value="contest">Contest</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                    <input type="url" id="publisherWebsite" placeholder="https://..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Submission Guidelines URL</label>
+                    <input type="url" id="publisherGuidelines" placeholder="https://..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="publisherEmail" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button onclick="closeAddPublisherModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button onclick="submitPublisher()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Add Publisher
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div id="alert" class="hidden fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 max-w-md">
+        <div id="alertMessage" class="text-sm"></div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let authToken = localStorage.getItem('auth_token') || 'demo-token';
+
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('border-blue-500', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById(`tab-${tab}`).classList.add('border-blue-500', 'text-blue-600');
+
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`${tab}-tab`).classList.remove('hidden');
+
+            if (tab === 'open') loadOpenWindows();
+            if (tab === 'opening-soon') loadOpeningSoon();
+            if (tab === 'deadlines') loadDeadlines();
+            if (tab === 'publishers') loadPublishers();
+        }
+
+        // Load open windows
+        async function loadOpenWindows() {
+            try {
+                const genre = document.getElementById('genreFilter').value;
+                let url = `${API_BASE}/publishers/open-now`;
+                if (genre) url += `?genre=${genre}`;
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to load open windows');
+
+                const data = await response.json();
+                renderWindows(data.windows, 'openWindowsList');
+
+            } catch (error) {
+                console.error('Error loading open windows:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Load opening soon
+        async function loadOpeningSoon() {
+            try {
+                const response = await fetch(`${API_BASE}/publishers/opening-soon`);
+                if (!response.ok) throw new Error('Failed to load opening soon windows');
+
+                const data = await response.json();
+                renderWindows(data.windows, 'openingSoonList', true);
+
+            } catch (error) {
+                console.error('Error loading opening soon windows:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Render windows
+        function renderWindows(windows, containerId, showOpenDate = false) {
+            const container = document.getElementById(containerId);
+
+            if (!windows || windows.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-gray-500">No windows found</div>';
+                return;
+            }
+
+            container.innerHTML = windows.map(window => `
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">${window.publisher_name}</h3>
+                            <p class="text-sm text-gray-600 mb-2">${window.window_name || window.window_type}</p>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">${window.publisher_type}</span>
+                                ${window.window_type !== 'rolling' && window.days_until_close ? `<span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">${window.days_until_close} days left</span>` : ''}
+                                ${window.capacity_percent ? `<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">${window.capacity_percent}% full</span>` : ''}
+                                ${showOpenDate && window.days_until_open ? `<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Opens in ${window.days_until_open} days</span>` : ''}
+                            </div>
+                            ${window.website ? `<a href="${window.website}" target="_blank" class="text-sm text-blue-600 hover:underline">Visit Website</a>` : ''}
+                        </div>
+                        <button onclick="subscribeToAlerts('${window.publisher_id}')" class="px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                            Subscribe to Alerts
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load deadlines
+        async function loadDeadlines() {
+            try {
+                const days = document.getElementById('daysFilter').value;
+                const response = await fetch(`${API_BASE}/deadlines/upcoming?days=${days}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load deadlines');
+
+                const data = await response.json();
+                renderDeadlines(data.deadlines);
+
+            } catch (error) {
+                console.error('Error loading deadlines:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Render deadlines
+        function renderDeadlines(deadlines) {
+            const container = document.getElementById('deadlinesList');
+
+            if (!deadlines || deadlines.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-gray-500">No upcoming deadlines</div>';
+                return;
+            }
+
+            container.innerHTML = deadlines.map(deadline => `
+                <div class="bg-white rounded-lg shadow-sm p-6 ${deadline.is_overdue ? 'border-l-4 border-red-500' : ''}">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">${deadline.deadline_name || deadline.deadline_type}</h3>
+                            <p class="text-sm text-gray-600 mb-2">${deadline.manuscript_title}</p>
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">${deadline.deadline_type}</span>
+                                ${deadline.is_overdue ?
+                                    '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded font-semibold">OVERDUE</span>' :
+                                    `<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">${deadline.days_until_deadline} days left</span>`
+                                }
+                            </div>
+                            <p class="text-sm text-gray-500">Due: ${new Date(deadline.deadline_date * 1000).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load publishers
+        async function loadPublishers() {
+            try {
+                const publisherType = document.getElementById('publisherTypeFilter').value;
+                let url = `${API_BASE}/publishers`;
+                if (publisherType) url += `?type=${publisherType}`;
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to load publishers');
+
+                const data = await response.json();
+                renderPublishers(data.publishers);
+
+            } catch (error) {
+                console.error('Error loading publishers:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Render publishers
+        function renderPublishers(publishers) {
+            const container = document.getElementById('publishersList');
+
+            if (!publishers || publishers.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-gray-500">No publishers found</div>';
+                return;
+            }
+
+            container.innerHTML = publishers.map(pub => `
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-1">${pub.name}</h3>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">${pub.publisher_type}</span>
+                        ${pub.is_active ? '<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Active</span>' : ''}
+                    </div>
+                    ${pub.website ? `<p class="text-sm mb-2"><a href="${pub.website}" target="_blank" class="text-blue-600 hover:underline">Website</a></p>` : ''}
+                    ${pub.submission_guidelines_url ? `<p class="text-sm mb-2"><a href="${pub.submission_guidelines_url}" target="_blank" class="text-blue-600 hover:underline">Submission Guidelines</a></p>` : ''}
+                    ${pub.avg_response_time_days ? `<p class="text-sm text-gray-600">Avg Response Time: ${pub.avg_response_time_days} days</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Subscribe to alerts
+        async function subscribeToAlerts(publisherId) {
+            try {
+                const response = await fetch(`${API_BASE}/publishers/${publisherId}/alerts`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!response.ok) throw new Error('Failed to subscribe to alerts');
+
+                showAlert('Subscribed to publisher alerts successfully', 'success');
+
+            } catch (error) {
+                console.error('Error subscribing to alerts:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Show/hide deadline modal
+        function showAddDeadlineModal() {
+            document.getElementById('addDeadlineModal').classList.remove('hidden');
+        }
+
+        function closeAddDeadlineModal() {
+            document.getElementById('addDeadlineModal').classList.add('hidden');
+        }
+
+        // Submit deadline
+        async function submitDeadline() {
+            try {
+                const submissionId = document.getElementById('deadlineSubmissionId').value;
+                const deadlineDate = document.getElementById('deadlineDate').value;
+
+                if (!submissionId || !deadlineDate) {
+                    showAlert('Please fill in all required fields', 'error');
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/submissions/${submissionId}/deadlines`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        deadlineType: document.getElementById('deadlineType').value,
+                        deadlineDate: Math.floor(new Date(deadlineDate).getTime() / 1000),
+                        deadlineName: document.getElementById('deadlineName').value || null,
+                        description: document.getElementById('deadlineDescription').value || null
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to add deadline');
+
+                showAlert('Deadline added successfully', 'success');
+                closeAddDeadlineModal();
+                loadDeadlines();
+
+            } catch (error) {
+                console.error('Error adding deadline:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Show/hide publisher modal
+        function showAddPublisherModal() {
+            document.getElementById('addPublisherModal').classList.remove('hidden');
+        }
+
+        function closeAddPublisherModal() {
+            document.getElementById('addPublisherModal').classList.add('hidden');
+        }
+
+        // Submit publisher
+        async function submitPublisher() {
+            try {
+                const name = document.getElementById('publisherName').value;
+                const publisherType = document.getElementById('publisherType').value;
+
+                if (!name || !publisherType) {
+                    showAlert('Please fill in all required fields', 'error');
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/publishers`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        publisherType,
+                        website: document.getElementById('publisherWebsite').value || null,
+                        submissionGuidelinesUrl: document.getElementById('publisherGuidelines').value || null,
+                        email: document.getElementById('publisherEmail').value || null
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to add publisher');
+
+                showAlert('Publisher added successfully', 'success');
+                closeAddPublisherModal();
+                loadPublishers();
+
+            } catch (error) {
+                console.error('Error adding publisher:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            const alertMessage = document.getElementById('alertMessage');
+
+            alert.className = `fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 max-w-md ${
+                type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`;
+            alertMessage.textContent = message;
+            alert.classList.remove('hidden');
+
+            setTimeout(() => {
+                alert.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Initialize
+        loadOpenWindows();
+    </script>
+</body>
+</html>

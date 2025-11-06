@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publishing Rights Management - Manuscript Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .rights-card { transition: all 0.3s; }
+    .rights-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .status-available { background-color: #10b981; }
+    .status-offered { background-color: #f59e0b; }
+    .status-granted { background-color: #3b82f6; }
+    .status-expired { background-color: #6b7280; }
+    .status-reverted { background-color: #8b5cf6; }
+    .status-reserved { background-color: #ec4899; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-800 mb-2">Publishing Rights Management</h1>
+      <p class="text-gray-600">Track and manage publishing rights, territorial restrictions, and rights grants for your manuscripts.</p>
+    </div>
+
+    <!-- Manuscript Selection -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Select Manuscript:</label>
+      <select id="manuscriptSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+        <option value="">-- Select a manuscript --</option>
+      </select>
+    </div>
+
+    <!-- Alert for Expiring Rights -->
+    <div id="expiringRightsAlert" class="hidden bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-yellow-800">Rights Expiring Soon</h3>
+          <div id="expiringRightsList" class="mt-2 text-sm text-yellow-700"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="bg-white rounded-lg shadow-md mb-8">
+      <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+          <button onclick="switchTab('rights')" id="tab-rights" class="tab-button border-b-2 border-blue-500 py-4 px-1 text-sm font-medium text-blue-600">
+            Rights Grants
+          </button>
+          <button onclick="switchTab('publication-history')" id="tab-publication-history" class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            Publication History
+          </button>
+          <button onclick="switchTab('available')" id="tab-available" class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            Available Rights
+          </button>
+          <button onclick="switchTab('templates')" id="tab-templates" class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            Rights Templates
+          </button>
+        </nav>
+      </div>
+
+      <!-- Rights Grants Tab -->
+      <div id="content-rights" class="tab-content p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">Rights Grants</h2>
+          <button onclick="showCreateRightsModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+            + Grant Rights
+          </button>
+        </div>
+
+        <div id="rightsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Rights cards will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Publication History Tab -->
+      <div id="content-publication-history" class="tab-content hidden p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">Publication History</h2>
+          <button onclick="showAddPublicationModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+            + Add Publication
+          </button>
+        </div>
+
+        <div id="publicationHistoryList" class="space-y-4">
+          <!-- Publication history entries will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Available Rights Tab -->
+      <div id="content-available" class="tab-content hidden p-6">
+        <h2 class="text-2xl font-bold mb-6">Available Rights</h2>
+        <div id="availableRightsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Available rights will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Templates Tab -->
+      <div id="content-templates" class="tab-content hidden p-6">
+        <h2 class="text-2xl font-bold mb-6">Rights Templates</h2>
+        <p class="text-gray-600 mb-6">Pre-configured rights packages for common scenarios.</p>
+        <div id="templatesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Templates will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Rights Modal -->
+  <div id="createRightsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-8 border w-full max-w-2xl shadow-lg rounded-lg bg-white">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Grant Publishing Rights</h3>
+        <button onclick="closeCreateRightsModal()" class="text-gray-400 hover:text-gray-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="createRightsForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Rights Type *</label>
+          <select id="rightsType" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <option value="">-- Select rights type --</option>
+            <option value="first_serial">First Serial Rights</option>
+            <option value="north_american">North American Rights</option>
+            <option value="world_english">World English Rights</option>
+            <option value="world">World Rights (All Languages)</option>
+            <option value="translation">Translation Rights</option>
+            <option value="audio">Audio/Audiobook Rights</option>
+            <option value="film_tv">Film & TV Rights</option>
+            <option value="electronic">Electronic/Ebook Rights</option>
+            <option value="print">Print Rights</option>
+            <option value="dramatic">Dramatic/Stage Rights</option>
+            <option value="merchandising">Merchandising Rights</option>
+            <option value="anthology">Anthology Rights</option>
+            <option value="excerpt">Excerpt Rights</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Rights Status *</label>
+          <select id="rightsStatus" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <option value="available">Available</option>
+            <option value="offered">Offered to Publisher</option>
+            <option value="granted">Granted/Sold</option>
+            <option value="reserved">Reserved by Author</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Publisher Name</label>
+          <input type="text" id="publisherName" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., Penguin Random House">
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="exclusive" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+          <label for="exclusive" class="text-sm font-medium text-gray-700">Exclusive Rights</label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Grant Start Date</label>
+            <input type="date" id="grantStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Grant End Date</label>
+            <input type="date" id="grantEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Grant Duration (Years)</label>
+          <input type="number" id="grantDuration" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., 5">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Territories (comma-separated country codes)</label>
+          <input type="text" id="territories" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., US, CA, UK">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Languages (comma-separated codes)</label>
+          <input type="text" id="languages" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., en, es, fr">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Advance ($)</label>
+            <input type="number" id="advance" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="0.00">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Royalty Rate (%)</label>
+            <input type="number" id="royaltyRate" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="10.00">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+          <textarea id="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-4">
+          <button type="button" onclick="closeCreateRightsModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            Grant Rights
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Publication Modal -->
+  <div id="addPublicationModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-8 border w-full max-w-2xl shadow-lg rounded-lg bg-white">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">Add Publication History</h3>
+        <button onclick="closeAddPublicationModal()" class="text-gray-400 hover:text-gray-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="addPublicationForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Publication Type *</label>
+          <select id="publicationType" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <option value="">-- Select type --</option>
+            <option value="magazine">Magazine</option>
+            <option value="journal">Journal</option>
+            <option value="anthology">Anthology/Collection</option>
+            <option value="self_published">Self-Published</option>
+            <option value="traditional_publisher">Traditional Publisher</option>
+            <option value="online">Online Publication</option>
+            <option value="contest">Contest Publication</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Publication Name *</label>
+          <input type="text" id="publicationName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., The New Yorker">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Publication Date</label>
+          <input type="date" id="publicationDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Publication URL</label>
+          <input type="url" id="publicationUrl" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="https://">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Rights Currently Held By</label>
+          <select id="rightsCurrentlyHeld" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <option value="author">Author</option>
+            <option value="publisher">Publisher</option>
+            <option value="public_domain">Public Domain</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">ISBN</label>
+          <input type="text" id="isbn" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Payment Received ($)</label>
+          <input type="number" id="paymentReceived" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+          <textarea id="pubNotes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-4">
+          <button type="button" onclick="closeAddPublicationModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            Add Publication
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://manuscript-upload-api.scarter4work.workers.dev';
+    let currentManuscriptId = null;
+
+    // Load manuscripts on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadManuscripts();
+      await loadRightsTemplates();
+      await checkExpiringRights();
+    });
+
+    // Load manuscripts for dropdown
+    async function loadManuscripts() {
+      try {
+        const response = await fetch(`${API_BASE}/manuscripts`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+        const data = await response.json();
+
+        const select = document.getElementById('manuscriptSelect');
+        data.manuscripts?.forEach(ms => {
+          const option = document.createElement('option');
+          option.value = ms.id;
+          option.textContent = `${ms.title} (${ms.genre})`;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading manuscripts:', error);
+      }
+    }
+
+    // Handle manuscript selection
+    document.getElementById('manuscriptSelect').addEventListener('change', async (e) => {
+      currentManuscriptId = e.target.value;
+      if (currentManuscriptId) {
+        await loadManuscriptRights();
+        await loadPublicationHistory();
+        await loadAvailableRights();
+      }
+    });
+
+    // Tab switching
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('border-blue-500', 'text-blue-600');
+        button.classList.add('border-transparent', 'text-gray-500');
+      });
+
+      // Show selected tab
+      document.getElementById(`content-${tabName}`).classList.remove('hidden');
+      const activeButton = document.getElementById(`tab-${tabName}`);
+      activeButton.classList.remove('border-transparent', 'text-gray-500');
+      activeButton.classList.add('border-blue-500', 'text-blue-600');
+    }
+
+    // Load manuscript rights
+    async function loadManuscriptRights() {
+      if (!currentManuscriptId) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/rights`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+        const data = await response.json();
+
+        displayRightsGrants(data.rights || []);
+      } catch (error) {
+        console.error('Error loading rights:', error);
+      }
+    }
+
+    // Display rights grants
+    function displayRightsGrants(rights) {
+      const grid = document.getElementById('rightsGrid');
+      grid.innerHTML = '';
+
+      if (rights.length === 0) {
+        grid.innerHTML = '<p class="col-span-3 text-gray-500 text-center py-8">No rights grants yet. Click "Grant Rights" to add one.</p>';
+        return;
+      }
+
+      rights.forEach(right => {
+        const card = document.createElement('div');
+        card.className = 'rights-card bg-white rounded-lg shadow-md p-6';
+
+        const statusClass = `status-${right.rights_status}`;
+        const rightsTypeLabel = right.rights_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="text-lg font-bold">${rightsTypeLabel}</h3>
+            <span class="${statusClass} text-white text-xs px-2 py-1 rounded">${right.rights_status}</span>
+          </div>
+
+          ${right.granted_to_publisher_name ? `<p class="text-gray-700 mb-2"><strong>Publisher:</strong> ${right.granted_to_publisher_name}</p>` : ''}
+
+          ${right.exclusive ? '<p class="text-sm text-blue-600 mb-2">⭐ Exclusive Rights</p>' : '<p class="text-sm text-gray-500 mb-2">Non-exclusive</p>'}
+
+          ${right.grant_start_date && right.grant_end_date ? `
+            <p class="text-sm text-gray-600 mb-2">
+              <strong>Period:</strong> ${new Date(right.grant_start_date * 1000).toLocaleDateString()} - ${new Date(right.grant_end_date * 1000).toLocaleDateString()}
+            </p>
+          ` : ''}
+
+          ${right.territories ? `<p class="text-sm text-gray-600 mb-2"><strong>Territories:</strong> ${JSON.parse(right.territories).join(', ')}</p>` : ''}
+
+          ${right.advance ? `<p class="text-sm text-gray-600 mb-2"><strong>Advance:</strong> $${right.advance.toLocaleString()}</p>` : ''}
+
+          ${right.royalty_rate ? `<p class="text-sm text-gray-600 mb-2"><strong>Royalty Rate:</strong> ${(right.royalty_rate * 100).toFixed(1)}%</p>` : ''}
+
+          <div class="flex justify-end space-x-2 mt-4">
+            <button onclick="deleteRights('${right.id}')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Load publication history
+    async function loadPublicationHistory() {
+      if (!currentManuscriptId) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/publication-history`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+        const data = await response.json();
+
+        displayPublicationHistory(data.history || []);
+      } catch (error) {
+        console.error('Error loading publication history:', error);
+      }
+    }
+
+    // Display publication history
+    function displayPublicationHistory(history) {
+      const list = document.getElementById('publicationHistoryList');
+      list.innerHTML = '';
+
+      if (history.length === 0) {
+        list.innerHTML = '<p class="text-gray-500 text-center py-8">No publication history. Click "Add Publication" to record previous publications.</p>';
+        return;
+      }
+
+      history.forEach(pub => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-lg shadow-md p-6';
+
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="text-lg font-bold">${pub.publication_name}</h3>
+            <span class="text-xs px-2 py-1 rounded bg-gray-200">${pub.publication_type}</span>
+          </div>
+
+          ${pub.publication_date ? `<p class="text-gray-600 mb-2">Published: ${new Date(pub.publication_date * 1000).toLocaleDateString()}</p>` : ''}
+
+          <p class="text-sm text-gray-600 mb-2"><strong>Rights Currently Held:</strong> ${pub.rights_currently_held}</p>
+
+          ${pub.publication_url ? `<a href="${pub.publication_url}" target="_blank" class="text-blue-600 hover:underline text-sm">View Publication</a>` : ''}
+
+          ${pub.payment_received ? `<p class="text-sm text-green-600 mt-2">Payment: $${pub.payment_received.toLocaleString()}</p>` : ''}
+        `;
+
+        list.appendChild(card);
+      });
+    }
+
+    // Load available rights
+    async function loadAvailableRights() {
+      if (!currentManuscriptId) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/rights/available`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+        const data = await response.json();
+
+        displayAvailableRights(data.availableRights || []);
+      } catch (error) {
+        console.error('Error loading available rights:', error);
+      }
+    }
+
+    // Display available rights
+    function displayAvailableRights(availableRights) {
+      const grid = document.getElementById('availableRightsGrid');
+      grid.innerHTML = '';
+
+      const allRightsTypes = [
+        { value: 'first_serial', label: 'First Serial Rights' },
+        { value: 'north_american', label: 'North American Rights' },
+        { value: 'world_english', label: 'World English Rights' },
+        { value: 'world', label: 'World Rights' },
+        { value: 'translation', label: 'Translation Rights' },
+        { value: 'audio', label: 'Audio Rights' },
+        { value: 'film_tv', label: 'Film & TV Rights' },
+        { value: 'electronic', label: 'Electronic Rights' },
+        { value: 'print', label: 'Print Rights' },
+        { value: 'dramatic', label: 'Dramatic Rights' },
+        { value: 'merchandising', label: 'Merchandising Rights' },
+        { value: 'anthology', label: 'Anthology Rights' },
+        { value: 'excerpt', label: 'Excerpt Rights' }
+      ];
+
+      allRightsTypes.forEach(rightsType => {
+        const isAvailable = availableRights.includes(rightsType.value);
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-lg border-2 ${isAvailable ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-gray-50'}`;
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-medium">${rightsType.label}</span>
+            ${isAvailable
+              ? '<span class="text-green-600 text-sm">✓ Available</span>'
+              : '<span class="text-gray-500 text-sm">Granted/Reserved</span>'}
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Load rights templates
+    async function loadRightsTemplates() {
+      try {
+        const response = await fetch(`${API_BASE}/rights/templates`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+        const data = await response.json();
+
+        displayRightsTemplates(data.templates || []);
+      } catch (error) {
+        console.error('Error loading templates:', error);
+      }
+    }
+
+    // Display rights templates
+    function displayRightsTemplates(templates) {
+      const grid = document.getElementById('templatesGrid');
+      grid.innerHTML = '';
+
+      templates.forEach(template => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition';
+
+        const rightsTypes = JSON.parse(template.rights_types);
+
+        card.innerHTML = `
+          <h3 class="text-lg font-bold mb-2">${template.template_name}</h3>
+          <p class="text-gray-600 text-sm mb-4">${template.template_description || ''}</p>
+
+          <div class="space-y-2 mb-4">
+            <p class="text-sm"><strong>Includes:</strong></p>
+            <div class="flex flex-wrap gap-2">
+              ${rightsTypes.map(rt => `<span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">${rt.replace(/_/g, ' ')}</span>`).join('')}
+            </div>
+          </div>
+
+          ${template.default_exclusive ? '<p class="text-sm text-blue-600 mb-2">⭐ Exclusive by default</p>' : ''}
+          ${template.default_duration_years ? `<p class="text-sm text-gray-600">Duration: ${template.default_duration_years} years</p>` : ''}
+
+          <button onclick="applyTemplate('${template.id}')" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+            Use This Template
+          </button>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Check expiring rights
+    async function checkExpiringRights() {
+      try {
+        const response = await fetch(`${API_BASE}/rights/expiring-soon`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+        const data = await response.json();
+
+        if (data.expiringRights && data.expiringRights.length > 0) {
+          const alert = document.getElementById('expiringRightsAlert');
+          const list = document.getElementById('expiringRightsList');
+
+          list.innerHTML = data.expiringRights.map(right =>
+            `<p><strong>${right.manuscript_title}</strong> - ${right.rights_type.replace(/_/g, ' ')} expires in ${Math.floor(right.days_until_expiration)} days (${right.granted_to_publisher_name || 'Unknown publisher'})</p>`
+          ).join('');
+
+          alert.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Error checking expiring rights:', error);
+      }
+    }
+
+    // Modal functions
+    function showCreateRightsModal() {
+      if (!currentManuscriptId) {
+        alert('Please select a manuscript first');
+        return;
+      }
+      document.getElementById('createRightsModal').classList.remove('hidden');
+    }
+
+    function closeCreateRightsModal() {
+      document.getElementById('createRightsModal').classList.add('hidden');
+      document.getElementById('createRightsForm').reset();
+    }
+
+    function showAddPublicationModal() {
+      if (!currentManuscriptId) {
+        alert('Please select a manuscript first');
+        return;
+      }
+      document.getElementById('addPublicationModal').classList.remove('hidden');
+    }
+
+    function closeAddPublicationModal() {
+      document.getElementById('addPublicationModal').classList.add('hidden');
+      document.getElementById('addPublicationForm').reset();
+    }
+
+    // Handle create rights form submission
+    document.getElementById('createRightsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const territories = document.getElementById('territories').value.split(',').map(t => t.trim()).filter(t => t);
+      const languages = document.getElementById('languages').value.split(',').map(l => l.trim()).filter(l => l);
+
+      const grantStartDate = document.getElementById('grantStartDate').value
+        ? Math.floor(new Date(document.getElementById('grantStartDate').value).getTime() / 1000)
+        : null;
+      const grantEndDate = document.getElementById('grantEndDate').value
+        ? Math.floor(new Date(document.getElementById('grantEndDate').value).getTime() / 1000)
+        : null;
+
+      const body = {
+        rightsType: document.getElementById('rightsType').value,
+        rightsStatus: document.getElementById('rightsStatus').value,
+        grantedToPublisherName: document.getElementById('publisherName').value || null,
+        exclusive: document.getElementById('exclusive').checked,
+        grantStartDate,
+        grantEndDate,
+        grantDurationYears: parseInt(document.getElementById('grantDuration').value) || null,
+        territories: territories.length > 0 ? territories : null,
+        languages: languages.length > 0 ? languages : null,
+        advance: parseFloat(document.getElementById('advance').value) || null,
+        royaltyRate: parseFloat(document.getElementById('royaltyRate').value) / 100 || null,
+        notes: document.getElementById('notes').value || null
+      };
+
+      try {
+        const response = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/rights`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}`
+          },
+          body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert('Rights granted successfully!');
+          closeCreateRightsModal();
+          await loadManuscriptRights();
+          await loadAvailableRights();
+        } else {
+          alert(`Error: ${data.error || 'Failed to grant rights'}`);
+        }
+      } catch (error) {
+        console.error('Error creating rights:', error);
+        alert('Failed to grant rights');
+      }
+    });
+
+    // Handle add publication form submission
+    document.getElementById('addPublicationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const publicationDate = document.getElementById('publicationDate').value
+        ? Math.floor(new Date(document.getElementById('publicationDate').value).getTime() / 1000)
+        : null;
+
+      const body = {
+        publicationType: document.getElementById('publicationType').value,
+        publicationName: document.getElementById('publicationName').value,
+        publicationDate,
+        publicationUrl: document.getElementById('publicationUrl').value || null,
+        rightsCurrentlyHeld: document.getElementById('rightsCurrentlyHeld').value,
+        isbn: document.getElementById('isbn').value || null,
+        paymentReceived: parseFloat(document.getElementById('paymentReceived').value) || null,
+        notes: document.getElementById('pubNotes').value || null
+      };
+
+      try {
+        const response = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/publication-history`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}`
+          },
+          body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert('Publication added successfully!');
+          closeAddPublicationModal();
+          await loadPublicationHistory();
+        } else {
+          alert(`Error: ${data.error || 'Failed to add publication'}`);
+        }
+      } catch (error) {
+        console.error('Error adding publication:', error);
+        alert('Failed to add publication');
+      }
+    });
+
+    // Delete rights
+    async function deleteRights(rightsId) {
+      if (!confirm('Are you sure you want to delete this rights grant?')) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/manuscripts/${currentManuscriptId}/rights/${rightsId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert('Rights deleted successfully');
+          await loadManuscriptRights();
+          await loadAvailableRights();
+        } else {
+          alert(`Error: ${data.error || 'Failed to delete rights'}`);
+        }
+      } catch (error) {
+        console.error('Error deleting rights:', error);
+        alert('Failed to delete rights');
+      }
+    }
+
+    // Apply template
+    async function applyTemplate(templateId) {
+      if (!currentManuscriptId) {
+        alert('Please select a manuscript first');
+        return;
+      }
+
+      alert('Template application coming soon! For now, use the "Grant Rights" form and manually select the rights types from this template.');
+    }
+  </script>
+</body>
+</html>

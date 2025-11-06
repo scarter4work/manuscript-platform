@@ -1,5 +1,12 @@
-// Configuration constants for Cloudflare Worker
-// Centralizes all magic numbers and configuration values for easier maintenance
+/**
+ * Configuration constants (Originally for Cloudflare Worker)
+ *
+ * NOTE: R2Bucket and Cloudflare-specific references are deprecated.
+ * The platform now uses Backblaze B2 via storage adapters.
+ * See: src/adapters/storage-adapter.js
+ *
+ * Centralizes all magic numbers and configuration values for easier maintenance
+ */
 
 /**
  * File size limits for uploads
@@ -49,9 +56,9 @@ export const ALLOWED_FILE_TYPES = {
  * Add your production and development domains here
  */
 export const ALLOWED_ORIGINS = [
-  'https://scarter4workmanuscripthub.com',
-  'https://www.scarter4workmanuscripthub.com',
-  'https://api.scarter4workmanuscripthub.com',
+  'https://selfpubhub.co',
+  'https://www.selfpubhub.co',
+  'https://api.selfpubhub.co',
   'http://localhost:8000', // for local testing
   'http://localhost:3000', // for local React dev
 ];
@@ -74,7 +81,8 @@ export function getCorsHeaders(requestOrigin) {
  * Helper function to get manuscript key from report ID
  * This is used throughout the worker to convert short report IDs to full manuscript keys
  *
- * @param {R2Bucket} bucket - R2 bucket containing the mapping
+ * @deprecated Use storage adapter instead of direct R2 access
+ * @param {Object} bucket - Storage bucket (R2Bucket on Cloudflare, B2 adapter on Render)
  * @param {string} reportId - Short report ID (8 characters)
  * @returns {Promise<string|null>} The manuscript key or null if not found
  */

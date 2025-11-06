@@ -3,12 +3,13 @@
  */
 
 const ALLOWED_ORIGINS = [
-  'https://scarter4workmanuscripthub.com',
-  'https://www.scarter4workmanuscripthub.com',
+  'https://selfpubhub.co',
+  'https://www.selfpubhub.co',
   'https://manuscript-platform.pages.dev',
   'http://localhost:8000',
   'http://localhost:3000',
   'http://localhost:8787',
+  'null', // Allow file:// protocol
 ];
 
 const SECURITY_HEADERS = {

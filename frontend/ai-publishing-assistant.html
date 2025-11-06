@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Publishing Assistants - Manuscript Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .message-user { background: #eff6ff; border-left: 4px solid #3b82f6; }
+    .message-assistant { background: #f0fdf4; border-left: 4px solid #10b981; }
+    .step-completed { background: #dcfce7; border-color: #22c55e; }
+    .step-current { background: #fef3c7; border-color: #f59e0b; }
+    .step-pending { background: #f3f4f6; border-color: #d1d5db; }
+    .platform-card { transition: all 0.3s; cursor: pointer; }
+    .platform-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .platform-card.selected { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    .chat-container { height: 500px; overflow-y: auto; }
+    .typing-indicator span { animation: blink 1.4s infinite; }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%, 60%, 100% { opacity: 1; } 30% { opacity: 0.2; } }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-800 mb-2">AI Publishing Assistants</h1>
+      <p class="text-gray-600">Get expert guidance for publishing on Amazon KDP, Draft2Digital, IngramSpark, and more.</p>
+    </div>
+
+    <!-- Platform Selection -->
+    <div id="platformSelection" class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Choose Your Publishing Platform</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- KDP Card -->
+        <div class="platform-card bg-white rounded-lg shadow-md p-6 border-2 border-gray-200" onclick="selectPlatform('kdp')">
+          <div class="text-4xl mb-3">📚</div>
+          <h3 class="text-xl font-bold mb-2">Amazon KDP</h3>
+          <p class="text-sm text-gray-600 mb-3">Kindle Direct Publishing - ebooks and paperbacks</p>
+          <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Most Popular</span>
+        </div>
+
+        <!-- Draft2Digital Card -->
+        <div class="platform-card bg-white rounded-lg shadow-md p-6 border-2 border-gray-200" onclick="selectPlatform('draft2digital')">
+          <div class="text-4xl mb-3">🌐</div>
+          <h3 class="text-xl font-bold mb-2">Draft2Digital</h3>
+          <p class="text-sm text-gray-600 mb-3">Distribute to multiple retailers at once</p>
+          <span class="inline-block px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full">Multi-Retailer</span>
+        </div>
+
+        <!-- IngramSpark Card -->
+        <div class="platform-card bg-white rounded-lg shadow-md p-6 border-2 border-gray-200" onclick="selectPlatform('ingramspark')">
+          <div class="text-4xl mb-3">🖨️</div>
+          <h3 class="text-xl font-bold mb-2">IngramSpark</h3>
+          <p class="text-sm text-gray-600 mb-3">Print-on-demand and wholesale distribution</p>
+          <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Print Pro</span>
+        </div>
+
+        <!-- Apple Books Card -->
+        <div class="platform-card bg-white rounded-lg shadow-md p-6 border-2 border-gray-200" onclick="selectPlatform('apple_books')">
+          <div class="text-4xl mb-3">🍎</div>
+          <h3 class="text-xl font-bold mb-2">Apple Books</h3>
+          <p class="text-sm text-gray-600 mb-3">Reach Apple's global reader base</p>
+          <span class="inline-block px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Premium</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Interface (Hidden until platform selected) -->
+    <div id="mainInterface" class="hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left Column: Workflow Steps -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold">Publishing Workflow</h2>
+              <button onclick="showPlatformSelection()" class="text-sm text-blue-600 hover:underline">Change Platform</button>
+            </div>
+
+            <div id="agentInfo" class="mb-4 p-4 bg-blue-50 rounded-lg">
+              <div class="flex items-center">
+                <div class="text-3xl mr-3">🤖</div>
+                <div>
+                  <h3 id="agentName" class="font-bold">Loading...</h3>
+                  <p id="agentDescription" class="text-sm text-gray-600">Initializing agent...</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="workflowSteps" class="space-y-3">
+              <!-- Steps will be inserted here -->
+            </div>
+
+            <button id="startWorkflowBtn" onclick="startWorkflow()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium">
+              Start Publishing Workflow
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Chat Interface -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4">Ask Your Publishing Assistant</h2>
+
+            <!-- Chat Messages -->
+            <div id="chatContainer" class="chat-container border border-gray-200 rounded-lg p-4 mb-4">
+              <div class="text-center text-gray-500 py-8">
+                <div class="text-5xl mb-4">💬</div>
+                <p>Start a conversation with your AI assistant!</p>
+                <p class="text-sm mt-2">Ask questions about publishing, workflow steps, or troubleshooting.</p>
+              </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="flex space-x-3">
+              <input
+                type="text"
+                id="messageInput"
+                placeholder="Ask about account setup, file formats, pricing, etc..."
+                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                onkeypress="if(event.key==='Enter') sendMessage()"
+              />
+              <button onclick="sendMessage()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium">
+                Send
+              </button>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mt-4">
+              <p class="text-sm text-gray-600 mb-2">Quick questions:</p>
+              <div class="flex flex-wrap gap-2">
+                <button onclick="askQuickQuestion('What are the account setup requirements?')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm rounded-full">
+                  Account setup requirements
+                </button>
+                <button onclick="askQuickQuestion('What file formats are supported?')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm rounded-full">
+                  File formats
+                </button>
+                <button onclick="askQuickQuestion('How do I set pricing?')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm rounded-full">
+                  Pricing guide
+                </button>
+                <button onclick="askQuickQuestion('What are common errors?')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm rounded-full">
+                  Common errors
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://manuscript-upload-api.scarter4work.workers.dev';
+    let selectedPlatform = null;
+    let currentWorkflow = null;
+    let userWorkflowId = null;
+    let currentStepId = null;
+
+    // Select platform
+    async function selectPlatform(platform) {
+      selectedPlatform = platform;
+
+      // Update UI
+      document.querySelectorAll('.platform-card').forEach(card => card.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+
+      // Load agent config and workflow
+      await Promise.all([
+        loadAgentConfig(platform),
+        loadWorkflow(platform)
+      ]);
+
+      // Show main interface
+      document.getElementById('platformSelection').classList.add('hidden');
+      document.getElementById('mainInterface').classList.remove('hidden');
+    }
+
+    // Load agent configuration
+    async function loadAgentConfig(platform) {
+      try {
+        const response = await fetch(`${API_BASE}/agent/${platform}/config`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById('agentName').textContent = data.agent.name;
+          document.getElementById('agentDescription').textContent = data.agent.description;
+        }
+      } catch (error) {
+        console.error('Error loading agent config:', error);
+      }
+    }
+
+    // Load workflow
+    async function loadWorkflow(platform) {
+      try {
+        const response = await fetch(`${API_BASE}/workflows/${platform}`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}` }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          currentWorkflow = data.workflow;
+          displayWorkflowSteps(data.workflow.steps);
+        }
+      } catch (error) {
+        console.error('Error loading workflow:', error);
+      }
+    }
+
+    // Display workflow steps
+    function displayWorkflowSteps(steps) {
+      const container = document.getElementById('workflowSteps');
+      container.innerHTML = '';
+
+      steps.forEach((step, index) => {
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'step-pending border-l-4 p-4 rounded cursor-pointer hover:bg-gray-50';
+        stepDiv.onclick = () => selectStep(step.stepId);
+
+        stepDiv.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-bold">${index + 1}. ${step.stepName}</h3>
+            <span class="text-xs px-2 py-1 bg-gray-200 rounded">${step.estimatedMinutes} min</span>
+          </div>
+          <p class="text-sm text-gray-600">${step.description}</p>
+        `;
+
+        container.appendChild(stepDiv);
+      });
+    }
+
+    // Start workflow
+    async function startWorkflow() {
+      try {
+        const response = await fetch(`${API_BASE}/workflows/${selectedPlatform}/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}`
+          },
+          body: JSON.stringify({})
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          userWorkflowId = data.userWorkflowId;
+          document.getElementById('startWorkflowBtn').textContent = 'Workflow Started!';
+          document.getElementById('startWorkflowBtn').disabled = true;
+          document.getElementById('startWorkflowBtn').classList.remove('bg-blue-600', 'hover:bg-blue-700');
+          document.getElementById('startWorkflowBtn').classList.add('bg-green-600');
+
+          // Send welcome message
+          await sendSystemMessage(`Great! I've started the ${currentWorkflow.name} workflow. Let's get your book published! Click on any step to begin, or ask me questions anytime.`);
+        }
+      } catch (error) {
+        console.error('Error starting workflow:', error);
+      }
+    }
+
+    // Select step
+    function selectStep(stepId) {
+      currentStepId = stepId;
+
+      // Update step styling
+      document.querySelectorAll('#workflowSteps > div').forEach(div => {
+        div.classList.remove('step-current', 'step-completed');
+        div.classList.add('step-pending');
+      });
+
+      const stepIndex = currentWorkflow.steps.findIndex(s => s.stepId === stepId);
+      const stepDivs = document.querySelectorAll('#workflowSteps > div');
+      stepDivs[stepIndex].classList.remove('step-pending');
+      stepDivs[stepIndex].classList.add('step-current');
+
+      // Update workflow progress
+      if (userWorkflowId) {
+        updateWorkflowProgress(stepId);
+      }
+
+      // Send guidance message
+      const step = currentWorkflow.steps.find(s => s.stepId === stepId);
+      askQuickQuestion(`Guide me through: ${step.stepName}`);
+    }
+
+    // Update workflow progress
+    async function updateWorkflowProgress(stepId) {
+      try {
+        await fetch(`${API_BASE}/workflows/${selectedPlatform}/progress`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}`
+          },
+          body: JSON.stringify({
+            userWorkflowId,
+            currentStepId: stepId
+          })
+        });
+      } catch (error) {
+        console.error('Error updating progress:', error);
+      }
+    }
+
+    // Send message
+    async function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+
+      if (!message || !selectedPlatform) return;
+
+      // Display user message
+      displayMessage('user', message);
+      input.value = '';
+
+      // Show typing indicator
+      showTypingIndicator();
+
+      try {
+        const response = await fetch(`${API_BASE}/chat/${selectedPlatform}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token') || 'dev-token'}`
+          },
+          body: JSON.stringify({
+            message,
+            userWorkflowId,
+            currentStepId
+          })
+        });
+
+        const data = await response.json();
+
+        removeTypingIndicator();
+
+        if (data.success) {
+          displayMessage('assistant', data.message);
+        } else {
+          displayMessage('assistant', 'Sorry, I encountered an error. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+        removeTypingIndicator();
+        displayMessage('assistant', 'Sorry, I encountered an error. Please try again.');
+      }
+    }
+
+    // Display message in chat
+    function displayMessage(role, content) {
+      const container = document.getElementById('chatContainer');
+
+      // Remove placeholder if exists
+      if (container.querySelector('.text-center')) {
+        container.innerHTML = '';
+      }
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message-${role} p-4 rounded-lg mb-3`;
+
+      const roleLabel = role === 'user' ? 'You' : document.getElementById('agentName').textContent;
+      const roleColor = role === 'user' ? 'text-blue-600' : 'text-green-600';
+
+      messageDiv.innerHTML = `
+        <div class="font-bold ${roleColor} text-sm mb-1">${roleLabel}</div>
+        <div class="text-gray-800">${content}</div>
+      `;
+
+      container.appendChild(messageDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Send system message
+    async function sendSystemMessage(content) {
+      displayMessage('assistant', content);
+    }
+
+    // Show typing indicator
+    function showTypingIndicator() {
+      const container = document.getElementById('chatContainer');
+      const indicator = document.createElement('div');
+      indicator.id = 'typingIndicator';
+      indicator.className = 'typing-indicator message-assistant p-4 rounded-lg mb-3';
+      indicator.innerHTML = `
+        <div class="font-bold text-green-600 text-sm mb-1">${document.getElementById('agentName').textContent}</div>
+        <div class="flex space-x-1">
+          <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+          <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+          <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+        </div>
+      `;
+      container.appendChild(indicator);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Remove typing indicator
+    function removeTypingIndicator() {
+      const indicator = document.getElementById('typingIndicator');
+      if (indicator) indicator.remove();
+    }
+
+    // Ask quick question
+    function askQuickQuestion(question) {
+      document.getElementById('messageInput').value = question;
+      sendMessage();
+    }
+
+    // Show platform selection
+    function showPlatformSelection() {
+      document.getElementById('mainInterface').classList.add('hidden');
+      document.getElementById('platformSelection').classList.remove('hidden');
+      selectedPlatform = null;
+      currentWorkflow = null;
+      userWorkflowId = null;
+      currentStepId = null;
+    }
+  </script>
+</body>
+</html>

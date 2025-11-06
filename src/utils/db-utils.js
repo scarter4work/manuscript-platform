@@ -66,7 +66,7 @@ export class CursorPagination {
 export class BatchQuery {
   /**
    * Execute multiple queries in a single transaction
-   * @param {D1Database} db - D1 database instance
+   * @param {Object} db (Deprecated: D1Database, now PostgreSQL) - D1 database instance
    * @param {Array<Object>} queries - Array of {sql, params} objects
    * @returns {Promise<Array>} Array of results
    */
@@ -86,7 +86,7 @@ export class BatchQuery {
 
   /**
    * Execute queries in parallel (for independent queries)
-   * @param {D1Database} db - D1 database instance
+   * @param {Object} db (Deprecated: D1Database, now PostgreSQL) - D1 database instance
    * @param {Array<Object>} queries - Array of {sql, params} objects
    * @returns {Promise<Array>} Array of results
    */
@@ -114,7 +114,7 @@ export class PreparedStatementCache {
 
   /**
    * Get or create a prepared statement
-   * @param {D1Database} db - D1 database instance
+   * @param {Object} db (Deprecated: D1Database, now PostgreSQL) - D1 database instance
    * @param {string} sql - SQL query
    * @returns {D1PreparedStatement} Prepared statement
    */
@@ -251,7 +251,7 @@ export class Transaction {
   /**
    * Execute operations in a transaction (simulated for D1)
    * D1 doesn't support explicit transactions, but we can use batch for atomicity
-   * @param {D1Database} db - D1 database instance
+   * @param {Object} db (Deprecated: D1Database, now PostgreSQL) - D1 database instance
    * @param {Function} operations - Async function that performs operations
    * @returns {Promise<any>} Result of operations
    */

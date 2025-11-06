@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human-Style Editor - ManuscriptHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .breadcrumb-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        @media (max-width: 1200px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Chapter viewer with annotations */
+        .chapter-viewer {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            font-size: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .chapter-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+            font-family: 'Georgia', serif;
+        }
+
+        .paragraph {
+            margin-bottom: 1.5em;
+            position: relative;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .paragraph:hover {
+            background-color: #f5f5f5;
+        }
+
+        .paragraph.has-annotation {
+            border-left: 3px solid transparent;
+            padding-left: 15px;
+        }
+
+        .paragraph.has-annotation.type-question {
+            border-left-color: #FCD34D;
+            background-color: #FFFBEB;
+        }
+
+        .paragraph.has-annotation.type-suggestion {
+            border-left-color: #60A5FA;
+            background-color: #EFF6FF;
+        }
+
+        .paragraph.has-annotation.type-praise {
+            border-left-color: #34D399;
+            background-color: #ECFDF5;
+        }
+
+        .paragraph.has-annotation.type-issue {
+            border-left-color: #F87171;
+            background-color: #FEF2F2;
+        }
+
+        .paragraph.has-annotation.type-continuity {
+            border-left-color: #A78BFA;
+            background-color: #F5F3FF;
+        }
+
+        /* Annotation sidebar */
+        .annotation-sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .sidebar-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .annotation-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 2px solid;
+            border-radius: 6px;
+            background: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .filter-btn.active {
+            transform: scale(1.05);
+        }
+
+        .filter-question {
+            border-color: #FCD34D;
+            color: #92400E;
+        }
+
+        .filter-question.active {
+            background: #FCD34D;
+        }
+
+        .filter-suggestion {
+            border-color: #60A5FA;
+            color: #1E40AF;
+        }
+
+        .filter-suggestion.active {
+            background: #60A5FA;
+            color: white;
+        }
+
+        .filter-praise {
+            border-color: #34D399;
+            color: #065F46;
+        }
+
+        .filter-praise.active {
+            background: #34D399;
+            color: white;
+        }
+
+        .filter-issue {
+            border-color: #F87171;
+            color: #991B1B;
+        }
+
+        .filter-issue.active {
+            background: #F87171;
+            color: white;
+        }
+
+        .filter-continuity {
+            border-color: #A78BFA;
+            color: #5B21B6;
+        }
+
+        .filter-continuity.active {
+            background: #A78BFA;
+            color: white;
+        }
+
+        .annotation-card {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .annotation-card:hover {
+            transform: translateX(-5px);
+        }
+
+        .annotation-card.type-question {
+            border-left-color: #FCD34D;
+            background-color: #FFFBEB;
+        }
+
+        .annotation-card.type-suggestion {
+            border-left-color: #60A5FA;
+            background-color: #EFF6FF;
+        }
+
+        .annotation-card.type-praise {
+            border-left-color: #34D399;
+            background-color: #ECFDF5;
+        }
+
+        .annotation-card.type-issue {
+            border-left-color: #F87171;
+            background-color: #FEF2F2;
+        }
+
+        .annotation-card.type-continuity {
+            border-left-color: #A78BFA;
+            background-color: #F5F3FF;
+        }
+
+        .annotation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .annotation-type {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .annotation-para {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .annotation-text {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .annotation-alternatives {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .alternative {
+            padding: 6px 10px;
+            margin: 5px 0;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-style: italic;
+        }
+
+        .annotation-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-accept {
+            background: #34D399;
+            color: white;
+        }
+
+        .btn-dismiss {
+            background: #EF4444;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats-summary {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: 600;
+        }
+
+        .help-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .error-message {
+            background: #FEE2E2;
+            border: 2px solid #F87171;
+            color: #991B1B;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            background: #D1FAE5;
+            border: 2px solid #34D399;
+            color: #065F46;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>Human-Style Developmental Editor</h1>
+                <p>Conversational, encouraging editorial feedback with Socratic questions</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb">
+        <div class="breadcrumb-content">
+            <a href="/">Home</a>
+            <span>/</span>
+            <span>Human-Style Editor</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Input form -->
+        <div class="card">
+            <h2>Analyze Your Chapter</h2>
+
+            <div class="form-group">
+                <label for="manuscriptSelect">Select Manuscript</label>
+                <select id="manuscriptSelect">
+                    <option value="">Loading manuscripts...</option>
+                </select>
+                <p class="help-text">Choose the manuscript you want to analyze</p>
+            </div>
+
+            <div class="form-group">
+                <label for="chapterNumber">Chapter Number</label>
+                <input type="number" id="chapterNumber" min="1" value="1" placeholder="1">
+                <p class="help-text">Which chapter are you analyzing?</p>
+            </div>
+
+            <div class="form-group">
+                <label for="chapterText">Chapter Text</label>
+                <textarea id="chapterText" placeholder="Paste your chapter text here...
+
+Each paragraph should be separated by a blank line.
+
+This will be split into paragraphs for annotation."></textarea>
+                <p class="help-text">Paste the full chapter text (split by blank lines for paragraphs)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="previousChapters">Previous Chapters Summary (Optional)</label>
+                <textarea id="previousChapters" placeholder="Brief summary of previous chapters for continuity checking..."></textarea>
+                <p class="help-text">Include context from earlier chapters for continuity checks</p>
+            </div>
+
+            <button class="btn" onclick="generateFeedback()">
+                Generate Editorial Feedback
+            </button>
+        </div>
+
+        <!-- Results section -->
+        <div id="resultsSection" style="display: none;">
+            <div class="layout">
+                <!-- Chapter viewer -->
+                <div id="chapterViewer" class="chapter-viewer">
+                    <h2 class="chapter-title" id="viewerTitle">Chapter 1</h2>
+                    <div id="chapterContent"></div>
+                </div>
+
+                <!-- Annotation sidebar -->
+                <div class="annotation-sidebar">
+                    <div class="sidebar-header">
+                        <div class="sidebar-title">Editorial Feedback</div>
+                        <div id="annotationCount">0 annotations</div>
+                    </div>
+
+                    <div class="annotation-filter">
+                        <button class="filter-btn filter-question active" data-type="question">
+                            Questions
+                        </button>
+                        <button class="filter-btn filter-suggestion active" data-type="suggestion">
+                            Suggestions
+                        </button>
+                        <button class="filter-btn filter-praise active" data-type="praise">
+                            Praise
+                        </button>
+                        <button class="filter-btn filter-issue active" data-type="issue">
+                            Issues
+                        </button>
+                        <button class="filter-btn filter-continuity active" data-type="continuity">
+                            Continuity
+                        </button>
+                    </div>
+
+                    <div class="stats-summary" id="statsSummary">
+                        <div class="stat-item">
+                            <span class="stat-label">Questions:</span>
+                            <span class="stat-value" id="stat-question">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Suggestions:</span>
+                            <span class="stat-value" id="stat-suggestion">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Praise:</span>
+                            <span class="stat-value" id="stat-praise">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Issues:</span>
+                            <span class="stat-value" id="stat-issue">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Continuity:</span>
+                            <span class="stat-value" id="stat-continuity">0</span>
+                        </div>
+                    </div>
+
+                    <div id="annotationList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loadingState" class="card" style="display: none;">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your chapter with human-style editorial feedback...</p>
+                <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                    This may take 30-60 seconds depending on chapter length
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAnnotations = [];
+        let activeFilters = new Set(['question', 'suggestion', 'praise', 'issue', 'continuity']);
+
+        // Load manuscripts on page load
+        window.addEventListener('DOMContentLoaded', loadManuscripts);
+
+        async function loadManuscripts() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/manuscripts', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load manuscripts');
+                }
+
+                const data = await response.json();
+                const select = document.getElementById('manuscriptSelect');
+                select.innerHTML = '<option value="">-- Select a manuscript --</option>';
+
+                data.manuscripts.forEach(ms => {
+                    const option = document.createElement('option');
+                    option.value = ms.id;
+                    option.textContent = `${ms.title} (${ms.genre || 'No genre'})`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading manuscripts:', error);
+                document.getElementById('manuscriptSelect').innerHTML =
+                    '<option value="">Error loading manuscripts</option>';
+            }
+        }
+
+        async function generateFeedback() {
+            const manuscriptId = document.getElementById('manuscriptSelect').value;
+            const chapterNumber = parseInt(document.getElementById('chapterNumber').value);
+            const chapterText = document.getElementById('chapterText').value.trim();
+            const previousChapters = document.getElementById('previousChapters').value.trim();
+
+            if (!manuscriptId) {
+                alert('Please select a manuscript');
+                return;
+            }
+
+            if (!chapterText) {
+                alert('Please paste your chapter text');
+                return;
+            }
+
+            if (chapterNumber < 1) {
+                alert('Chapter number must be at least 1');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/manuscripts/${manuscriptId}/human-edit/chapter/${chapterNumber}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chapterText,
+                        previousChapters
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.details || errorData.error || 'Failed to generate feedback');
+                }
+
+                const data = await response.json();
+
+                // Store annotations
+                currentAnnotations = data.feedback.annotations;
+
+                // Display results
+                displayChapter(chapterText, chapterNumber);
+                displayAnnotations(currentAnnotations, data.feedback.stats);
+
+                // Show results section
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('resultsSection').style.display = 'block';
+
+                // Scroll to results
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Error generating feedback:', error);
+                alert(`Error: ${error.message}`);
+                document.getElementById('loadingState').style.display = 'none';
+            }
+        }
+
+        function displayChapter(chapterText, chapterNumber) {
+            const viewerTitle = document.getElementById('viewerTitle');
+            const chapterContent = document.getElementById('chapterContent');
+
+            viewerTitle.textContent = `Chapter ${chapterNumber}`;
+
+            // Split into paragraphs
+            const paragraphs = chapterText.split(/\n\n+/).map(p => p.trim()).filter(p => p.length > 0);
+
+            chapterContent.innerHTML = paragraphs.map((para, index) => {
+                const annotations = currentAnnotations.filter(ann => ann.paragraphIndex === index);
+                const hasAnnotation = annotations.length > 0;
+                const annotationType = hasAnnotation ? annotations[0].type : '';
+
+                return `
+                    <div class="paragraph ${hasAnnotation ? 'has-annotation type-' + annotationType : ''}"
+                         data-index="${index}"
+                         onclick="highlightAnnotations(${index})">
+                        ${para}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function displayAnnotations(annotations, stats) {
+            // Update stats
+            document.getElementById('annotationCount').textContent = `${annotations.length} annotations`;
+            document.getElementById('stat-question').textContent = stats.typeCounts.question || 0;
+            document.getElementById('stat-suggestion').textContent = stats.typeCounts.suggestion || 0;
+            document.getElementById('stat-praise').textContent = stats.typeCounts.praise || 0;
+            document.getElementById('stat-issue').textContent = stats.typeCounts.issue || 0;
+            document.getElementById('stat-continuity').textContent = stats.typeCounts.continuity || 0;
+
+            // Render annotation cards
+            renderAnnotationList();
+        }
+
+        function renderAnnotationList() {
+            const annotationList = document.getElementById('annotationList');
+            const filtered = currentAnnotations.filter(ann => activeFilters.has(ann.type));
+
+            annotationList.innerHTML = filtered.map(ann => `
+                <div class="annotation-card type-${ann.type}"
+                     onclick="scrollToParagraph(${ann.paragraphIndex})">
+                    <div class="annotation-header">
+                        <div class="annotation-type">${ann.type}</div>
+                        <div class="annotation-para">¶${ann.paragraphIndex + 1}</div>
+                    </div>
+                    <div class="annotation-text">${ann.text}</div>
+                    ${ann.alternatives ? `
+                        <div class="annotation-alternatives">
+                            <strong>Alternatives:</strong>
+                            ${ann.alternatives.map(alt => `
+                                <div class="alternative">${alt}</div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    ${ann.chapterContext ? `
+                        <div class="annotation-alternatives">
+                            <strong>Context:</strong> ${ann.chapterContext}
+                        </div>
+                    ` : ''}
+                    <div class="annotation-actions">
+                        <button class="action-btn btn-accept" onclick="acceptAnnotation(event, '${ann.id}')">
+                            ✓ Address
+                        </button>
+                        <button class="action-btn btn-dismiss" onclick="dismissAnnotation(event, '${ann.id}')">
+                            ✗ Dismiss
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function highlightAnnotations(paragraphIndex) {
+            // Remove previous highlights
+            document.querySelectorAll('.paragraph').forEach(p => {
+                p.style.outline = 'none';
+            });
+
+            // Highlight clicked paragraph
+            const paragraph = document.querySelector(`[data-index="${paragraphIndex}"]`);
+            if (paragraph) {
+                paragraph.style.outline = '3px solid #667eea';
+                setTimeout(() => {
+                    paragraph.style.outline = 'none';
+                }, 2000);
+            }
+        }
+
+        function scrollToParagraph(paragraphIndex) {
+            const paragraph = document.querySelector(`[data-index="${paragraphIndex}"]`);
+            if (paragraph) {
+                paragraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                highlightAnnotations(paragraphIndex);
+            }
+        }
+
+        async function acceptAnnotation(event, annotationId) {
+            event.stopPropagation();
+
+            const manuscriptId = document.getElementById('manuscriptSelect').value;
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`/manuscripts/${manuscriptId}/human-edit/accept/${annotationId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        authorResponse: null
+                    })
+                });
+
+                if (response.ok) {
+                    // Remove from current list
+                    currentAnnotations = currentAnnotations.filter(ann => ann.id !== annotationId);
+                    renderAnnotationList();
+                    alert('Annotation marked as addressed!');
+                }
+            } catch (error) {
+                console.error('Error accepting annotation:', error);
+                alert('Failed to accept annotation');
+            }
+        }
+
+        async function dismissAnnotation(event, annotationId) {
+            event.stopPropagation();
+
+            if (!confirm('Are you sure you want to dismiss this annotation?')) {
+                return;
+            }
+
+            const manuscriptId = document.getElementById('manuscriptSelect').value;
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`/manuscripts/${manuscriptId}/human-edit/${annotationId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    // Remove from current list
+                    currentAnnotations = currentAnnotations.filter(ann => ann.id !== annotationId);
+                    renderAnnotationList();
+                    alert('Annotation dismissed!');
+                }
+            } catch (error) {
+                console.error('Error dismissing annotation:', error);
+                alert('Failed to dismiss annotation');
+            }
+        }
+
+        // Filter buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const type = btn.dataset.type;
+
+                    if (activeFilters.has(type)) {
+                        activeFilters.delete(type);
+                        btn.classList.remove('active');
+                    } else {
+                        activeFilters.add(type);
+                        btn.classList.add('active');
+                    }
+
+                    renderAnnotationList();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

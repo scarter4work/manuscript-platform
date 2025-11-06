@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuscript Formatting - ManuscriptHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .breadcrumb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        h3 {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .label-optional {
+            font-weight: 400;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: 400;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .format-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            background: none;
+            color: #666;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 0;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .trim-sizes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .trim-size-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .trim-size-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .trim-size-option.selected {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .trim-size-option input[type="radio"] {
+            margin-right: 10px;
+            width: auto;
+        }
+
+        .formatted-list {
+            margin-top: 20px;
+        }
+
+        .formatted-item {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .formatted-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .formatted-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .formatted-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .formatted-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .formatted-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-epub {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-pdf {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .badge-completed {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .badge-failed {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-processing {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .validation-results {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .validation-valid {
+            background: #e8f5e9;
+            border-left: 4px solid #388e3c;
+        }
+
+        .validation-invalid {
+            background: #ffebee;
+            border-left: 4px solid #c62828;
+        }
+
+        .validation-errors {
+            margin-top: 10px;
+        }
+
+        .validation-errors ul {
+            margin-left: 20px;
+        }
+
+        .validation-errors li {
+            margin-bottom: 5px;
+            color: #c62828;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #388e3c;
+            border-left: 4px solid #388e3c;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .specs-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .specs-list li {
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .header-title h1 {
+                font-size: 1.5em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .trim-sizes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .formatted-header {
+                flex-direction: column;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>Manuscript Formatting</h1>
+                <p>EPUB & PDF conversion for Amazon KDP publishing</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb">
+        <div class="breadcrumb-content">
+            <a href="/dashboard-spa.html">Dashboard</a>
+            <span>›</span>
+            <span>Manuscript Formatting</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="alertContainer"></div>
+
+        <!-- Manuscript Selection Card -->
+        <div class="card">
+            <h2>Select Manuscript</h2>
+            <div class="form-group">
+                <label for="manuscriptSelect">Choose a manuscript to format:</label>
+                <select id="manuscriptSelect">
+                    <option value="">Loading manuscripts...</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Format Generation Card -->
+        <div class="card" id="formatCard" style="display: none;">
+            <h2>Generate Formatted Files</h2>
+
+            <div class="format-tabs">
+                <button class="tab-btn active" data-tab="epub">EPUB (Kindle)</button>
+                <button class="tab-btn" data-tab="pdf">PDF (Print)</button>
+            </div>
+
+            <!-- EPUB Tab -->
+            <div class="tab-content active" id="epub-tab">
+                <h3>EPUB Format (Kindle)</h3>
+                <p style="color: #666; margin-bottom: 20px;">Generate an EPUB file optimized for Amazon Kindle Direct Publishing.</p>
+
+                <div class="form-group">
+                    <label for="epubTitle">Book Title</label>
+                    <input type="text" id="epubTitle" placeholder="Enter book title">
+                </div>
+
+                <div class="form-group">
+                    <label for="epubAuthor">Author Name</label>
+                    <input type="text" id="epubAuthor" placeholder="Enter author name">
+                </div>
+
+                <div class="form-group">
+                    <label for="epubDescription">Description <span class="label-optional">(optional)</span></label>
+                    <textarea id="epubDescription" rows="3" placeholder="Brief description of your book"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="epubPublisher">Publisher <span class="label-optional">(optional)</span></label>
+                    <input type="text" id="epubPublisher" placeholder="Publisher name">
+                </div>
+
+                <div class="form-group">
+                    <label for="epubLanguage">Language</label>
+                    <select id="epubLanguage">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="epubISBN">ISBN <span class="label-optional">(optional)</span></label>
+                    <input type="text" id="epubISBN" placeholder="978-0-00-000000-0">
+                </div>
+
+                <h3 style="margin-top: 30px;">Front Matter Options</h3>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="epubTitlePage" checked>
+                    <label for="epubTitlePage">Include title page</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="epubCopyright" checked>
+                    <label for="epubCopyright">Include copyright page</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="epubTOC" checked>
+                    <label for="epubTOC">Include table of contents</label>
+                </div>
+
+                <h3 style="margin-top: 30px;">Back Matter Options</h3>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="epubAuthorBio" checked>
+                    <label for="epubAuthorBio">Include author bio</label>
+                </div>
+
+                <button id="generateEPUBBtn" style="margin-top: 30px;">Generate EPUB</button>
+            </div>
+
+            <!-- PDF Tab -->
+            <div class="tab-content" id="pdf-tab">
+                <h3>PDF Format (Print)</h3>
+                <p style="color: #666; margin-bottom: 20px;">Generate a print-ready PDF for Amazon KDP paperback publishing.</p>
+
+                <div class="form-group">
+                    <label for="pdfTitle">Book Title</label>
+                    <input type="text" id="pdfTitle" placeholder="Enter book title">
+                </div>
+
+                <div class="form-group">
+                    <label for="pdfAuthor">Author Name</label>
+                    <input type="text" id="pdfAuthor" placeholder="Enter author name">
+                </div>
+
+                <div class="form-group">
+                    <label>Trim Size</label>
+                    <div class="trim-sizes-grid" id="trimSizesGrid">
+                        <div class="trim-size-option selected">
+                            <input type="radio" name="trimSize" value="6x9" id="trim-6x9" checked>
+                            <label for="trim-6x9">
+                                <strong>6" × 9"</strong><br>
+                                <small>Most popular for novels</small>
+                            </label>
+                        </div>
+                        <div class="trim-size-option">
+                            <input type="radio" name="trimSize" value="5x8" id="trim-5x8">
+                            <label for="trim-5x8">
+                                <strong>5" × 8"</strong><br>
+                                <small>Compact novel size</small>
+                            </label>
+                        </div>
+                        <div class="trim-size-option">
+                            <input type="radio" name="trimSize" value="5.5x8.5" id="trim-5.5x8.5">
+                            <label for="trim-5.5x8.5">
+                                <strong>5.5" × 8.5"</strong><br>
+                                <small>US Trade size</small>
+                            </label>
+                        </div>
+                        <div class="trim-size-option">
+                            <input type="radio" name="trimSize" value="5.25x8" id="trim-5.25x8">
+                            <label for="trim-5.25x8">
+                                <strong>5.25" × 8"</strong><br>
+                                <small>Mass market</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Print Options</h3>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="pdfBleed">
+                    <label for="pdfBleed">Include bleed margins (0.125" for color printing)</label>
+                </div>
+
+                <h3 style="margin-top: 30px;">Front Matter Options</h3>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="pdfTitlePage" checked>
+                    <label for="pdfTitlePage">Include title page</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="pdfCopyright" checked>
+                    <label for="pdfCopyright">Include copyright page</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="pdfTOC" checked>
+                    <label for="pdfTOC">Include table of contents</label>
+                </div>
+
+                <button id="generatePDFBtn" style="margin-top: 30px;">Generate PDF</button>
+            </div>
+        </div>
+
+        <!-- Formatted Manuscripts List -->
+        <div class="card" id="formattedListCard" style="display: none;">
+            <h2>Formatted Manuscripts</h2>
+            <div id="formattedList" class="formatted-list"></div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="card" style="display: none;">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p id="loadingMessage">Generating formatted file...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://manuscript-upload-api.scarter4work.workers.dev';
+        let selectedManuscriptId = null;
+        let selectedManuscript = null;
+        let authToken = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            authToken = localStorage.getItem('authToken');
+            if (!authToken) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            await loadManuscripts();
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Manuscript selection
+            document.getElementById('manuscriptSelect').addEventListener('change', handleManuscriptSelect);
+
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            });
+
+            // Trim size selection
+            document.querySelectorAll('.trim-size-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.trim-size-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
+
+            // Generate buttons
+            document.getElementById('generateEPUBBtn').addEventListener('click', generateEPUB);
+            document.getElementById('generatePDFBtn').addEventListener('click', generatePDF);
+        }
+
+        // Load manuscripts
+        async function loadManuscripts() {
+            try {
+                const response = await fetch(`${API_BASE}/manuscripts`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load manuscripts');
+
+                const data = await response.json();
+                const select = document.getElementById('manuscriptSelect');
+
+                if (data.manuscripts && data.manuscripts.length > 0) {
+                    select.innerHTML = '<option value="">-- Select a manuscript --</option>';
+                    data.manuscripts.forEach(manuscript => {
+                        const option = document.createElement('option');
+                        option.value = manuscript.id;
+                        option.textContent = manuscript.title || 'Untitled';
+                        option.dataset.manuscript = JSON.stringify(manuscript);
+                        select.appendChild(option);
+                    });
+                } else {
+                    select.innerHTML = '<option value="">No manuscripts found</option>';
+                }
+            } catch (error) {
+                console.error('Error loading manuscripts:', error);
+                showAlert('Failed to load manuscripts', 'error');
+            }
+        }
+
+        // Handle manuscript selection
+        async function handleManuscriptSelect(e) {
+            const select = e.target;
+            selectedManuscriptId = select.value;
+
+            if (!selectedManuscriptId) {
+                document.getElementById('formatCard').style.display = 'none';
+                document.getElementById('formattedListCard').style.display = 'none';
+                return;
+            }
+
+            const selectedOption = select.options[select.selectedIndex];
+            selectedManuscript = JSON.parse(selectedOption.dataset.manuscript);
+
+            // Pre-fill form fields
+            document.getElementById('epubTitle').value = selectedManuscript.title || '';
+            document.getElementById('pdfTitle').value = selectedManuscript.title || '';
+            document.getElementById('epubAuthor').value = selectedManuscript.author || '';
+            document.getElementById('pdfAuthor').value = selectedManuscript.author || '';
+
+            // Show format card
+            document.getElementById('formatCard').style.display = 'block';
+
+            // Load existing formatted versions
+            await loadFormattedManuscripts();
+        }
+
+        // Load formatted manuscripts
+        async function loadFormattedManuscripts() {
+            try {
+                const response = await fetch(`${API_BASE}/manuscripts/${selectedManuscriptId}/formatted`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load formatted manuscripts');
+
+                const data = await response.json();
+                displayFormattedManuscripts(data.formatted);
+            } catch (error) {
+                console.error('Error loading formatted manuscripts:', error);
+            }
+        }
+
+        // Display formatted manuscripts
+        function displayFormattedManuscripts(formatted) {
+            const container = document.getElementById('formattedList');
+            const card = document.getElementById('formattedListCard');
+
+            if (!formatted || formatted.length === 0) {
+                card.style.display = 'none';
+                return;
+            }
+
+            card.style.display = 'block';
+            container.innerHTML = '';
+
+            formatted.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'formatted-item';
+
+                const formatBadge = item.format_type === 'epub' ? 'badge-epub' : 'badge-pdf';
+                const statusBadge = item.status === 'completed' ? 'badge-completed' :
+                                   item.status === 'failed' ? 'badge-failed' : 'badge-processing';
+
+                const createdDate = new Date(item.created_at * 1000).toLocaleDateString();
+                const fileSize = (item.file_size / (1024 * 1024)).toFixed(2);
+
+                let validationHTML = '';
+                if (item.format_type === 'epub' && item.is_validated) {
+                    const isValid = item.passes_amazon_specs;
+                    validationHTML = `
+                        <div class="validation-results ${isValid ? 'validation-valid' : 'validation-invalid'}">
+                            <strong>${isValid ? '✓ Valid EPUB' : '✗ Validation Issues'}</strong>
+                            ${item.validation_errors ? `
+                                <div class="validation-errors">
+                                    <ul>
+                                        ${JSON.parse(item.validation_errors).map(err => `<li>${err}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                div.innerHTML = `
+                    <div class="formatted-header">
+                        <div>
+                            <div class="formatted-title">
+                                <span class="badge ${formatBadge}">${item.format_type.toUpperCase()}</span>
+                                ${selectedManuscript.title || 'Untitled'}
+                            </div>
+                            <div class="formatted-meta">
+                                <span>📅 ${createdDate}</span>
+                                <span>📁 ${fileSize} MB</span>
+                                ${item.trim_size ? `<span>📏 ${item.trim_size}</span>` : ''}
+                                <span class="badge ${statusBadge}">${item.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${validationHTML}
+                    ${item.status === 'completed' ? `
+                        <div class="btn-group">
+                            <button class="btn-success" onclick="downloadFormatted('${item.id}', '${item.format_type}')">
+                                Download ${item.format_type.toUpperCase()}
+                            </button>
+                        </div>
+                    ` : ''}
+                `;
+
+                container.appendChild(div);
+            });
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabName);
+            });
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `${tabName}-tab`);
+            });
+        }
+
+        // Generate EPUB
+        async function generateEPUB() {
+            if (!selectedManuscriptId) {
+                showAlert('Please select a manuscript first', 'error');
+                return;
+            }
+
+            const title = document.getElementById('epubTitle').value.trim();
+            const author = document.getElementById('epubAuthor').value.trim();
+
+            if (!title || !author) {
+                showAlert('Title and Author are required', 'error');
+                return;
+            }
+
+            const requestData = {
+                title,
+                author,
+                description: document.getElementById('epubDescription').value.trim(),
+                publisher: document.getElementById('epubPublisher').value.trim() || 'ManuscriptHub',
+                language: document.getElementById('epubLanguage').value,
+                isbn: document.getElementById('epubISBN').value.trim(),
+                includeTitlePage: document.getElementById('epubTitlePage').checked,
+                includeCopyright: document.getElementById('epubCopyright').checked,
+                includeTOC: document.getElementById('epubTOC').checked,
+                includeAuthorBio: document.getElementById('epubAuthorBio').checked
+            };
+
+            showLoading('Generating EPUB file...');
+
+            try {
+                const response = await fetch(`${API_BASE}/manuscripts/${selectedManuscriptId}/format/epub`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+                hideLoading();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate EPUB');
+                }
+
+                showAlert(`EPUB generated successfully! (${data.fileSizeMB} MB, ${data.processingTimeMs}ms)`, 'success');
+
+                // Show validation results
+                if (data.validation) {
+                    if (data.validation.valid) {
+                        showAlert('✓ EPUB validation passed - Ready for Amazon KDP', 'success');
+                    } else {
+                        showAlert(`⚠ EPUB has validation issues: ${data.validation.errors.join(', ')}`, 'error');
+                    }
+                }
+
+                await loadFormattedManuscripts();
+            } catch (error) {
+                hideLoading();
+                console.error('Error generating EPUB:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Generate PDF
+        async function generatePDF() {
+            if (!selectedManuscriptId) {
+                showAlert('Please select a manuscript first', 'error');
+                return;
+            }
+
+            const title = document.getElementById('pdfTitle').value.trim();
+            const author = document.getElementById('pdfAuthor').value.trim();
+
+            if (!title || !author) {
+                showAlert('Title and Author are required', 'error');
+                return;
+            }
+
+            const trimSize = document.querySelector('input[name="trimSize"]:checked').value;
+
+            const requestData = {
+                title,
+                author,
+                trimSize,
+                includeBleed: document.getElementById('pdfBleed').checked,
+                includeTitlePage: document.getElementById('pdfTitlePage').checked,
+                includeCopyright: document.getElementById('pdfCopyright').checked,
+                includeTOC: document.getElementById('pdfTOC').checked
+            };
+
+            showLoading('Generating PDF file...');
+
+            try {
+                const response = await fetch(`${API_BASE}/manuscripts/${selectedManuscriptId}/format/pdf`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+                hideLoading();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate PDF');
+                }
+
+                showAlert(`PDF generated successfully! (${data.fileSizeMB} MB, ${data.trimSize}, ${data.processingTimeMs}ms)`, 'success');
+                await loadFormattedManuscripts();
+            } catch (error) {
+                hideLoading();
+                console.error('Error generating PDF:', error);
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Download formatted file
+        async function downloadFormatted(formattedId, formatType) {
+            try {
+                const response = await fetch(`${API_BASE}/formatted/${formattedId}/download`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to download file');
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${selectedManuscript.title || 'manuscript'}.${formatType}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                showAlert('Download started!', 'success');
+            } catch (error) {
+                console.error('Error downloading file:', error);
+                showAlert('Failed to download file', 'error');
+            }
+        }
+
+        // Show loading state
+        function showLoading(message) {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('formatCard').style.display = 'none';
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('formatCard').style.display = 'block';
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

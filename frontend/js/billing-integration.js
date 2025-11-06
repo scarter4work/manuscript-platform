@@ -3,7 +3,7 @@
  * Handles subscription checks and payment gates for manuscript uploads
  */
 
-const API_BASE = 'https://api.scarter4workmanuscripthub.com';
+const API_BASE = 'https://manuscript-platform.onrender.com';
 
 class BillingIntegration {
   constructor() {

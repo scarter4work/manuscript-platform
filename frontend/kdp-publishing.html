@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon KDP Publishing - Manuscript Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen py-8 px-4">
+    <div class="max-w-5xl mx-auto">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg shadow-xl p-8 mb-8">
+        <h1 class="text-4xl font-bold text-white mb-2">📚 Amazon KDP Publishing</h1>
+        <p class="text-orange-100">Semi-automated publishing workflow • Pre-filled metadata • Step-by-step guidance</p>
+      </div>
+
+      <!-- Alert Container -->
+      <div id="alertContainer" class="mb-6"></div>
+
+      <!-- Step 1: Manuscript Selection -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold mb-4">Step 1: Select Manuscript</h2>
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Choose a manuscript to publish:</label>
+          <select id="manuscriptSelect" class="w-full border border-gray-300 rounded-lg p-3">
+            <option value="">Loading manuscripts...</option>
+          </select>
+        </div>
+        <div id="manuscriptInfo" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <!-- Manuscript details will be shown here -->
+        </div>
+      </div>
+
+      <!-- Step 2: KDP Metadata Form -->
+      <div id="metadataSection" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">Step 2: KDP Metadata</h2>
+
+        <!-- Book Details -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Book Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700 mb-2">Title *</label>
+              <input type="text" id="kdpTitle" class="w-full border border-gray-300 rounded-lg p-2" maxlength="200" required />
+              <p class="text-sm text-gray-500 mt-1"><span id="titleCount">0</span>/200 characters</p>
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Subtitle</label>
+              <input type="text" id="kdpSubtitle" class="w-full border border-gray-300 rounded-lg p-2" maxlength="200" />
+              <p class="text-sm text-gray-500 mt-1"><span id="subtitleCount">0</span>/200 characters</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Series Information -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Series Information (Optional)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700 mb-2">Series Name</label>
+              <input type="text" id="kdpSeriesName" class="w-full border border-gray-300 rounded-lg p-2" />
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Series Number</label>
+              <input type="number" id="kdpSeriesNumber" class="w-full border border-gray-300 rounded-lg p-2" min="1" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Author Information -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Author Information</h3>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2">Author Name *</label>
+            <input type="text" id="kdpAuthorName" class="w-full border border-gray-300 rounded-lg p-2" required />
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Description *</h3>
+          <textarea id="kdpDescription" class="w-full border border-gray-300 rounded-lg p-3 h-48" maxlength="4000" required placeholder="Write a compelling book description..."></textarea>
+          <p class="text-sm text-gray-500 mt-1"><span id="descriptionCount">0</span>/4000 characters</p>
+          <p class="text-sm text-blue-600 mt-2">💡 Tip: Aim for 300-500 words. Focus on hooks, conflict, and why readers will love this book.</p>
+        </div>
+
+        <!-- Keywords -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Keywords (7 phrases max) *</h3>
+          <div id="keywordsContainer" class="space-y-2">
+            <input type="text" class="keyword-input w-full border border-gray-300 rounded-lg p-2" placeholder="Keyword 1" maxlength="50" />
+            <input type="text" class="keyword-input w-full border border-gray-300 rounded-lg p-2" placeholder="Keyword 2" maxlength="50" />
+            <input type="text" class="keyword-input w-full border border-gray-300 rounded-lg p-2" placeholder="Keyword 3" maxlength="50" />
+            <input type="text" class="keyword-input w-full border border-gray-300 rounded-lg p-2" placeholder="Keyword 4" maxlength="50" />
+            <input type="text" class="keyword-input w-full border border-gray-300 rounded-lg p-2" placeholder="Keyword 5" maxlength="50" />
+            <input type="text" class="keyword-input w-full border border-gray-300 rounded-lg p-2" placeholder="Keyword 6" maxlength="50" />
+            <input type="text" class="keyword-input w-full border border-gray-300 rounded-lg p-2" placeholder="Keyword 7" maxlength="50" />
+          </div>
+          <p class="text-sm text-blue-600 mt-2">💡 Tip: Use phrases readers search for (e.g., "vampire romance", "time travel adventure")</p>
+        </div>
+
+        <!-- Categories -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Categories</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700 mb-2">Primary Category</label>
+              <input type="text" id="kdpPrimaryCategory" class="w-full border border-gray-300 rounded-lg p-2" placeholder="e.g., Fiction > Romance > Paranormal" />
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Secondary Category</label>
+              <input type="text" id="kdpSecondaryCategory" class="w-full border border-gray-300 rounded-lg p-2" placeholder="e.g., Fiction > Fantasy > Urban" />
+            </div>
+          </div>
+          <p class="text-sm text-gray-500 mt-2">Note: You'll select exact categories from KDP's dropdown during upload.</p>
+        </div>
+
+        <!-- Age & Grade (Optional) -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Age & Grade (Optional - for children's books)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-gray-700 mb-2">Min Age</label>
+              <input type="number" id="kdpAgeMin" class="w-full border border-gray-300 rounded-lg p-2" min="0" max="18" />
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Max Age</label>
+              <input type="number" id="kdpAgeMax" class="w-full border border-gray-300 rounded-lg p-2" min="0" max="18" />
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Grade Level</label>
+              <input type="text" id="kdpGradeLevel" class="w-full border border-gray-300 rounded-lg p-2" placeholder="e.g., 5-8" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Publishing Rights -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Publishing Rights *</h3>
+          <select id="kdpPublishingRights" class="w-full border border-gray-300 rounded-lg p-3" required>
+            <option value="worldwide">I own worldwide rights</option>
+            <option value="territories_included">Specific territories (included)</option>
+            <option value="territories_excluded">All territories except (excluded)</option>
+          </select>
+        </div>
+
+        <!-- ISBN -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">ISBN *</h3>
+          <div class="space-y-2">
+            <div>
+              <input type="radio" id="isbnAmazon" name="isbnType" value="amazon_free" checked />
+              <label for="isbnAmazon" class="ml-2">Use Amazon Free ISBN (Recommended)</label>
+            </div>
+            <div>
+              <input type="radio" id="isbnOwned" name="isbnType" value="author_owned" />
+              <label for="isbnOwned" class="ml-2">I have my own ISBN</label>
+            </div>
+          </div>
+          <div id="isbnOwnedInput" class="mt-3 hidden">
+            <input type="text" id="kdpIsbn" class="w-full border border-gray-300 rounded-lg p-2" placeholder="Enter your ISBN" />
+          </div>
+        </div>
+
+        <!-- Publication Date -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Publication Date</h3>
+          <div class="space-y-2">
+            <div>
+              <input type="radio" id="publishNow" name="publicationDate" value="immediate" checked />
+              <label for="publishNow" class="ml-2">Publish immediately after approval</label>
+            </div>
+            <div>
+              <input type="radio" id="publishScheduled" name="publicationDate" value="scheduled" />
+              <label for="publishScheduled" class="ml-2">Schedule for a specific date</label>
+            </div>
+          </div>
+          <div id="publicationDateInput" class="mt-3 hidden">
+            <input type="date" id="kdpPublicationDate" class="w-full border border-gray-300 rounded-lg p-2" />
+          </div>
+        </div>
+
+        <!-- Pricing & Royalties -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Pricing & Royalties *</h3>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+            <p class="text-sm text-gray-700">
+              <strong>35% Royalty:</strong> Price $0.99-$200.00, no delivery cost<br>
+              <strong>70% Royalty:</strong> Price $2.99-$9.99, has delivery cost based on file size
+            </p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-gray-700 mb-2">Price (USD) *</label>
+              <input type="number" id="kdpPriceUSD" class="w-full border border-gray-300 rounded-lg p-2" step="0.01" min="0.99" required />
+            </div>
+            <div>
+              <label class="block text-gray-700 mb-2">Royalty Option *</label>
+              <select id="kdpRoyaltyOption" class="w-full border border-gray-300 rounded-lg p-3" required>
+                <option value="35">35%</option>
+                <option value="70">70%</option>
+              </select>
+            </div>
+          </div>
+          <button id="calculateRoyalty" class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            Calculate Royalty Estimate
+          </button>
+          <div id="royaltyResult" class="mt-4 hidden bg-green-50 border border-green-200 rounded-lg p-4">
+            <!-- Royalty calculation results -->
+          </div>
+        </div>
+
+        <!-- KDP Select -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">KDP Select</h3>
+          <div>
+            <input type="checkbox" id="kdpSelectEnrolled" />
+            <label for="kdpSelectEnrolled" class="ml-2">Enroll in KDP Select (90-day exclusivity to Amazon)</label>
+          </div>
+          <p class="text-sm text-gray-500 mt-2">Benefits: Kindle Unlimited, Kindle Countdown Deals, Free Book Promotions</p>
+        </div>
+
+        <!-- Kindle Book Lending -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Kindle Book Lending</h3>
+          <div>
+            <input type="checkbox" id="kdpLendingEnabled" checked />
+            <label for="kdpLendingEnabled" class="ml-2">Enable Kindle Book Lending</label>
+          </div>
+        </div>
+
+        <!-- Content Flags -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 text-gray-800">Content Flags</h3>
+          <div class="space-y-2">
+            <div>
+              <input type="checkbox" id="kdpAdultContent" />
+              <label for="kdpAdultContent" class="ml-2">This book contains adult content</label>
+            </div>
+            <div>
+              <input type="checkbox" id="kdpPublicDomain" />
+              <label for="kdpPublicDomain" class="ml-2">This book is in the public domain</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: File Selection -->
+      <div id="fileSection" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">Step 3: Files</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-700 mb-2">EPUB File (Manuscript) *</label>
+            <div class="flex items-center space-x-3">
+              <select id="epubSelect" class="flex-1 border border-gray-300 rounded-lg p-3">
+                <option value="">Select existing EPUB or leave blank to generate</option>
+              </select>
+              <button id="generateEpub" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                Generate EPUB
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Cover Image (JPG, 2560x1600px recommended) *</label>
+            <select id="coverSelect" class="w-full border border-gray-300 rounded-lg p-3" required>
+              <option value="">Select cover image...</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Validate & Generate Package -->
+      <div id="actionSection" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">Step 4: Validate & Generate KDP Package</h2>
+        <div class="flex flex-col md:flex-row gap-4">
+          <button id="validatePackage" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-lg font-semibold">
+            ✓ Validate Against KDP Specs
+          </button>
+          <button id="generatePackage" class="flex-1 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 text-lg font-semibold">
+            📦 Generate KDP Package
+          </button>
+        </div>
+      </div>
+
+      <!-- Validation Results -->
+      <div id="validationSection" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold mb-4">Validation Results</h2>
+        <div id="validationResults">
+          <!-- Validation results will be shown here -->
+        </div>
+      </div>
+
+      <!-- Package Download -->
+      <div id="packageSection" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold mb-4">📦 KDP Package Ready!</h2>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-4">
+          <h3 class="font-bold text-lg mb-2 text-green-800">✓ Package Generated Successfully</h3>
+          <p class="text-gray-700 mb-4">Your KDP submission package is ready for download. All files have been pre-filled with your metadata.</p>
+          <div class="space-y-2">
+            <p class="text-sm"><strong>Package Contents:</strong></p>
+            <ul class="list-disc list-inside text-sm text-gray-700">
+              <li id="epubFileName">EPUB manuscript file</li>
+              <li id="coverFileName">Cover image (JPG)</li>
+              <li>KDP_Metadata.txt (pre-filled form data)</li>
+              <li>KDP_Upload_Instructions.html (step-by-step guide)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4">
+          <button id="downloadPackage" class="flex-1 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 text-lg font-semibold">
+            ⬇️ Download ZIP Package
+          </button>
+          <button id="viewInstructions" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-lg font-semibold">
+            📖 View Upload Instructions
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // API Configuration
+    const API_BASE_URL = window.location.origin;
+    const getAuthHeaders = () => ({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json'
+    });
+
+    // State
+    let selectedManuscript = null;
+    let currentPackage = null;
+    let generatedFiles = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadManuscripts();
+      setupEventListeners();
+      setupCharacterCounters();
+    });
+
+    // Load manuscripts
+    async function loadManuscripts() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/manuscripts`, {
+          headers: getAuthHeaders()
+        });
+        const data = await response.json();
+
+        const select = document.getElementById('manuscriptSelect');
+        select.innerHTML = '<option value="">Select a manuscript...</option>';
+        data.manuscripts.forEach(ms => {
+          const option = document.createElement('option');
+          option.value = ms.id;
+          option.textContent = `${ms.title} (${ms.genre || 'No genre'})`;
+          option.dataset.manuscript = JSON.stringify(ms);
+          select.appendChild(option);
+        });
+      } catch (error) {
+        showAlert('Failed to load manuscripts', 'error');
+      }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      document.getElementById('manuscriptSelect').addEventListener('change', handleManuscriptSelect);
+      document.getElementById('calculateRoyalty').addEventListener('click', calculateRoyalty);
+      document.getElementById('validatePackage').addEventListener('click', validatePackage);
+      document.getElementById('generatePackage').addEventListener('click', generatePackage);
+      document.getElementById('downloadPackage').addEventListener('click', downloadPackage);
+      document.getElementById('viewInstructions').addEventListener('click', viewInstructions);
+      document.getElementById('generateEpub').addEventListener('click', generateEpub);
+
+      // ISBN type toggle
+      document.querySelectorAll('input[name="isbnType"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          document.getElementById('isbnOwnedInput').classList.toggle('hidden', e.target.value !== 'author_owned');
+        });
+      });
+
+      // Publication date toggle
+      document.querySelectorAll('input[name="publicationDate"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          document.getElementById('publicationDateInput').classList.toggle('hidden', e.target.value !== 'scheduled');
+        });
+      });
+    }
+
+    // Setup character counters
+    function setupCharacterCounters() {
+      const updateCounter = (inputId, counterId) => {
+        const input = document.getElementById(inputId);
+        const counter = document.getElementById(counterId);
+        input.addEventListener('input', () => {
+          counter.textContent = input.value.length;
+        });
+      };
+
+      updateCounter('kdpTitle', 'titleCount');
+      updateCounter('kdpSubtitle', 'subtitleCount');
+      updateCounter('kdpDescription', 'descriptionCount');
+    }
+
+    // Handle manuscript selection
+    async function handleManuscriptSelect(e) {
+      const option = e.target.selectedOptions[0];
+      if (!option.value) return;
+
+      selectedManuscript = JSON.parse(option.dataset.manuscript);
+
+      // Show manuscript info
+      const infoDiv = document.getElementById('manuscriptInfo');
+      infoDiv.innerHTML = `
+        <h3 class="font-bold text-lg mb-2">${selectedManuscript.title}</h3>
+        <p class="text-sm text-gray-700">Genre: ${selectedManuscript.genre || 'Not specified'}</p>
+        <p class="text-sm text-gray-700">Word Count: ${selectedManuscript.word_count?.toLocaleString() || 'Unknown'}</p>
+      `;
+      infoDiv.classList.remove('hidden');
+
+      // Pre-fill metadata form
+      document.getElementById('kdpTitle').value = selectedManuscript.title || '';
+      document.getElementById('kdpAuthorName').value = selectedManuscript.author_name || '';
+
+      // Show metadata section
+      document.getElementById('metadataSection').classList.remove('hidden');
+      document.getElementById('fileSection').classList.remove('hidden');
+      document.getElementById('actionSection').classList.remove('hidden');
+
+      // Load formatted manuscripts and covers
+      await loadFormattedManuscripts();
+      await loadCovers();
+    }
+
+    // Load formatted manuscripts (EPUBs)
+    async function loadFormattedManuscripts() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/manuscripts/${selectedManuscript.id}/formatted`, {
+          headers: getAuthHeaders()
+        });
+        const data = await response.json();
+
+        const select = document.getElementById('epubSelect');
+        select.innerHTML = '<option value="">Generate new EPUB</option>';
+
+        data.formatted?.filter(f => f.format_type === 'epub').forEach(epub => {
+          const option = document.createElement('option');
+          option.value = epub.file_key;
+          option.textContent = `${epub.file_key.split('/').pop()} (${(epub.file_size / (1024 * 1024)).toFixed(2)} MB)`;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Failed to load formatted manuscripts:', error);
+      }
+    }
+
+    // Load covers
+    async function loadCovers() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/manuscripts/${selectedManuscript.id}/covers`, {
+          headers: getAuthHeaders()
+        });
+        const data = await response.json();
+
+        const select = document.getElementById('coverSelect');
+        select.innerHTML = '<option value="">Select cover...</option>';
+
+        data.covers?.forEach(cover => {
+          const option = document.createElement('option');
+          option.value = cover.file_key;
+          option.textContent = `${cover.file_key.split('/').pop()} (${cover.resolution || 'Unknown size'})`;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Failed to load covers:', error);
+      }
+    }
+
+    // Generate EPUB
+    async function generateEpub() {
+      if (!selectedManuscript) return;
+
+      showAlert('Generating EPUB...', 'info');
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/manuscripts/${selectedManuscript.id}/format/epub`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            includeTableOfContents: true,
+            includeMetadata: true
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          showAlert('EPUB generated successfully!', 'success');
+          await loadFormattedManuscripts();
+        } else {
+          showAlert('Failed to generate EPUB', 'error');
+        }
+      } catch (error) {
+        showAlert('Error generating EPUB', 'error');
+      }
+    }
+
+    // Calculate royalty
+    async function calculateRoyalty() {
+      const price = parseFloat(document.getElementById('kdpPriceUSD').value);
+      const royalty = document.getElementById('kdpRoyaltyOption').value;
+
+      if (!price || price <= 0) {
+        showAlert('Please enter a valid price', 'error');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/kdp/royalty-calculator?price=${price}&royalty=${royalty}&fileSize=2`, {
+          headers: getAuthHeaders()
+        });
+        const data = await response.json();
+
+        const resultDiv = document.getElementById('royaltyResult');
+        resultDiv.innerHTML = `
+          <h4 class="font-bold mb-2">Royalty Estimate</h4>
+          <p class="text-lg"><strong>Per Sale:</strong> $${data.royalty.royaltyPerSaleUSD.toFixed(2)}</p>
+          ${data.royalty.deliveryCostUSD > 0 ? `<p class="text-sm text-gray-600">Delivery Cost: $${data.royalty.deliveryCostUSD.toFixed(2)}</p>` : ''}
+          <p class="text-sm text-blue-700 mt-2">💡 ${data.royalty.recommendationReason}</p>
+        `;
+        resultDiv.classList.remove('hidden');
+      } catch (error) {
+        showAlert('Failed to calculate royalty', 'error');
+      }
+    }
+
+    // Validate package
+    async function validatePackage() {
+      if (!selectedManuscript) return;
+
+      const metadata = collectMetadata();
+      if (!metadata) return;
+
+      showAlert('Validating package...', 'info');
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/manuscripts/${selectedManuscript.id}/kdp/validate`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            metadata,
+            epubKey: document.getElementById('epubSelect').value || null,
+            coverKey: document.getElementById('coverSelect').value
+          })
+        });
+
+        const data = await response.json();
+        displayValidationResults(data.validation);
+      } catch (error) {
+        showAlert('Validation failed', 'error');
+      }
+    }
+
+    // Display validation results
+    function displayValidationResults(validation) {
+      const section = document.getElementById('validationSection');
+      const resultsDiv = document.getElementById('validationResults');
+
+      const statusColor = validation.status === 'pass' ? 'green' : (validation.status === 'warning' ? 'yellow' : 'red');
+      const statusText = validation.status === 'pass' ? '✓ Passed' : (validation.status === 'warning' ? '⚠ Warnings' : '✗ Failed');
+
+      let html = `
+        <div class="bg-${statusColor}-50 border border-${statusColor}-200 rounded-lg p-4 mb-4">
+          <h3 class="font-bold text-lg text-${statusColor}-800">${statusText}</h3>
+          <p class="text-sm">Errors: ${validation.summary.errors}, Warnings: ${validation.summary.warnings}</p>
+        </div>
+      `;
+
+      if (validation.issues.length > 0) {
+        html += '<div class="space-y-2">';
+        validation.issues.forEach(issue => {
+          const color = issue.severity === 'error' ? 'red' : 'yellow';
+          html += `
+            <div class="bg-${color}-50 border border-${color}-200 rounded p-3">
+              <p class="text-sm font-semibold text-${color}-800">${issue.type}</p>
+              <p class="text-sm">${issue.message}</p>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      if (validation.recommendations.length > 0) {
+        html += '<div class="mt-4 space-y-2">';
+        validation.recommendations.forEach(rec => {
+          html += `
+            <div class="bg-blue-50 border border-blue-200 rounded p-3">
+              <p class="text-sm">💡 ${rec.message}</p>
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      resultsDiv.innerHTML = html;
+      section.classList.remove('hidden');
+    }
+
+    // Generate package
+    async function generatePackage() {
+      if (!selectedManuscript) return;
+
+      const metadata = collectMetadata();
+      if (!metadata) return;
+
+      const coverKey = document.getElementById('coverSelect').value;
+      if (!coverKey) {
+        showAlert('Please select a cover image', 'error');
+        return;
+      }
+
+      showAlert('Generating KDP package... This may take 30-60 seconds.', 'info');
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/manuscripts/${selectedManuscript.id}/kdp/prepare`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            metadata,
+            epubKey: document.getElementById('epubSelect').value || null,
+            coverKey
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          currentPackage = data;
+          generatedFiles = data.files;
+          displayPackage();
+          showAlert('KDP package generated successfully!', 'success');
+        } else {
+          showAlert(data.error || 'Failed to generate package', 'error');
+        }
+      } catch (error) {
+        showAlert('Error generating package', 'error');
+      }
+    }
+
+    // Collect metadata from form
+    function collectMetadata() {
+      const title = document.getElementById('kdpTitle').value.trim();
+      const description = document.getElementById('kdpDescription').value.trim();
+      const authorName = document.getElementById('kdpAuthorName').value.trim();
+
+      if (!title || !description || !authorName) {
+        showAlert('Please fill in all required fields (Title, Description, Author)', 'error');
+        return null;
+      }
+
+      // Collect keywords
+      const keywords = Array.from(document.querySelectorAll('.keyword-input'))
+        .map(input => input.value.trim())
+        .filter(kw => kw.length > 0);
+
+      if (keywords.length === 0) {
+        showAlert('Please enter at least one keyword', 'error');
+        return null;
+      }
+
+      return {
+        title,
+        subtitle: document.getElementById('kdpSubtitle').value.trim() || null,
+        series_name: document.getElementById('kdpSeriesName').value.trim() || null,
+        series_number: parseInt(document.getElementById('kdpSeriesNumber').value) || null,
+        author_name: authorName,
+        description,
+        description_length: description.length,
+        keywords,
+        primary_category: document.getElementById('kdpPrimaryCategory').value.trim() || null,
+        secondary_category: document.getElementById('kdpSecondaryCategory').value.trim() || null,
+        age_range_min: parseInt(document.getElementById('kdpAgeMin').value) || null,
+        age_range_max: parseInt(document.getElementById('kdpAgeMax').value) || null,
+        grade_level: document.getElementById('kdpGradeLevel').value.trim() || null,
+        publishing_rights: document.getElementById('kdpPublishingRights').value,
+        isbn_type: document.querySelector('input[name="isbnType"]:checked').value,
+        isbn: document.getElementById('kdpIsbn').value.trim() || null,
+        publication_date: document.querySelector('input[name="publicationDate"]:checked').value === 'scheduled'
+          ? Math.floor(new Date(document.getElementById('kdpPublicationDate').value).getTime() / 1000)
+          : null,
+        price_usd: parseFloat(document.getElementById('kdpPriceUSD').value) || null,
+        royalty_option: document.getElementById('kdpRoyaltyOption').value,
+        kdp_select_enrolled: document.getElementById('kdpSelectEnrolled').checked,
+        enable_lending: document.getElementById('kdpLendingEnabled').checked,
+        format_type: 'ebook',
+        adult_content: document.getElementById('kdpAdultContent').checked,
+        public_domain: document.getElementById('kdpPublicDomain').checked
+      };
+    }
+
+    // Display package ready section
+    function displayPackage() {
+      const section = document.getElementById('packageSection');
+      document.getElementById('epubFileName').textContent = generatedFiles.epub.name;
+      document.getElementById('coverFileName').textContent = generatedFiles.cover.name;
+      section.classList.remove('hidden');
+    }
+
+    // Download package as ZIP
+    async function downloadPackage() {
+      if (!generatedFiles) return;
+
+      showAlert('Creating ZIP file...', 'info');
+
+      try {
+        const zip = new JSZip();
+
+        // Add files to ZIP
+        zip.file(generatedFiles.epub.name, generatedFiles.epub.content);
+        zip.file(generatedFiles.cover.name, generatedFiles.cover.content);
+        zip.file(generatedFiles.metadata.name, generatedFiles.metadata.content);
+        zip.file(generatedFiles.instructions.name, generatedFiles.instructions.content);
+
+        // Generate ZIP
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+        // Download
+        const url = URL.createObjectURL(zipBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${selectedManuscript.title.replace(/[^a-z0-9]/gi, '_')}_KDP_Package.zip`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showAlert('Package downloaded successfully!', 'success');
+      } catch (error) {
+        showAlert('Failed to create ZIP file', 'error');
+      }
+    }
+
+    // View instructions
+    function viewInstructions() {
+      if (!generatedFiles) return;
+
+      const blob = new Blob([generatedFiles.instructions.content], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }
+
+    // Show alert
+    function showAlert(message, type) {
+      const container = document.getElementById('alertContainer');
+      const colors = {
+        success: 'green',
+        error: 'red',
+        info: 'blue',
+        warning: 'yellow'
+      };
+      const color = colors[type] || 'blue';
+
+      const alert = document.createElement('div');
+      alert.className = `bg-${color}-50 border border-${color}-200 text-${color}-800 px-4 py-3 rounded relative mb-4`;
+      alert.innerHTML = `
+        <span class="block sm:inline">${message}</span>
+        <button class="absolute top-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">×</button>
+      `;
+      container.appendChild(alert);
+
+      if (type !== 'error') {
+        setTimeout(() => alert.remove(), 5000);
+      }
+    }
+  </script>
+</body>
+</html>

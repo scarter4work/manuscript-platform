@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Analysis - Manuscript Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen py-8 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg shadow-xl p-8 mb-8">
+        <h1 class="text-4xl font-bold text-white mb-2">Amazon Market Analysis</h1>
+        <p class="text-blue-100">Data-driven pricing, categories, and positioning strategy</p>
+      </div>
+
+      <div id="alertContainer" class="mb-6"></div>
+
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-2xl font-bold mb-4">Generate Analysis</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-700 mb-2">Select Manuscript *</label>
+            <select id="manuscriptSelect" class="w-full border border-gray-300 rounded-lg p-3">
+              <option value="">Loading manuscripts...</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Genre *</label>
+            <select id="genreSelect" class="w-full border border-gray-300 rounded-lg p-3">
+              <option value="thriller">Thriller</option>
+              <option value="romance">Romance</option>
+              <option value="fantasy">Fantasy</option>
+              <option value="science fiction">Science Fiction</option>
+              <option value="mystery">Mystery</option>
+              <option value="horror">Horror</option>
+              <option value="literary fiction">Literary Fiction</option>
+            </select>
+          </div>
+          <button id="generateBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-lg font-semibold">
+            Generate Market Analysis (30-60 seconds)
+          </button>
+        </div>
+      </div>
+
+      <div id="resultsSection" class="hidden space-y-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold mb-4">Pricing Recommendation</h2>
+          <div id="pricingResults"></div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold mb-4">Strategic Report</h2>
+          <div id="reportResults" class="prose max-w-none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = window.location.origin;
+    const getAuthHeaders = () => ({ 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' });
+
+    document.addEventListener('DOMContentLoaded', loadManuscripts);
+
+    async function loadManuscripts() {
+      try {
+        const response = await fetch(API_BASE_URL + '/manuscripts', { headers: getAuthHeaders() });
+        const data = await response.json();
+        const select = document.getElementById('manuscriptSelect');
+        select.innerHTML = '<option value="">Select a manuscript...</option>';
+        data.manuscripts.forEach(ms => {
+          const option = document.createElement('option');
+          option.value = ms.id;
+          option.textContent = ms.title + ' (' + (ms.genre || 'No genre') + ')';
+          select.appendChild(option);
+        });
+      } catch (error) {
+        showAlert('Failed to load manuscripts', 'error');
+      }
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      const manuscriptId = document.getElementById('manuscriptSelect').value;
+      const genre = document.getElementById('genreSelect').value;
+
+      if (!manuscriptId) {
+        showAlert('Please select a manuscript', 'error');
+        return;
+      }
+
+      showAlert('Generating market analysis... This may take 30-60 seconds', 'info');
+      document.getElementById('generateBtn').disabled = true;
+
+      try {
+        const response = await fetch(API_BASE_URL + '/manuscripts/' + manuscriptId + '/market-analysis', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ genre: genre })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          displayResults(data.analysis);
+          showAlert('Analysis complete! Cost: $' + data.cost.toFixed(4), 'success');
+        } else {
+          showAlert(data.error || 'Failed to generate analysis', 'error');
+        }
+      } catch (error) {
+        showAlert('Error generating analysis', 'error');
+      } finally {
+        document.getElementById('generateBtn').disabled = false;
+      }
+    });
+
+    function displayResults(analysis) {
+      const pricingHTML = '<div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="text-center"><p class="text-gray-600 mb-2">Recommended Price</p><p class="text-4xl font-bold text-green-600">$' + analysis.pricing.recommended + '</p><p class="text-sm text-gray-500 mt-1">Confidence: ' + (analysis.pricing.confidence * 100).toFixed(0) + '%</p></div><div class="text-center"><p class="text-gray-600 mb-2">Price Range</p><p class="text-2xl font-semibold">$' + analysis.pricing.min + ' - $' + analysis.pricing.max + '</p><p class="text-sm text-gray-500 mt-1">Market Avg: $' + analysis.pricing.avg + '</p></div><div class="text-center"><p class="text-gray-600 mb-2">Bestseller Avg</p><p class="text-2xl font-semibold">$' + analysis.pricing.bestsellerAvg + '</p><p class="text-sm text-gray-500 mt-1">Top 20%</p></div></div><div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"><div><p class="font-semibold text-gray-700 mb-2">Top Categories:</p><ul class="list-disc list-inside text-gray-600">' + analysis.categories.recommended.slice(0, 5).map(cat => '<li>' + cat + '</li>').join('') + '</ul></div><div><p class="font-semibold text-gray-700 mb-2">Recommended Keywords:</p><ul class="list-disc list-inside text-gray-600">' + analysis.keywords.recommended.map(kw => '<li>' + kw + '</li>').join('') + '</ul></div></div>';
+
+      document.getElementById('pricingResults').innerHTML = pricingHTML;
+      document.getElementById('reportResults').innerHTML = marked.parse(analysis.report);
+      document.getElementById('resultsSection').classList.remove('hidden');
+    }
+
+    function showAlert(message, type) {
+      const container = document.getElementById('alertContainer');
+      const colors = { success: 'green', error: 'red', info: 'blue', warning: 'yellow' };
+      const color = colors[type] || 'blue';
+      const alert = document.createElement('div');
+      alert.className = 'bg-' + color + '-50 border border-' + color + '-200 text-' + color + '-800 px-4 py-3 rounded relative mb-4';
+      alert.innerHTML = '<span class="block sm:inline">' + message + '</span><button class="absolute top-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">×</button>';
+      container.appendChild(alert);
+      if (type !== 'error') setTimeout(function() { alert.remove(); }, 5000);
+    }
+  </script>
+</body>
+</html>

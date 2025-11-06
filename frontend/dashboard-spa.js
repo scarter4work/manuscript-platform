@@ -3,9 +3,9 @@
 
 const app = {
     // Configuration
-    API_BASE: window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+    API_BASE: window.location.hostname === 'localhost'
         ? 'http://localhost:8787'
-        : 'https://api.scarter4workmanuscripthub.com',
+        : window.location.origin,
     
     // State
     state: {
