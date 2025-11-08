@@ -1,0 +1,80 @@
+# Robots.txt for ManuscriptHub (selfpubhub.co)
+# Security-focused configuration to prevent unauthorized crawling
+
+# Allow search engines to index public pages
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /login.html
+
+# Block all protected/authenticated areas
+Disallow: /auth/
+Disallow: /manuscripts
+Disallow: /manuscripts/
+Disallow: /admin/
+Disallow: /admin-*
+Disallow: /dashboard
+Disallow: /dashboard.html
+Disallow: /dashboard-spa.html
+Disallow: /upload/
+Disallow: /analysis/
+Disallow: /payments/
+Disallow: /billing/
+
+# Block API endpoints
+Disallow: /api/
+
+# Block sensitive data endpoints
+Disallow: /genres
+Disallow: /templates
+Disallow: /submissions
+Disallow: /packages
+Disallow: /documents
+
+# Block internal/development files
+Disallow: /*.js$
+Disallow: /*.css$
+Disallow: /*.json$
+Disallow: /render-helpers.js
+Disallow: /dashboard-spa.js
+
+# Specific bot rules
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+# Allow legitimate search engines
+User-agent: Googlebot
+Allow: /
+Disallow: /auth/
+Disallow: /manuscripts
+Disallow: /admin
+
+User-agent: Bingbot
+Allow: /
+Disallow: /auth/
+Disallow: /manuscripts
+Disallow: /admin
+
+User-agent: Yandex
+Allow: /
+Disallow: /auth/
+Disallow: /manuscripts
+Disallow: /admin
+
+# Crawl delay for all bots
+Crawl-delay: 10
+
+# Sitemap (TODO: Create sitemap.xml)
+# Sitemap: https://selfpubhub.co/sitemap.xml
