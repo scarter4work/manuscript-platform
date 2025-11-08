@@ -6,7 +6,7 @@ services:
     env: node
     region: oregon
     plan: standard
-    buildCommand: npm install
+    buildCommand: rm -rf node_modules && npm install
     startCommand: node server.js
     envVars:
       - key: NODE_ENV
