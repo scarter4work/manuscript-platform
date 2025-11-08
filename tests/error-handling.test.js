@@ -13,7 +13,7 @@ import {
   assert,
   assertAuthenticated,
   assertAuthorized
-} from '../error-handling.js';
+} from '../src/utils/error-handling.js';
 
 describe('Error Handling', () => {
   describe('Error Classes', () => {

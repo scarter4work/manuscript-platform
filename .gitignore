@@ -12,3 +12,8 @@ frontend-dist/
 # Ignore package-lock.json to prevent cross-platform build issues
 # Each environment (Windows dev, Linux CI/CD) generates its own lock file
 package-lock.json
+
+# Temporary database scripts
+create-audit-log.sql
+run-audit-log-migration.js
+reset-password.js

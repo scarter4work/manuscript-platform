@@ -152,8 +152,8 @@ Uploaded manuscript-upload-api (9.69 sec)
 
 ### Production URLs
 ```
-Main Dashboard: https://scarter4workmanuscripthub.com/dashboard-spa.html
-Export Packages: https://scarter4workmanuscripthub.com/exports.html
+Main Dashboard: https://selfpubhub.co/dashboard-spa.html
+Export Packages: https://selfpubhub.co/exports.html
 ```
 
 ---

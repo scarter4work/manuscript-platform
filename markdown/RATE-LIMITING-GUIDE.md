@@ -209,7 +209,7 @@ If a user or IP is legitimately hitting limits (e.g., testing), admins can clear
 
 **Option 2: Via API (Admin only)**
 ```bash
-curl -X POST https://api.scarter4workmanuscripthub.com/admin/rate-limits/clear \
+curl -X POST https://api.selfpubhub.co/admin/rate-limits/clear \
   -H "Authorization: Bearer ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"type": "ip", "identifier": "192.168.1.1"}'
@@ -319,7 +319,7 @@ grep "rate-limiter" worker.js
 grep "applyRateLimit" worker.js
 
 # Test manually
-curl -I https://api.scarter4workmanuscripthub.com/auth/login \
+curl -I https://api.selfpubhub.co/auth/login \
   -X POST -H "Content-Type: application/json" \
   -d '{"email":"test@test.com","password":"wrong"}'
 # Repeat 6 times - should get 429 on 6th attempt
@@ -499,7 +499,7 @@ Rate limits should be documented in ToS:
 # Test login rate limit (5 per 15 minutes)
 for i in {1..6}; do
   echo "Attempt $i:"
-  curl -i -X POST https://api.scarter4workmanuscripthub.com/auth/login \
+  curl -i -X POST https://api.selfpubhub.co/auth/login \
     -H "Content-Type: application/json" \
     -d '{"email":"test@test.com","password":"wrong"}'
   echo "\n---\n"

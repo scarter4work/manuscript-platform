@@ -41,8 +41,8 @@ Cloudflare Access puts a login page in front of your dashboard. Only people you 
 **Application Domain Settings:**
 - Click **Add domain**
 - Subdomain: `dashboard`
-- Domain: Select `scarter4workmanuscripthub.com` from dropdown
-- Full domain should show: `dashboard.scarter4workmanuscripthub.com`
+- Domain: Select `selfpubhub.co` from dropdown
+- Full domain should show: `dashboard.selfpubhub.co`
 
 **Identity Providers:**
 - Leave defaults checked (One-time PIN, Google, etc.)
@@ -88,7 +88,7 @@ Click **Add application**
 ## Step 6: Test It!
 
 1. Open **incognito/private browser window**
-2. Go to: `https://dashboard.scarter4workmanuscripthub.com`
+2. Go to: `https://dashboard.selfpubhub.co`
 3. You should see **Cloudflare Access login page**
 4. Enter your email
 5. Check email for login code (if using email login)
@@ -100,15 +100,15 @@ Click **Add application**
 ## Important Notes
 
 ### ✅ What's Protected:
-- `dashboard.scarter4workmanuscripthub.com` ← Protected, requires login
+- `dashboard.selfpubhub.co` ← Protected, requires login
 
 ### ⚠️ What's NOT Protected (API remains public):
-- `api.scarter4workmanuscripthub.com` ← Still public
+- `api.selfpubhub.co` ← Still public
 - This is CORRECT - the API needs to be accessible by the dashboard
 
 ### If you want to protect the API too:
 1. Add another application in Cloudflare Access
-2. Use domain: `api.scarter4workmanuscripthub.com`
+2. Use domain: `api.selfpubhub.co`
 3. Same policy (authorized users only)
 
 ---
@@ -210,7 +210,7 @@ The main thing is:
 1. Go to one.dash.cloudflare.com
 2. Click Zero Trust
 3. Add Application
-4. Protect dashboard.scarter4workmanuscripthub.com
+4. Protect dashboard.selfpubhub.co
 5. Add your email to allowed list
 
 That's it! 🎉

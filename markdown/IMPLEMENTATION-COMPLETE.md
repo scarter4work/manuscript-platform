@@ -66,7 +66,7 @@ node test-dev-agent.js /path/to/her-manuscript.txt romance
 wrangler deploy
 
 # 3. Test production
-curl https://api.scarter4workmanuscripthub.com/
+curl https://api.selfpubhub.co/
 ```
 
 ## 📊 What the Agent Analyzes

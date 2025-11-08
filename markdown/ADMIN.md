@@ -749,7 +749,7 @@ class AdminClient:
         return response.json()
 
 # Usage
-client = AdminClient('https://api.scarter4workmanuscripthub.com', 'session-cookie-value')
+client = AdminClient('https://api.selfpubhub.co', 'session-cookie-value')
 users = client.list_users(page=1)
 revenue = client.get_revenue_analytics(period='month')
 ```

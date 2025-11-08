@@ -334,7 +334,7 @@ export async function unsubscribeByToken(request, env) {
     <div class="icon">✅</div>
     <h1>Unsubscribed Successfully</h1>
     <p>You've been unsubscribed from all non-critical email notifications from Manuscript Hub.</p>
-    <a href="https://scarter4workmanuscripthub.com/email-preferences.html">Manage Email Preferences</a>
+    <a href="https://selfpubhub.co/email-preferences.html">Manage Email Preferences</a>
     <div class="note">
       <strong>Note:</strong> You will still receive important emails about payment issues and DMCA notifications.
       You can manage individual notification preferences from your account settings.

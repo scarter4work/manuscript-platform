@@ -70,7 +70,7 @@ git push
 ```
 
 ### 8. Test
-Visit: `https://dashboard.scarter4workmanuscripthub.com/login.html`
+Visit: `https://dashboard.selfpubhub.co/login.html`
 
 ## That's it! 🎉
 

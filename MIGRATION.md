@@ -89,7 +89,7 @@ SESSION_SECRET=your-secret-here
 ANTHROPIC_API_KEY=your-key
 STRIPE_SECRET_KEY=your-key
 STRIPE_WEBHOOK_SECRET=your-secret
-FRONTEND_URL=https://scarter4workmanuscripthub.com
+FRONTEND_URL=https://selfpubhub.co
 ```
 
 ## Cost Estimate (Monthly)

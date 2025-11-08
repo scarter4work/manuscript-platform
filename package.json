@@ -11,6 +11,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "vitest run tests/e2e",
     "lint": "eslint . --ext .js --ignore-pattern frontend/ --ignore-pattern node_modules/",
     "lint:fix": "eslint . --ext .js --ignore-pattern frontend/ --ignore-pattern node_modules/ --fix"
   },
@@ -20,6 +24,7 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9.38.0",
     "postcss": "^8.5.6",
+    "supertest": "^7.1.4",
     "tailwindcss": "^3.4.18",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
@@ -29,6 +34,7 @@
     "@aws-sdk/client-s3": "^3.922.0",
     "@sentry/node": "^10.22.0",
     "bcryptjs": "^3.0.3",
+    "clamscan": "^2.4.0",
     "compression": "^1.8.1",
     "connect-redis": "^7.1.1",
     "docx": "^9.5.1",

@@ -159,9 +159,11 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 
 ## Security Notes
 **Current**: Cookie-based authentication with httpOnly, secure cookies
+**Implemented**:
+- ✅ Rate limiting (Redis-based)
+- ✅ File virus scanning (ClamAV)
+
 **Production TODO**:
-- Rate limiting (implemented with Redis)
-- File virus scanning
 - API key rotation
 - Enhanced data encryption
 - GDPR compliance
@@ -174,6 +176,32 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 - Claude API: ~$2-4 per manuscript analysis
 
 ## Recent Activity Log
+
+### 2025-11-08 (File Virus Scanning Implemented)
+- **Implemented ClamAV Virus Scanner (Issue #65)**
+  - Created `virus-scanner.js` service module with ClamAV integration
+  - Added scanning to manuscript uploads (`/upload/manuscript`)
+  - Added scanning to marketing asset uploads (`/upload/marketing`)
+  - Fail-closed mode in production (blocks uploads if scanner unavailable)
+  - Graceful degradation in development (allows uploads with warning)
+
+- **Database Migration #038: Security Incidents**
+  - Created `security_incidents` table (malware detections, suspicious activity)
+  - Created `file_scan_results` table (audit log of all scans)
+  - Created `scanner_health` table (monitor ClamAV status)
+  - Created analytics views for security monitoring
+
+- **Docker Compose Configuration**
+  - Added ClamAV service (port 3310)
+  - Auto-updates virus definitions daily
+  - 512MB RAM allocation for optimal performance
+
+- **Security Features**:
+  - EICAR test file detection
+  - Malware incident logging with IP tracking
+  - Scan result audit trail (duration, file size, viruses found)
+  - Scanner health monitoring
+  - Configurable fail-open/fail-closed behavior
 
 ### 2025-11-05 (Login Fixes & Redis Rate Limiting)
 - **Fixed Critical Login Failures**

@@ -84,7 +84,7 @@ async function sendEmailNotification(email, subject, message, env) {
   //     'Content-Type': 'application/json'
   //   },
   //   body: JSON.stringify({
-  //     from: 'no-reply@scarter4workmanuscripthub.com',
+  //     from: 'no-reply@selfpubhub.co',
   //     to: email,
   //     subject,
   //     text: message

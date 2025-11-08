@@ -54,7 +54,7 @@ This guide covers the complete setup of Stripe for production, including obtaini
 2. Click **+ Add endpoint**
 3. Enter endpoint URL:
    ```
-   https://api.scarter4workmanuscripthub.com/webhooks/stripe
+   https://api.selfpubhub.co/webhooks/stripe
    ```
 4. Click **Select events**
 
@@ -136,7 +136,7 @@ The `STRIPE_PUBLISHABLE_KEY` is set in `wrangler.toml` (not secret):
 ```toml
 [vars]
 STRIPE_PUBLISHABLE_KEY = "pk_live_YOUR_ACTUAL_KEY_HERE"
-FRONTEND_URL = "https://scarter4workmanuscripthub.com"
+FRONTEND_URL = "https://selfpubhub.co"
 ```
 
 ### 4.2 Deploy Updated Configuration
@@ -159,7 +159,7 @@ npx wrangler deploy
 
 ```bash
 # Should return 405 Method Not Allowed (webhooks only accept POST)
-curl -I https://api.scarter4workmanuscripthub.com/webhooks/stripe
+curl -I https://api.selfpubhub.co/webhooks/stripe
 
 # Expected response:
 # HTTP/2 405

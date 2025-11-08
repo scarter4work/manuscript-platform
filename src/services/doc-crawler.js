@@ -64,7 +64,7 @@ async function fetchURL(url, timeout = 30000) {
     const response = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'ManuscriptHub-DocMonitor/1.0 (Documentation monitoring system; +https://scarter4workmanuscripthub.com)',
+        'User-Agent': 'ManuscriptHub-DocMonitor/1.0 (Documentation monitoring system; +https://selfpubhub.co)',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',
       },

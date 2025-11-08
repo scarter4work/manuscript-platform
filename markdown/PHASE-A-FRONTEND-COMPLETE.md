@@ -390,7 +390,7 @@ In development mode, verification and reset tokens are included in API responses
 ```javascript
 const API_BASE = window.location.hostname === 'localhost'
     ? 'http://localhost:8787'
-    : 'https://api.scarter4workmanuscripthub.com';
+    : 'https://api.selfpubhub.co';
 ```
 
 ### Cookie Configuration

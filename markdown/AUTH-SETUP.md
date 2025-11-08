@@ -142,7 +142,7 @@ git push
 
 ## Step 10: Test
 
-1. Visit `https://dashboard.scarter4workmanuscripthub.com/login.html`
+1. Visit `https://dashboard.selfpubhub.co/login.html`
 2. Create an account
 3. Login
 4. Upload a manuscript (should work)

@@ -32,14 +32,14 @@ info:
   version: 1.0.0
   contact:
     name: ManuscriptHub API Support
-    email: api@scarter4workmanuscripthub.com
-    url: https://scarter4workmanuscripthub.com/api-docs
+    email: api@selfpubhub.co
+    url: https://selfpubhub.co/api-docs
   license:
     name: Proprietary
-    url: https://scarter4workmanuscripthub.com/terms
+    url: https://selfpubhub.co/terms
 
 servers:
-  - url: https://api.scarter4workmanuscripthub.com
+  - url: https://api.selfpubhub.co
     description: Production server
   - url: http://localhost:8787
     description: Local development

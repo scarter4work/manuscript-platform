@@ -141,7 +141,7 @@ This document outlines the disaster recovery procedures for the Manuscript Publi
       UNION ALL SELECT 'subscriptions', COUNT(*) FROM subscriptions"
 
    # Test API endpoints
-   curl https://api.scarter4workmanuscripthub.com/manuscripts
+   curl https://api.selfpubhub.co/manuscripts
    # Should return 401 (API working)
    ```
 

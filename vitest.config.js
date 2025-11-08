@@ -6,10 +6,10 @@ export default defineConfig({
     environment: 'node',
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
         'node_modules/**',
-        'test/**',
+        'tests/**',
         '**/*.test.js',
         '**/*.spec.js',
         'frontend/**',
@@ -18,9 +18,23 @@ export default defineConfig({
         'migrations/**',
         'delete_deployments/**',
         'edit_agent_by_example/**',
+        'dist/**',
+        '**/*.config.js',
       ],
+      // Target 80% branch coverage
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
     },
-    // Timeout for long-running tests (AI API calls, etc.)
+    // Global test setup file
+    setupFiles: ['./tests/setup.js'],
+    // Timeout for long-running tests (AI API calls, database operations, etc.)
     testTimeout: 30000,
+    // Test file patterns
+    include: [
+      'tests/**/*.test.js',
+      'tests/**/*.spec.js',
+    ],
   },
 });

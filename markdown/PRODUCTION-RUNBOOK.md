@@ -1,6 +1,6 @@
 # Production Operations Runbook
 
-**Environment:** Production (api.scarter4workmanuscripthub.com)
+**Environment:** Production (api.selfpubhub.co)
 **Last Updated:** October 25, 2025
 **On-Call:** scarter4work@yahoo.com
 
@@ -14,8 +14,8 @@
 - **Stripe Support:** https://support.stripe.com
 
 ### Critical URLs
-- **API:** https://api.scarter4workmanuscripthub.com
-- **Frontend:** https://scarter4workmanuscripthub.com
+- **API:** https://api.selfpubhub.co
+- **Frontend:** https://selfpubhub.co
 - **Cloudflare Dashboard:** https://dash.cloudflare.com
 - **GitHub Repo:** https://github.com/scarter4work/manuscript-platform
 
@@ -94,7 +94,7 @@ npx wrangler d1 execute manuscript-platform --remote --command "SELECT 1"
 npx wrangler secret list | grep JWT_SECRET
 
 # Test login endpoint
-curl -X POST https://api.scarter4workmanuscripthub.com/auth/login \
+curl -X POST https://api.selfpubhub.co/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"TestPass123@"}'
 ```
@@ -132,7 +132,7 @@ openssl rand -base64 32 | npx wrangler secret put JWT_SECRET
 npx wrangler tail --format pretty
 
 # Test password reset
-curl -X POST https://api.scarter4workmanuscripthub.com/auth/password-reset-request \
+curl -X POST https://api.selfpubhub.co/auth/password-reset-request \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com"}'
 ```
@@ -225,7 +225,7 @@ grep "error" logs.txt | head -20
 # Dashboard → Workers → Metrics → Duration tab
 
 # Test specific endpoint
-time curl https://api.scarter4workmanuscripthub.com/manuscripts
+time curl https://api.selfpubhub.co/manuscripts
 
 # Check database query performance
 # Dashboard → D1 → manuscript-platform → Metrics
@@ -388,7 +388,7 @@ npx wrangler d1 execute manuscript-platform --remote --command \
 
 # Step 3: Verify user now has access
 curl -H "Authorization: Bearer USER_TOKEN" \
-  https://api.scarter4workmanuscripthub.com/subscription/status
+  https://api.selfpubhub.co/subscription/status
 ```
 
 **Impact:** 🔵 Low - Rare occurrence, manually fixable
@@ -418,7 +418,7 @@ git push origin main
 npx wrangler deploy
 
 # 4. Verify deployment
-curl https://api.scarter4workmanuscripthub.com/manuscripts
+curl https://api.selfpubhub.co/manuscripts
 # Should return 401 (API is up)
 
 # 5. Monitor for 15 minutes
@@ -717,7 +717,7 @@ gzip backup-manual.sql
       UNION ALL SELECT 'subscriptions', COUNT(*) FROM subscriptions"
 
    # Test API
-   curl https://api.scarter4workmanuscripthub.com/manuscripts
+   curl https://api.selfpubhub.co/manuscripts
    # Should return 401 (API working)
    ```
 

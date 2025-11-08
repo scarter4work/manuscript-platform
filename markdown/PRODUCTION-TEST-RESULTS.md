@@ -3,7 +3,7 @@
 **Date:** October 26, 2025 (Updated)
 **Initial Testing:** October 25, 2025
 **Tester:** Claude Code + User
-**Environment:** Production (api.scarter4workmanuscripthub.com)
+**Environment:** Production (api.selfpubhub.co)
 **Duration:** ~2 hours (including bug fixes)
 
 ---
@@ -40,7 +40,7 @@ Completed comprehensive end-to-end testing of production API endpoints. **All cr
 ✓ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 ✓ Referrer-Policy: strict-origin-when-cross-origin
 ✓ Permissions-Policy: geolocation=(), microphone=(), camera=()
-✓ Access-Control-Allow-Origin: https://scarter4workmanuscripthub.com
+✓ Access-Control-Allow-Origin: https://selfpubhub.co
 ```
 
 #### 2. Authentication Required ✅

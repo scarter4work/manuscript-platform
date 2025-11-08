@@ -90,6 +90,63 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
 
+    // ========================================================================
+    // VIRUS SCAN - Issue #65
+    // Scan uploaded file for malware before storage
+    // ========================================================================
+    try {
+      const { scanFile, logScanResult, createMalwareIncident } = await import('../services/virus-scanner.js');
+
+      console.log(`[Upload] Scanning file: ${file.name} (${file.size} bytes)`);
+
+      const scanResult = await scanFile(Buffer.from(fileBuffer), file.name);
+
+      // Log scan result to database
+      await logScanResult(env.DB, scanResult, userId, r2Key);
+
+      if (scanResult.isInfected) {
+        // Create security incident
+        const ipAddress = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+        await createMalwareIncident(env.DB, scanResult, userId, ipAddress);
+
+        console.error(`[Upload] 🚨 MALWARE DETECTED: ${file.name}`, scanResult.viruses);
+
+        return new Response(JSON.stringify({
+          error: 'File upload blocked. The file appears to contain malware or viruses.',
+          scanResult: {
+            viruses: scanResult.viruses,
+            scanId: scanResult.scanId,
+            message: 'Your file has been flagged by our security scanner. If you believe this is a false positive, please contact support.'
+          }
+        }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      console.log(`[Upload] ✓ File clean: ${file.name} (scanned in ${scanResult.duration}ms)`);
+    } catch (scanError) {
+      console.error('[Upload] Virus scan error:', scanError.message);
+
+      // Fail closed in production (block upload if scan fails)
+      const failOpen = process.env.VIRUS_SCANNER_FAIL_OPEN === 'true' || process.env.NODE_ENV === 'development';
+
+      if (!failOpen) {
+        return new Response(JSON.stringify({
+          error: 'Unable to verify file safety. Upload blocked for security.',
+          message: 'Our security scanner is temporarily unavailable. Please try again later.'
+        }), {
+          status: 503,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      console.warn('[Upload] Scan failed, allowing upload (fail-open mode)');
+    }
+    // ========================================================================
+    // END VIRUS SCAN
+    // ========================================================================
+
     // Count words (approximate)
     const fileText = new TextDecoder().decode(fileBuffer);
     const wordCount = fileText.split(/\s+/).filter(w => w.length > 0).length;
@@ -256,18 +313,93 @@ async function handleMarketingUpload(request, env, corsHeaders) {
   const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
   const key = `${authorId}/${assetType}/${timestamp}_${sanitizedFilename}`;
 
-  // Upload to marketing assets bucket
-  await env.MARKETING_ASSETS.put(key, file.stream(), {
-    customMetadata: {
-      authorId: authorId,
-      assetType: assetType,
-      originalName: file.name,
-      uploadTime: timestamp
-    },
-    httpMetadata: {
-      contentType: file.type,
+  // ========================================================================
+  // VIRUS SCAN - Issue #65
+  // Scan uploaded marketing asset for malware before storage
+  // ========================================================================
+  try {
+    const { scanFile, logScanResult, createMalwareIncident } = await import('../services/virus-scanner.js');
+
+    // Get file buffer for scanning
+    const fileBuffer = await file.arrayBuffer();
+    console.log(`[Marketing Upload] Scanning file: ${file.name} (${file.size} bytes)`);
+
+    const scanResult = await scanFile(Buffer.from(fileBuffer), file.name);
+
+    // Log scan result to database
+    // Note: authorId may not be a real user ID, pass null for userId
+    await logScanResult(env.DB, scanResult, null, key);
+
+    if (scanResult.isInfected) {
+      // Create security incident
+      const ipAddress = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+      await createMalwareIncident(env.DB, scanResult, null, ipAddress);
+
+      console.error(`[Marketing Upload] 🚨 MALWARE DETECTED: ${file.name}`, scanResult.viruses);
+
+      return new Response(JSON.stringify({
+        error: 'File upload blocked. The file appears to contain malware or viruses.',
+        scanResult: {
+          viruses: scanResult.viruses,
+          scanId: scanResult.scanId,
+          message: 'Your file has been flagged by our security scanner. If you believe this is a false positive, please contact support.'
+        }
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
-  });
+
+    console.log(`[Marketing Upload] ✓ File clean: ${file.name} (scanned in ${scanResult.duration}ms)`);
+
+    // Upload to marketing assets bucket (use buffer instead of stream after scanning)
+    await env.MARKETING_ASSETS.put(key, fileBuffer, {
+      customMetadata: {
+        authorId: authorId,
+        assetType: assetType,
+        originalName: file.name,
+        uploadTime: timestamp,
+        virusScanId: scanResult.scanId
+      },
+      httpMetadata: {
+        contentType: file.type,
+      }
+    });
+
+  } catch (scanError) {
+    console.error('[Marketing Upload] Virus scan error:', scanError.message);
+
+    // Fail closed in production (block upload if scan fails)
+    const failOpen = process.env.VIRUS_SCANNER_FAIL_OPEN === 'true' || process.env.NODE_ENV === 'development';
+
+    if (!failOpen) {
+      return new Response(JSON.stringify({
+        error: 'Unable to verify file safety. Upload blocked for security.',
+        message: 'Our security scanner is temporarily unavailable. Please try again later.'
+      }), {
+        status: 503,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    console.warn('[Marketing Upload] Scan failed, allowing upload (fail-open mode)');
+
+    // Upload to marketing assets bucket (original flow if scan fails in fail-open mode)
+    await env.MARKETING_ASSETS.put(key, file.stream(), {
+      customMetadata: {
+        authorId: authorId,
+        assetType: assetType,
+        originalName: file.name,
+        uploadTime: timestamp
+      },
+      httpMetadata: {
+        contentType: file.type,
+      }
+    });
+  }
+  // ========================================================================
+  // END VIRUS SCAN
+  // ========================================================================
 
   // Generate a public URL (if bucket is configured for public access)
   const publicUrl = `https://your-domain.com/marketing/${key}`;

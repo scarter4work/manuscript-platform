@@ -59,7 +59,7 @@ The dashboard provides a complete manuscript analysis workflow:
 1. **Update API URL in dashboard.html:**
    ```javascript
    // Change line 545:
-   const API_BASE = 'https://api.scarter4workmanuscripthub.com';
+   const API_BASE = 'https://api.selfpubhub.co';
    ```
 
 2. **Deploy to your hosting:**

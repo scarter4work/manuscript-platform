@@ -81,7 +81,7 @@ curl https://your-app.onrender.com/auth/me
 In Render dashboard:
 1. Go to your web service → Settings
 2. Scroll to "Custom Domain"
-3. Add `scarter4workmanuscripthub.com`
+3. Add `selfpubhub.co`
 4. Update your DNS:
    - Type: CNAME
    - Name: @

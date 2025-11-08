@@ -235,7 +235,7 @@ Sign up: Free account
 **Monitor 1: API Health Check**
 ```
 Type: HTTP(s)
-URL: https://api.scarter4workmanuscripthub.com/manuscripts
+URL: https://api.selfpubhub.co/manuscripts
 Method: GET (should return 401)
 Interval: 5 minutes
 Alert When: Down for 2 minutes
@@ -245,7 +245,7 @@ Expected Status: 401 (means API is up, just requires auth)
 **Monitor 2: Frontend Pages**
 ```
 Type: HTTP(s)
-URL: https://scarter4workmanuscripthub.com/login.html
+URL: https://selfpubhub.co/login.html
 Interval: 5 minutes
 Alert When: Down for 2 minutes
 Expected Status: 200
@@ -254,7 +254,7 @@ Expected Status: 200
 **Monitor 3: Password Reset Flow**
 ```
 Type: Keyword
-URL: https://scarter4workmanuscripthub.com/forgot-password.html
+URL: https://selfpubhub.co/forgot-password.html
 Keyword: "Forgot Password"
 Interval: 5 minutes
 ```
@@ -262,7 +262,7 @@ Interval: 5 minutes
 **Monitor 4: Admin Dashboard**
 ```
 Type: HTTP(s)
-URL: https://scarter4workmanuscripthub.com/admin-dashboard.html
+URL: https://selfpubhub.co/admin-dashboard.html
 Interval: 5 minutes
 Expected Status: 200
 ```

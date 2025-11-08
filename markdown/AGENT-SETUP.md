@@ -76,7 +76,7 @@ curl http://localhost:8787/analysis/test-author/test-001/2025-01-01T12:00:00.000
 wrangler deploy
 
 # Verify deployment
-curl https://api.scarter4workmanuscripthub.com/
+curl https://api.selfpubhub.co/
 ```
 
 ## API Endpoints

@@ -95,7 +95,7 @@ Update `wrangler.toml` (already configured):
 ```toml
 [vars]
 STRIPE_PUBLISHABLE_KEY = "pk_test_xxxxx"  # Safe to commit
-FRONTEND_URL = "https://scarter4workmanuscripthub.com"
+FRONTEND_URL = "https://selfpubhub.co"
 ```
 
 ### 2. Stripe Dashboard Setup
@@ -131,7 +131,7 @@ FRONTEND_URL = "https://scarter4workmanuscripthub.com"
 
 1. Go to https://dashboard.stripe.com/test/webhooks
 2. Click "Add endpoint"
-3. Endpoint URL: `https://api.scarter4workmanuscripthub.com/payments/webhook`
+3. Endpoint URL: `https://api.selfpubhub.co/payments/webhook`
 4. Select events to listen to:
    - ✅ `checkout.session.completed`
    - ✅ `customer.subscription.created`
@@ -247,7 +247,7 @@ This will:
 ### Check Upload Permission
 
 ```javascript
-const response = await fetch('https://api.scarter4workmanuscripthub.com/payments/can-upload', {
+const response = await fetch('https://api.selfpubhub.co/payments/can-upload', {
   credentials: 'include'
 });
 
@@ -258,7 +258,7 @@ const data = await response.json();
 ### Get Subscription Details
 
 ```javascript
-const response = await fetch('https://api.scarter4workmanuscripthub.com/payments/subscription', {
+const response = await fetch('https://api.selfpubhub.co/payments/subscription', {
   credentials: 'include'
 });
 
@@ -277,7 +277,7 @@ const data = await response.json();
 ### Create Checkout Session
 
 ```javascript
-const response = await fetch('https://api.scarter4workmanuscripthub.com/payments/create-checkout-session', {
+const response = await fetch('https://api.selfpubhub.co/payments/create-checkout-session', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   credentials: 'include',
@@ -294,7 +294,7 @@ window.location.href = data.url;
 ### Open Customer Portal
 
 ```javascript
-const response = await fetch('https://api.scarter4workmanuscripthub.com/payments/create-portal-session', {
+const response = await fetch('https://api.selfpubhub.co/payments/create-portal-session', {
   method: 'POST',
   credentials: 'include'
 });

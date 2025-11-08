@@ -145,7 +145,7 @@ npx wrangler deploy
 
 - **Auto-deploy:** On push to `develop` branch
 - **Purpose:** Pre-production testing
-- **URL:** TBD (staging.scarter4workmanuscripthub.com)
+- **URL:** TBD (staging.selfpubhub.co)
 
 ---
 
@@ -163,7 +163,7 @@ Before triggering a production deployment:
 After deployment:
 
 - [ ] Smoke tests passed in workflow
-- [ ] Manual verification: `curl https://api.scarter4workmanuscripthub.com/manuscripts` (should return 401)
+- [ ] Manual verification: `curl https://api.selfpubhub.co/manuscripts` (should return 401)
 - [ ] Monitor error rates for 15 minutes
 - [ ] Check Cloudflare Analytics for anomalies
 - [ ] Test critical user flows (login, upload, analysis)
@@ -245,7 +245,7 @@ npm update <package-name>
 - Check token permissions (must have Workers deploy access)
 
 **Smoke tests fail:**
-- Check if API is actually down: `curl https://api.scarter4workmanuscripthub.com/manuscripts`
+- Check if API is actually down: `curl https://api.selfpubhub.co/manuscripts`
 - Review Cloudflare Workers logs: `npx wrangler tail`
 - Check for deployment errors in Cloudflare dashboard
 
@@ -272,10 +272,10 @@ npm update <package-name>
 3. **Test Critical Endpoints:**
    ```bash
    # Test API health
-   curl https://api.scarter4workmanuscripthub.com/manuscripts
+   curl https://api.selfpubhub.co/manuscripts
 
    # Test login
-   curl -X POST https://api.scarter4workmanuscripthub.com/auth/login \
+   curl -X POST https://api.selfpubhub.co/auth/login \
      -H "Content-Type: application/json" \
      -d '{"email":"test@example.com","password":"test"}'
    ```

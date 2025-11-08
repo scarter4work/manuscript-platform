@@ -129,7 +129,7 @@ wrangler deploy
 
 3. **Verify:**
 ```bash
-curl https://api.scarter4workmanuscripthub.com/
+curl https://api.selfpubhub.co/
 ```
 
 ## 📖 Documentation

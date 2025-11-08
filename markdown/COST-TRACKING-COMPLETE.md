@@ -80,7 +80,7 @@ Default Configuration:
 ### 3. Frontend Dashboard
 **Status:** ✅ DEPLOYED TO PRODUCTION
 
-**URL:** https://scarter4workmanuscripthub.com/admin-costs.html
+**URL:** https://selfpubhub.co/admin-costs.html
 
 #### Features:
 - 📊 Real-time budget usage with visual progress bars
@@ -237,7 +237,7 @@ Automatic emails sent to `scarter4work@yahoo.com` when thresholds reached:
 
 ### Access the Dashboard
 1. Log in as admin user
-2. Navigate to https://scarter4workmanuscripthub.com/admin-costs.html
+2. Navigate to https://selfpubhub.co/admin-costs.html
 3. View real-time cost data and budget status
 
 ### Configure Budget Alerts
@@ -367,4 +367,4 @@ The system is production-ready and already tracking costs for all manuscript ana
 - Per-user cost limits
 - Production deployed and operational
 
-**Visit the dashboard:** https://scarter4workmanuscripthub.com/admin-costs.html
+**Visit the dashboard:** https://selfpubhub.co/admin-costs.html

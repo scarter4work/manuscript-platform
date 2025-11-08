@@ -842,7 +842,7 @@ Required in `wrangler.toml` and Cloudflare Dashboard:
 ```toml
 [vars]
 STRIPE_PUBLISHABLE_KEY = "pk_live_..."  # Public key for frontend
-FRONTEND_URL = "https://scarter4workmanuscripthub.com"
+FRONTEND_URL = "https://selfpubhub.co"
 
 # Secrets (set via dashboard):
 # STRIPE_SECRET_KEY = "sk_live_..."
@@ -898,7 +898,7 @@ const PRICING = {
 
 ### 4. Webhook Configuration
 
-- [ ] Add webhook endpoint: `https://api.scarter4workmanuscripthub.com/webhooks/stripe`
+- [ ] Add webhook endpoint: `https://api.selfpubhub.co/webhooks/stripe`
 - [ ] Subscribe to events:
   - `checkout.session.completed`
   - `customer.subscription.created`

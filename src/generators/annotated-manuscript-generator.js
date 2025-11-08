@@ -89,7 +89,7 @@ export class AnnotatedManuscriptGenerator {
     const issueStats = this.calculateIssueStats(allIssues);
     
     // Dashboard URL (assumes dashboard is at root of same domain or custom domain)
-    const dashboardUrl = `https://dashboard.scarter4workmanuscripthub.com/?loadReport=${reportId}`;
+    const dashboardUrl = `https://dashboard.selfpubhub.co/?loadReport=${reportId}`;
 
     return `<!DOCTYPE html>
 <html lang="en">

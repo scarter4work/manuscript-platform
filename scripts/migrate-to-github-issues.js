@@ -255,7 +255,7 @@ Frontend interface for multi-platform export package system.
 - frontend/dashboard-spa.html (navigation update)
 
 ## Production
-- https://scarter4workmanuscripthub.com/exports.html`,
+- https://selfpubhub.co/exports.html`,
     labels: ['priority: high', 'type: feature', 'status: done'],
   },
 ];

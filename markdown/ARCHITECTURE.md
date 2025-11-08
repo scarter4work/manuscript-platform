@@ -275,7 +275,7 @@ Each agent runs sequentially in a single job:
 - Login attempt throttling (5 attempts/15 min)
 
 ### CORS
-- Allowed origin: `https://scarter4workmanuscripthub.com`
+- Allowed origin: `https://selfpubhub.co`
 - Credentials: Allowed
 - Methods: GET, POST, PUT, DELETE, OPTIONS
 

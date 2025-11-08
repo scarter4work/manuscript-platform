@@ -7,9 +7,9 @@
  * - Instructions.html (step-by-step upload guide)
  * Returns JSON with file contents for client-side ZIP generation
  *
- * TODO: Update to use storage adapter instead of env.R2_MANUSCRIPTS
- * Lines 79, 111, 585, 606 use env.R2_MANUSCRIPTS (Cloudflare R2)
- * Should be updated to use src/adapters/storage-adapter.js for Backblaze B2
+ * Storage: Uses Backblaze B2 via storage adapter
+ * - EPUBs: env.MANUSCRIPTS_PROCESSED
+ * - Covers: env.MARKETING_ASSETS
  */
 
 import { generateEPUB } from './epub-generator.js';
@@ -80,9 +80,9 @@ export async function generateKDPPackage(params, env) {
     let epubContent;
     if (epubKey) {
       // Use existing EPUB from formatting engine
-      epubContent = await env.R2_MANUSCRIPTS.get(epubKey);
+      epubContent = await env.MANUSCRIPTS_PROCESSED.get(epubKey);
       if (!epubContent) {
-        throw new Error('EPUB file not found in R2');
+        throw new Error('EPUB file not found in storage');
       }
       files.epub = {
         name: `${metadata.title}.epub`,
@@ -112,9 +112,9 @@ export async function generateKDPPackage(params, env) {
     }
 
     // 2. Get cover image
-    const coverObject = await env.R2_MANUSCRIPTS.get(coverKey);
+    const coverObject = await env.MARKETING_ASSETS.get(coverKey);
     if (!coverObject) {
-      throw new Error('Cover image not found in R2');
+      throw new Error('Cover image not found in storage');
     }
     const coverBuffer = await coverObject.arrayBuffer();
     files.cover = {
@@ -586,7 +586,7 @@ export async function validateKDPPackage(params, env) {
   try {
     // Validate EPUB
     if (epubKey) {
-      const epubObject = await env.R2_MANUSCRIPTS.get(epubKey);
+      const epubObject = await env.MANUSCRIPTS_PROCESSED.get(epubKey);
       if (epubObject) {
         const sizeMB = epubObject.size / (1024 * 1024);
         if (sizeMB > KDP_SPECS.MAX_FILE_SIZE_MB) {
@@ -607,7 +607,7 @@ export async function validateKDPPackage(params, env) {
 
     // Validate cover image
     if (coverKey) {
-      const coverObject = await env.R2_MANUSCRIPTS.get(coverKey);
+      const coverObject = await env.MARKETING_ASSETS.get(coverKey);
       if (coverObject) {
         const sizeMB = coverObject.size / (1024 * 1024);
         if (sizeMB > KDP_SPECS.COVER_MAX_SIZE_MB) {

@@ -5,7 +5,7 @@ import {
   hashPassword,
   verifyPassword,
   AUTH_CONFIG
-} from '../auth-utils.js';
+} from '../src/utils/auth-utils.js';
 
 describe('Authentication Utilities', () => {
   describe('validatePassword', () => {

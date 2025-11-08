@@ -69,7 +69,7 @@ The legacy SPA provides the core manuscript management experience without requir
 ```javascript
 // State management
 const app = {
-  API_BASE: 'https://api.scarter4workmanuscripthub.com',
+  API_BASE: 'https://api.selfpubhub.co',
 
   state: {
     currentView: 'library',
@@ -1238,14 +1238,14 @@ frontend-dist/
 ```javascript
 // Backend (worker.js)
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://scarter4workmanuscripthub.com',
+  'Access-Control-Allow-Origin': 'https://selfpubhub.co',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Credentials': 'true',
 };
 
 app.use('*', cors({
-  origin: 'https://scarter4workmanuscripthub.com',
+  origin: 'https://selfpubhub.co',
   credentials: true,
 }));
 ```
@@ -1687,7 +1687,7 @@ fetch(`${API_BASE}/manuscripts`, {
 ```javascript
 // Backend (worker.js)
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://scarter4workmanuscripthub.com',
+  'Access-Control-Allow-Origin': 'https://selfpubhub.co',
   'Access-Control-Allow-Credentials': 'true',
 };
 ```

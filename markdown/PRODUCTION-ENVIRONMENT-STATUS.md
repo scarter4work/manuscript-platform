@@ -3,7 +3,7 @@
 **Date:** October 26, 2025
 **Environment:** Production (Cloudflare)
 **Worker:** manuscript-upload-api
-**API Domain:** https://api.scarter4workmanuscripthub.com
+**API Domain:** https://api.selfpubhub.co
 
 ---
 
@@ -68,11 +68,11 @@ All production queues configured with consumers:
 - ✅ **MAX_FILE_SIZE:** 52,428,800 bytes (50MB)
 - ✅ **SESSION_DURATION:** 1800 seconds (30 minutes)
 - ✅ **STRIPE_PUBLISHABLE_KEY:** "pk_live_..." (live mode)
-- ✅ **FRONTEND_URL:** https://scarter4workmanuscripthub.com
-- ✅ **EMAIL_FROM_ADDRESS:** noreply@scarter4workmanuscripthub.com
+- ✅ **FRONTEND_URL:** https://selfpubhub.co
+- ✅ **EMAIL_FROM_ADDRESS:** noreply@selfpubhub.co
 - ✅ **EMAIL_FROM_NAME:** ManuscriptHub
 - ✅ **EMAIL_ADMIN_ADDRESS:** scarter4work@yahoo.com
-- ✅ **EMAIL_REPLY_TO_ADDRESS:** support@scarter4workmanuscripthub.com
+- ✅ **EMAIL_REPLY_TO_ADDRESS:** support@selfpubhub.co
 
 ---
 
@@ -310,8 +310,8 @@ npx wrangler queues consumer list manuscript-analysis-queue
 
 **Production Issues:** scarter4work@yahoo.com
 **Cloudflare Account:** scarter4work@yahoo.com
-**Domain:** scarter4workmanuscripthub.com
-**API:** api.scarter4workmanuscripthub.com
+**Domain:** selfpubhub.co
+**API:** api.selfpubhub.co
 
 ---
 
