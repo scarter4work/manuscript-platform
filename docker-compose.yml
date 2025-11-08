@@ -1,0 +1,93 @@
+# Docker Compose configuration for local development
+# Provides ClamAV virus scanner and PostgreSQL test database
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # ClamAV Virus Scanner
+  # ============================================================================
+  clamav:
+    image: clamav/clamav:latest
+    container_name: manuscript-clamav
+    ports:
+      - "3310:3310"  # ClamAV daemon port
+    volumes:
+      - clamav-data:/var/lib/clamav  # Virus definitions persistence
+    environment:
+      - CLAMAV_NO_FRESHCLAM=false  # Auto-update virus definitions
+      - FRESHCLAM_CHECKS=24        # Check for updates every 24 hours
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/clamdcheck.sh"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 120s  # ClamAV needs time to load virus definitions
+    restart: unless-stopped
+    networks:
+      - manuscript-network
+
+  # ============================================================================
+  # PostgreSQL Test Database
+  # ============================================================================
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: manuscript-postgres-test
+    ports:
+      - "5433:5432"  # Avoid conflict with system PostgreSQL on 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=manuscript_platform_test
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - manuscript-network
+
+  # ============================================================================
+  # Redis (Session Storage)
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: manuscript-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - manuscript-network
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  clamav-data:
+    name: manuscript-clamav-data
+    driver: local
+  postgres-test-data:
+    name: manuscript-postgres-test-data
+    driver: local
+  redis-data:
+    name: manuscript-redis-data
+    driver: local
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  manuscript-network:
+    name: manuscript-network
+    driver: bridge
