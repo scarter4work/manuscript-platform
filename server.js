@@ -16,6 +16,10 @@ dotenv.config({ path: '.env.local' });
 import { createDatabaseAdapter } from './src/adapters/database-adapter.js';
 import { createStorageAdapter } from './src/adapters/storage-adapter.js';
 import { createSessionStore, createSessionMiddleware } from './src/adapters/session-adapter.js';
+import { createCacheAdapter } from './src/adapters/cache-adapter.js';
+
+// Import services
+import { initVirusScanner, updateScannerHealth } from './src/services/virus-scanner.js';
 
 // Import router
 import { routeRequest } from './src/router/router.js';
@@ -54,8 +58,13 @@ async function initializeAdapters() {
   try {
     console.log('Initializing adapters...');
 
+    // In test mode, use TEST_DATABASE_URL if available
+    const dbUrl = NODE_ENV === 'test' && process.env.TEST_DATABASE_URL
+      ? process.env.TEST_DATABASE_URL
+      : process.env.DATABASE_URL;
+
     // Create database adapter (D1 → PostgreSQL)
-    const db = createDatabaseAdapter(process.env);
+    const db = createDatabaseAdapter({ ...process.env, DATABASE_URL: dbUrl });
     console.log('✓ Database adapter initialized');
 
     // Create storage adapter (R2 → Backblaze B2)
@@ -66,6 +75,10 @@ async function initializeAdapters() {
     const { store, client: redisClient } = await createSessionStore(process.env);
     sessionMiddleware = createSessionMiddleware(process.env, store);
     console.log('✓ Session store initialized');
+
+    // Create cache adapter (Redis → KV API)
+    const cacheKV = createCacheAdapter(redisClient);
+    console.log('✓ Cache adapter initialized');
 
     // Create env object that mimics Workers env
     env = {
@@ -83,6 +96,9 @@ async function initializeAdapters() {
 
       // Redis client (for KV operations)
       REDIS: redisClient,
+
+      // Cache (for db-cache.js)
+      CACHE_KV: cacheKV,
 
       // Environment variables
       ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
@@ -104,6 +120,21 @@ async function initializeAdapters() {
     // Apply session middleware
     app.use(sessionMiddleware);
     console.log('✓ Session middleware applied');
+
+    // Initialize virus scanner (non-blocking)
+    initVirusScanner(process.env).then(success => {
+      if (success) {
+        console.log('✓ Virus scanner initialized');
+        // Update scanner health in database
+        updateScannerHealth(db).catch(err => {
+          console.warn('Failed to update scanner health:', err.message);
+        });
+      } else {
+        console.warn('⚠ Virus scanner initialization failed (uploads will continue without scanning)');
+      }
+    }).catch(err => {
+      console.error('✗ Virus scanner error:', err.message);
+    });
 
   } catch (error) {
     console.error('Failed to initialize adapters:', error);
@@ -282,6 +313,11 @@ async function start() {
   }
 }
 
-start();
+// Only start server if not running in test mode
+if (NODE_ENV !== 'test') {
+  start();
+}
 
+// Export for tests
 export default app;
+export { initializeAdapters, env };

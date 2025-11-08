@@ -367,10 +367,10 @@ export async function handleLogout(request, env) {
  * MAN-39: Now uses KV caching (1 hour TTL) for user profile
  */
 export async function handleGetMe(request, env) {
-  try {
-    // Get origin for CORS
-    const origin = request.headers.get('Origin');
+  // Get origin for CORS (declare outside try block for catch access)
+  const origin = request.headers.get('Origin') || process.env.FRONTEND_URL;
 
+  try {
     // Get user ID from session
     const userId = await getUserFromRequest(request, env);
 
