@@ -32,11 +32,11 @@ CREATE INDEX IF NOT EXISTS idx_publishers_active ON publishers(is_active);
 CREATE INDEX IF NOT EXISTS idx_publishers_name ON publishers(name);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_publishers_timestamp
-AFTER UPDATE ON publishers
-BEGIN
-  UPDATE publishers SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for publishers
+CREATE TRIGGER update_publishers_timestamp
+BEFORE UPDATE ON publishers
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Publisher submission windows
 CREATE TABLE IF NOT EXISTS publisher_submission_windows (
@@ -79,11 +79,11 @@ CREATE INDEX IF NOT EXISTS idx_windows_closes ON publisher_submission_windows(cl
 CREATE INDEX IF NOT EXISTS idx_windows_type ON publisher_submission_windows(window_type);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_windows_timestamp
-AFTER UPDATE ON publisher_submission_windows
-BEGIN
-  UPDATE publisher_submission_windows SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for publisher_submission_windows
+CREATE TRIGGER update_submission_windows_timestamp
+BEFORE UPDATE ON publisher_submission_windows
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Submission deadlines (per-submission tracking)
 CREATE TABLE IF NOT EXISTS submission_deadlines (
@@ -119,11 +119,11 @@ CREATE INDEX IF NOT EXISTS idx_deadlines_type ON submission_deadlines(deadline_t
 CREATE INDEX IF NOT EXISTS idx_deadlines_reminder_sent ON submission_deadlines(reminder_sent);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_deadlines_timestamp
-AFTER UPDATE ON submission_deadlines
-BEGIN
-  UPDATE submission_deadlines SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_deadlines
+CREATE TRIGGER update_submission_deadlines_timestamp
+BEFORE UPDATE ON submission_deadlines
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Window alerts (user subscriptions to publisher windows)
 CREATE TABLE IF NOT EXISTS window_alerts (
@@ -152,11 +152,11 @@ CREATE INDEX IF NOT EXISTS idx_window_alerts_user ON window_alerts(user_id);
 CREATE INDEX IF NOT EXISTS idx_window_alerts_publisher ON window_alerts(publisher_id);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_window_alerts_timestamp
-AFTER UPDATE ON window_alerts
-BEGIN
-  UPDATE window_alerts SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for window_alerts
+CREATE TRIGGER update_window_alerts_timestamp
+BEFORE UPDATE ON window_alerts
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- View: Currently open windows
 CREATE OR REPLACE VIEW open_submission_windows AS

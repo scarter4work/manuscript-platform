@@ -33,11 +33,11 @@ CREATE INDEX IF NOT EXISTS idx_human_edits_addressed ON human_style_edits(addres
 CREATE INDEX IF NOT EXISTS idx_human_edits_created ON human_style_edits(created_at DESC);
 
 -- Auto-update trigger for updated_at
-CREATE TRIGGER IF NOT EXISTS update_human_edits_timestamp
-AFTER UPDATE ON human_style_edits
-BEGIN
-  UPDATE human_style_edits SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for human_style_edits
+CREATE TRIGGER update_human_edits_timestamp
+BEFORE UPDATE ON human_style_edits
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Chapter analysis sessions (track when chapters were analyzed)
 CREATE TABLE IF NOT EXISTS human_edit_sessions (

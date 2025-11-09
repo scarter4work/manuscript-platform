@@ -28,11 +28,11 @@ CREATE TABLE IF NOT EXISTS notification_preferences (
 CREATE INDEX IF NOT EXISTS idx_notification_preferences_user ON notification_preferences(user_id);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_notification_preferences_timestamp
-AFTER UPDATE ON notification_preferences
-BEGIN
-  UPDATE notification_preferences SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for notification_preferences
+CREATE TRIGGER update_notification_preferences_timestamp
+BEFORE UPDATE ON notification_preferences
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Message templates for publishers (form letters)
 CREATE TABLE IF NOT EXISTS message_templates (
@@ -64,11 +64,11 @@ CREATE INDEX IF NOT EXISTS idx_message_templates_type ON message_templates(templ
 CREATE INDEX IF NOT EXISTS idx_message_templates_system ON message_templates(is_system_template);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_message_templates_timestamp
-AFTER UPDATE ON message_templates
-BEGIN
-  UPDATE message_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for message_templates
+CREATE TRIGGER update_message_templates_timestamp
+BEFORE UPDATE ON message_templates
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Messages on submissions (threaded conversations)
 CREATE TABLE IF NOT EXISTS submission_messages (
@@ -151,11 +151,11 @@ CREATE INDEX IF NOT EXISTS idx_revision_requests_deadline ON revision_requests(d
 CREATE INDEX IF NOT EXISTS idx_revision_requests_created ON revision_requests(created_at DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_revision_requests_timestamp
-AFTER UPDATE ON revision_requests
-BEGIN
-  UPDATE revision_requests SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for revision_requests
+CREATE TRIGGER update_revision_requests_timestamp
+BEFORE UPDATE ON revision_requests
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Notification queue (for email sending)
 CREATE TABLE IF NOT EXISTS notification_queue (

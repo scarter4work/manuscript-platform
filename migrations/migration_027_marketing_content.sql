@@ -25,11 +25,11 @@ CREATE INDEX IF NOT EXISTS idx_marketing_kits_user ON marketing_kits(user_id);
 CREATE INDEX IF NOT EXISTS idx_marketing_kits_created ON marketing_kits(created_at DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_marketing_kits_timestamp
-AFTER UPDATE ON marketing_kits
-BEGIN
-  UPDATE marketing_kits SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for marketing_kits
+CREATE TRIGGER update_marketing_kits_timestamp
+BEFORE UPDATE ON marketing_kits
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Social media posts (platform-specific)
 CREATE TABLE IF NOT EXISTS social_media_posts (
@@ -104,11 +104,11 @@ CREATE INDEX IF NOT EXISTS idx_materials_kit ON marketing_materials(kit_id);
 CREATE INDEX IF NOT EXISTS idx_materials_type ON marketing_materials(material_type);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_marketing_materials_timestamp
-AFTER UPDATE ON marketing_materials
-BEGIN
-  UPDATE marketing_materials SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for marketing_materials
+CREATE TRIGGER update_marketing_materials_timestamp
+BEFORE UPDATE ON marketing_materials
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Hashtag strategy table (optional, for tracking performance)
 CREATE TABLE IF NOT EXISTS hashtag_strategy (

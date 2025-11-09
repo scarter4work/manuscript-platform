@@ -37,8 +37,8 @@ function convertTriggersToPostgres(sql) {
   // Remove the warning comment if it exists
   converted = converted.replace(/^-- WARNING: SQLite triggers detected.*\n/m, '');
 
-  // Pattern to match SQLite triggers
-  const triggerPattern = /CREATE TRIGGER (?:IF NOT EXISTS )?(\w+)\s+AFTER UPDATE ON (\w+)\s+FOR EACH ROW\s+BEGIN\s+(.*?)\s+END;/gis;
+  // Pattern to match SQLite triggers (with or without FOR EACH ROW)
+  const triggerPattern = /CREATE TRIGGER (?:IF NOT EXISTS )?(\w+)\s+AFTER UPDATE ON (\w+)\s+(?:FOR EACH ROW\s+)?BEGIN\s+(.*?)\s+END;/gis;
 
   const matches = [...converted.matchAll(triggerPattern)];
 

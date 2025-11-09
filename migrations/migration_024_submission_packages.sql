@@ -1,4 +1,22 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+
+-- ==================================================
+-- POSTGRESQL TRIGGER FUNCTIONS
+-- ==================================================
+
+-- Generic timestamp update function
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ==================================================
+-- TABLES AND TRIGGERS
+-- ==================================================
+
 -- Migration 024: Submission Package Bundler (Issue #50)
 -- Creates tables for bundling manuscripts with supporting documents into submission packages
 
@@ -37,11 +55,11 @@ CREATE INDEX IF NOT EXISTS idx_submission_packages_created ON submission_package
 CREATE INDEX IF NOT EXISTS idx_package_document_map_package ON package_document_map(package_id);
 
 -- Auto-update trigger for updated_at
-CREATE TRIGGER IF NOT EXISTS update_submission_packages_timestamp
-AFTER UPDATE ON submission_packages
-BEGIN
-  UPDATE submission_packages SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_packages
+CREATE TRIGGER update_submission_packages_timestamp
+BEFORE UPDATE ON submission_packages
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Package statistics view
 CREATE OR REPLACE VIEW package_stats AS

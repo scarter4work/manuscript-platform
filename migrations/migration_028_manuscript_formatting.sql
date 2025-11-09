@@ -66,11 +66,11 @@ CREATE INDEX IF NOT EXISTS idx_formatted_manuscripts_status ON formatted_manuscr
 CREATE INDEX IF NOT EXISTS idx_formatted_manuscripts_created ON formatted_manuscripts(created_at DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_formatted_manuscripts_timestamp
-AFTER UPDATE ON formatted_manuscripts
-BEGIN
-  UPDATE formatted_manuscripts SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for formatted_manuscripts
+CREATE TRIGGER update_formatted_manuscripts_timestamp
+BEFORE UPDATE ON formatted_manuscripts
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Formatting templates (reusable formatting configurations)
 CREATE TABLE IF NOT EXISTS formatting_templates (
@@ -97,11 +97,11 @@ CREATE INDEX IF NOT EXISTS idx_formatting_templates_type ON formatting_templates
 CREATE INDEX IF NOT EXISTS idx_formatting_templates_system ON formatting_templates(is_system_template);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_formatting_templates_timestamp
-AFTER UPDATE ON formatting_templates
-BEGIN
-  UPDATE formatting_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for formatting_templates
+CREATE TRIGGER update_formatting_templates_timestamp
+BEFORE UPDATE ON formatting_templates
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Formatting job queue (for async processing)
 CREATE TABLE IF NOT EXISTS formatting_jobs (
@@ -127,11 +127,11 @@ CREATE INDEX IF NOT EXISTS idx_formatting_jobs_priority ON formatting_jobs(prior
 CREATE INDEX IF NOT EXISTS idx_formatting_jobs_created ON formatting_jobs(created_at);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_formatting_jobs_timestamp
-AFTER UPDATE ON formatting_jobs
-BEGIN
-  UPDATE formatting_jobs SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for formatting_jobs
+CREATE TRIGGER update_formatting_jobs_timestamp
+BEFORE UPDATE ON formatting_jobs
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view
 CREATE OR REPLACE VIEW formatting_stats AS

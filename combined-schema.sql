@@ -800,11 +800,11 @@ CREATE INDEX IF NOT EXISTS idx_submission_packages_created ON submission_package
 CREATE INDEX IF NOT EXISTS idx_package_document_map_package ON package_document_map(package_id);
 
 -- Auto-update trigger for updated_at
-CREATE TRIGGER IF NOT EXISTS update_submission_packages_timestamp
-AFTER UPDATE ON submission_packages
-BEGIN
-  UPDATE submission_packages SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_packages
+CREATE TRIGGER update_submission_packages_timestamp
+BEFORE UPDATE ON submission_packages
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Package statistics view
 CREATE OR REPLACE VIEW package_stats AS
@@ -872,11 +872,11 @@ CREATE INDEX IF NOT EXISTS idx_submissions_original ON submissions(original_subm
 CREATE INDEX IF NOT EXISTS idx_submissions_date ON submissions(submission_date DESC);
 
 -- Auto-update trigger for updated_at
-CREATE TRIGGER IF NOT EXISTS update_submissions_timestamp
-AFTER UPDATE ON submissions
-BEGIN
-  UPDATE submissions SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submissions
+CREATE TRIGGER update_submissions_timestamp
+BEFORE UPDATE ON submissions
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Feedback categorization table
 CREATE TABLE IF NOT EXISTS submission_feedback (
@@ -898,11 +898,11 @@ CREATE INDEX IF NOT EXISTS idx_submission_feedback_type ON submission_feedback(f
 CREATE INDEX IF NOT EXISTS idx_submission_feedback_addressed ON submission_feedback(addressed);
 
 -- Auto-update trigger for submission_feedback
-CREATE TRIGGER IF NOT EXISTS update_submission_feedback_timestamp
-AFTER UPDATE ON submission_feedback
-BEGIN
-  UPDATE submission_feedback SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_feedback
+CREATE TRIGGER update_submission_feedback_timestamp
+BEFORE UPDATE ON submission_feedback
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Submission statistics view
 CREATE OR REPLACE VIEW submission_stats AS
@@ -956,11 +956,11 @@ CREATE INDEX IF NOT EXISTS idx_human_edits_addressed ON human_style_edits(addres
 CREATE INDEX IF NOT EXISTS idx_human_edits_created ON human_style_edits(created_at DESC);
 
 -- Auto-update trigger for updated_at
-CREATE TRIGGER IF NOT EXISTS update_human_edits_timestamp
-AFTER UPDATE ON human_style_edits
-BEGIN
-  UPDATE human_style_edits SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for human_style_edits
+CREATE TRIGGER update_human_edits_timestamp
+BEFORE UPDATE ON human_style_edits
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Chapter analysis sessions (track when chapters were analyzed)
 CREATE TABLE IF NOT EXISTS human_edit_sessions (
@@ -1031,11 +1031,11 @@ CREATE INDEX IF NOT EXISTS idx_marketing_kits_user ON marketing_kits(user_id);
 CREATE INDEX IF NOT EXISTS idx_marketing_kits_created ON marketing_kits(created_at DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_marketing_kits_timestamp
-AFTER UPDATE ON marketing_kits
-BEGIN
-  UPDATE marketing_kits SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for marketing_kits
+CREATE TRIGGER update_marketing_kits_timestamp
+BEFORE UPDATE ON marketing_kits
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Social media posts (platform-specific)
 CREATE TABLE IF NOT EXISTS social_media_posts (
@@ -1110,11 +1110,11 @@ CREATE INDEX IF NOT EXISTS idx_materials_kit ON marketing_materials(kit_id);
 CREATE INDEX IF NOT EXISTS idx_materials_type ON marketing_materials(material_type);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_marketing_materials_timestamp
-AFTER UPDATE ON marketing_materials
-BEGIN
-  UPDATE marketing_materials SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for marketing_materials
+CREATE TRIGGER update_marketing_materials_timestamp
+BEFORE UPDATE ON marketing_materials
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Hashtag strategy table (optional, for tracking performance)
 CREATE TABLE IF NOT EXISTS hashtag_strategy (
@@ -1229,11 +1229,11 @@ CREATE INDEX IF NOT EXISTS idx_formatted_manuscripts_status ON formatted_manuscr
 CREATE INDEX IF NOT EXISTS idx_formatted_manuscripts_created ON formatted_manuscripts(created_at DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_formatted_manuscripts_timestamp
-AFTER UPDATE ON formatted_manuscripts
-BEGIN
-  UPDATE formatted_manuscripts SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for formatted_manuscripts
+CREATE TRIGGER update_formatted_manuscripts_timestamp
+BEFORE UPDATE ON formatted_manuscripts
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Formatting templates (reusable formatting configurations)
 CREATE TABLE IF NOT EXISTS formatting_templates (
@@ -1260,11 +1260,11 @@ CREATE INDEX IF NOT EXISTS idx_formatting_templates_type ON formatting_templates
 CREATE INDEX IF NOT EXISTS idx_formatting_templates_system ON formatting_templates(is_system_template);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_formatting_templates_timestamp
-AFTER UPDATE ON formatting_templates
-BEGIN
-  UPDATE formatting_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for formatting_templates
+CREATE TRIGGER update_formatting_templates_timestamp
+BEFORE UPDATE ON formatting_templates
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Formatting job queue (for async processing)
 CREATE TABLE IF NOT EXISTS formatting_jobs (
@@ -1290,11 +1290,11 @@ CREATE INDEX IF NOT EXISTS idx_formatting_jobs_priority ON formatting_jobs(prior
 CREATE INDEX IF NOT EXISTS idx_formatting_jobs_created ON formatting_jobs(created_at);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_formatting_jobs_timestamp
-AFTER UPDATE ON formatting_jobs
-BEGIN
-  UPDATE formatting_jobs SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for formatting_jobs
+CREATE TRIGGER update_formatting_jobs_timestamp
+BEFORE UPDATE ON formatting_jobs
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view
 CREATE OR REPLACE VIEW formatting_stats AS
@@ -1343,11 +1343,11 @@ CREATE TABLE IF NOT EXISTS notification_preferences (
 CREATE INDEX IF NOT EXISTS idx_notification_preferences_user ON notification_preferences(user_id);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_notification_preferences_timestamp
-AFTER UPDATE ON notification_preferences
-BEGIN
-  UPDATE notification_preferences SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for notification_preferences
+CREATE TRIGGER update_notification_preferences_timestamp
+BEFORE UPDATE ON notification_preferences
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Message templates for publishers (form letters)
 CREATE TABLE IF NOT EXISTS message_templates (
@@ -1379,11 +1379,11 @@ CREATE INDEX IF NOT EXISTS idx_message_templates_type ON message_templates(templ
 CREATE INDEX IF NOT EXISTS idx_message_templates_system ON message_templates(is_system_template);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_message_templates_timestamp
-AFTER UPDATE ON message_templates
-BEGIN
-  UPDATE message_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for message_templates
+CREATE TRIGGER update_message_templates_timestamp
+BEFORE UPDATE ON message_templates
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Messages on submissions (threaded conversations)
 CREATE TABLE IF NOT EXISTS submission_messages (
@@ -1466,11 +1466,11 @@ CREATE INDEX IF NOT EXISTS idx_revision_requests_deadline ON revision_requests(d
 CREATE INDEX IF NOT EXISTS idx_revision_requests_created ON revision_requests(created_at DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_revision_requests_timestamp
-AFTER UPDATE ON revision_requests
-BEGIN
-  UPDATE revision_requests SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for revision_requests
+CREATE TRIGGER update_revision_requests_timestamp
+BEFORE UPDATE ON revision_requests
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Notification queue (for email sending)
 CREATE TABLE IF NOT EXISTS notification_queue (
@@ -1552,11 +1552,11 @@ CREATE INDEX IF NOT EXISTS idx_assignments_status ON submission_assignments(stat
 CREATE INDEX IF NOT EXISTS idx_assignments_date ON submission_assignments(assignment_date DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_assignments_timestamp
-AFTER UPDATE ON submission_assignments
-BEGIN
-  UPDATE submission_assignments SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_assignments
+CREATE TRIGGER update_submission_assignments_timestamp
+BEFORE UPDATE ON submission_assignments
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Submission ratings (scoring system)
 CREATE TABLE IF NOT EXISTS submission_ratings (
@@ -1597,11 +1597,11 @@ CREATE INDEX IF NOT EXISTS idx_ratings_assignment ON submission_ratings(assignme
 CREATE INDEX IF NOT EXISTS idx_ratings_created ON submission_ratings(created_at DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_ratings_timestamp
-AFTER UPDATE ON submission_ratings
-BEGIN
-  UPDATE submission_ratings SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_ratings
+CREATE TRIGGER update_submission_ratings_timestamp
+BEFORE UPDATE ON submission_ratings
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Submission discussions (internal comments/notes)
 CREATE TABLE IF NOT EXISTS submission_discussions (
@@ -1626,11 +1626,11 @@ CREATE INDEX IF NOT EXISTS idx_discussions_parent ON submission_discussions(pare
 CREATE INDEX IF NOT EXISTS idx_discussions_internal ON submission_discussions(is_internal);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_discussions_timestamp
-AFTER UPDATE ON submission_discussions
-BEGIN
-  UPDATE submission_discussions SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_discussions
+CREATE TRIGGER update_submission_discussions_timestamp
+BEFORE UPDATE ON submission_discussions
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Consensus view (aggregate ratings)
 CREATE OR REPLACE VIEW submission_consensus AS
@@ -1723,11 +1723,11 @@ CREATE INDEX IF NOT EXISTS idx_publishers_active ON publishers(is_active);
 CREATE INDEX IF NOT EXISTS idx_publishers_name ON publishers(name);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_publishers_timestamp
-AFTER UPDATE ON publishers
-BEGIN
-  UPDATE publishers SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for publishers
+CREATE TRIGGER update_publishers_timestamp
+BEFORE UPDATE ON publishers
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Publisher submission windows
 CREATE TABLE IF NOT EXISTS publisher_submission_windows (
@@ -1770,11 +1770,11 @@ CREATE INDEX IF NOT EXISTS idx_windows_closes ON publisher_submission_windows(cl
 CREATE INDEX IF NOT EXISTS idx_windows_type ON publisher_submission_windows(window_type);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_windows_timestamp
-AFTER UPDATE ON publisher_submission_windows
-BEGIN
-  UPDATE publisher_submission_windows SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for publisher_submission_windows
+CREATE TRIGGER update_submission_windows_timestamp
+BEFORE UPDATE ON publisher_submission_windows
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Submission deadlines (per-submission tracking)
 CREATE TABLE IF NOT EXISTS submission_deadlines (
@@ -1810,11 +1810,11 @@ CREATE INDEX IF NOT EXISTS idx_deadlines_type ON submission_deadlines(deadline_t
 CREATE INDEX IF NOT EXISTS idx_deadlines_reminder_sent ON submission_deadlines(reminder_sent);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_deadlines_timestamp
-AFTER UPDATE ON submission_deadlines
-BEGIN
-  UPDATE submission_deadlines SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_deadlines
+CREATE TRIGGER update_submission_deadlines_timestamp
+BEFORE UPDATE ON submission_deadlines
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Window alerts (user subscriptions to publisher windows)
 CREATE TABLE IF NOT EXISTS window_alerts (
@@ -1843,11 +1843,11 @@ CREATE INDEX IF NOT EXISTS idx_window_alerts_user ON window_alerts(user_id);
 CREATE INDEX IF NOT EXISTS idx_window_alerts_publisher ON window_alerts(publisher_id);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_window_alerts_timestamp
-AFTER UPDATE ON window_alerts
-BEGIN
-  UPDATE window_alerts SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for window_alerts
+CREATE TRIGGER update_window_alerts_timestamp
+BEFORE UPDATE ON window_alerts
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- View: Currently open windows
 CREATE OR REPLACE VIEW open_submission_windows AS

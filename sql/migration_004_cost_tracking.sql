@@ -66,10 +66,11 @@ INSERT INTO budget_config (
   1,
   2000.00,
   200.00,
-  strftime('%Y-%m', 'now'),
+  TO_CHAR(NOW(), 'YYYY-MM'),
   0.00,
-  strftime('%s', 'now')
-);
+  EXTRACT(EPOCH FROM NOW())::BIGINT
+)
+ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================================
 -- BUDGET ALERTS TABLE
@@ -115,7 +116,7 @@ CREATE INDEX IF NOT EXISTS idx_user_limits_month ON user_cost_limits(current_mon
 
 -- Initialize cost limits for existing users based on subscription tier
 -- FREE: $5/month, PRO: $50/month, ENTERPRISE: $500/month
-INSERT OR IGNORE INTO user_cost_limits (user_id, monthly_limit_usd, current_month, updated_at)
+INSERT INTO user_cost_limits (user_id, monthly_limit_usd, current_month, updated_at)
 SELECT
   id,
   CASE subscription_tier
@@ -124,9 +125,10 @@ SELECT
     WHEN 'ENTERPRISE' THEN 500.00
     ELSE 5.00
   END,
-  strftime('%Y-%m', 'now'),
-  strftime('%s', 'now')
-FROM users;
+  TO_CHAR(NOW(), 'YYYY-MM'),
+  EXTRACT(EPOCH FROM NOW())::BIGINT
+FROM users
+ON CONFLICT (user_id) DO NOTHING;
 
 -- ============================================================================
 -- COST ANALYSIS VIEWS
@@ -136,7 +138,7 @@ FROM users;
 -- View: Daily cost breakdown
 CREATE OR REPLACE VIEW daily_costs AS
 SELECT
-  date(created_at, 'unixepoch') as date,
+  DATE(TO_TIMESTAMP(created_at)) as date,
   cost_center,
   feature_name,
   COUNT(*) as operation_count,
@@ -144,7 +146,7 @@ SELECT
   SUM(tokens_input) as total_input_tokens,
   SUM(tokens_output) as total_output_tokens
 FROM cost_tracking
-GROUP BY date(created_at, 'unixepoch'), cost_center, feature_name
+GROUP BY DATE(TO_TIMESTAMP(created_at)), cost_center, feature_name
 ORDER BY date DESC;
 
 -- View: User cost summary (current month)
@@ -160,7 +162,7 @@ SELECT
   l.current_spend_usd,
   l.limit_exceeded
 FROM users u
-LEFT JOIN cost_tracking c ON u.id = c.user_id AND strftime('%Y-%m', c.created_at, 'unixepoch') = strftime('%Y-%m', 'now')
+LEFT JOIN cost_tracking c ON u.id = c.user_id AND TO_CHAR(TO_TIMESTAMP(c.created_at), 'YYYY-MM') = TO_CHAR(NOW(), 'YYYY-MM')
 LEFT JOIN user_cost_limits l ON u.id = l.user_id
 GROUP BY u.id, u.email, u.subscription_tier, l.monthly_limit_usd, l.current_spend_usd, l.limit_exceeded;
 
@@ -175,7 +177,7 @@ SELECT
   MIN(cost_usd) as min_cost_usd,
   MAX(cost_usd) as max_cost_usd
 FROM cost_tracking
-WHERE strftime('%Y-%m', created_at, 'unixepoch') = strftime('%Y-%m', 'now')
+WHERE TO_CHAR(TO_TIMESTAMP(created_at), 'YYYY-MM') = TO_CHAR(NOW(), 'YYYY-MM')
 GROUP BY feature_name, cost_center
 ORDER BY total_cost_usd DESC;
 
@@ -192,7 +194,7 @@ SELECT
 FROM users u
 JOIN cost_tracking c ON u.id = c.user_id
 LEFT JOIN user_cost_limits l ON u.id = l.user_id
-WHERE strftime('%Y-%m', c.created_at, 'unixepoch') = strftime('%Y-%m', 'now')
+WHERE TO_CHAR(TO_TIMESTAMP(c.created_at), 'YYYY-MM') = TO_CHAR(NOW(), 'YYYY-MM')
 GROUP BY u.id, u.email, u.subscription_tier, l.monthly_limit_usd
 ORDER BY total_spent_usd DESC
 LIMIT 50;
@@ -201,7 +203,8 @@ LIMIT 50;
 -- UPDATE SCHEMA VERSION
 -- ============================================================================
 INSERT INTO schema_version (version, applied_at, description)
-VALUES (4, strftime('%s', 'now'), 'Migration 004: Cost Tracking and Budget Management');
+VALUES (4, EXTRACT(EPOCH FROM NOW())::BIGINT, 'Migration 004: Cost Tracking and Budget Management')
+ON CONFLICT (version) DO NOTHING;
 
 -- ============================================================================
 -- MIGRATION NOTES

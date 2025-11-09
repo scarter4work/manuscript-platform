@@ -52,11 +52,11 @@ CREATE INDEX IF NOT EXISTS idx_submissions_original ON submissions(original_subm
 CREATE INDEX IF NOT EXISTS idx_submissions_date ON submissions(submission_date DESC);
 
 -- Auto-update trigger for updated_at
-CREATE TRIGGER IF NOT EXISTS update_submissions_timestamp
-AFTER UPDATE ON submissions
-BEGIN
-  UPDATE submissions SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submissions
+CREATE TRIGGER update_submissions_timestamp
+BEFORE UPDATE ON submissions
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Feedback categorization table
 CREATE TABLE IF NOT EXISTS submission_feedback (
@@ -78,11 +78,11 @@ CREATE INDEX IF NOT EXISTS idx_submission_feedback_type ON submission_feedback(f
 CREATE INDEX IF NOT EXISTS idx_submission_feedback_addressed ON submission_feedback(addressed);
 
 -- Auto-update trigger for submission_feedback
-CREATE TRIGGER IF NOT EXISTS update_submission_feedback_timestamp
-AFTER UPDATE ON submission_feedback
-BEGIN
-  UPDATE submission_feedback SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_feedback
+CREATE TRIGGER update_submission_feedback_timestamp
+BEFORE UPDATE ON submission_feedback
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Submission statistics view
 CREATE OR REPLACE VIEW submission_stats AS

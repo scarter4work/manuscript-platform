@@ -28,11 +28,11 @@ CREATE INDEX IF NOT EXISTS idx_assignments_status ON submission_assignments(stat
 CREATE INDEX IF NOT EXISTS idx_assignments_date ON submission_assignments(assignment_date DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_assignments_timestamp
-AFTER UPDATE ON submission_assignments
-BEGIN
-  UPDATE submission_assignments SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_assignments
+CREATE TRIGGER update_submission_assignments_timestamp
+BEFORE UPDATE ON submission_assignments
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Submission ratings (scoring system)
 CREATE TABLE IF NOT EXISTS submission_ratings (
@@ -73,11 +73,11 @@ CREATE INDEX IF NOT EXISTS idx_ratings_assignment ON submission_ratings(assignme
 CREATE INDEX IF NOT EXISTS idx_ratings_created ON submission_ratings(created_at DESC);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_ratings_timestamp
-AFTER UPDATE ON submission_ratings
-BEGIN
-  UPDATE submission_ratings SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_ratings
+CREATE TRIGGER update_submission_ratings_timestamp
+BEFORE UPDATE ON submission_ratings
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Submission discussions (internal comments/notes)
 CREATE TABLE IF NOT EXISTS submission_discussions (
@@ -102,11 +102,11 @@ CREATE INDEX IF NOT EXISTS idx_discussions_parent ON submission_discussions(pare
 CREATE INDEX IF NOT EXISTS idx_discussions_internal ON submission_discussions(is_internal);
 
 -- Auto-update trigger
-CREATE TRIGGER IF NOT EXISTS update_submission_discussions_timestamp
-AFTER UPDATE ON submission_discussions
-BEGIN
-  UPDATE submission_discussions SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+-- Update trigger for submission_discussions
+CREATE TRIGGER update_submission_discussions_timestamp
+BEFORE UPDATE ON submission_discussions
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
 
 -- Consensus view (aggregate ratings)
 CREATE OR REPLACE VIEW submission_consensus AS

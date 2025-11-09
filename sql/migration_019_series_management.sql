@@ -1,4 +1,62 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+
+-- ==================================================
+-- POSTGRESQL TRIGGER FUNCTIONS
+-- ==================================================
+
+-- Trigger function for update_series_timestamp_on_update
+CREATE OR REPLACE FUNCTION update_series_timestamp_on_update_func()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.series_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger function for update_series_timestamp_on_insert
+CREATE OR REPLACE FUNCTION update_series_timestamp_on_insert_func()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.series_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger function for update_series_timestamp_on_delete
+CREATE OR REPLACE FUNCTION update_series_timestamp_on_delete_func()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = OLD.series_id;
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger function for validate_book_number
+CREATE OR REPLACE FUNCTION validate_book_number_func()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.book_number <= 0 THEN
+    RAISE EXCEPTION 'Book number must be positive';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger function for ensure_one_default_reading_order
+CREATE OR REPLACE FUNCTION ensure_one_default_reading_order_func()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE series_reading_orders
+  SET is_default = 0
+  WHERE series_id = NEW.series_id AND is_default = 1;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ==================================================
+-- TABLES AND TRIGGERS
+-- ==================================================
+
 -- Migration 019: Series Management System
 -- Enables authors to organize manuscripts into series with proper ordering and cross-promotion
 
@@ -270,43 +328,34 @@ GROUP BY s.id, series_id, series_name, book_number, book_type, title, author_nam
 -- ============================================================================
 
 -- Update series.updated_at when manuscripts are added/removed
-CREATE TRIGGER IF NOT EXISTS update_series_timestamp
+CREATE TRIGGER update_series_timestamp
 AFTER INSERT ON series_manuscripts
-BEGIN
-  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.series_id;
-END;
+FOR EACH ROW
+EXECUTE FUNCTION update_series_timestamp_on_insert_func();
 
-CREATE TRIGGER IF NOT EXISTS update_series_timestamp_on_update
-AFTER UPDATE ON series_manuscripts
-BEGIN
-  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.series_id;
-END;
+-- Custom trigger for series_manuscripts
+CREATE TRIGGER update_series_timestamp_on_update
+BEFORE UPDATE ON series_manuscripts
+FOR EACH ROW
+EXECUTE FUNCTION update_series_timestamp_on_update_func();
 
-CREATE TRIGGER IF NOT EXISTS update_series_timestamp_on_delete
+CREATE TRIGGER update_series_timestamp_on_delete
 AFTER DELETE ON series_manuscripts
-BEGIN
-  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = OLD.series_id;
-END;
+FOR EACH ROW
+EXECUTE FUNCTION update_series_timestamp_on_delete_func();
 
 -- Validate book numbers are sequential or intentionally skipped
-CREATE TRIGGER IF NOT EXISTS validate_book_number
+CREATE TRIGGER validate_book_number
 BEFORE INSERT ON series_manuscripts
-BEGIN
-  SELECT CASE
-    WHEN NEW.book_number <= 0 THEN
-      RAISE(ABORT, 'Book number must be positive')
-    END;
-END;
+FOR EACH ROW
+EXECUTE FUNCTION validate_book_number_func();
 
 -- Ensure only one default reading order per series
-CREATE TRIGGER IF NOT EXISTS ensure_one_default_reading_order
+CREATE TRIGGER ensure_one_default_reading_order
 BEFORE INSERT ON series_reading_orders
-WHEN NEW.is_default = 1
-BEGIN
-  UPDATE series_reading_orders
-  SET is_default = 0
-  WHERE series_id = NEW.series_id AND is_default = 1;
-END;
+FOR EACH ROW
+WHEN (NEW.is_default = 1)
+EXECUTE FUNCTION ensure_one_default_reading_order_func();
 
 -- ============================================================================
 -- SAMPLE DATA (commented out for production)
