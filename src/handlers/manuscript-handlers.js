@@ -565,7 +565,7 @@ export const manuscriptHandlers = {
       );
 
       // Queue the analysis job
-      await env.ANALYSIS_QUEUE.send({
+      await env.QUEUE.send('analysis', {
         manuscriptKey: manuscript.r2_key,
         genre: body.genre || manuscript.genre || 'general',
         styleGuide: body.styleGuide || 'chicago',

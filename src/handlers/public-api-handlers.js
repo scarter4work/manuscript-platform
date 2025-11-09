@@ -151,7 +151,7 @@ export async function apiAnalyzeManuscript(request, env, manuscriptId) {
 
     // Queue analysis job
     const jobId = crypto.randomUUID();
-    await env.ANALYSIS_QUEUE.send({
+    await env.QUEUE.send('analysis', {
       type: 'full_analysis',
       manuscriptId,
       userId: keyDetails.userId,

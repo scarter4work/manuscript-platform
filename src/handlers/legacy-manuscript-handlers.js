@@ -219,7 +219,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
       );
 
       // Queue the analysis job
-      await env.ANALYSIS_QUEUE.send({
+      await env.QUEUE.send('analysis', {
         manuscriptKey: r2Key,
         genre: genre,
         styleGuide: 'chicago', // Default style guide

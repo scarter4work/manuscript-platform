@@ -20,6 +20,7 @@ import { createCacheAdapter } from './src/adapters/cache-adapter.js';
 
 // Import services
 import { initVirusScanner, updateScannerHealth } from './src/services/virus-scanner.js';
+import { createQueueService } from './src/services/queue-service.js';
 
 // Import router
 import { routeRequest } from './src/router/router.js';
@@ -80,6 +81,10 @@ async function initializeAdapters() {
     const cacheKV = createCacheAdapter(redisClient);
     console.log('✓ Cache adapter initialized');
 
+    // Create queue service (Cloudflare Queue → Redis)
+    const queueService = createQueueService(redisClient);
+    console.log('✓ Queue service initialized');
+
     // Create env object that mimics Workers env
     env = {
       // Database
@@ -87,6 +92,9 @@ async function initializeAdapters() {
 
       // Storage adapter (handlers use env.R2.getBucket('bucket_name'))
       R2: storage,
+
+      // Queue service (handlers use env.QUEUE.send('queueName', jobData))
+      QUEUE: queueService,
 
       // Redis client (for KV operations)
       REDIS: redisClient,

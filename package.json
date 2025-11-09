@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "worker": "node src/workers/analysis-queue-worker.js",
     "build": "echo 'No build step required'",
     "test": "vitest run",
     "test:watch": "vitest",
