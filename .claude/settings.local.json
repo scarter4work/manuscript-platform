@@ -7,7 +7,8 @@
       "Bash(fi)",
       "Bash(/c/Program Files/GitHub CLI/gh.exe issue view 74 --json title,state,labels)",
       "Bash(/c/Program Files/GitHub CLI/gh.exe issue view 65 --json title,body,state,labels)",
-      "Bash(/c/Program\\ Files/GitHub\\ CLI/gh.exe issue view:*)"
+      "Bash(/c/Program\\ Files/GitHub\\ CLI/gh.exe issue view:*)",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []
