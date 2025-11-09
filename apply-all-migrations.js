@@ -28,7 +28,7 @@ function convertSQLiteToPostgreSQL(sql) {
     'exported_at', 'imported_at', 'processed_at', 'verified_at', 'archived_at',
     'connected_at', 'fetch_started_at', 'fetch_completed_at', 'last_checked_at',
     'discovered_at', 'published_at', 'modified_at', 'accessed_at', 'last_updated',
-    'report_date', 'query_date', 'review_date'
+    'report_date', 'query_date', 'review_date', 'score_date', 'rank_date'
   ];
 
   const timestampPattern = timestampColumns.join('|');
@@ -131,7 +131,7 @@ function convertSQLiteToPostgreSQL(sql) {
   converted = converted.replace(/CREATE VIEW IF NOT EXISTS/gi, 'CREATE OR REPLACE VIEW');
 
   // Fix DROP statements
-  converted = converted.replace(/DROP TRIGGER IF EXISTS (\w+);/gi, '-- DROP TRIGGER IF EXISTS $1; -- Commented out - needs table name');
+  converted = converted.replace(/DROP TRIGGER IF EXISTS (\w+);/gi, '-- DROP TRIGGER IF EXISTS $1 -- needs table name\n');
   converted = converted.replace(/DROP TABLE IF EXISTS (\w+);/gi, 'DROP TABLE IF EXISTS $1 CASCADE;');
   converted = converted.replace(/DROP VIEW IF EXISTS (\w+);/gi, 'DROP VIEW IF EXISTS $1 CASCADE;');
 
@@ -161,7 +161,7 @@ DROP TRIGGER IF EXISTS ${triggerName} ON ${tableName};
 CREATE TRIGGER ${triggerName}
   BEFORE UPDATE ON ${tableName}
   FOR EACH ROW
-  EXECUTE FUNCTION update_${tableName}_timestamp()`;
+  EXECUTE FUNCTION update_${tableName}_timestamp();`;
 
   converted = converted.replace(triggerRegex1, (match, triggerName, tableName, tableName2) => {
     return createTriggerFunction(triggerName, tableName);
