@@ -11,36 +11,142 @@ const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://manuscript_platfo
 function convertSQLiteToPostgreSQL(sql) {
   let converted = sql;
 
-  // Replace INTEGER timestamps with BIGINT for unix timestamps
-  // Look for timestamp column names and convert them
-  converted = converted.replace(/\b(created_at|updated_at|completed_at|expires_at|last_login|scanned_at|checked_at|scheduled_at|triggered_at|resolved_at|acknowledged_at|email_sent_at|applied_at|fetched_at|offer_date|acceptance_date|contract_date|publication_date|reversion_date|blocked_at|added_at|uploaded_at|generated_at)\s+INTEGER\s+NOT\s+NULL\s+DEFAULT\s+\(unixepoch\(\)\)/gi,
-    '$1 TIMESTAMP NOT NULL DEFAULT NOW()');
+  // First pass: Replace all known timestamp column names with TIMESTAMP type
+  // This includes columns with and without defaults
+  const timestampColumns = [
+    'created_at', 'updated_at', 'completed_at', 'expires_at', 'last_login',
+    'scanned_at', 'checked_at', 'scheduled_at', 'triggered_at', 'resolved_at',
+    'acknowledged_at', 'email_sent_at', 'applied_at', 'fetched_at',
+    'offer_date', 'acceptance_date', 'contract_date', 'publication_date',
+    'reversion_date', 'blocked_at', 'added_at', 'uploaded_at', 'generated_at',
+    'changed_at', 'search_timestamp', 'tracked_at', 'started_at', 'ended_at',
+    'conflict_detected_at', 'validated_at', 'assignment_date', 'submission_date',
+    'decision_date', 'response_date', 'window_opens_at', 'window_closes_at',
+    'last_successful_scan', 'last_definition_update', 'deadline_date',
+    'reminder_sent_at', 'formatted_at', 'sent_at', 'read_at', 'sync_timestamp',
+    'calculated_at', 'analyzed_at', 'computed_at', 'last_activity_at', 'indexed_at',
+    'exported_at', 'imported_at', 'processed_at', 'verified_at', 'archived_at',
+    'connected_at', 'fetch_started_at', 'fetch_completed_at', 'last_checked_at',
+    'discovered_at', 'published_at', 'modified_at', 'accessed_at', 'last_updated',
+    'report_date', 'query_date', 'review_date'
+  ];
 
-  // Handle timestamp columns without default
-  converted = converted.replace(/\b(created_at|updated_at|completed_at|expires_at|last_login|scanned_at|checked_at|scheduled_at|triggered_at|resolved_at|acknowledged_at|email_sent_at|applied_at|fetched_at|offer_date|acceptance_date|contract_date|publication_date|reversion_date|blocked_at|added_at|uploaded_at|generated_at)\s+INTEGER\s+NOT\s+NULL/gi,
-    '$1 TIMESTAMP NOT NULL');
+  const timestampPattern = timestampColumns.join('|');
 
-  // Handle nullable timestamp columns
-  converted = converted.replace(/\b(created_at|updated_at|completed_at|expires_at|last_login|scanned_at|checked_at|scheduled_at|triggered_at|resolved_at|acknowledged_at|email_sent_at|applied_at|fetched_at|offer_date|acceptance_date|contract_date|publication_date|reversion_date|blocked_at|added_at|uploaded_at|generated_at)\s+INTEGER(?![\w])/gi,
-    '$1 BIGINT');
+  // Replace INTEGER timestamps with TIMESTAMP (with default)
+  converted = converted.replace(
+    new RegExp(`\\b(${timestampPattern})\\s+INTEGER\\s+NOT\\s+NULL\\s+DEFAULT\\s+\\(unixepoch\\(\\)\\)`, 'gi'),
+    '$1 TIMESTAMP NOT NULL DEFAULT NOW()'
+  );
+
+  // Replace INTEGER timestamps with TIMESTAMP (NOT NULL, no default)
+  converted = converted.replace(
+    new RegExp(`\\b(${timestampPattern})\\s+INTEGER\\s+NOT\\s+NULL`, 'gi'),
+    '$1 TIMESTAMP NOT NULL'
+  );
+
+  // Replace INTEGER timestamps with TIMESTAMP (nullable)
+  converted = converted.replace(
+    new RegExp(`\\b(${timestampPattern})\\s+INTEGER(?![\\w])`, 'gi'),
+    '$1 BIGINT'
+  );
 
   // Replace any remaining unixepoch() with NOW()
   converted = converted.replace(/DEFAULT \(unixepoch\(\)\)/gi, 'DEFAULT NOW()');
   converted = converted.replace(/DEFAULT unixepoch\(\)/gi, 'DEFAULT NOW()');
 
-  // Replace CREATE VIEW IF NOT EXISTS with just CREATE OR REPLACE VIEW
+  // Replace BOOLEAN DEFAULT 0/1 with DEFAULT FALSE/TRUE
+  converted = converted.replace(/BOOLEAN\s+DEFAULT\s+0/gi, 'BOOLEAN DEFAULT FALSE');
+  converted = converted.replace(/BOOLEAN\s+DEFAULT\s+1/gi, 'BOOLEAN DEFAULT TRUE');
+  converted = converted.replace(/BOOLEAN\s+NOT\s+NULL\s+DEFAULT\s+0/gi, 'BOOLEAN NOT NULL DEFAULT FALSE');
+  converted = converted.replace(/BOOLEAN\s+NOT\s+NULL\s+DEFAULT\s+1/gi, 'BOOLEAN NOT NULL DEFAULT TRUE');
+
+  // Replace INTEGER column DEFAULT 0/1 for columns that look like booleans
+  const booleanColumns = [
+    'resolved', 'acknowledged', 'email_sent', 'used', 'is_active', 'email_verified',
+    'enabled', 'include_full', 'is_default', 'is_public', 'is_archived',
+    'notify_on_response', 'allow_resubmissions', 'auto_close', 'is_template',
+    'is_custom', 'requires_approval', 'featured', 'active', 'verified', 'published',
+    'approved', 'rejected', 'archived', 'deleted', 'hidden', 'locked', 'pinned'
+  ];
+  const boolPattern = booleanColumns.join('|');
+
+  // INTEGER with DEFAULT 0/1
+  converted = converted.replace(
+    new RegExp(`\\b(${boolPattern})\\s+INTEGER\\s+DEFAULT\\s+0`, 'gi'),
+    '$1 BOOLEAN DEFAULT FALSE'
+  );
+  converted = converted.replace(
+    new RegExp(`\\b(${boolPattern})\\s+INTEGER\\s+DEFAULT\\s+1`, 'gi'),
+    '$1 BOOLEAN DEFAULT TRUE'
+  );
+
+  // INTEGER NOT NULL (no default) - convert to BOOLEAN NOT NULL
+  converted = converted.replace(
+    new RegExp(`\\b(${boolPattern})\\s+INTEGER\\s+NOT\\s+NULL(?![^,;]*DEFAULT)`, 'gi'),
+    '$1 BOOLEAN NOT NULL'
+  );
+
+  // INTEGER nullable (no default, no NOT NULL)
+  converted = converted.replace(
+    new RegExp(`\\b(${boolPattern})\\s+INTEGER(?!\\s+(NOT\\s+NULL|DEFAULT))`, 'gi'),
+    '$1 BOOLEAN'
+  );
+
+  // Replace boolean values in INSERT/UPDATE/WHERE clauses (convert 0/1 to FALSE/TRUE)
+  // This handles VALUES (..., 0, ...) and SET column = 0, etc.
+  for (const boolCol of booleanColumns) {
+    // In INSERT VALUES and UPDATE SET statements
+    converted = converted.replace(
+      new RegExp(`\\b${boolCol}\\s*=\\s*1\\b`, 'gi'),
+      `${boolCol} = TRUE`
+    );
+    converted = converted.replace(
+      new RegExp(`\\b${boolCol}\\s*=\\s*0\\b`, 'gi'),
+      `${boolCol} = FALSE`
+    );
+    // In VALUES clauses - this is trickier, handled with context
+    converted = converted.replace(
+      new RegExp(`\\b${boolCol}\\s*,\\s*1\\b`, 'gi'),
+      `${boolCol}, TRUE`
+    );
+    converted = converted.replace(
+      new RegExp(`\\b${boolCol}\\s*,\\s*0\\b`, 'gi'),
+      `${boolCol}, FALSE`
+    );
+  }
+
+  // Replace DATE(column, 'unixepoch') with column::DATE
+  // Since we're converting INTEGER timestamps to TIMESTAMP, no need for TO_TIMESTAMP
+  converted = converted.replace(/DATE\((\w+),\s*'unixepoch'\)/gi, "$1::DATE");
+
+  // Replace unixepoch() function with EXTRACT(EPOCH FROM NOW())::INTEGER
+  converted = converted.replace(/unixepoch\(\)/gi, "EXTRACT(EPOCH FROM NOW())::INTEGER");
+
+  // Replace SQLite group_concat() with PostgreSQL string_agg()
+  converted = converted.replace(/group_concat\(([^,)]+),\s*'([^']+)'\)/gi, "string_agg($1, '$2')");
+  converted = converted.replace(/group_concat\(([^)]+)\)/gi, "string_agg($1, ',')"); // Default separator
+
+  // Replace CREATE VIEW IF NOT EXISTS with CREATE OR REPLACE VIEW
   converted = converted.replace(/CREATE VIEW IF NOT EXISTS/gi, 'CREATE OR REPLACE VIEW');
 
-  // Fix DROP TRIGGER statements to include ON table_name
-  // This is a simplification - ideally we'd parse the context
+  // Fix DROP statements
   converted = converted.replace(/DROP TRIGGER IF EXISTS (\w+);/gi, '-- DROP TRIGGER IF EXISTS $1; -- Commented out - needs table name');
+  converted = converted.replace(/DROP TABLE IF EXISTS (\w+);/gi, 'DROP TABLE IF EXISTS $1 CASCADE;');
+  converted = converted.replace(/DROP VIEW IF EXISTS (\w+);/gi, 'DROP VIEW IF EXISTS $1 CASCADE;');
+
+  // Fix ALTER TABLE DROP COLUMN to include CASCADE
+  converted = converted.replace(/ALTER TABLE (\w+) DROP COLUMN (\w+);/gi, 'ALTER TABLE $1 DROP COLUMN IF EXISTS $2 CASCADE;');
 
   // Replace SQLite triggers with PostgreSQL functions + triggers
-  // Match: CREATE TRIGGER [IF NOT EXISTS] name AFTER UPDATE ON table FOR EACH ROW BEGIN ... END;
-  const triggerRegex = /CREATE TRIGGER(?:\s+IF NOT EXISTS)?\s+([^\s]+)\s+AFTER UPDATE ON ([^\s]+)\s+FOR EACH ROW\s+BEGIN\s+UPDATE ([^\s]+) SET updated_at = (?:unixepoch\(\)|NOW\(\)) WHERE id = NEW\.id;\s+END/gi;
+  // Match triggers with or without "FOR EACH ROW"
+  // Pattern 1: WITH "FOR EACH ROW"
+  const triggerRegex1 = /CREATE TRIGGER(?:\s+IF NOT EXISTS)?\s+([^\s]+)\s+AFTER UPDATE ON ([^\s]+)\s+FOR EACH ROW\s+BEGIN\s+UPDATE ([^\s]+) SET updated_at = (?:unixepoch\(\)|NOW\(\)) WHERE id = NEW\.id;\s+END/gi;
 
-  converted = converted.replace(triggerRegex, (match, triggerName, tableName, tableName2) => {
-    return `
+  // Pattern 2: WITHOUT "FOR EACH ROW" (SQLite allows this, implies FOR EACH ROW)
+  const triggerRegex2 = /CREATE TRIGGER(?:\s+IF NOT EXISTS)?\s+([^\s]+)\s+AFTER UPDATE ON ([^\s]+)\s+BEGIN\s+UPDATE ([^\s]+) SET updated_at = (?:unixepoch\(\)|NOW\(\)) WHERE id = NEW\.id;\s+END/gi;
+
+  const createTriggerFunction = (triggerName, tableName) => `
 -- Create trigger function for ${tableName}
 CREATE OR REPLACE FUNCTION update_${tableName}_timestamp()
 RETURNS TRIGGER AS $$
@@ -56,6 +162,13 @@ CREATE TRIGGER ${triggerName}
   BEFORE UPDATE ON ${tableName}
   FOR EACH ROW
   EXECUTE FUNCTION update_${tableName}_timestamp()`;
+
+  converted = converted.replace(triggerRegex1, (match, triggerName, tableName, tableName2) => {
+    return createTriggerFunction(triggerName, tableName);
+  });
+
+  converted = converted.replace(triggerRegex2, (match, triggerName, tableName, tableName2) => {
+    return createTriggerFunction(triggerName, tableName);
   });
 
   return converted;
@@ -72,30 +185,57 @@ async function applyMigration(client, filePath, migrationName) {
     console.log(`🔄 Converting SQLite → PostgreSQL...`);
     const converted = convertSQLiteToPostgreSQL(sql);
 
-    // Split by semicolon to execute statement by statement
-    const statements = converted
-      .split(';')
+    // Split by semicolon but respect $$ ... $$ blocks (PostgreSQL function bodies)
+    const statements = [];
+    let current = '';
+    let inDollarQuote = false;
+    const chars = converted.split('');
+
+    for (let i = 0; i < chars.length; i++) {
+      const char = chars[i];
+      const nextChar = i < chars.length - 1 ? chars[i + 1] : '';
+
+      // Check for $$ delimiter
+      if (char === '$' && nextChar === '$') {
+        inDollarQuote = !inDollarQuote;
+        current += char + nextChar;
+        i++; // Skip next $
+      }
+      // Split on semicolon only if not inside $$ ... $$
+      else if (char === ';' && !inDollarQuote) {
+        statements.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+
+    // Add last statement if any
+    if (current.trim().length > 0) {
+      statements.push(current.trim());
+    }
+
+    // Remove comment lines from each statement
+    const cleanedStatements = statements
       .map(s => {
-        // Remove comment lines but keep SQL statements
         const lines = s.split('\n');
         const sqlLines = lines.filter(line => {
           const trimmed = line.trim();
-          // Keep lines that are not comments OR are part of SQL
           return trimmed.length > 0 && !trimmed.startsWith('--');
         });
         return sqlLines.join('\n').trim();
       })
       .filter(s => s.length > 0);
 
-    console.log(`⚙️  Executing ${statements.length} statements...`);
+    console.log(`⚙️  Executing ${cleanedStatements.length} statements...`);
 
     // Debug: Show first few statements
-    if (statements.length > 0) {
-      console.log(`\n   📋 First statement: ${statements[0].substring(0, 100).replace(/\n/g, ' ')}...`);
+    if (cleanedStatements.length > 0) {
+      console.log(`\n   📋 First statement: ${cleanedStatements[0].substring(0, 100).replace(/\n/g, ' ')}...`);
     }
 
-    for (let i = 0; i < statements.length; i++) {
-      const stmt = statements[i];
+    for (let i = 0; i < cleanedStatements.length; i++) {
+      const stmt = cleanedStatements[i];
       if (stmt.length === 0) continue;
 
       try {
