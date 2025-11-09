@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 026: Human-Style Developmental Editor (Issue #60)
 -- AI editing agent that mimics conversational, encouraging editorial style from BA creative writing editor
 -- Source: 10 PDFs with ~100 pages of handwritten editorial feedback
@@ -82,4 +81,4 @@ SELECT
 FROM human_style_edits h
 LEFT JOIN manuscripts m ON h.manuscript_id = m.id
 LEFT JOIN human_edit_sessions s ON h.manuscript_id = s.manuscript_id AND h.chapter_number = s.chapter_number
-GROUP BY h.manuscript_id, h.user_id;
+GROUP BY h.manuscript_id, h.user_id, title, 2);

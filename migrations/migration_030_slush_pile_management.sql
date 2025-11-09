@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 030: Slush Pile Management System (Issue #54)
 -- Publisher inbox, assignments, ratings, consensus, decision workflow
 
@@ -166,4 +165,4 @@ LEFT JOIN submission_assignments sa ON u.id = sa.assigned_by_user_id OR u.id = s
 LEFT JOIN submission_ratings sr ON u.id = sr.rater_user_id
 LEFT JOIN submission_discussions sd ON u.id = sd.user_id
 WHERE u.role = 'publisher'
-GROUP BY u.id;
+GROUP BY u.id, email, display_name;

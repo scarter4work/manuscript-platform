@@ -1,6 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 023: Supporting Documents (Issue #49)
 -- Enables query letters, synopsis, and sample chapters management
 
@@ -33,12 +31,11 @@ CREATE INDEX IF NOT EXISTS idx_supporting_docs_current ON supporting_documents(i
 CREATE INDEX IF NOT EXISTS idx_supporting_docs_created ON supporting_documents(created_at);
 
 -- Update trigger for supporting_documents
-CREATE TRIGGER IF NOT EXISTS update_supporting_docs_timestamp
-AFTER UPDATE ON supporting_documents
+-- Update trigger for supporting_documents
+CREATE TRIGGER update_supporting_docs_timestamp
+BEFORE UPDATE ON supporting_documents
 FOR EACH ROW
-BEGIN
-  UPDATE supporting_documents SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view for supporting documents
 CREATE OR REPLACE VIEW supporting_docs_stats AS

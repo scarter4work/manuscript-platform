@@ -1,6 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 021: Cover Design Briefs System
 -- Creates table for storing AI-generated cover design briefs
 
@@ -24,12 +22,11 @@ CREATE INDEX idx_cover_briefs_genre ON cover_design_briefs(genre);
 CREATE INDEX idx_cover_briefs_created ON cover_design_briefs(created_at);
 
 -- Update trigger for cover_design_briefs
+-- Update trigger for cover_design_briefs
 CREATE TRIGGER update_cover_briefs_timestamp
-AFTER UPDATE ON cover_design_briefs
+BEFORE UPDATE ON cover_design_briefs
 FOR EACH ROW
-BEGIN
-  UPDATE cover_design_briefs SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view for cover briefs
 CREATE VIEW cover_brief_stats AS

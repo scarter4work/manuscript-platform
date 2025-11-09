@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 025: Nuanced Submission Response System (Issue #52)
 -- Expands submission tracking with detailed response types, feedback categorization, and R&R workflow
 
@@ -102,4 +101,4 @@ SELECT
 FROM submissions s
 LEFT JOIN manuscripts m ON s.manuscript_id = m.id
 LEFT JOIN submission_feedback sf ON s.id = sf.submission_id
-GROUP BY s.id;
+GROUP BY s.id, manuscript_id, publisher_name, publisher_type, submission_date, response_date, response_type, is_resubmission, title;

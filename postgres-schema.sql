@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Migration 020: Author Bio Generation System
 -- Creates tables for storing generated author bios
 
@@ -11,8 +12,8 @@ CREATE TABLE IF NOT EXISTS author_bios (
   length TEXT NOT NULL CHECK (length IN ('short', 'medium', 'long')),
   variations TEXT NOT NULL, -- JSON array of bio variations
   generated_at TEXT NOT NULL,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -23,12 +24,11 @@ CREATE INDEX IF NOT EXISTS idx_author_bios_length ON author_bios(length);
 CREATE INDEX IF NOT EXISTS idx_author_bios_created ON author_bios(created_at);
 
 -- Update trigger for author_bios
-CREATE TRIGGER IF NOT EXISTS update_author_bios_timestamp
-AFTER UPDATE ON author_bios
+-- Update trigger for author_bios
+CREATE TRIGGER update_author_bios_timestamp
+BEFORE UPDATE ON author_bios
 FOR EACH ROW
-BEGIN
-  UPDATE author_bios SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Add author profile fields to users table (if not exists)
 -- These are used for bio generation
@@ -38,7 +38,7 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS website TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS social_media TEXT; -- JSON: {twitter, facebook, instagram, etc}
 
 -- Author bio statistics view
-CREATE VIEW IF NOT EXISTS author_bio_stats AS
+CREATE OR REPLACE VIEW author_bio_stats AS
 SELECT
   user_id,
   COUNT(*) as total_bios,
@@ -62,7 +62,7 @@ GROUP BY user_id;
 --   'medium',
 --   '[{"id":"bio-medium-achievement-focused","approach":"achievement-focused","text":"Jane Author is an award-winning thriller writer whose debut novel topped the bestseller lists...","wordCount":180,"tone":"Mysterious and intriguing, with hints of suspense","length":"medium"}]',
 --   '2025-01-15T10:00:00Z',
---   unixepoch()
+--   EXTRACT(EPOCH FROM NOW())::BIGINT
 -- );
 -- Migration 020: Author Bio Generation System
 -- Creates tables for storing generated author bios
@@ -77,8 +77,8 @@ CREATE TABLE author_bios (
   length TEXT NOT NULL CHECK (length IN ('short', 'medium', 'long')),
   variations TEXT NOT NULL,
   generated_at TEXT NOT NULL,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -89,12 +89,11 @@ CREATE INDEX idx_author_bios_length ON author_bios(length);
 CREATE INDEX idx_author_bios_created ON author_bios(created_at);
 
 -- Update trigger for author_bios
+-- Update trigger for author_bios
 CREATE TRIGGER update_author_bios_timestamp
-AFTER UPDATE ON author_bios
+BEFORE UPDATE ON author_bios
 FOR EACH ROW
-BEGIN
-  UPDATE author_bios SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Author bio statistics view
 CREATE VIEW author_bio_stats AS
@@ -120,8 +119,8 @@ CREATE TABLE cover_design_briefs (
   genre TEXT NOT NULL,
   brief_data TEXT NOT NULL, -- JSON: complete cover brief from CoverDesignAgent
   generated_at TEXT NOT NULL,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -132,12 +131,11 @@ CREATE INDEX idx_cover_briefs_genre ON cover_design_briefs(genre);
 CREATE INDEX idx_cover_briefs_created ON cover_design_briefs(created_at);
 
 -- Update trigger for cover_design_briefs
+-- Update trigger for cover_design_briefs
 CREATE TRIGGER update_cover_briefs_timestamp
-AFTER UPDATE ON cover_design_briefs
+BEFORE UPDATE ON cover_design_briefs
 FOR EACH ROW
-BEGIN
-  UPDATE cover_design_briefs SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view for cover briefs
 CREATE VIEW cover_brief_stats AS
@@ -178,8 +176,8 @@ CREATE TABLE genres (
   typical_word_count_max INTEGER,
   display_order INTEGER DEFAULT 0, -- For UI ordering
   is_active INTEGER DEFAULT 1, -- Can be disabled without deleting
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (parent_genre_id) REFERENCES genres(id) ON DELETE SET NULL
 );
 
@@ -196,7 +194,7 @@ CREATE TABLE content_warning_types (
   severity TEXT CHECK (severity IN ('mild', 'moderate', 'severe')),
   display_order INTEGER DEFAULT 0,
   is_active INTEGER DEFAULT 1,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 CREATE INDEX idx_content_warnings_category ON content_warning_types(category);
@@ -210,7 +208,7 @@ CREATE TABLE manuscript_metadata_history (
   old_value TEXT,
   new_value TEXT,
   changed_by TEXT NOT NULL, -- user_id
-  changed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  changed_at INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (changed_by) REFERENCES users(id)
 );
@@ -219,12 +217,11 @@ CREATE INDEX idx_metadata_history_manuscript ON manuscript_metadata_history(manu
 CREATE INDEX idx_metadata_history_changed_at ON manuscript_metadata_history(changed_at);
 
 -- Update trigger for genres table
+-- Update trigger for genres
 CREATE TRIGGER update_genres_timestamp
-AFTER UPDATE ON genres
+BEFORE UPDATE ON genres
 FOR EACH ROW
-BEGIN
-  UPDATE genres SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view for genre usage
 CREATE VIEW genre_usage_stats AS
@@ -271,11 +268,13 @@ LEFT JOIN genres g ON m.primary_genre = g.id;
 
 -- Top-Level: Fiction
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('fiction', 'Fiction', NULL, 'Narrative literature created from imagination', 40000, 120000, 1);
+('fiction', 'Fiction', NULL, 'Narrative literature created from imagination', 40000, 120000, 1)
+ON CONFLICT (id) DO NOTHING;
 
 -- Fiction > Literary Fiction
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('literary-fiction', 'Literary Fiction', 'fiction', 'Character-driven fiction with artistic merit', 80000, 100000, 1);
+('literary-fiction', 'Literary Fiction', 'fiction', 'Character-driven fiction with artistic merit', 80000, 100000, 1)
+ON CONFLICT (id) DO NOTHING;
 
 -- Fiction > Thriller
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
@@ -331,7 +330,8 @@ INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_m
 
 -- Fiction > Historical Fiction
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('historical-fiction', 'Historical Fiction', 'fiction', 'Stories set in historical periods', 80000, 120000, 8);
+('historical-fiction', 'Historical Fiction', 'fiction', 'Stories set in historical periods', 80000, 120000, 8)
+ON CONFLICT (id) DO NOTHING;
 
 -- Fiction > Young Adult (YA)
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
@@ -343,31 +343,38 @@ INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_m
 
 -- Top-Level: Nonfiction
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('nonfiction', 'Nonfiction', NULL, 'Factual and informational writing', 40000, 90000, 2);
+('nonfiction', 'Nonfiction', NULL, 'Factual and informational writing', 40000, 90000, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > Memoir
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('memoir', 'Memoir', 'nonfiction', 'Personal life stories', 60000, 80000, 1);
+('memoir', 'Memoir', 'nonfiction', 'Personal life stories', 60000, 80000, 1)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > Biography
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('biography', 'Biography', 'nonfiction', 'Life stories of others', 70000, 100000, 2);
+('biography', 'Biography', 'nonfiction', 'Life stories of others', 70000, 100000, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > Business
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('business', 'Business', 'nonfiction', 'Business and entrepreneurship', 40000, 60000, 3);
+('business', 'Business', 'nonfiction', 'Business and entrepreneurship', 40000, 60000, 3)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > Self-Help
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('self-help', 'Self-Help', 'nonfiction', 'Personal development and improvement', 40000, 60000, 4);
+('self-help', 'Self-Help', 'nonfiction', 'Personal development and improvement', 40000, 60000, 4)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > History
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('history', 'History', 'nonfiction', 'Historical accounts and analysis', 70000, 100000, 5);
+('history', 'History', 'nonfiction', 'Historical accounts and analysis', 70000, 100000, 5)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > True Crime
 INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('true-crime', 'True Crime', 'nonfiction', 'Real criminal cases and investigations', 60000, 80000, 6);
+('true-crime', 'True Crime', 'nonfiction', 'DOUBLE PRECISION criminal cases and investigations', 60000, 80000, 6)
+ON CONFLICT (id) DO NOTHING;
 
 -- ===================================================================
 -- SEED DATA: Content Warning Types (20+ warnings)
@@ -437,8 +444,8 @@ CREATE TABLE IF NOT EXISTS genres (
   typical_word_count_max INTEGER,
   display_order INTEGER DEFAULT 0,
   is_active INTEGER DEFAULT 1,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (parent_genre_id) REFERENCES genres(id) ON DELETE SET NULL
 );
 
@@ -455,7 +462,7 @@ CREATE TABLE IF NOT EXISTS content_warning_types (
   severity TEXT CHECK (severity IN ('mild', 'moderate', 'severe')),
   display_order INTEGER DEFAULT 0,
   is_active INTEGER DEFAULT 1,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 CREATE INDEX IF NOT EXISTS idx_content_warnings_category ON content_warning_types(category);
@@ -469,7 +476,7 @@ CREATE TABLE IF NOT EXISTS manuscript_metadata_history (
   old_value TEXT,
   new_value TEXT,
   changed_by TEXT NOT NULL,
-  changed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  changed_at INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (changed_by) REFERENCES users(id)
 );
@@ -478,15 +485,14 @@ CREATE INDEX IF NOT EXISTS idx_metadata_history_manuscript ON manuscript_metadat
 CREATE INDEX IF NOT EXISTS idx_metadata_history_changed_at ON manuscript_metadata_history(changed_at);
 
 -- Update trigger for genres table
-CREATE TRIGGER IF NOT EXISTS update_genres_timestamp
-AFTER UPDATE ON genres
+-- Update trigger for genres
+CREATE TRIGGER update_genres_timestamp
+BEFORE UPDATE ON genres
 FOR EACH ROW
-BEGIN
-  UPDATE genres SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view for genre usage
-CREATE VIEW IF NOT EXISTS genre_usage_stats AS
+CREATE OR REPLACE VIEW genre_usage_stats AS
 SELECT
   g.id,
   g.name,
@@ -501,7 +507,7 @@ WHERE g.is_active = 1
 GROUP BY g.id, g.name, g.parent_genre_id;
 
 -- View for manuscripts with validation warnings
-CREATE VIEW IF NOT EXISTS manuscript_metadata_validation AS
+CREATE OR REPLACE VIEW manuscript_metadata_validation AS
 SELECT
   m.id,
   m.title,
@@ -526,15 +532,17 @@ LEFT JOIN genres g ON m.primary_genre = g.id;
 -- Seed Data for Enhanced Metadata System
 
 -- Top-Level: Fiction
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('fiction', 'Fiction', NULL, 'Narrative literature created from imagination', 40000, 120000, 1);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('fiction', 'Fiction', NULL, 'Narrative literature created from imagination', 40000, 120000, 1)
+ON CONFLICT (id) DO NOTHING;
 
 -- Fiction > Literary Fiction
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('literary-fiction', 'Literary Fiction', 'fiction', 'Character-driven fiction with artistic merit', 80000, 100000, 1);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('literary-fiction', 'Literary Fiction', 'fiction', 'Character-driven fiction with artistic merit', 80000, 100000, 1)
+ON CONFLICT (id) DO NOTHING;
 
 -- Fiction > Thriller
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
 ('thriller', 'Thriller', 'fiction', 'Fast-paced suspenseful fiction', 70000, 90000, 2),
 ('psychological-thriller', 'Psychological Thriller', 'thriller', 'Mind-bending suspense focused on character psychology', 70000, 90000, 1),
 ('legal-thriller', 'Legal Thriller', 'thriller', 'Courtroom drama and legal suspense', 70000, 90000, 2),
@@ -543,7 +551,7 @@ INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_wo
 ('espionage-thriller', 'Espionage Thriller', 'thriller', 'Spy novels and international intrigue', 70000, 100000, 5);
 
 -- Fiction > Mystery
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
 ('mystery', 'Mystery', 'fiction', 'Crime-solving and detective fiction', 70000, 90000, 3),
 ('cozy-mystery', 'Cozy Mystery', 'mystery', 'Amateur sleuth in small-town setting', 60000, 80000, 1),
 ('hard-boiled', 'Hard-Boiled Detective', 'mystery', 'Gritty urban detective fiction', 70000, 90000, 2),
@@ -551,7 +559,7 @@ INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_wo
 ('noir', 'Noir', 'mystery', 'Dark, cynical crime fiction', 70000, 90000, 4);
 
 -- Fiction > Romance
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
 ('romance', 'Romance', 'fiction', 'Love stories with emotional focus', 70000, 100000, 4),
 ('contemporary-romance', 'Contemporary Romance', 'romance', 'Modern-day love stories', 70000, 90000, 1),
 ('historical-romance', 'Historical Romance', 'romance', 'Romance set in historical periods', 80000, 100000, 2),
@@ -560,7 +568,7 @@ INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_wo
 ('romantic-comedy', 'Romantic Comedy', 'romance', 'Humorous love stories', 70000, 90000, 5);
 
 -- Fiction > Fantasy
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
 ('fantasy', 'Fantasy', 'fiction', 'Magical and imaginative worlds', 90000, 120000, 5),
 ('epic-fantasy', 'Epic Fantasy', 'fantasy', 'Large-scale fantasy with world-building', 100000, 150000, 1),
 ('urban-fantasy', 'Urban Fantasy', 'fantasy', 'Magic in contemporary urban settings', 80000, 100000, 2),
@@ -569,7 +577,7 @@ INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_wo
 ('sword-and-sorcery', 'Sword & Sorcery', 'fantasy', 'Action-oriented fantasy adventures', 80000, 100000, 5);
 
 -- Fiction > Science Fiction
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
 ('science-fiction', 'Science Fiction', 'fiction', 'Speculative fiction based on science', 90000, 120000, 6),
 ('hard-sf', 'Hard Science Fiction', 'science-fiction', 'Scientifically accurate SF', 90000, 120000, 1),
 ('space-opera', 'Space Opera', 'science-fiction', 'Epic space adventures', 100000, 140000, 2),
@@ -579,18 +587,19 @@ INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_wo
 ('time-travel', 'Time Travel', 'science-fiction', 'Stories involving time manipulation', 80000, 100000, 6);
 
 -- Fiction > Horror
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
 ('horror', 'Horror', 'fiction', 'Fiction designed to frighten or disturb', 70000, 90000, 7),
 ('gothic-horror', 'Gothic Horror', 'horror', 'Atmospheric horror with dark settings', 70000, 90000, 1),
 ('psychological-horror', 'Psychological Horror', 'horror', 'Mental and emotional terror', 70000, 90000, 2),
 ('supernatural-horror', 'Supernatural Horror', 'horror', 'Ghosts, demons, and otherworldly threats', 70000, 90000, 3);
 
 -- Fiction > Historical Fiction
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('historical-fiction', 'Historical Fiction', 'fiction', 'Stories set in historical periods', 80000, 120000, 8);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('historical-fiction', 'Historical Fiction', 'fiction', 'Stories set in historical periods', 80000, 120000, 8)
+ON CONFLICT (id) DO NOTHING;
 
 -- Fiction > Young Adult
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
 ('young-adult', 'Young Adult', 'fiction', 'Fiction for teen readers (13-18)', 50000, 80000, 9),
 ('ya-contemporary', 'YA Contemporary', 'young-adult', 'Realistic modern YA fiction', 50000, 75000, 1),
 ('ya-fantasy', 'YA Fantasy', 'young-adult', 'Fantasy for young adults', 60000, 85000, 2),
@@ -598,35 +607,42 @@ INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_wo
 ('ya-dystopian', 'YA Dystopian', 'young-adult', 'Dystopian fiction for teens', 55000, 80000, 4);
 
 -- Top-Level: Nonfiction
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('nonfiction', 'Nonfiction', NULL, 'Factual and informational writing', 40000, 90000, 2);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('nonfiction', 'Nonfiction', NULL, 'Factual and informational writing', 40000, 90000, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > Memoir
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('memoir', 'Memoir', 'nonfiction', 'Personal life stories', 60000, 80000, 1);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('memoir', 'Memoir', 'nonfiction', 'Personal life stories', 60000, 80000, 1)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > Biography
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('biography', 'Biography', 'nonfiction', 'Life stories of others', 70000, 100000, 2);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('biography', 'Biography', 'nonfiction', 'Life stories of others', 70000, 100000, 2)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > Business
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('business', 'Business', 'nonfiction', 'Business and entrepreneurship', 40000, 60000, 3);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('business', 'Business', 'nonfiction', 'Business and entrepreneurship', 40000, 60000, 3)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > Self-Help
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('self-help', 'Self-Help', 'nonfiction', 'Personal development and improvement', 40000, 60000, 4);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('self-help', 'Self-Help', 'nonfiction', 'Personal development and improvement', 40000, 60000, 4)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > History
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('history', 'History', 'nonfiction', 'Historical accounts and analysis', 70000, 100000, 5);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('history', 'History', 'nonfiction', 'Historical accounts and analysis', 70000, 100000, 5)
+ON CONFLICT (id) DO NOTHING;
 
 -- Nonfiction > True Crime
-INSERT OR IGNORE INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
-('true-crime', 'True Crime', 'nonfiction', 'Real criminal cases and investigations', 60000, 80000, 6);
+INSERT INTO genres (id, name, parent_genre_id, description, typical_word_count_min, typical_word_count_max, display_order) VALUES
+('true-crime', 'True Crime', 'nonfiction', 'DOUBLE PRECISION criminal cases and investigations', 60000, 80000, 6)
+ON CONFLICT (id) DO NOTHING;
 
 -- Content Warning Types
-INSERT OR IGNORE INTO content_warning_types (id, name, category, description, severity, display_order) VALUES
+INSERT INTO content_warning_types (id, name, category, description, severity, display_order) VALUES
 -- Violence
 ('violence-graphic', 'Graphic Violence', 'violence', 'Detailed descriptions of physical violence', 'severe', 1),
 ('violence-moderate', 'Violence', 'violence', 'Non-graphic violence', 'moderate', 2),
@@ -676,8 +692,8 @@ CREATE TABLE IF NOT EXISTS supporting_documents (
   notes TEXT,
   generated_by_ai INTEGER DEFAULT 0,
   ai_prompt TEXT, -- Store prompt used for AI generation
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -689,15 +705,14 @@ CREATE INDEX IF NOT EXISTS idx_supporting_docs_current ON supporting_documents(i
 CREATE INDEX IF NOT EXISTS idx_supporting_docs_created ON supporting_documents(created_at);
 
 -- Update trigger for supporting_documents
-CREATE TRIGGER IF NOT EXISTS update_supporting_docs_timestamp
-AFTER UPDATE ON supporting_documents
+-- Update trigger for supporting_documents
+CREATE TRIGGER update_supporting_docs_timestamp
+BEFORE UPDATE ON supporting_documents
 FOR EACH ROW
-BEGIN
-  UPDATE supporting_documents SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view for supporting documents
-CREATE VIEW IF NOT EXISTS supporting_docs_stats AS
+CREATE OR REPLACE VIEW supporting_docs_stats AS
 SELECT
   user_id,
   manuscript_id,
@@ -708,10 +723,19 @@ SELECT
   AVG(word_count) as avg_word_count,
   MAX(created_at) as last_updated
 FROM supporting_documents
-GROUP BY user_id, manuscript_id, document_type;
+GROUP BY user_id, manuscript_id, document_type, title, primary_genre, word_count, age_category, typical_word_count_min, typical_word_count_max, CASE
+    WHEN m.word_count IS NULL THEN 'missing_word_count'
+    WHEN m.word_count < g.typical_word_count_min THEN 'word_count_too_low'
+    WHEN m.word_count > g.typical_word_count_max THEN 'word_count_too_high'
+    ELSE 'valid'
+  END as validation_status, CASE
+    WHEN m.primary_genre IS NULL THEN 'missing_genre'
+    WHEN m.age_category IS NULL THEN 'missing_age_category'
+    ELSE 'complete'
+  END as metadata_completeness;
 
 -- View for current documents only
-CREATE VIEW IF NOT EXISTS current_supporting_documents AS
+CREATE OR REPLACE VIEW current_supporting_documents AS
 SELECT
   sd.*,
   m.title as manuscript_title,
@@ -732,8 +756,8 @@ CREATE TABLE IF NOT EXISTS submission_packages (
   package_type TEXT NOT NULL CHECK (package_type IN
     ('partial', 'full', 'query_only', 'custom', 'contest')),
   description TEXT,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   metadata TEXT, -- JSON: { target_publisher, submission_guidelines, notes, etc. }
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -761,11 +785,11 @@ CREATE INDEX IF NOT EXISTS idx_package_document_map_package ON package_document_
 CREATE TRIGGER IF NOT EXISTS update_submission_packages_timestamp
 AFTER UPDATE ON submission_packages
 BEGIN
-  UPDATE submission_packages SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_packages SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Package statistics view
-CREATE VIEW IF NOT EXISTS package_stats AS
+CREATE OR REPLACE VIEW package_stats AS
 SELECT
   sp.id,
   sp.package_name,
@@ -776,7 +800,7 @@ SELECT
 FROM submission_packages sp
 LEFT JOIN package_document_map pdm ON sp.id = pdm.package_id
 LEFT JOIN manuscripts m ON sp.manuscript_id = m.id
-GROUP BY sp.id;
+GROUP BY sp.id, *, title, full_name;
 -- Migration 025: Nuanced Submission Response System (Issue #52)
 -- Expands submission tracking with detailed response types, feedback categorization, and R&R workflow
 
@@ -788,11 +812,11 @@ CREATE TABLE IF NOT EXISTS submissions (
   package_id TEXT, -- FK to submission_packages
   publisher_name TEXT NOT NULL,
   publisher_type TEXT CHECK (publisher_type IN ('agent', 'publisher', 'magazine', 'contest', 'other')),
-  submission_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  submission_date BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   response_date INTEGER,
   status TEXT DEFAULT 'pending', -- Legacy field for backwards compatibility
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (package_id) REFERENCES submission_packages(id) ON DELETE SET NULL
@@ -833,7 +857,7 @@ CREATE INDEX IF NOT EXISTS idx_submissions_date ON submissions(submission_date D
 CREATE TRIGGER IF NOT EXISTS update_submissions_timestamp
 AFTER UPDATE ON submissions
 BEGIN
-  UPDATE submissions SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submissions SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Feedback categorization table
@@ -846,8 +870,8 @@ CREATE TABLE IF NOT EXISTS submission_feedback (
   feedback_text TEXT NOT NULL,
   addressed INTEGER DEFAULT 0, -- Boolean: was this addressed in revision?
   response_notes TEXT, -- How author addressed this feedback
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (submission_id) REFERENCES submissions(id) ON DELETE CASCADE
 );
 
@@ -859,11 +883,11 @@ CREATE INDEX IF NOT EXISTS idx_submission_feedback_addressed ON submission_feedb
 CREATE TRIGGER IF NOT EXISTS update_submission_feedback_timestamp
 AFTER UPDATE ON submission_feedback
 BEGIN
-  UPDATE submission_feedback SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_feedback SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Submission statistics view
-CREATE VIEW IF NOT EXISTS submission_stats AS
+CREATE OR REPLACE VIEW submission_stats AS
 SELECT
   s.id,
   s.manuscript_id,
@@ -879,7 +903,7 @@ SELECT
 FROM submissions s
 LEFT JOIN manuscripts m ON s.manuscript_id = m.id
 LEFT JOIN submission_feedback sf ON s.id = sf.submission_id
-GROUP BY s.id;
+GROUP BY s.id, manuscript_id, publisher_name, publisher_type, submission_date, response_date, response_type, is_resubmission, title;
 -- Migration 026: Human-Style Developmental Editor (Issue #60)
 -- AI editing agent that mimics conversational, encouraging editorial style from BA creative writing editor
 -- Source: 10 PDFs with ~100 pages of handwritten editorial feedback
@@ -899,8 +923,8 @@ CREATE TABLE IF NOT EXISTS human_style_edits (
   chapter_context TEXT, -- References to previous chapters if continuity issue
   addressed INTEGER DEFAULT 0, -- Boolean: has author addressed this feedback?
   author_response TEXT, -- Optional: author's notes about how they addressed it
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -917,7 +941,7 @@ CREATE INDEX IF NOT EXISTS idx_human_edits_created ON human_style_edits(created_
 CREATE TRIGGER IF NOT EXISTS update_human_edits_timestamp
 AFTER UPDATE ON human_style_edits
 BEGIN
-  UPDATE human_style_edits SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE human_style_edits SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Chapter analysis sessions (track when chapters were analyzed)
@@ -926,7 +950,7 @@ CREATE TABLE IF NOT EXISTS human_edit_sessions (
   manuscript_id TEXT NOT NULL,
   user_id TEXT NOT NULL,
   chapter_number INTEGER NOT NULL,
-  analysis_cost REAL, -- Claude API cost in USD
+  analysis_cost DOUBLE PRECISION, -- Claude API cost in USD
   annotation_count INTEGER DEFAULT 0,
   question_count INTEGER DEFAULT 0,
   suggestion_count INTEGER DEFAULT 0,
@@ -934,7 +958,7 @@ CREATE TABLE IF NOT EXISTS human_edit_sessions (
   issue_count INTEGER DEFAULT 0,
   continuity_count INTEGER DEFAULT 0,
   chapter_context TEXT, -- Summary of previous chapters used for continuity
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -944,7 +968,7 @@ CREATE INDEX IF NOT EXISTS idx_human_sessions_user ON human_edit_sessions(user_i
 CREATE INDEX IF NOT EXISTS idx_human_sessions_chapter ON human_edit_sessions(manuscript_id, chapter_number);
 
 -- Statistics view
-CREATE VIEW IF NOT EXISTS human_edit_stats AS
+CREATE OR REPLACE VIEW human_edit_stats AS
 SELECT
   h.manuscript_id,
   h.user_id,
@@ -962,7 +986,7 @@ SELECT
 FROM human_style_edits h
 LEFT JOIN manuscripts m ON h.manuscript_id = m.id
 LEFT JOIN human_edit_sessions s ON h.manuscript_id = s.manuscript_id AND h.chapter_number = s.chapter_number
-GROUP BY h.manuscript_id, h.user_id;
+GROUP BY h.manuscript_id, h.user_id, title, 2);
 -- Migration 027: Social Media Marketing Content Generator (Issue #45)
 -- AI-powered marketing kit generation with platform-specific social media posts,
 -- email templates, content calendar, trailer scripts, and reader magnets
@@ -976,10 +1000,10 @@ CREATE TABLE IF NOT EXISTS marketing_kits (
   genre TEXT,
   target_audience TEXT, -- JSON: demographics, reader interests
   tone TEXT, -- 'professional', 'casual', 'humorous', 'dramatic'
-  generation_cost REAL, -- Claude API cost
-  generated_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  generation_cost DOUBLE PRECISION, -- Claude API cost
+  generated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -992,7 +1016,7 @@ CREATE INDEX IF NOT EXISTS idx_marketing_kits_created ON marketing_kits(created_
 CREATE TRIGGER IF NOT EXISTS update_marketing_kits_timestamp
 AFTER UPDATE ON marketing_kits
 BEGIN
-  UPDATE marketing_kits SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE marketing_kits SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Social media posts (platform-specific)
@@ -1012,7 +1036,7 @@ CREATE TABLE IF NOT EXISTS social_media_posts (
   engagement_hook TEXT, -- Call-to-action or engagement strategy
   post_order INTEGER DEFAULT 0, -- Sequence in campaign
   is_used INTEGER DEFAULT 0, -- Boolean: has author used this post?
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (kit_id) REFERENCES marketing_kits(id) ON DELETE CASCADE
 );
 
@@ -1036,7 +1060,7 @@ CREATE TABLE IF NOT EXISTS content_calendar (
   priority TEXT CHECK (priority IN ('high', 'medium', 'low')),
   completed INTEGER DEFAULT 0, -- Boolean: has author completed this?
   notes TEXT,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (kit_id) REFERENCES marketing_kits(id) ON DELETE CASCADE,
   FOREIGN KEY (post_id) REFERENCES social_media_posts(id) ON DELETE SET NULL
 );
@@ -1059,8 +1083,8 @@ CREATE TABLE IF NOT EXISTS marketing_materials (
   word_count INTEGER,
   estimated_duration TEXT, -- For video scripts: "2-3 minutes"
   additional_notes TEXT, -- Production notes, requirements, tips
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (kit_id) REFERENCES marketing_kits(id) ON DELETE CASCADE
 );
 
@@ -1071,7 +1095,7 @@ CREATE INDEX IF NOT EXISTS idx_materials_type ON marketing_materials(material_ty
 CREATE TRIGGER IF NOT EXISTS update_marketing_materials_timestamp
 AFTER UPDATE ON marketing_materials
 BEGIN
-  UPDATE marketing_materials SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE marketing_materials SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Hashtag strategy table (optional, for tracking performance)
@@ -1085,7 +1109,7 @@ CREATE TABLE IF NOT EXISTS hashtag_strategy (
     ('genre', 'trending', 'community', 'author', 'promotional')),
   estimated_reach TEXT, -- 'high', 'medium', 'low'
   notes TEXT,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (kit_id) REFERENCES marketing_kits(id) ON DELETE CASCADE
 );
 
@@ -1094,7 +1118,7 @@ CREATE INDEX IF NOT EXISTS idx_hashtags_genre ON hashtag_strategy(genre);
 CREATE INDEX IF NOT EXISTS idx_hashtags_platform ON hashtag_strategy(platform);
 
 -- Statistics view
-CREATE VIEW IF NOT EXISTS marketing_kit_stats AS
+CREATE OR REPLACE VIEW marketing_kit_stats AS
 SELECT
   k.id as kit_id,
   k.manuscript_id,
@@ -1119,7 +1143,7 @@ LEFT JOIN manuscripts m ON k.manuscript_id = m.id
 LEFT JOIN social_media_posts p ON k.id = p.kit_id
 LEFT JOIN content_calendar c ON k.id = c.kit_id
 LEFT JOIN marketing_materials mat ON k.id = mat.kit_id
-GROUP BY k.id;
+GROUP BY k.id, manuscript_id, user_id, kit_name, genre, title, generation_cost, generated_at;
 -- Migration 028: Manuscript Formatting Engine (Issue #44)
 -- EPUB and PDF conversion with professional formatting for Amazon KDP publishing
 
@@ -1171,10 +1195,10 @@ CREATE TABLE IF NOT EXISTS formatted_manuscripts (
   passes_amazon_specs INTEGER DEFAULT 0,
 
   -- Metadata
-  generation_cost REAL, -- API/processing cost
+  generation_cost DOUBLE PRECISION, -- API/processing cost
   processing_time_ms INTEGER,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -1190,7 +1214,7 @@ CREATE INDEX IF NOT EXISTS idx_formatted_manuscripts_created ON formatted_manusc
 CREATE TRIGGER IF NOT EXISTS update_formatted_manuscripts_timestamp
 AFTER UPDATE ON formatted_manuscripts
 BEGIN
-  UPDATE formatted_manuscripts SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE formatted_manuscripts SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Formatting templates (reusable formatting configurations)
@@ -1207,8 +1231,8 @@ CREATE TABLE IF NOT EXISTS formatting_templates (
 
   -- Usage tracking
   times_used INTEGER DEFAULT 0,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -1221,7 +1245,7 @@ CREATE INDEX IF NOT EXISTS idx_formatting_templates_system ON formatting_templat
 CREATE TRIGGER IF NOT EXISTS update_formatting_templates_timestamp
 AFTER UPDATE ON formatting_templates
 BEGIN
-  UPDATE formatting_templates SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE formatting_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Formatting job queue (for async processing)
@@ -1235,10 +1259,10 @@ CREATE TABLE IF NOT EXISTS formatting_jobs (
   attempts INTEGER DEFAULT 0,
   max_attempts INTEGER DEFAULT 3,
   error_message TEXT,
-  started_at INTEGER,
+  started_at BIGINT,
   completed_at INTEGER,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (formatted_manuscript_id) REFERENCES formatted_manuscripts(id) ON DELETE CASCADE
 );
@@ -1251,11 +1275,11 @@ CREATE INDEX IF NOT EXISTS idx_formatting_jobs_created ON formatting_jobs(create
 CREATE TRIGGER IF NOT EXISTS update_formatting_jobs_timestamp
 AFTER UPDATE ON formatting_jobs
 BEGIN
-  UPDATE formatting_jobs SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE formatting_jobs SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Statistics view
-CREATE VIEW IF NOT EXISTS formatting_stats AS
+CREATE OR REPLACE VIEW formatting_stats AS
 SELECT
   f.manuscript_id,
   f.user_id,
@@ -1271,7 +1295,7 @@ SELECT
   MAX(f.created_at) as last_formatted
 FROM formatted_manuscripts f
 LEFT JOIN manuscripts m ON f.manuscript_id = m.id
-GROUP BY f.manuscript_id, f.user_id;
+GROUP BY f.manuscript_id, f.user_id, title;
 -- Migration 029: Communication & Feedback System (Issue #55)
 -- Publisher-author messaging, form letters, notifications, revision requests
 
@@ -1292,8 +1316,8 @@ CREATE TABLE IF NOT EXISTS notification_preferences (
   digest_frequency TEXT DEFAULT 'immediate' CHECK (digest_frequency IN
     ('immediate', 'daily', 'weekly', 'none')),
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -1304,7 +1328,7 @@ CREATE INDEX IF NOT EXISTS idx_notification_preferences_user ON notification_pre
 CREATE TRIGGER IF NOT EXISTS update_notification_preferences_timestamp
 AFTER UPDATE ON notification_preferences
 BEGIN
-  UPDATE notification_preferences SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE notification_preferences SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Message templates for publishers (form letters)
@@ -1326,8 +1350,8 @@ CREATE TABLE IF NOT EXISTS message_templates (
   -- Usage tracking
   times_used INTEGER DEFAULT 0,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (publisher_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -1340,7 +1364,7 @@ CREATE INDEX IF NOT EXISTS idx_message_templates_system ON message_templates(is_
 CREATE TRIGGER IF NOT EXISTS update_message_templates_timestamp
 AFTER UPDATE ON message_templates
 BEGIN
-  UPDATE message_templates SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE message_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Messages on submissions (threaded conversations)
@@ -1361,12 +1385,12 @@ CREATE TABLE IF NOT EXISTS submission_messages (
 
   -- Read tracking
   is_read INTEGER DEFAULT 0,
-  read_at INTEGER,
+  read_at BIGINT,
 
   -- Reply threading
   parent_message_id TEXT, -- For threaded replies
 
-  sent_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  sent_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (sender_user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -1409,8 +1433,8 @@ CREATE TABLE IF NOT EXISTS revision_requests (
   decision TEXT, -- Publisher's decision after revision
   decision_at INTEGER,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (requested_by_user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -1427,7 +1451,7 @@ CREATE INDEX IF NOT EXISTS idx_revision_requests_created ON revision_requests(cr
 CREATE TRIGGER IF NOT EXISTS update_revision_requests_timestamp
 AFTER UPDATE ON revision_requests
 BEGIN
-  UPDATE revision_requests SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE revision_requests SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Notification queue (for email sending)
@@ -1449,10 +1473,10 @@ CREATE TABLE IF NOT EXISTS notification_queue (
   -- Send tracking
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN
     ('pending', 'sent', 'failed')),
-  sent_at INTEGER,
+  sent_at BIGINT,
   error_message TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
@@ -1466,7 +1490,7 @@ CREATE INDEX IF NOT EXISTS idx_notification_queue_type ON notification_queue(not
 CREATE INDEX IF NOT EXISTS idx_notification_queue_created ON notification_queue(created_at);
 
 -- Statistics view
-CREATE VIEW IF NOT EXISTS communication_stats AS
+CREATE OR REPLACE VIEW communication_stats AS
 SELECT
   u.id as user_id,
   u.email,
@@ -1480,7 +1504,7 @@ FROM users u
 LEFT JOIN submission_messages sm ON u.id = sm.sender_user_id OR u.id = sm.recipient_user_id
 LEFT JOIN revision_requests rr ON u.id = rr.requested_by_user_id
 LEFT JOIN message_templates mt ON u.id = mt.publisher_id
-GROUP BY u.id;
+GROUP BY u.id, email;
 -- Migration 030: Slush Pile Management System (Issue #54)
 -- Publisher inbox, assignments, ratings, consensus, decision workflow
 
@@ -1490,13 +1514,13 @@ CREATE TABLE IF NOT EXISTS submission_assignments (
   submission_id TEXT NOT NULL,
   assigned_to_user_id TEXT NOT NULL, -- FK to users (role=publisher)
   assigned_by_user_id TEXT NOT NULL, -- FK to users (who assigned)
-  assignment_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  assignment_date BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   completion_date INTEGER, -- When reader finished review
   status TEXT DEFAULT 'pending' CHECK (status IN
     ('pending', 'in_progress', 'completed', 'skipped')),
   notes TEXT,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (assigned_to_user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -1513,7 +1537,7 @@ CREATE INDEX IF NOT EXISTS idx_assignments_date ON submission_assignments(assign
 CREATE TRIGGER IF NOT EXISTS update_submission_assignments_timestamp
 AFTER UPDATE ON submission_assignments
 BEGIN
-  UPDATE submission_assignments SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_assignments SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Submission ratings (scoring system)
@@ -1524,11 +1548,11 @@ CREATE TABLE IF NOT EXISTS submission_ratings (
   assignment_id TEXT, -- Optional: linked to assignment
 
   -- Scoring (1-10 scale)
-  overall_score REAL NOT NULL CHECK (overall_score >= 1 AND overall_score <= 10),
-  plot_score REAL CHECK (plot_score >= 1 AND plot_score <= 10),
-  writing_quality_score REAL CHECK (writing_quality_score >= 1 AND writing_quality_score <= 10),
-  marketability_score REAL CHECK (marketability_score >= 1 AND marketability_score <= 10),
-  voice_score REAL CHECK (voice_score >= 1 AND voice_score <= 10),
+  overall_score DOUBLE PRECISION NOT NULL CHECK (overall_score >= 1 AND overall_score <= 10),
+  plot_score DOUBLE PRECISION CHECK (plot_score >= 1 AND plot_score <= 10),
+  writing_quality_score DOUBLE PRECISION CHECK (writing_quality_score >= 1 AND writing_quality_score <= 10),
+  marketability_score DOUBLE PRECISION CHECK (marketability_score >= 1 AND marketability_score <= 10),
+  voice_score DOUBLE PRECISION CHECK (voice_score >= 1 AND voice_score <= 10),
 
   -- Recommendation
   recommendation TEXT CHECK (recommendation IN
@@ -1539,8 +1563,8 @@ CREATE TABLE IF NOT EXISTS submission_ratings (
   weaknesses TEXT, -- What needs improvement
   notes TEXT, -- Internal notes for team
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (rater_user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -1558,7 +1582,7 @@ CREATE INDEX IF NOT EXISTS idx_ratings_created ON submission_ratings(created_at 
 CREATE TRIGGER IF NOT EXISTS update_submission_ratings_timestamp
 AFTER UPDATE ON submission_ratings
 BEGIN
-  UPDATE submission_ratings SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_ratings SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Submission discussions (internal comments/notes)
@@ -1569,8 +1593,8 @@ CREATE TABLE IF NOT EXISTS submission_discussions (
   comment_text TEXT NOT NULL,
   is_internal INTEGER DEFAULT 1, -- Boolean: internal vs sent to author
   parent_comment_id TEXT, -- For threaded discussions
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -1587,11 +1611,11 @@ CREATE INDEX IF NOT EXISTS idx_discussions_internal ON submission_discussions(is
 CREATE TRIGGER IF NOT EXISTS update_submission_discussions_timestamp
 AFTER UPDATE ON submission_discussions
 BEGIN
-  UPDATE submission_discussions SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_discussions SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Consensus view (aggregate ratings)
-CREATE VIEW IF NOT EXISTS submission_consensus AS
+CREATE OR REPLACE VIEW submission_consensus AS
 SELECT
   sr.submission_id,
   COUNT(DISTINCT sr.rater_user_id) as total_readers,
@@ -1619,7 +1643,7 @@ FROM submission_ratings sr
 GROUP BY sr.submission_id;
 
 -- Publisher slush pile statistics
-CREATE VIEW IF NOT EXISTS publisher_slush_stats AS
+CREATE OR REPLACE VIEW publisher_slush_stats AS
 SELECT
   u.id as publisher_id,
   u.email,
@@ -1647,7 +1671,7 @@ LEFT JOIN submission_assignments sa ON u.id = sa.assigned_by_user_id OR u.id = s
 LEFT JOIN submission_ratings sr ON u.id = sr.rater_user_id
 LEFT JOIN submission_discussions sd ON u.id = sd.user_id
 WHERE u.role = 'publisher'
-GROUP BY u.id;
+GROUP BY u.id, email, display_name;
 -- Migration 031: Submission Windows & Deadline Tracking (Issue #53)
 -- Publisher submission windows, deadlines, alerts
 
@@ -1663,7 +1687,7 @@ CREATE TABLE IF NOT EXISTS publishers (
 
   -- Historical data
   avg_response_time_days INTEGER, -- Average response time in days
-  acceptance_rate REAL, -- % of submissions accepted (0.0 - 1.0)
+  acceptance_rate DOUBLE PRECISION, -- % of submissions accepted (0.0 - 1.0)
 
   -- Metadata
   genres_accepted TEXT, -- JSON array of genres
@@ -1672,8 +1696,8 @@ CREATE TABLE IF NOT EXISTS publishers (
   notes TEXT,
 
   is_active INTEGER DEFAULT 1, -- Boolean: still accepting submissions
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 CREATE INDEX IF NOT EXISTS idx_publishers_type ON publishers(publisher_type);
@@ -1684,7 +1708,7 @@ CREATE INDEX IF NOT EXISTS idx_publishers_name ON publishers(name);
 CREATE TRIGGER IF NOT EXISTS update_publishers_timestamp
 AFTER UPDATE ON publishers
 BEGIN
-  UPDATE publishers SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE publishers SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Publisher submission windows
@@ -1715,8 +1739,8 @@ CREATE TABLE IF NOT EXISTS publisher_submission_windows (
   description TEXT,
   notes TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (publisher_id) REFERENCES publishers(id) ON DELETE CASCADE
 );
@@ -1731,7 +1755,7 @@ CREATE INDEX IF NOT EXISTS idx_windows_type ON publisher_submission_windows(wind
 CREATE TRIGGER IF NOT EXISTS update_submission_windows_timestamp
 AFTER UPDATE ON publisher_submission_windows
 BEGIN
-  UPDATE publisher_submission_windows SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE publisher_submission_windows SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Submission deadlines (per-submission tracking)
@@ -1744,20 +1768,20 @@ CREATE TABLE IF NOT EXISTS submission_deadlines (
     ('response_expected', 'revise_resubmit', 'contract_expires', 'contest', 'window_closes', 'other')),
 
   -- Timing
-  deadline_date INTEGER NOT NULL, -- Unix timestamp
+  deadline_date BIGINT NOT NULL, -- Unix timestamp
   reminder_days_before INTEGER DEFAULT 7, -- Send reminder N days before
 
   -- Reminders
   reminder_sent INTEGER DEFAULT 0, -- Boolean
-  reminder_sent_at INTEGER,
+  reminder_sent_at BIGINT,
 
   -- Metadata
   deadline_name TEXT, -- "R&R Deadline for Novel Submission"
   description TEXT,
   notes TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -1771,7 +1795,7 @@ CREATE INDEX IF NOT EXISTS idx_deadlines_reminder_sent ON submission_deadlines(r
 CREATE TRIGGER IF NOT EXISTS update_submission_deadlines_timestamp
 AFTER UPDATE ON submission_deadlines
 BEGIN
-  UPDATE submission_deadlines SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_deadlines SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Window alerts (user subscriptions to publisher windows)
@@ -1789,8 +1813,8 @@ CREATE TABLE IF NOT EXISTS window_alerts (
   last_alerted_at INTEGER,
   alerts_sent_count INTEGER DEFAULT 0,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (publisher_id) REFERENCES publishers(id) ON DELETE CASCADE,
@@ -1804,11 +1828,11 @@ CREATE INDEX IF NOT EXISTS idx_window_alerts_publisher ON window_alerts(publishe
 CREATE TRIGGER IF NOT EXISTS update_window_alerts_timestamp
 AFTER UPDATE ON window_alerts
 BEGIN
-  UPDATE window_alerts SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE window_alerts SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- View: Currently open windows
-CREATE VIEW IF NOT EXISTS open_submission_windows AS
+CREATE OR REPLACE VIEW open_submission_windows AS
 SELECT
   psw.*,
   p.name as publisher_name,
@@ -1819,7 +1843,7 @@ SELECT
   -- Calculate days until close
   CASE
     WHEN psw.closes_at IS NOT NULL
-    THEN CAST((psw.closes_at - unixepoch()) / 86400.0 AS INTEGER)
+    THEN CAST((psw.closes_at - EXTRACT(EPOCH FROM NOW())::BIGINT) / 86400.0 AS INTEGER)
     ELSE NULL
   END as days_until_close,
 
@@ -1833,11 +1857,11 @@ SELECT
 FROM publisher_submission_windows psw
 JOIN publishers p ON psw.publisher_id = p.id
 WHERE psw.is_open = 1
-  AND (psw.closes_at IS NULL OR psw.closes_at > unixepoch())
+  AND (psw.closes_at IS NULL OR psw.closes_at > EXTRACT(EPOCH FROM NOW())::BIGINT)
   AND (psw.capacity_limit IS NULL OR psw.current_submissions < psw.capacity_limit);
 
 -- View: Opening soon (next 30 days)
-CREATE VIEW IF NOT EXISTS windows_opening_soon AS
+CREATE OR REPLACE VIEW windows_opening_soon AS
 SELECT
   psw.*,
   p.name as publisher_name,
@@ -1845,18 +1869,18 @@ SELECT
   p.website,
 
   -- Days until open
-  CAST((psw.opens_at - unixepoch()) / 86400.0 AS INTEGER) as days_until_open
+  CAST((psw.opens_at - EXTRACT(EPOCH FROM NOW())::BIGINT) / 86400.0 AS INTEGER) as days_until_open
 
 FROM publisher_submission_windows psw
 JOIN publishers p ON psw.publisher_id = p.id
 WHERE psw.is_open = 0
   AND psw.opens_at IS NOT NULL
-  AND psw.opens_at > unixepoch()
-  AND psw.opens_at <= (unixepoch() + 2592000) -- 30 days
+  AND psw.opens_at > EXTRACT(EPOCH FROM NOW())::BIGINT
+  AND psw.opens_at <= (EXTRACT(EPOCH FROM NOW())::BIGINT + 2592000) -- 30 days
 ORDER BY psw.opens_at ASC;
 
 -- View: Upcoming deadlines
-CREATE VIEW IF NOT EXISTS upcoming_deadlines AS
+CREATE OR REPLACE VIEW upcoming_deadlines AS
 SELECT
   sd.*,
   m.title as manuscript_title,
@@ -1864,14 +1888,14 @@ SELECT
   m.genre,
 
   -- Days until deadline
-  CAST((sd.deadline_date - unixepoch()) / 86400.0 AS INTEGER) as days_until_deadline,
+  CAST((sd.deadline_date - EXTRACT(EPOCH FROM NOW())::BIGINT) / 86400.0 AS INTEGER) as days_until_deadline,
 
   -- Overdue flag
-  CASE WHEN sd.deadline_date < unixepoch() THEN 1 ELSE 0 END as is_overdue
+  CASE WHEN sd.deadline_date < EXTRACT(EPOCH FROM NOW())::BIGINT THEN 1 ELSE 0 END as is_overdue
 
 FROM submission_deadlines sd
 JOIN manuscripts m ON sd.submission_id = m.id
-WHERE sd.deadline_date > (unixepoch() - 604800) -- Show 7 days past due
+WHERE sd.deadline_date > (EXTRACT(EPOCH FROM NOW())::BIGINT - 604800) -- Show 7 days past due
 ORDER BY sd.deadline_date ASC;
 -- Migration 032: Amazon KDP Integration System
 -- Enables semi-automated Amazon KDP publishing with pre-filled metadata and validation
@@ -1892,8 +1916,8 @@ CREATE TABLE IF NOT EXISTS kdp_packages (
   instructions_key TEXT, -- R2 key for instructions.pdf
   validation_passed INTEGER DEFAULT 0,
   expiration_date INTEGER, -- Expires after 30 days
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -1941,11 +1965,11 @@ CREATE TABLE IF NOT EXISTS kdp_metadata (
   publication_date INTEGER, -- Unix timestamp (or NULL for "publish immediately")
 
   -- Pricing & Distribution
-  price_usd REAL,
-  price_gbp REAL,
-  price_eur REAL,
-  price_cad REAL,
-  price_aud REAL,
+  price_usd DOUBLE PRECISION,
+  price_gbp DOUBLE PRECISION,
+  price_eur DOUBLE PRECISION,
+  price_cad DOUBLE PRECISION,
+  price_aud DOUBLE PRECISION,
   royalty_option TEXT CHECK (royalty_option IN ('35', '70')),
   kdp_select_enrolled INTEGER DEFAULT 0, -- Exclusive to Amazon for 90 days
   enable_lending INTEGER DEFAULT 1,
@@ -1960,8 +1984,8 @@ CREATE TABLE IF NOT EXISTS kdp_metadata (
   adult_content INTEGER DEFAULT 0,
   public_domain INTEGER DEFAULT 0,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (package_id) REFERENCES kdp_packages(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -1976,7 +2000,7 @@ CREATE TABLE IF NOT EXISTS kdp_validation_results (
   status TEXT NOT NULL CHECK (status IN ('pass', 'fail', 'warning')),
   issues TEXT, -- JSON array of validation issues
   recommendations TEXT, -- JSON array of recommendations
-  validated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  validated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (package_id) REFERENCES kdp_packages(id) ON DELETE CASCADE
 );
 
@@ -1994,8 +2018,8 @@ CREATE TABLE IF NOT EXISTS kdp_publishing_status (
   kdp_url TEXT, -- URL to live book page
   error_message TEXT,
   published_at INTEGER, -- When it went live
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (package_id) REFERENCES kdp_packages(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -2005,28 +2029,28 @@ CREATE TABLE IF NOT EXISTS kdp_publishing_status (
 CREATE TABLE IF NOT EXISTS kdp_royalty_calculations (
   id TEXT PRIMARY KEY,
   package_id TEXT NOT NULL,
-  price_usd REAL NOT NULL,
+  price_usd DOUBLE PRECISION NOT NULL,
   royalty_option TEXT NOT NULL CHECK (royalty_option IN ('35', '70')),
 
   -- Calculated Royalties
-  royalty_per_sale_usd REAL,
-  delivery_cost_usd REAL, -- For 70% royalty (based on file size)
-  net_royalty_usd REAL,
+  royalty_per_sale_usd DOUBLE PRECISION,
+  delivery_cost_usd DOUBLE PRECISION, -- For 70% royalty (based on file size)
+  net_royalty_usd DOUBLE PRECISION,
 
   -- File size (affects delivery cost)
-  file_size_mb REAL,
+  file_size_mb DOUBLE PRECISION,
 
   -- Minimum price requirements
-  minimum_price_35 REAL,
-  maximum_price_35 REAL,
-  minimum_price_70 REAL,
-  maximum_price_70 REAL,
+  minimum_price_35 DOUBLE PRECISION,
+  maximum_price_35 DOUBLE PRECISION,
+  minimum_price_70 DOUBLE PRECISION,
+  maximum_price_70 DOUBLE PRECISION,
 
   -- Recommendation
   recommended_royalty TEXT,
   recommendation_reason TEXT,
 
-  calculated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  calculated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (package_id) REFERENCES kdp_packages(id) ON DELETE CASCADE
 );
 
@@ -2051,29 +2075,26 @@ CREATE INDEX IF NOT EXISTS idx_kdp_publishing_asin ON kdp_publishing_status(kdp_
 CREATE INDEX IF NOT EXISTS idx_kdp_royalty_package ON kdp_royalty_calculations(package_id);
 
 -- Triggers for auto-update timestamps
-CREATE TRIGGER IF NOT EXISTS kdp_packages_updated
-AFTER UPDATE ON kdp_packages
+-- Update trigger for kdp_packages
+CREATE TRIGGER kdp_packages_updated
+BEFORE UPDATE ON kdp_packages
 FOR EACH ROW
-BEGIN
-  UPDATE kdp_packages SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS kdp_metadata_updated
-AFTER UPDATE ON kdp_metadata
+-- Update trigger for kdp_metadata
+CREATE TRIGGER kdp_metadata_updated
+BEFORE UPDATE ON kdp_metadata
 FOR EACH ROW
-BEGIN
-  UPDATE kdp_metadata SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS kdp_publishing_status_updated
-AFTER UPDATE ON kdp_publishing_status
+-- Update trigger for kdp_publishing_status
+CREATE TRIGGER kdp_publishing_status_updated
+BEFORE UPDATE ON kdp_publishing_status
 FOR EACH ROW
-BEGIN
-  UPDATE kdp_publishing_status SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- View: KDP Package Statistics
-CREATE VIEW IF NOT EXISTS kdp_stats AS
+CREATE OR REPLACE VIEW kdp_stats AS
 SELECT
   COUNT(DISTINCT kp.id) as total_packages,
   COUNT(DISTINCT CASE WHEN kp.package_status = 'ready' THEN kp.id END) as ready_packages,
@@ -2101,14 +2122,14 @@ CREATE TABLE IF NOT EXISTS comp_titles (
   publication_date INTEGER, -- Unix timestamp
 
   -- Market Data
-  price_usd REAL,
+  price_usd DOUBLE PRECISION,
   price_currency TEXT DEFAULT 'USD',
   bestseller_rank INTEGER, -- Overall Amazon rank
   category_ranks TEXT, -- JSON array: [{category, rank}]
 
   -- Review Data
   review_count INTEGER DEFAULT 0,
-  average_rating REAL, -- 1.0 to 5.0
+  average_rating DOUBLE PRECISION, -- 1.0 to 5.0
   rating_distribution TEXT, -- JSON: {5: count, 4: count, ...}
 
   -- Metadata
@@ -2127,8 +2148,8 @@ CREATE TABLE IF NOT EXISTS comp_titles (
   last_scraped_at INTEGER,
   scrape_source TEXT, -- 'manual', 'api', 'web_scrape'
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 -- Market Analysis Reports Table
@@ -2144,10 +2165,10 @@ CREATE TABLE IF NOT EXISTS market_analysis_reports (
   comp_titles_count INTEGER DEFAULT 0, -- Number of comp titles analyzed
 
   -- Pricing Analysis
-  recommended_price_usd REAL,
-  price_range_min REAL,
-  price_range_max REAL,
-  price_confidence_score REAL, -- 0.0 to 1.0
+  recommended_price_usd DOUBLE PRECISION,
+  price_range_min DOUBLE PRECISION,
+  price_range_max DOUBLE PRECISION,
+  price_confidence_score DOUBLE PRECISION, -- 0.0 to 1.0
   price_reasoning TEXT,
 
   -- Category Recommendations
@@ -2173,15 +2194,15 @@ CREATE TABLE IF NOT EXISTS market_analysis_reports (
   -- Report Metadata
   report_text TEXT, -- Full markdown report
   report_summary TEXT, -- Executive summary
-  ai_cost REAL, -- Cost of Claude API calls
+  ai_cost DOUBLE PRECISION, -- Cost of Claude API calls
 
   -- Status
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN
     ('pending', 'analyzing', 'completed', 'failed')),
   error_message TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -2192,9 +2213,9 @@ CREATE TABLE IF NOT EXISTS analysis_comp_titles (
   id TEXT PRIMARY KEY,
   analysis_id TEXT NOT NULL,
   comp_title_id TEXT NOT NULL,
-  relevance_score REAL, -- 0.0 to 1.0, how relevant this comp is
+  relevance_score DOUBLE PRECISION, -- 0.0 to 1.0, how relevant this comp is
   similarity_reasons TEXT, -- JSON array of why this comp was selected
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (analysis_id) REFERENCES market_analysis_reports(id) ON DELETE CASCADE,
   FOREIGN KEY (comp_title_id) REFERENCES comp_titles(id) ON DELETE CASCADE,
   UNIQUE(analysis_id, comp_title_id)
@@ -2217,7 +2238,7 @@ CREATE TABLE IF NOT EXISTS amazon_search_queries (
   comp_titles_found TEXT, -- JSON array of ASINs
 
   -- Metadata
-  search_timestamp INTEGER NOT NULL DEFAULT (unixepoch()),
+  search_timestamp INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   search_source TEXT, -- 'manual', 'automatic', 'scheduled'
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE SET NULL,
@@ -2232,29 +2253,29 @@ CREATE TABLE IF NOT EXISTS pricing_analysis (
 
   -- Price Distribution
   sample_size INTEGER NOT NULL, -- Number of books analyzed
-  min_price REAL,
-  max_price REAL,
-  avg_price REAL,
-  median_price REAL,
-  mode_price REAL, -- Most common price point
+  min_price DOUBLE PRECISION,
+  max_price DOUBLE PRECISION,
+  avg_price DOUBLE PRECISION,
+  median_price DOUBLE PRECISION,
+  mode_price DOUBLE PRECISION, -- Most common price point
 
   -- Price Ranges (percentiles)
-  price_p25 REAL, -- 25th percentile
-  price_p50 REAL, -- 50th percentile (median)
-  price_p75 REAL, -- 75th percentile
-  price_p90 REAL, -- 90th percentile
+  price_p25 DOUBLE PRECISION, -- 25th percentile
+  price_p50 DOUBLE PRECISION, -- 50th percentile (median)
+  price_p75 DOUBLE PRECISION, -- 75th percentile
+  price_p90 DOUBLE PRECISION, -- 90th percentile
 
   -- Sweet Spots
-  bestseller_avg_price REAL, -- Average price of top 100 bestsellers
-  high_rated_avg_price REAL, -- Average price of 4.5+ rated books
+  bestseller_avg_price DOUBLE PRECISION, -- Average price of top 100 bestsellers
+  high_rated_avg_price DOUBLE PRECISION, -- Average price of 4.5+ rated books
 
   -- Format Breakdown
-  kindle_avg_price REAL,
-  paperback_avg_price REAL,
-  hardcover_avg_price REAL,
+  kindle_avg_price DOUBLE PRECISION,
+  paperback_avg_price DOUBLE PRECISION,
+  hardcover_avg_price DOUBLE PRECISION,
 
   -- Metadata
-  analyzed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  analyzed_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   data_freshness TEXT, -- 'fresh' (< 7 days), 'stale' (> 7 days)
 
   UNIQUE(genre, analyzed_at)
@@ -2273,17 +2294,17 @@ CREATE TABLE IF NOT EXISTS market_trends (
 
   -- Volume Metrics
   new_releases_count INTEGER,
-  bestseller_turnover_rate REAL, -- How often top 100 changes
-  avg_review_velocity REAL, -- Reviews per day for recent releases
+  bestseller_turnover_rate DOUBLE PRECISION, -- How often top 100 changes
+  avg_review_velocity DOUBLE PRECISION, -- Reviews per day for recent releases
 
   -- Saturation Indicators
   competition_level TEXT, -- 'low', 'medium', 'high', 'saturated'
   barrier_to_entry TEXT, -- 'low', 'medium', 'high'
 
   -- Pricing Trends
-  avg_price_change_pct REAL, -- % change from previous period
+  avg_price_change_pct DOUBLE PRECISION, -- % change from previous period
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 -- Indexes for performance
@@ -2316,22 +2337,20 @@ CREATE INDEX IF NOT EXISTS idx_market_trends_genre ON market_trends(genre);
 CREATE INDEX IF NOT EXISTS idx_market_trends_period ON market_trends(period_start DESC);
 
 -- Triggers for auto-update timestamps
-CREATE TRIGGER IF NOT EXISTS comp_titles_updated
-AFTER UPDATE ON comp_titles
+-- Update trigger for comp_titles
+CREATE TRIGGER comp_titles_updated
+BEFORE UPDATE ON comp_titles
 FOR EACH ROW
-BEGIN
-  UPDATE comp_titles SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS market_analysis_reports_updated
-AFTER UPDATE ON market_analysis_reports
+-- Update trigger for market_analysis_reports
+CREATE TRIGGER market_analysis_reports_updated
+BEFORE UPDATE ON market_analysis_reports
 FOR EACH ROW
-BEGIN
-  UPDATE market_analysis_reports SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- View: Market Analysis Statistics
-CREATE VIEW IF NOT EXISTS market_analysis_stats AS
+CREATE OR REPLACE VIEW market_analysis_stats AS
 SELECT
   COUNT(DISTINCT mar.id) as total_analyses,
   COUNT(DISTINCT mar.manuscript_id) as manuscripts_analyzed,
@@ -2346,7 +2365,7 @@ LEFT JOIN analysis_comp_titles act ON mar.id = act.analysis_id
 LEFT JOIN comp_titles ct ON act.comp_title_id = ct.id;
 
 -- View: Genre Pricing Summary
-CREATE VIEW IF NOT EXISTS genre_pricing_summary AS
+CREATE OR REPLACE VIEW genre_pricing_summary AS
 SELECT
   genre,
   COUNT(*) as book_count,
@@ -2357,7 +2376,7 @@ SELECT
   AVG(CASE WHEN average_rating >= 4.5 THEN price_usd END) as high_rated_avg_price
 FROM comp_titles
 WHERE price_usd IS NOT NULL
-GROUP BY genre;
+GROUP BY genre, *, name, publisher_type, website, avg_response_time_days;
 -- Migration 034: Sales & Royalty Tracking Dashboard
 -- Comprehensive sales analytics, royalty tracking, and performance metrics
 
@@ -2375,10 +2394,10 @@ CREATE TABLE IF NOT EXISTS sales_data (
 
   -- Financial Data
   units_sold INTEGER DEFAULT 0,
-  list_price REAL, -- Original list price
-  revenue REAL DEFAULT 0, -- Gross revenue (before platform cut)
-  royalty_earned REAL DEFAULT 0, -- Author's royalty
-  royalty_rate REAL, -- Percentage (e.g., 0.70 for 70%)
+  list_price DOUBLE PRECISION, -- Original list price
+  revenue DOUBLE PRECISION DEFAULT 0, -- Gross revenue (before platform cut)
+  royalty_earned DOUBLE PRECISION DEFAULT 0, -- Author's royalty
+  royalty_rate DOUBLE PRECISION, -- Percentage (e.g., 0.70 for 70%)
   currency TEXT DEFAULT 'USD',
 
   -- Geographic Data
@@ -2391,11 +2410,11 @@ CREATE TABLE IF NOT EXISTS sales_data (
 
   -- Kindle Unlimited (KDP specific)
   kenp_pages_read INTEGER DEFAULT 0, -- Kindle Unlimited pages read
-  kenp_revenue REAL DEFAULT 0, -- Revenue from KENP
+  kenp_revenue DOUBLE PRECISION DEFAULT 0, -- Revenue from KENP
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -2415,27 +2434,27 @@ CREATE TABLE IF NOT EXISTS royalty_payments (
   expected_payment_date INTEGER, -- Expected payment date
 
   -- Financial Data
-  amount REAL NOT NULL, -- Payment amount
+  amount DOUBLE PRECISION NOT NULL, -- Payment amount
   currency TEXT DEFAULT 'USD',
-  exchange_rate REAL, -- If converted from foreign currency
+  exchange_rate DOUBLE PRECISION, -- If converted from foreign currency
 
   -- Status
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN
     ('pending', 'processing', 'paid', 'reconciled', 'disputed')),
 
   -- Tax Data
-  tax_withheld REAL DEFAULT 0, -- Tax withholding (if applicable)
+  tax_withheld DOUBLE PRECISION DEFAULT 0, -- Tax withholding (if applicable)
   tax_country TEXT, -- Country where tax was withheld
 
   -- Reconciliation
   sales_count INTEGER, -- Number of sales in this payment
-  expected_amount REAL, -- Expected amount based on sales data
-  discrepancy REAL, -- Difference between expected and actual
+  expected_amount DOUBLE PRECISION, -- Expected amount based on sales data
+  discrepancy DOUBLE PRECISION, -- Difference between expected and actual
   reconciliation_notes TEXT,
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -2455,7 +2474,7 @@ CREATE TABLE IF NOT EXISTS bestseller_ranks (
   category_rank INTEGER, -- Rank within specific category
 
   -- Snapshot Metadata
-  tracked_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  tracked_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -2478,8 +2497,8 @@ CREATE TABLE IF NOT EXISTS sales_aggregations (
 
   -- Aggregated Metrics
   total_units_sold INTEGER DEFAULT 0,
-  total_revenue REAL DEFAULT 0,
-  total_royalties REAL DEFAULT 0,
+  total_revenue DOUBLE PRECISION DEFAULT 0,
+  total_royalties DOUBLE PRECISION DEFAULT 0,
 
   -- Format Breakdown
   ebook_units INTEGER DEFAULT 0,
@@ -2487,20 +2506,20 @@ CREATE TABLE IF NOT EXISTS sales_aggregations (
   hardcover_units INTEGER DEFAULT 0,
   audiobook_units INTEGER DEFAULT 0,
 
-  ebook_revenue REAL DEFAULT 0,
-  paperback_revenue REAL DEFAULT 0,
-  hardcover_revenue REAL DEFAULT 0,
-  audiobook_revenue REAL DEFAULT 0,
+  ebook_revenue DOUBLE PRECISION DEFAULT 0,
+  paperback_revenue DOUBLE PRECISION DEFAULT 0,
+  hardcover_revenue DOUBLE PRECISION DEFAULT 0,
+  audiobook_revenue DOUBLE PRECISION DEFAULT 0,
 
   -- Kindle Unlimited
   kenp_pages_read INTEGER DEFAULT 0,
-  kenp_revenue REAL DEFAULT 0,
+  kenp_revenue DOUBLE PRECISION DEFAULT 0,
 
   -- Geographic Breakdown (top 5 countries JSON)
   top_countries TEXT, -- JSON: [{"country": "US", "units": 100}, ...]
 
   -- Computed at
-  computed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  computed_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -2523,7 +2542,7 @@ CREATE TABLE IF NOT EXISTS platform_connections (
   api_secret_encrypted TEXT, -- Encrypted API secret
   access_token_encrypted TEXT, -- OAuth access token
   refresh_token_encrypted TEXT, -- OAuth refresh token
-  token_expires_at INTEGER, -- Token expiration timestamp
+  token_expires_at BIGINT, -- Token expiration timestamp
 
   -- Platform-specific metadata
   platform_user_id TEXT, -- User ID on the platform
@@ -2536,8 +2555,8 @@ CREATE TABLE IF NOT EXISTS platform_connections (
   next_sync_at INTEGER, -- Next scheduled sync
 
   -- Metadata
-  connected_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  connected_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   UNIQUE(user_id, platform)
@@ -2555,8 +2574,8 @@ CREATE TABLE IF NOT EXISTS sales_goals (
   goal_type TEXT NOT NULL CHECK (goal_type IN
     ('units', 'revenue', 'royalties', 'reviews', 'rank')),
 
-  target_value REAL NOT NULL, -- Target number (e.g., 1000 units, $5000 revenue)
-  current_value REAL DEFAULT 0, -- Current progress
+  target_value DOUBLE PRECISION NOT NULL, -- Target number (e.g., 1000 units, $5000 revenue)
+  current_value DOUBLE PRECISION DEFAULT 0, -- Current progress
 
   -- Time Frame
   start_date INTEGER NOT NULL,
@@ -2572,8 +2591,8 @@ CREATE TABLE IF NOT EXISTS sales_goals (
   last_notification_at INTEGER,
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
@@ -2595,29 +2614,29 @@ CREATE TABLE IF NOT EXISTS marketing_campaigns (
   end_date INTEGER,
 
   -- Budget & Spend
-  budget REAL,
-  spend REAL DEFAULT 0,
+  budget DOUBLE PRECISION,
+  spend DOUBLE PRECISION DEFAULT 0,
   currency TEXT DEFAULT 'USD',
 
   -- Target Metrics
   target_metric TEXT, -- 'sales', 'downloads', 'page_reads', 'reviews'
-  target_value REAL,
+  target_value DOUBLE PRECISION,
 
   -- Campaign Settings (JSON)
   settings TEXT, -- JSON: platform-specific settings
 
   -- Results (computed)
   units_sold INTEGER DEFAULT 0,
-  revenue REAL DEFAULT 0,
-  roi REAL, -- Return on investment
+  revenue DOUBLE PRECISION DEFAULT 0,
+  roi DOUBLE PRECISION, -- Return on investment
 
   -- Status
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN
     ('draft', 'scheduled', 'active', 'completed', 'cancelled')),
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
@@ -2638,8 +2657,8 @@ CREATE TABLE IF NOT EXISTS series_sales (
 
   -- Series Metrics
   total_units_sold INTEGER DEFAULT 0,
-  total_revenue REAL DEFAULT 0,
-  total_royalties REAL DEFAULT 0,
+  total_revenue DOUBLE PRECISION DEFAULT 0,
+  total_royalties DOUBLE PRECISION DEFAULT 0,
 
   -- Read-through Analysis
   book_1_sales INTEGER DEFAULT 0,
@@ -2648,16 +2667,16 @@ CREATE TABLE IF NOT EXISTS series_sales (
   book_4_sales INTEGER DEFAULT 0,
   book_5_sales INTEGER DEFAULT 0,
 
-  read_through_rate_1_to_2 REAL, -- Percentage of Book 1 readers who buy Book 2
-  read_through_rate_2_to_3 REAL,
-  read_through_rate_3_to_4 REAL,
+  read_through_rate_1_to_2 DOUBLE PRECISION, -- Percentage of Book 1 readers who buy Book 2
+  read_through_rate_2_to_3 DOUBLE PRECISION,
+  read_through_rate_3_to_4 DOUBLE PRECISION,
 
   -- Bundle Sales
   bundle_units_sold INTEGER DEFAULT 0,
-  bundle_revenue REAL DEFAULT 0,
+  bundle_revenue DOUBLE PRECISION DEFAULT 0,
 
   -- Computed at
-  computed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  computed_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -2707,45 +2726,40 @@ CREATE INDEX IF NOT EXISTS idx_series_sales_user ON series_sales(user_id);
 CREATE INDEX IF NOT EXISTS idx_series_sales_period ON series_sales(period_type, period_start DESC);
 
 -- Triggers for Auto-Update Timestamps
-CREATE TRIGGER IF NOT EXISTS sales_data_updated
-AFTER UPDATE ON sales_data
+-- Update trigger for sales_data
+CREATE TRIGGER sales_data_updated
+BEFORE UPDATE ON sales_data
 FOR EACH ROW
-BEGIN
-  UPDATE sales_data SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS royalty_payments_updated
-AFTER UPDATE ON royalty_payments
+-- Update trigger for royalty_payments
+CREATE TRIGGER royalty_payments_updated
+BEFORE UPDATE ON royalty_payments
 FOR EACH ROW
-BEGIN
-  UPDATE royalty_payments SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS platform_connections_updated
-AFTER UPDATE ON platform_connections
+-- Update trigger for platform_connections
+CREATE TRIGGER platform_connections_updated
+BEFORE UPDATE ON platform_connections
 FOR EACH ROW
-BEGIN
-  UPDATE platform_connections SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS sales_goals_updated
-AFTER UPDATE ON sales_goals
+-- Update trigger for sales_goals
+CREATE TRIGGER sales_goals_updated
+BEFORE UPDATE ON sales_goals
 FOR EACH ROW
-BEGIN
-  UPDATE sales_goals SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS marketing_campaigns_updated
-AFTER UPDATE ON marketing_campaigns
+-- Update trigger for marketing_campaigns
+CREATE TRIGGER marketing_campaigns_updated
+BEFORE UPDATE ON marketing_campaigns
 FOR EACH ROW
-BEGIN
-  UPDATE marketing_campaigns SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Views for Analytics
 
 -- Sales Overview View
-CREATE VIEW IF NOT EXISTS sales_overview AS
+CREATE OR REPLACE VIEW sales_overview AS
 SELECT
   sd.manuscript_id,
   sd.user_id,
@@ -2764,7 +2778,7 @@ JOIN manuscripts m ON sd.manuscript_id = m.id
 GROUP BY sd.manuscript_id, sd.user_id, m.title;
 
 -- Platform Performance View
-CREATE VIEW IF NOT EXISTS platform_performance AS
+CREATE OR REPLACE VIEW platform_performance AS
 SELECT
   sd.platform,
   sd.user_id,
@@ -2777,7 +2791,7 @@ FROM sales_data sd
 GROUP BY sd.platform, sd.user_id;
 
 -- Recent Sales Activity View (Last 30 Days)
-CREATE VIEW IF NOT EXISTS recent_sales_activity AS
+CREATE OR REPLACE VIEW recent_sales_activity AS
 SELECT
   sd.manuscript_id,
   sd.user_id,
@@ -2793,7 +2807,7 @@ WHERE sd.sale_date >= unixepoch('now', '-30 days')
 GROUP BY sd.manuscript_id, sd.user_id, m.title, sd.platform, sd.format;
 
 -- Royalty Payment Summary View
-CREATE VIEW IF NOT EXISTS royalty_payment_summary AS
+CREATE OR REPLACE VIEW royalty_payment_summary AS
 SELECT
   rp.user_id,
   rp.platform,
@@ -2807,7 +2821,7 @@ FROM royalty_payments rp
 GROUP BY rp.user_id, rp.platform;
 
 -- Sales Goals Progress View
-CREATE VIEW IF NOT EXISTS sales_goals_progress AS
+CREATE OR REPLACE VIEW sales_goals_progress AS
 SELECT
   sg.id,
   sg.user_id,
@@ -2885,8 +2899,8 @@ CREATE TABLE IF NOT EXISTS manuscript_rights (
   languages TEXT, -- JSON array of language codes (e.g., ["en", "es", "fr"])
 
   -- Financial Terms
-  advance REAL, -- Advance payment for rights
-  royalty_rate REAL, -- Royalty percentage (e.g., 0.10 for 10%)
+  advance DOUBLE PRECISION, -- Advance payment for rights
+  royalty_rate DOUBLE PRECISION, -- Royalty percentage (e.g., 0.10 for 10%)
   royalty_escalation TEXT, -- Description of royalty escalation clauses
 
   -- Contract Details
@@ -2897,8 +2911,8 @@ CREATE TABLE IF NOT EXISTS manuscript_rights (
   notes TEXT,
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -2938,12 +2952,12 @@ CREATE TABLE IF NOT EXISTS publication_history (
   -- Details
   isbn TEXT, -- ISBN if applicable
   circulation INTEGER, -- Circulation/distribution count
-  payment_received REAL, -- Payment received for publication
+  payment_received DOUBLE PRECISION, -- Payment received for publication
 
   notes TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -2965,7 +2979,7 @@ CREATE TABLE IF NOT EXISTS rights_offers (
   rights_offered TEXT NOT NULL, -- JSON array of rights types offered
 
   -- Offer Details
-  offer_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  offer_date BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   response_deadline INTEGER, -- Deadline for publisher response
 
   -- Status
@@ -2983,15 +2997,15 @@ CREATE TABLE IF NOT EXISTS rights_offers (
   response_notes TEXT,
 
   -- Terms Proposed
-  proposed_advance REAL,
-  proposed_royalty_rate REAL,
+  proposed_advance DOUBLE PRECISION,
+  proposed_royalty_rate DOUBLE PRECISION,
   proposed_duration_years INTEGER,
   proposed_exclusive INTEGER DEFAULT 0,
 
   notes TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -3017,7 +3031,7 @@ CREATE TABLE IF NOT EXISTS rights_conflicts (
     'reversion_dispute'     -- Dispute over reversion status
   )),
 
-  conflict_detected_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  conflict_detected_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   -- Resolution
   resolved INTEGER DEFAULT 0, -- Boolean
@@ -3056,8 +3070,8 @@ CREATE TABLE IF NOT EXISTS rights_templates (
 
   is_active INTEGER DEFAULT 1, -- Boolean
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -3157,38 +3171,34 @@ CREATE INDEX IF NOT EXISTS idx_rights_templates_type ON rights_templates(templat
 CREATE INDEX IF NOT EXISTS idx_rights_templates_active ON rights_templates(is_active);
 
 -- Triggers for Auto-Update Timestamps
-CREATE TRIGGER IF NOT EXISTS manuscript_rights_updated
-AFTER UPDATE ON manuscript_rights
+-- Update trigger for manuscript_rights
+CREATE TRIGGER manuscript_rights_updated
+BEFORE UPDATE ON manuscript_rights
 FOR EACH ROW
-BEGIN
-  UPDATE manuscript_rights SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS publication_history_updated
-AFTER UPDATE ON publication_history
+-- Update trigger for publication_history
+CREATE TRIGGER publication_history_updated
+BEFORE UPDATE ON publication_history
 FOR EACH ROW
-BEGIN
-  UPDATE publication_history SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS rights_offers_updated
-AFTER UPDATE ON rights_offers
+-- Update trigger for rights_offers
+CREATE TRIGGER rights_offers_updated
+BEFORE UPDATE ON rights_offers
 FOR EACH ROW
-BEGIN
-  UPDATE rights_offers SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS rights_templates_updated
-AFTER UPDATE ON rights_templates
+-- Update trigger for rights_templates
+CREATE TRIGGER rights_templates_updated
+BEFORE UPDATE ON rights_templates
 FOR EACH ROW
-BEGIN
-  UPDATE rights_templates SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Views for Analytics
 
 -- Rights Summary by Manuscript
-CREATE VIEW IF NOT EXISTS rights_summary AS
+CREATE OR REPLACE VIEW rights_summary AS
 SELECT
   mr.manuscript_id,
   m.title as manuscript_title,
@@ -3201,10 +3211,10 @@ SELECT
   MAX(mr.grant_end_date) as latest_expiration
 FROM manuscript_rights mr
 JOIN manuscripts m ON mr.manuscript_id = m.id
-GROUP BY mr.manuscript_id, m.title, mr.user_id;
+GROUP BY mr.manuscript_id, m.title, mr.user_id, goal_name, goal_type, target_value, current_value, 2), status, start_date, end_date;
 
 -- Available Rights by Manuscript
-CREATE VIEW IF NOT EXISTS available_rights AS
+CREATE OR REPLACE VIEW available_rights AS
 SELECT
   m.id as manuscript_id,
   m.title as manuscript_title,
@@ -3222,7 +3232,7 @@ LEFT JOIN manuscript_rights mr_granted ON m.id = mr_granted.manuscript_id
 WHERE mr_granted.id IS NULL;
 
 -- Rights Expiring Soon (next 90 days)
-CREATE VIEW IF NOT EXISTS rights_expiring_soon AS
+CREATE OR REPLACE VIEW rights_expiring_soon AS
 SELECT
   mr.id,
   mr.manuscript_id,
@@ -3231,17 +3241,17 @@ SELECT
   mr.rights_type,
   mr.granted_to_publisher_name,
   mr.grant_end_date,
-  (mr.grant_end_date - unixepoch()) / 86400 as days_until_expiration
+  (mr.grant_end_date - EXTRACT(EPOCH FROM NOW())::BIGINT) / 86400 as days_until_expiration
 FROM manuscript_rights mr
 JOIN manuscripts m ON mr.manuscript_id = m.id
 WHERE mr.rights_status = 'granted'
   AND mr.grant_end_date IS NOT NULL
-  AND mr.grant_end_date <= unixepoch() + (90 * 86400)
-  AND mr.grant_end_date > unixepoch()
+  AND mr.grant_end_date <= EXTRACT(EPOCH FROM NOW())::BIGINT + (90 * 86400)
+  AND mr.grant_end_date > EXTRACT(EPOCH FROM NOW())::BIGINT
 ORDER BY mr.grant_end_date ASC;
 
 -- Publication History Summary
-CREATE VIEW IF NOT EXISTS publication_history_summary AS
+CREATE OR REPLACE VIEW publication_history_summary AS
 SELECT
   ph.manuscript_id,
   m.title as manuscript_title,
@@ -3253,7 +3263,8 @@ SELECT
   SUM(ph.payment_received) as total_payments_received
 FROM publication_history ph
 JOIN manuscripts m ON ph.manuscript_id = m.id
-GROUP BY ph.manuscript_id, m.title, ph.user_id;
+GROUP BY ph.manuscript_id, m.title, ph.user_id, -- List rights that are NOT granted or offered
+  CASE WHEN mr_granted.rights_type IS NULL THEN 'first_serial' ELSE NULL END as first_serial_available;
 -- Migration 036: Platform-Specific AI Chat Assistants with Self-Updating Knowledge Base
 -- Specialized AI agents for each publishing platform (KDP, Draft2Digital, IngramSpark, etc.)
 -- with daily documentation crawling and automatic workflow updates
@@ -3315,11 +3326,11 @@ CREATE TABLE IF NOT EXISTS platform_docs (
   change_summary TEXT, -- Claude-generated summary of changes
 
   -- Metadata
-  fetched_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  analyzed_at INTEGER, -- When Claude analyzed changes
+  fetched_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  analyzed_at BIGINT, -- When Claude analyzed changes
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (previous_version_id) REFERENCES platform_docs(id) ON DELETE SET NULL
 );
@@ -3350,7 +3361,7 @@ CREATE TABLE IF NOT EXISTS agent_knowledge (
 
   -- Source Tracking
   source_doc_id TEXT, -- Link to platform_docs
-  confidence_score REAL DEFAULT 1.0, -- 0.0-1.0 confidence
+  confidence_score DOUBLE PRECISION DEFAULT 1.0, -- 0.0-1.0 confidence
 
   -- Versioning
   version INTEGER NOT NULL DEFAULT 1,
@@ -3358,8 +3369,8 @@ CREATE TABLE IF NOT EXISTS agent_knowledge (
 
   is_current INTEGER DEFAULT 1, -- Boolean: is this the current version?
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (source_doc_id) REFERENCES platform_docs(id) ON DELETE SET NULL,
   FOREIGN KEY (supersedes_id) REFERENCES agent_knowledge(id) ON DELETE SET NULL
@@ -3402,8 +3413,8 @@ CREATE TABLE IF NOT EXISTS workflows (
   changelog TEXT, -- Description of changes from previous version
   auto_generated INTEGER DEFAULT 0, -- Boolean: auto-generated from doc changes?
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (previous_version_id) REFERENCES workflows(id) ON DELETE SET NULL
 );
@@ -3432,15 +3443,15 @@ CREATE TABLE IF NOT EXISTS user_workflows (
   )),
 
   -- Metrics
-  started_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  started_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   completed_at INTEGER,
-  last_activity_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  last_activity_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   -- Blocking Issues
   blocked_reason TEXT, -- Why workflow is blocked
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE SET NULL,
@@ -3479,9 +3490,9 @@ CREATE TABLE IF NOT EXISTS agent_conversations (
   -- AI Metadata
   model_used TEXT, -- Claude model version
   tokens_used INTEGER,
-  cost REAL,
+  cost DOUBLE PRECISION,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (user_workflow_id) REFERENCES user_workflows(id) ON DELETE SET NULL
@@ -3508,11 +3519,11 @@ CREATE TABLE IF NOT EXISTS doc_fetch_log (
 
   error_message TEXT,
 
-  fetch_started_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  fetch_started_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   fetch_completed_at INTEGER,
-  duration_seconds REAL,
+  duration_seconds DOUBLE PRECISION,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 -- Platform Agent Configuration
@@ -3546,8 +3557,8 @@ CREATE TABLE IF NOT EXISTS agent_config (
 
   is_active INTEGER DEFAULT 1, -- Boolean: is agent active?
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 -- User Notifications for Workflow Changes
@@ -3573,12 +3584,12 @@ CREATE TABLE IF NOT EXISTS workflow_change_notifications (
 
   -- Notification Status
   notification_sent INTEGER DEFAULT 0, -- Boolean: has notification been sent?
-  notification_sent_at INTEGER,
+  notification_sent_at BIGINT,
 
   user_acknowledged INTEGER DEFAULT 0, -- Boolean: has user seen it?
   user_acknowledged_at INTEGER,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE CASCADE
@@ -3828,56 +3839,51 @@ CREATE INDEX IF NOT EXISTS idx_workflow_notifications_sent ON workflow_change_no
 CREATE INDEX IF NOT EXISTS idx_workflow_notifications_ack ON workflow_change_notifications(user_acknowledged);
 
 -- Triggers for Auto-Update Timestamps
-CREATE TRIGGER IF NOT EXISTS platform_docs_updated
-AFTER UPDATE ON platform_docs
+-- Update trigger for platform_docs
+CREATE TRIGGER platform_docs_updated
+BEFORE UPDATE ON platform_docs
 FOR EACH ROW
-BEGIN
-  UPDATE platform_docs SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS agent_knowledge_updated
-AFTER UPDATE ON agent_knowledge
+-- Update trigger for agent_knowledge
+CREATE TRIGGER agent_knowledge_updated
+BEFORE UPDATE ON agent_knowledge
 FOR EACH ROW
-BEGIN
-  UPDATE agent_knowledge SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS workflows_updated
-AFTER UPDATE ON workflows
+-- Update trigger for workflows
+CREATE TRIGGER workflows_updated
+BEFORE UPDATE ON workflows
 FOR EACH ROW
-BEGIN
-  UPDATE workflows SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS user_workflows_updated
-AFTER UPDATE ON user_workflows
+-- Update trigger for user_workflows
+CREATE TRIGGER user_workflows_updated
+BEFORE UPDATE ON user_workflows
 FOR EACH ROW
-BEGIN
-  UPDATE user_workflows SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS agent_config_updated
-AFTER UPDATE ON agent_config
+-- Update trigger for agent_config
+CREATE TRIGGER agent_config_updated
+BEFORE UPDATE ON agent_config
 FOR EACH ROW
-BEGIN
-  UPDATE agent_config SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Views for Analytics
 
 -- Active User Workflows Summary
-CREATE VIEW IF NOT EXISTS active_workflows_summary AS
+CREATE OR REPLACE VIEW active_workflows_summary AS
 SELECT
   uw.platform,
   uw.status,
   COUNT(*) as workflow_count,
-  AVG((unixepoch() - uw.started_at) / 86400.0) as avg_days_in_progress
+  AVG((EXTRACT(EPOCH FROM NOW())::BIGINT - uw.started_at) / 86400.0) as avg_days_in_progress
 FROM user_workflows uw
 WHERE uw.status = 'in_progress'
 GROUP BY uw.platform, uw.status;
 
 -- Documentation Change Activity
-CREATE VIEW IF NOT EXISTS doc_change_activity AS
+CREATE OR REPLACE VIEW doc_change_activity AS
 SELECT
   pd.platform,
   pd.change_significance,
@@ -3885,11 +3891,11 @@ SELECT
   MAX(pd.fetched_at) as last_change_detected
 FROM platform_docs pd
 WHERE pd.change_detected = 1
-  AND pd.fetched_at >= unixepoch() - (30 * 86400) -- Last 30 days
+  AND pd.fetched_at >= EXTRACT(EPOCH FROM NOW())::BIGINT - (30 * 86400) -- Last 30 days
 GROUP BY pd.platform, pd.change_significance;
 
 -- Agent Conversation Stats
-CREATE VIEW IF NOT EXISTS agent_conversation_stats AS
+CREATE OR REPLACE VIEW agent_conversation_stats AS
 SELECT
   ac.platform,
   ac.user_id,
@@ -3904,14 +3910,14 @@ FROM agent_conversations ac
 GROUP BY ac.platform, ac.user_id;
 
 -- Workflow Completion Rates
-CREATE VIEW IF NOT EXISTS workflow_completion_rates AS
+CREATE OR REPLACE VIEW workflow_completion_rates AS
 SELECT
   uw.platform,
   w.workflow_name,
   COUNT(*) as total_started,
   COUNT(CASE WHEN uw.status = 'completed' THEN 1 END) as completed_count,
   ROUND(
-    CAST(COUNT(CASE WHEN uw.status = 'completed' THEN 1 END) AS REAL) / COUNT(*) * 100,
+    CAST(COUNT(CASE WHEN uw.status = 'completed' THEN 1 END) AS DOUBLE PRECISION) / COUNT(*) * 100,
     2
   ) as completion_rate_percent,
   AVG(CASE WHEN uw.completed_at IS NOT NULL
@@ -3919,7 +3925,8 @@ SELECT
   END) as avg_days_to_complete
 FROM user_workflows uw
 JOIN workflows w ON uw.workflow_id = w.id
-GROUP BY uw.platform, w.workflow_name;
+GROUP BY uw.platform, w.workflow_name, 2
+  ) as completion_rate_percent;
 -- Migration 037: Competitive Analysis & Market Positioning
 -- Comp title analysis, author platform tracking, and marketing hooks generation
 
@@ -3957,20 +3964,20 @@ CREATE TABLE IF NOT EXISTS comp_titles (
   comp_isbn TEXT,
 
   -- Similarity Analysis
-  similarity_score REAL, -- 0.0-1.0 how similar to manuscript
+  similarity_score DOUBLE PRECISION, -- 0.0-1.0 how similar to manuscript
   why_comparable TEXT, -- AI-generated explanation
 
   -- Market Data
   amazon_sales_rank INTEGER,
   amazon_category_rank INTEGER,
   amazon_category TEXT,
-  price REAL,
+  price DOUBLE PRECISION,
   publication_date INTEGER, -- Unix timestamp
   page_count INTEGER,
   format TEXT, -- 'ebook', 'paperback', 'hardcover', 'audiobook'
 
   -- Review Data
-  avg_rating REAL, -- 0.0-5.0
+  avg_rating DOUBLE PRECISION, -- 0.0-5.0
   review_count INTEGER,
 
   -- Marketing Analysis
@@ -3987,11 +3994,11 @@ CREATE TABLE IF NOT EXISTS comp_titles (
   )),
 
   -- Tracking
-  last_updated INTEGER, -- Last time data was refreshed
+  last_updated BIGINT, -- Last time data was refreshed
   is_active INTEGER DEFAULT 1, -- Boolean: still tracking this comp?
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -4029,7 +4036,7 @@ CREATE TABLE IF NOT EXISTS author_platform (
   -- Metrics
   follower_count INTEGER,
   subscriber_count INTEGER, -- For email lists, YouTube, podcasts
-  engagement_rate REAL, -- Percentage (e.g., 0.05 for 5%)
+  engagement_rate DOUBLE PRECISION, -- Percentage (e.g., 0.05 for 5%)
 
   -- Verification
   verified INTEGER DEFAULT 0, -- Boolean: verified account?
@@ -4040,16 +4047,16 @@ CREATE TABLE IF NOT EXISTS author_platform (
 
   -- Monetization
   monetized INTEGER DEFAULT 0, -- Boolean: earning from this platform?
-  monthly_revenue REAL,
+  monthly_revenue DOUBLE PRECISION,
 
   -- Status
   is_active INTEGER DEFAULT 1, -- Boolean: still using this platform?
 
   -- Tracking
-  last_updated INTEGER NOT NULL DEFAULT (unixepoch()),
+  last_updated BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -4079,7 +4086,7 @@ CREATE TABLE IF NOT EXISTS marketing_hooks (
   hook_text TEXT NOT NULL,
 
   -- Effectiveness Metrics
-  effectiveness_score REAL, -- 0.0-1.0 AI-predicted effectiveness
+  effectiveness_score DOUBLE PRECISION, -- 0.0-1.0 AI-predicted effectiveness
   target_audience TEXT, -- Who this hook targets
 
   -- Variations
@@ -4091,10 +4098,10 @@ CREATE TABLE IF NOT EXISTS marketing_hooks (
 
   -- AI Metadata
   model_used TEXT,
-  generated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  generated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -4122,12 +4129,12 @@ CREATE TABLE IF NOT EXISTS bookstore_positioning (
     'table',       -- Featured table
     'window'       -- Window display
   )),
-  placement_probability REAL, -- 0.0-1.0 likelihood of face-out placement
+  placement_probability DOUBLE PRECISION, -- 0.0-1.0 likelihood of face-out placement
 
   -- Physical Book Design Recommendations
   cover_design_notes TEXT, -- AI recommendations for physical cover
   trim_size_recommendation TEXT, -- Recommended book size
-  spine_width_estimate REAL, -- Estimated spine width in inches
+  spine_width_estimate DOUBLE PRECISION, -- Estimated spine width in inches
 
   -- Positioning Strategy
   positioning_strategy TEXT, -- How to position the book in market
@@ -4136,8 +4143,8 @@ CREATE TABLE IF NOT EXISTS bookstore_positioning (
   -- Competitive Positioning
   differentiation_points TEXT, -- What makes it stand out on shelf
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -4151,7 +4158,7 @@ CREATE TABLE IF NOT EXISTS market_positioning_reports (
   user_id TEXT NOT NULL,
 
   -- Report Metadata
-  report_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  report_date BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   report_version INTEGER DEFAULT 1,
 
   -- Market Analysis
@@ -4175,14 +4182,14 @@ CREATE TABLE IF NOT EXISTS market_positioning_reports (
   -- Financial Projections
   estimated_sales_rank INTEGER, -- Predicted Amazon rank
   estimated_monthly_sales INTEGER,
-  estimated_monthly_revenue REAL,
+  estimated_monthly_revenue DOUBLE PRECISION,
 
   -- AI Metadata
   model_used TEXT,
-  confidence_score REAL, -- 0.0-1.0 how confident the analysis is
+  confidence_score DOUBLE PRECISION, -- 0.0-1.0 how confident the analysis is
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -4207,21 +4214,21 @@ CREATE TABLE IF NOT EXISTS author_platform_scores (
   -- Detailed Metrics
   total_followers INTEGER,
   total_subscribers INTEGER,
-  avg_engagement_rate REAL,
+  avg_engagement_rate DOUBLE PRECISION,
 
   -- Monetization
   estimated_monthly_reach INTEGER,
-  monetization_potential REAL, -- 0.0-1.0
+  monetization_potential DOUBLE PRECISION, -- 0.0-1.0
 
   -- Recommendations
   improvement_areas TEXT, -- JSON array of areas to improve
   next_steps TEXT, -- Recommended actions
 
   -- Tracking
-  score_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  score_date INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -4257,52 +4264,46 @@ CREATE INDEX IF NOT EXISTS idx_platform_scores_overall ON author_platform_scores
 CREATE INDEX IF NOT EXISTS idx_platform_scores_date ON author_platform_scores(score_date DESC);
 
 -- Triggers for Auto-Update Timestamps
-CREATE TRIGGER IF NOT EXISTS comp_titles_updated
-AFTER UPDATE ON comp_titles
+-- Update trigger for comp_titles
+CREATE TRIGGER comp_titles_updated
+BEFORE UPDATE ON comp_titles
 FOR EACH ROW
-BEGIN
-  UPDATE comp_titles SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS author_platform_updated
-AFTER UPDATE ON author_platform
+-- Update trigger for author_platform
+CREATE TRIGGER author_platform_updated
+BEFORE UPDATE ON author_platform
 FOR EACH ROW
-BEGIN
-  UPDATE author_platform SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS marketing_hooks_updated
-AFTER UPDATE ON marketing_hooks
+-- Update trigger for marketing_hooks
+CREATE TRIGGER marketing_hooks_updated
+BEFORE UPDATE ON marketing_hooks
 FOR EACH ROW
-BEGIN
-  UPDATE marketing_hooks SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS bookstore_positioning_updated
-AFTER UPDATE ON bookstore_positioning
+-- Update trigger for bookstore_positioning
+CREATE TRIGGER bookstore_positioning_updated
+BEFORE UPDATE ON bookstore_positioning
 FOR EACH ROW
-BEGIN
-  UPDATE bookstore_positioning SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS market_reports_updated
-AFTER UPDATE ON market_positioning_reports
+-- Update trigger for market_positioning_reports
+CREATE TRIGGER market_reports_updated
+BEFORE UPDATE ON market_positioning_reports
 FOR EACH ROW
-BEGIN
-  UPDATE market_positioning_reports SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS platform_scores_updated
-AFTER UPDATE ON author_platform_scores
+-- Update trigger for author_platform_scores
+CREATE TRIGGER platform_scores_updated
+BEFORE UPDATE ON author_platform_scores
 FOR EACH ROW
-BEGIN
-  UPDATE author_platform_scores SET updated_at = unixepoch() WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Views for Analytics
 
 -- Comp Title Summary
-CREATE VIEW IF NOT EXISTS comp_title_summary AS
+CREATE OR REPLACE VIEW comp_title_summary AS
 SELECT
   ct.manuscript_id,
   m.title as manuscript_title,
@@ -4318,7 +4319,7 @@ WHERE ct.is_active = 1
 GROUP BY ct.manuscript_id, m.title;
 
 -- Author Platform Summary
-CREATE VIEW IF NOT EXISTS author_platform_summary AS
+CREATE OR REPLACE VIEW author_platform_summary AS
 SELECT
   ap.user_id,
   COUNT(*) as total_platforms,
@@ -4331,7 +4332,7 @@ FROM author_platform ap
 GROUP BY ap.user_id;
 
 -- Marketing Hooks by Manuscript
-CREATE VIEW IF NOT EXISTS marketing_hooks_by_manuscript AS
+CREATE OR REPLACE VIEW marketing_hooks_by_manuscript AS
 SELECT
   mh.manuscript_id,
   m.title as manuscript_title,
@@ -4344,7 +4345,7 @@ JOIN manuscripts m ON mh.manuscript_id = m.id
 GROUP BY mh.manuscript_id, m.title, mh.hook_type;
 
 -- Market Positioning Overview
-CREATE VIEW IF NOT EXISTS market_positioning_overview AS
+CREATE OR REPLACE VIEW market_positioning_overview AS
 SELECT
   m.id as manuscript_id,
   m.title,

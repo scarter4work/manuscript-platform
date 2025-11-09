@@ -1,6 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 034: Sales & Royalty Tracking Dashboard
 -- Comprehensive sales analytics, royalty tracking, and performance metrics
 
@@ -350,40 +348,35 @@ CREATE INDEX IF NOT EXISTS idx_series_sales_user ON series_sales(user_id);
 CREATE INDEX IF NOT EXISTS idx_series_sales_period ON series_sales(period_type, period_start DESC);
 
 -- Triggers for Auto-Update Timestamps
-CREATE TRIGGER IF NOT EXISTS sales_data_updated
-AFTER UPDATE ON sales_data
+-- Update trigger for sales_data
+CREATE TRIGGER sales_data_updated
+BEFORE UPDATE ON sales_data
 FOR EACH ROW
-BEGIN
-  UPDATE sales_data SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS royalty_payments_updated
-AFTER UPDATE ON royalty_payments
+-- Update trigger for royalty_payments
+CREATE TRIGGER royalty_payments_updated
+BEFORE UPDATE ON royalty_payments
 FOR EACH ROW
-BEGIN
-  UPDATE royalty_payments SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS platform_connections_updated
-AFTER UPDATE ON platform_connections
+-- Update trigger for platform_connections
+CREATE TRIGGER platform_connections_updated
+BEFORE UPDATE ON platform_connections
 FOR EACH ROW
-BEGIN
-  UPDATE platform_connections SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS sales_goals_updated
-AFTER UPDATE ON sales_goals
+-- Update trigger for sales_goals
+CREATE TRIGGER sales_goals_updated
+BEFORE UPDATE ON sales_goals
 FOR EACH ROW
-BEGIN
-  UPDATE sales_goals SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS marketing_campaigns_updated
-AFTER UPDATE ON marketing_campaigns
+-- Update trigger for marketing_campaigns
+CREATE TRIGGER marketing_campaigns_updated
+BEFORE UPDATE ON marketing_campaigns
 FOR EACH ROW
-BEGIN
-  UPDATE marketing_campaigns SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Views for Analytics
 

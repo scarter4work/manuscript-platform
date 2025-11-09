@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 024: Submission Package Bundler (Issue #50)
 -- Creates tables for bundling manuscripts with supporting documents into submission packages
 
@@ -56,4 +55,4 @@ SELECT
 FROM submission_packages sp
 LEFT JOIN package_document_map pdm ON sp.id = pdm.package_id
 LEFT JOIN manuscripts m ON sp.manuscript_id = m.id
-GROUP BY sp.id;
+GROUP BY sp.id, package_name, package_type, created_at, title;

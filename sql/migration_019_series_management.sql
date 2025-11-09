@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 019: Series Management System
 -- Enables authors to organize manuscripts into series with proper ordering and cross-promotion
 
@@ -228,7 +227,7 @@ SELECT
   s.updated_at
 FROM series s
 LEFT JOIN series_manuscripts sm ON s.id = sm.series_id
-GROUP BY s.id;
+GROUP BY s.id, user_id, series_name, series_description, genre, series_status, total_planned_books, created_at, updated_at;
 
 -- View: Series reading order summary
 CREATE OR REPLACE VIEW series_books_ordered AS
@@ -264,7 +263,7 @@ FROM series s
 LEFT JOIN series_manuscripts sm ON s.id = sm.series_id
 LEFT JOIN series_analytics sa ON s.id = sa.series_id
 LEFT JOIN series_bundles sb ON s.id = sb.series_id
-GROUP BY s.id;
+GROUP BY s.id, series_id, series_name, book_number, book_type, title, author_name, is_published, publication_date, reading_order_note;
 
 -- ============================================================================
 -- TRIGGERS

@@ -1,6 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 022: Enhanced Manuscript Metadata System (Issue #51) - FIXED
 -- Expands manuscript metadata for publishing decisions
 
@@ -70,12 +68,11 @@ CREATE INDEX IF NOT EXISTS idx_metadata_history_manuscript ON manuscript_metadat
 CREATE INDEX IF NOT EXISTS idx_metadata_history_changed_at ON manuscript_metadata_history(changed_at);
 
 -- Update trigger for genres table
-CREATE TRIGGER IF NOT EXISTS update_genres_timestamp
-AFTER UPDATE ON genres
+-- Update trigger for genres
+CREATE TRIGGER update_genres_timestamp
+BEFORE UPDATE ON genres
 FOR EACH ROW
-BEGIN
-  UPDATE genres SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Statistics view for genre usage
 CREATE OR REPLACE VIEW genre_usage_stats AS

@@ -1,6 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 035: Rights Management System
 -- Track publishing rights, territorial restrictions, and rights status for manuscripts
 
@@ -335,33 +333,29 @@ CREATE INDEX IF NOT EXISTS idx_rights_templates_type ON rights_templates(templat
 CREATE INDEX IF NOT EXISTS idx_rights_templates_active ON rights_templates(is_active);
 
 -- Triggers for Auto-Update Timestamps
-CREATE TRIGGER IF NOT EXISTS manuscript_rights_updated
-AFTER UPDATE ON manuscript_rights
+-- Update trigger for manuscript_rights
+CREATE TRIGGER manuscript_rights_updated
+BEFORE UPDATE ON manuscript_rights
 FOR EACH ROW
-BEGIN
-  UPDATE manuscript_rights SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS publication_history_updated
-AFTER UPDATE ON publication_history
+-- Update trigger for publication_history
+CREATE TRIGGER publication_history_updated
+BEFORE UPDATE ON publication_history
 FOR EACH ROW
-BEGIN
-  UPDATE publication_history SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS rights_offers_updated
-AFTER UPDATE ON rights_offers
+-- Update trigger for rights_offers
+CREATE TRIGGER rights_offers_updated
+BEFORE UPDATE ON rights_offers
 FOR EACH ROW
-BEGIN
-  UPDATE rights_offers SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS rights_templates_updated
-AFTER UPDATE ON rights_templates
+-- Update trigger for rights_templates
+CREATE TRIGGER rights_templates_updated
+BEFORE UPDATE ON rights_templates
 FOR EACH ROW
-BEGIN
-  UPDATE rights_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Views for Analytics
 
@@ -431,4 +425,5 @@ SELECT
   SUM(ph.payment_received) as total_payments_received
 FROM publication_history ph
 JOIN manuscripts m ON ph.manuscript_id = m.id
-GROUP BY ph.manuscript_id, m.title, ph.user_id;
+GROUP BY ph.manuscript_id, m.title, ph.user_id, -- List rights that are NOT granted or offered
+  CASE WHEN mr_granted.rights_type IS NULL THEN 'first_serial' ELSE NULL END as first_serial_available;

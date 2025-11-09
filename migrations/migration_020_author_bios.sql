@@ -1,6 +1,22 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
+
+-- ==================================================
+-- POSTGRESQL TRIGGER FUNCTIONS
+-- ==================================================
+
+-- Generic timestamp update function
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ==================================================
+-- TABLES AND TRIGGERS
+-- ==================================================
+
 -- Migration 020: Author Bio Generation System
 -- Creates tables for storing generated author bios
 
@@ -26,12 +42,11 @@ CREATE INDEX IF NOT EXISTS idx_author_bios_length ON author_bios(length);
 CREATE INDEX IF NOT EXISTS idx_author_bios_created ON author_bios(created_at);
 
 -- Update trigger for author_bios
-CREATE TRIGGER IF NOT EXISTS update_author_bios_timestamp
-AFTER UPDATE ON author_bios
+-- Update trigger for author_bios
+CREATE TRIGGER update_author_bios_timestamp
+BEFORE UPDATE ON author_bios
 FOR EACH ROW
-BEGIN
-  UPDATE author_bios SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Add author profile fields to users table (if not exists)
 -- These are used for bio generation

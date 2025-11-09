@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 028: Manuscript Formatting Engine (Issue #44)
 -- EPUB and PDF conversion with professional formatting for Amazon KDP publishing
 
@@ -151,4 +150,4 @@ SELECT
   MAX(f.created_at) as last_formatted
 FROM formatted_manuscripts f
 LEFT JOIN manuscripts m ON f.manuscript_id = m.id
-GROUP BY f.manuscript_id, f.user_id;
+GROUP BY f.manuscript_id, f.user_id, title;

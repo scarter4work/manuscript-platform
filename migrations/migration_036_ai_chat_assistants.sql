@@ -1,6 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 036: Platform-Specific AI Chat Assistants with Self-Updating Knowledge Base
 -- Specialized AI agents for each publishing platform (KDP, Draft2Digital, IngramSpark, etc.)
 -- with daily documentation crawling and automatic workflow updates
@@ -575,40 +573,35 @@ CREATE INDEX IF NOT EXISTS idx_workflow_notifications_sent ON workflow_change_no
 CREATE INDEX IF NOT EXISTS idx_workflow_notifications_ack ON workflow_change_notifications(user_acknowledged);
 
 -- Triggers for Auto-Update Timestamps
-CREATE TRIGGER IF NOT EXISTS platform_docs_updated
-AFTER UPDATE ON platform_docs
+-- Update trigger for platform_docs
+CREATE TRIGGER platform_docs_updated
+BEFORE UPDATE ON platform_docs
 FOR EACH ROW
-BEGIN
-  UPDATE platform_docs SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS agent_knowledge_updated
-AFTER UPDATE ON agent_knowledge
+-- Update trigger for agent_knowledge
+CREATE TRIGGER agent_knowledge_updated
+BEFORE UPDATE ON agent_knowledge
 FOR EACH ROW
-BEGIN
-  UPDATE agent_knowledge SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS workflows_updated
-AFTER UPDATE ON workflows
+-- Update trigger for workflows
+CREATE TRIGGER workflows_updated
+BEFORE UPDATE ON workflows
 FOR EACH ROW
-BEGIN
-  UPDATE workflows SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS user_workflows_updated
-AFTER UPDATE ON user_workflows
+-- Update trigger for user_workflows
+CREATE TRIGGER user_workflows_updated
+BEFORE UPDATE ON user_workflows
 FOR EACH ROW
-BEGIN
-  UPDATE user_workflows SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS agent_config_updated
-AFTER UPDATE ON agent_config
+-- Update trigger for agent_config
+CREATE TRIGGER agent_config_updated
+BEFORE UPDATE ON agent_config
 FOR EACH ROW
-BEGIN
-  UPDATE agent_config SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Views for Analytics
 
@@ -666,4 +659,5 @@ SELECT
   END) as avg_days_to_complete
 FROM user_workflows uw
 JOIN workflows w ON uw.workflow_id = w.id
-GROUP BY uw.platform, w.workflow_name;
+GROUP BY uw.platform, w.workflow_name, 2
+  ) as completion_rate_percent;

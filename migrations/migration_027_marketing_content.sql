@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 027: Social Media Marketing Content Generator (Issue #45)
 -- AI-powered marketing kit generation with platform-specific social media posts,
 -- email templates, content calendar, trailer scripts, and reader magnets
@@ -156,4 +155,4 @@ LEFT JOIN manuscripts m ON k.manuscript_id = m.id
 LEFT JOIN social_media_posts p ON k.id = p.kit_id
 LEFT JOIN content_calendar c ON k.id = c.kit_id
 LEFT JOIN marketing_materials mat ON k.id = mat.kit_id
-GROUP BY k.id;
+GROUP BY k.id, manuscript_id, user_id, kit_name, genre, title, generation_cost, generated_at;

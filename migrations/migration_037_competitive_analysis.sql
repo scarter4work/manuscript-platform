@@ -1,6 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 037: Competitive Analysis & Market Positioning
 -- Comp title analysis, author platform tracking, and marketing hooks generation
 
@@ -338,47 +336,41 @@ CREATE INDEX IF NOT EXISTS idx_platform_scores_overall ON author_platform_scores
 CREATE INDEX IF NOT EXISTS idx_platform_scores_date ON author_platform_scores(score_date DESC);
 
 -- Triggers for Auto-Update Timestamps
-CREATE TRIGGER IF NOT EXISTS comp_titles_updated
-AFTER UPDATE ON comp_titles
+-- Update trigger for comp_titles
+CREATE TRIGGER comp_titles_updated
+BEFORE UPDATE ON comp_titles
 FOR EACH ROW
-BEGIN
-  UPDATE comp_titles SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS author_platform_updated
-AFTER UPDATE ON author_platform
+-- Update trigger for author_platform
+CREATE TRIGGER author_platform_updated
+BEFORE UPDATE ON author_platform
 FOR EACH ROW
-BEGIN
-  UPDATE author_platform SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS marketing_hooks_updated
-AFTER UPDATE ON marketing_hooks
+-- Update trigger for marketing_hooks
+CREATE TRIGGER marketing_hooks_updated
+BEFORE UPDATE ON marketing_hooks
 FOR EACH ROW
-BEGIN
-  UPDATE marketing_hooks SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS bookstore_positioning_updated
-AFTER UPDATE ON bookstore_positioning
+-- Update trigger for bookstore_positioning
+CREATE TRIGGER bookstore_positioning_updated
+BEFORE UPDATE ON bookstore_positioning
 FOR EACH ROW
-BEGIN
-  UPDATE bookstore_positioning SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS market_reports_updated
-AFTER UPDATE ON market_positioning_reports
+-- Update trigger for market_positioning_reports
+CREATE TRIGGER market_reports_updated
+BEFORE UPDATE ON market_positioning_reports
 FOR EACH ROW
-BEGIN
-  UPDATE market_positioning_reports SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS platform_scores_updated
-AFTER UPDATE ON author_platform_scores
+-- Update trigger for author_platform_scores
+CREATE TRIGGER platform_scores_updated
+BEFORE UPDATE ON author_platform_scores
 FOR EACH ROW
-BEGIN
-  UPDATE author_platform_scores SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- Views for Analytics
 

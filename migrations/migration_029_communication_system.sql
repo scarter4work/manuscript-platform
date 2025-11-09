@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 029: Communication & Feedback System (Issue #55)
 -- Publisher-author messaging, form letters, notifications, revision requests
 
@@ -208,4 +207,4 @@ FROM users u
 LEFT JOIN submission_messages sm ON u.id = sm.sender_user_id OR u.id = sm.recipient_user_id
 LEFT JOIN revision_requests rr ON u.id = rr.requested_by_user_id
 LEFT JOIN message_templates mt ON u.id = mt.publisher_id
-GROUP BY u.id;
+GROUP BY u.id, email;

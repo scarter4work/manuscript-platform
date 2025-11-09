@@ -1,6 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
--- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 033: Market Analysis & Amazon Comp Title Research
 -- Enables data-driven publishing decisions through Amazon marketplace analysis
 
@@ -232,19 +230,17 @@ CREATE INDEX IF NOT EXISTS idx_market_trends_genre ON market_trends(genre);
 CREATE INDEX IF NOT EXISTS idx_market_trends_period ON market_trends(period_start DESC);
 
 -- Triggers for auto-update timestamps
-CREATE TRIGGER IF NOT EXISTS comp_titles_updated
-AFTER UPDATE ON comp_titles
+-- Update trigger for comp_titles
+CREATE TRIGGER comp_titles_updated
+BEFORE UPDATE ON comp_titles
 FOR EACH ROW
-BEGIN
-  UPDATE comp_titles SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS market_analysis_reports_updated
-AFTER UPDATE ON market_analysis_reports
+-- Update trigger for market_analysis_reports
+CREATE TRIGGER market_analysis_reports_updated
+BEFORE UPDATE ON market_analysis_reports
 FOR EACH ROW
-BEGIN
-  UPDATE market_analysis_reports SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- View: Market Analysis Statistics
 CREATE OR REPLACE VIEW market_analysis_stats AS

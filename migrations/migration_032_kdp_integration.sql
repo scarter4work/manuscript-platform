@@ -1,5 +1,4 @@
 -- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
--- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
 -- Migration 032: Amazon KDP Integration System
 -- Enables semi-automated Amazon KDP publishing with pre-filled metadata and validation
 
@@ -178,26 +177,23 @@ CREATE INDEX IF NOT EXISTS idx_kdp_publishing_asin ON kdp_publishing_status(kdp_
 CREATE INDEX IF NOT EXISTS idx_kdp_royalty_package ON kdp_royalty_calculations(package_id);
 
 -- Triggers for auto-update timestamps
-CREATE TRIGGER IF NOT EXISTS kdp_packages_updated
-AFTER UPDATE ON kdp_packages
+-- Update trigger for kdp_packages
+CREATE TRIGGER kdp_packages_updated
+BEFORE UPDATE ON kdp_packages
 FOR EACH ROW
-BEGIN
-  UPDATE kdp_packages SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS kdp_metadata_updated
-AFTER UPDATE ON kdp_metadata
+-- Update trigger for kdp_metadata
+CREATE TRIGGER kdp_metadata_updated
+BEFORE UPDATE ON kdp_metadata
 FOR EACH ROW
-BEGIN
-  UPDATE kdp_metadata SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
-CREATE TRIGGER IF NOT EXISTS kdp_publishing_status_updated
-AFTER UPDATE ON kdp_publishing_status
+-- Update trigger for kdp_publishing_status
+CREATE TRIGGER kdp_publishing_status_updated
+BEFORE UPDATE ON kdp_publishing_status
 FOR EACH ROW
-BEGIN
-  UPDATE kdp_publishing_status SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
-END;
+EXECUTE FUNCTION update_timestamp();
 
 -- View: KDP Package Statistics
 CREATE OR REPLACE VIEW kdp_stats AS
