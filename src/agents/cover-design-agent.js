@@ -39,7 +39,7 @@ export class CoverDesignAgent {
     const structure = developmentalAnalysis.structure;
 
     // Get manuscript excerpt for context
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscript) {
       throw new Error(`Manuscript not found: ${manuscriptKey}`);
     }
@@ -59,7 +59,7 @@ export class CoverDesignAgent {
 
     // Store in R2 for later retrieval
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       manuscriptKey,
       'cover-brief',
       coverBrief

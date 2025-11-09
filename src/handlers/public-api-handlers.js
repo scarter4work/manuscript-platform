@@ -301,12 +301,12 @@ export async function apiGetManuscriptResults(request, env, manuscriptId) {
 
     // Get developmental analysis
     const devKey = `${r2KeyPrefix}developmental-analysis-${manuscriptId}.json`;
-    const devObj = await env.MANUSCRIPTS_PROCESSED.get(devKey);
+    const devObj = await env.R2.getBucket('manuscripts_processed').get(devKey);
     const developmental = devObj ? JSON.parse(await devObj.text()) : null;
 
     // Get report
     const reportKey = `${r2KeyPrefix}report-${manuscriptId}.json`;
-    const reportObj = await env.MANUSCRIPTS_PROCESSED.get(reportKey);
+    const reportObj = await env.R2.getBucket('manuscripts_processed').get(reportKey);
     const report = reportObj ? JSON.parse(await reportObj.text()) : null;
 
     // Log API usage

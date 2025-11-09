@@ -448,16 +448,16 @@ export const manuscriptHandlers = {
       // Delete from R2 (ignore errors if files don't exist)
       await Promise.all(
         filesToDelete.map(key =>
-          env.MANUSCRIPTS_RAW.delete(key).catch(() => {}) &&
-          env.MANUSCRIPTS_PROCESSED.delete(key).catch(() => {})
+          env.R2.getBucket('manuscripts_raw').delete(key).catch(() => {}) &&
+          env.R2.getBucket('manuscripts_processed').delete(key).catch(() => {})
         )
       );
 
       // Delete report ID mapping if it exists
       const metadata = manuscript.metadata ? JSON.parse(manuscript.metadata) : {};
       if (metadata.reportId) {
-        await env.MANUSCRIPTS_RAW.delete(`report-id:${metadata.reportId}`).catch(() => {});
-        await env.MANUSCRIPTS_RAW.delete(`status:${metadata.reportId}`).catch(() => {});
+        await env.R2.getBucket('manuscripts_raw').delete(`report-id:${metadata.reportId}`).catch(() => {});
+        await env.R2.getBucket('manuscripts_raw').delete(`status:${metadata.reportId}`).catch(() => {});
       }
 
       // IMPORTANT: Invalidate caches before database deletion
@@ -548,12 +548,12 @@ export const manuscriptHandlers = {
       ).run();
 
       // Create new report ID mapping
-      await env.MANUSCRIPTS_RAW.put(`report-id:${reportId}`, manuscript.r2_key, {
+      await env.R2.getBucket('manuscripts_raw').put(`report-id:${reportId}`, manuscript.r2_key, {
         expirationTtl: 60 * 60 * 24 * 30 // 30 days
       });
 
       // Initialize status
-      await env.MANUSCRIPTS_RAW.put(
+      await env.R2.getBucket('manuscripts_raw').put(
         `status:${reportId}`,
         JSON.stringify({
           status: 'queued',

@@ -272,7 +272,7 @@ Return this exact structure:
     // Store results
     const storageKey = `trends-${manuscriptId}-${Date.now()}`;
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       storageKey,
       'review-trends',
       results

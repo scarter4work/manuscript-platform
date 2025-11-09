@@ -26,7 +26,7 @@ export class LineEditingAgent {
     console.log(`Starting line editing analysis for ${manuscriptKey}`);
     
     // 1. Retrieve manuscript from R2
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscript) {
       throw new Error('Manuscript not found');
     }
@@ -370,7 +370,7 @@ Be specific with locations and examples. Provide actual rewrites, not just descr
   async storeAnalysis(manuscriptKey, results) {
     const processedKey = manuscriptKey.replace('MANUSCRIPTS_RAW', 'PROCESSED');
     
-    await this.env.MANUSCRIPTS_PROCESSED.put(
+    await this.env.R2.getBucket('manuscripts_processed').put(
       `${processedKey}-line-analysis.json`,
       JSON.stringify(results, null, 2),
       {

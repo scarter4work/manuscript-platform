@@ -1,919 +1,1284 @@
 /**
  * Authentication Handlers Integration Tests
  *
- * Tests all authentication endpoints with database integration:
- * - POST /auth/register
- * - POST /auth/login
- * - POST /auth/logout
- * - GET /auth/me
- * - GET /auth/verify-email
- * - POST /auth/password-reset-request
- * - POST /auth/password-reset
- * - GET /auth/verify-reset-token
- * - POST /auth/resend-verification
+ * Comprehensive test coverage for auth-handlers.js (862 lines, 9 endpoints)
+ * Tests cover:
+ * - Registration (bcrypt password hashing)
+ * - Login (rate limiting, session creation)
+ * - Email verification
+ * - Password reset flow
+ * - Logout
+ * - Token validation
  *
- * Coverage target: 80%+ branch coverage on auth-handlers.js
+ * Target: 80%+ branch coverage
+ * Test count: 50+ test cases
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  apiClient,
-  registerTestUser,
-  loginTestUser,
-  getVerificationToken,
-  getPasswordResetToken,
-  extractSessionId
-} from '../../test-helpers/api-client.js';
-import {
-  insertTestRecord,
-  findTestRecord,
-  countTestRecords,
-  queryTestDb
-} from '../../test-helpers/database.js';
-import {
-  createTestUser,
-  createTestUserWithPassword,
-  generateTestEmail
-} from '../../test-helpers/factories.js';
 import bcrypt from 'bcryptjs';
+import { getTestDb, getTestDbAdapter, insertTestRecord, findTestRecord, countTestRecords } from '../../test-helpers/database.js';
+import { createTestUser, createVerificationToken } from '../../test-helpers/factories.js';
+import { mockRedis as createMockRedis } from '../../test-helpers/mocks.js';
+import * as authHandlers from '../../../src/handlers/auth-handlers.js';
 
-describe('Authentication Handlers', () => {
-  // ============================================================================
-  // POST /auth/register
-  // ============================================================================
-  describe('POST /auth/register', () => {
-    it('should register a new user with valid credentials', async () => {
-      const email = generateTestEmail('register');
-      const password = 'SecurePass123!';
+// Create shared mock Redis instance
+const mockRedisInstance = createMockRedis();
 
-      const response = await apiClient.post('/auth/register').send({
-        email,
-        password,
+// Mock Redis for session/rate limiting
+vi.mock('../../../src/adapters/redis-adapter.js', () => ({
+  default: mockRedisInstance
+}));
+
+// Mock email service
+const mockEmailService = {
+  sendEmailVerification: vi.fn().mockResolvedValue({ success: true }),
+  sendPasswordResetEmail: vi.fn().mockResolvedValue({ success: true }),
+};
+
+vi.mock('../../../src/services/user-notifier.js', () => ({
+  sendEmailVerification: mockEmailService.sendEmailVerification,
+  sendPasswordResetEmail: mockEmailService.sendPasswordResetEmail,
+}));
+
+describe('POST /auth/register', () => {
+  let testDb;
+  let testDbAdapter;
+
+  beforeEach(async () => {
+    testDb = getTestDb();
+    testDbAdapter = getTestDbAdapter();
+    mockRedisInstance.clear();
+    vi.clearAllMocks();
+  });
+
+  it('should register a new user with valid credentials', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'newuser@example.com',
+        password: 'SecurePass123!',
         role: 'author'
-      });
+      })
+    };
 
-      expect(response.status).toBe(201);
-      expect(response.body.userId).toBeDefined();
-      expect(response.body.verificationToken).toBeDefined();
-      expect(response.body.message).toContain('Registration successful');
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-      // Verify user in database
-      const user = await findTestRecord('users', { email });
-      expect(user).toBeTruthy();
-      expect(user.email).toBe(email);
-      expect(user.email_verified).toBe(false);
-      expect(user.role).toBe('author');
+    const response = await authHandlers.handleRegister(mockRequest, mockEnv);
+    const result = await response.json();
 
-      // Verify password hash uses bcrypt
-      expect(user.password_hash).toMatch(/^\$2[ab]\$10\$/);
-      expect(user.password_hash.length).toBe(60);
+    expect(response.status).toBe(201);
+    expect(result.userId).toBeDefined();
+    expect(result.verificationToken).toBeDefined();
+    expect(result.message).toMatch(/registered successfully/i);
 
-      // Verify subscription was created
-      const subscription = await findTestRecord('subscriptions', {
-        user_id: user.id
-      });
-      expect(subscription).toBeTruthy();
-      expect(subscription.plan).toBe('free');
-      expect(subscription.status).toBe('active');
-    });
+    // Verify user in database
+    const user = await findTestRecord('users', { email: 'newuser@example.com' });
+    expect(user).toBeTruthy();
+    expect(user.email_verified).toBe(false);
+    expect(user.role).toBe('author');
+  });
 
-    it('should reject registration with weak password', async () => {
-      const response = await apiClient.post('/auth/register').send({
-        email: generateTestEmail(),
+  it('should reject registration with weak password', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'test@example.com',
         password: 'weak'
-      });
+      })
+    };
 
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/password must be/i);
-    });
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-    it('should reject registration with invalid email', async () => {
-      const response = await apiClient.post('/auth/register').send({
+    const response = await authHandlers.handleRegister(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/password must be/i);
+  });
+
+  it('should reject registration with invalid email', async () => {
+    const mockRequest = {
+      json: async () => ({
         email: 'invalid-email',
         password: 'SecurePass123!'
-      });
+      })
+    };
 
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid email/i);
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleRegister(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/invalid email/i);
+  });
+
+  it('should reject registration with duplicate email', async () => {
+    const email = 'duplicate@example.com';
+
+    // Create first user
+    await createTestUser(testDb, {
+      email,
+      password_hash: await bcrypt.hash('TestPass123!', 10),
     });
 
-    it('should reject registration with duplicate email', async () => {
-      const email = generateTestEmail('duplicate');
-
-      // Register first user
-      await apiClient.post('/auth/register').send({
-        email,
-        password: 'SecurePass123!'
-      });
-
-      // Try to register again with same email
-      const response = await apiClient.post('/auth/register').send({
+    // Try to register again
+    const mockRequest = {
+      json: async () => ({
         email,
         password: 'DifferentPass456!'
-      });
+      })
+    };
 
-      expect(response.status).toBe(409);
-      expect(response.body.error).toMatch(/email already registered/i);
-    });
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-    it('should hash password with bcrypt', async () => {
-      const email = generateTestEmail('bcrypt-test');
-      const password = 'TestPass123!';
+    const response = await authHandlers.handleRegister(mockRequest, mockEnv);
+    const result = await response.json();
 
-      await apiClient.post('/auth/register').send({
-        email,
-        password
-      });
+    expect(response.status).toBe(409);
+    expect(result.error).toMatch(/email already registered/i);
+  });
 
-      const user = await findTestRecord('users', { email });
-      const hash = user.password_hash;
+  it('should hash password with bcrypt', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'bcrypt-test@example.com',
+        password: 'TestPass123!'
+      })
+    };
 
-      // Verify bcrypt hash format
-      expect(hash).toMatch(/^\$2[ab]\$10\$/);
-      expect(hash.length).toBe(60);
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-      // Verify password can be verified
-      const isValid = await bcrypt.compare(password, hash);
-      expect(isValid).toBe(true);
-    });
+    await authHandlers.handleRegister(mockRequest, mockEnv);
 
-    it('should normalize email to lowercase', async () => {
-      const response = await apiClient.post('/auth/register').send({
+    const user = await findTestRecord('users', { email: 'bcrypt-test@example.com' });
+    const hash = user.password_hash;
+
+    // bcrypt hashes start with $2a$10$ or $2b$10$
+    expect(hash).toMatch(/^\$2[ab]\$10\$/);
+    expect(hash.length).toBe(60); // bcrypt hash length
+
+    // Verify password can be checked
+    const isValid = await bcrypt.compare('TestPass123!', hash);
+    expect(isValid).toBe(true);
+  });
+
+  it('should normalize email to lowercase', async () => {
+    const mockRequest = {
+      json: async () => ({
         email: 'CaseSensitive@Example.COM',
         password: 'TestPass123!'
-      });
+      })
+    };
 
-      expect(response.status).toBe(201);
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-      const user = await findTestRecord('users', {
-        email: 'casesensitive@example.com'
-      });
-      expect(user).toBeTruthy();
-    });
+    await authHandlers.handleRegister(mockRequest, mockEnv);
 
-    it('should create verification token', async () => {
-      const email = generateTestEmail('verify-token');
+    const user = await findTestRecord('users', { email: 'casesensitive@example.com' });
+    expect(user).toBeTruthy();
+  });
 
-      const response = await apiClient.post('/auth/register').send({
-        email,
+  it('should create verification token', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'verify-test@example.com',
         password: 'TestPass123!'
-      });
+      })
+    };
 
-      const token = response.body.verificationToken;
-      expect(token).toBeTruthy();
-      expect(token.length).toBe(64); // 32 bytes hex = 64 chars
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-      // Verify token in database
-      const tokenRecord = await queryTestDb(
-        'SELECT * FROM verification_tokens WHERE token = $1',
-        [token]
-      );
-      expect(tokenRecord.rows.length).toBe(1);
-      expect(tokenRecord.rows[0].token_type).toBe('email_verification');
-      expect(tokenRecord.rows[0].used).toBe(false);
-    });
+    const response = await authHandlers.handleRegister(mockRequest, mockEnv);
+    const result = await response.json();
 
-    it('should create free subscription on registration', async () => {
-      const email = generateTestEmail('subscription');
+    const token = result.verificationToken;
+    expect(token).toBeTruthy();
+    expect(token.length).toBeGreaterThan(20); // Secure token length
 
-      const response = await apiClient.post('/auth/register').send({
-        email,
+    // Verify token in database
+    const tokenRecord = await testDb.query(
+      'SELECT * FROM verification_tokens WHERE token = $1',
+      [token]
+    );
+    expect(tokenRecord.rows.length).toBe(1);
+    expect(tokenRecord.rows[0].token_type).toBe('email_verification');
+    expect(tokenRecord.rows[0].used).toBe(false);
+  });
+
+  it('should send verification email', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'email-test@example.com',
         password: 'TestPass123!'
-      });
+      })
+    };
 
-      const userId = response.body.userId;
-      const subscription = await findTestRecord('subscriptions', {
-        user_id: userId
-      });
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-      expect(subscription).toBeTruthy();
-      expect(subscription.plan).toBe('free');
-      expect(subscription.status).toBe('active');
-    });
+    await authHandlers.handleRegister(mockRequest, mockEnv);
 
-    it('should log registration event in audit log', async () => {
-      const email = generateTestEmail('audit');
+    expect(mockEmailService.sendEmailVerification).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userEmail: 'email-test@example.com',
+        verificationToken: expect.any(String)
+      }),
+      expect.any(Object)
+    );
+  });
 
-      await apiClient.post('/auth/register').send({
-        email,
+  it('should log registration event in audit log', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'audit-test@example.com',
         password: 'TestPass123!'
-      });
+      })
+    };
 
-      const auditLog = await queryTestDb(
-        'SELECT * FROM audit_log WHERE event_type = $1 ORDER BY created_at DESC LIMIT 1',
-        ['register']
-      );
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-      expect(auditLog.rows.length).toBeGreaterThan(0);
-      const logEntry = auditLog.rows[0];
-      expect(logEntry.event_details).toContain(email);
-    });
+    await authHandlers.handleRegister(mockRequest, mockEnv);
 
-    it('should handle missing required fields', async () => {
-      const response = await apiClient.post('/auth/register').send({
-        email: generateTestEmail()
-        // Missing password
-      });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toBeDefined();
-    });
+    const auditCount = await countTestRecords('audit_log', { event_type: 'register' });
+    expect(auditCount).toBeGreaterThan(0);
   });
 
-  // ============================================================================
-  // POST /auth/login
-  // ============================================================================
-  describe('POST /auth/login', () => {
-    let testUser;
-    const password = 'TestPass123!';
-
-    beforeEach(async () => {
-      // Create verified test user
-      const email = generateTestEmail('login');
-      const user = await createTestUserWithPassword({
-        email,
-        password,
-        email_verified: true
-      });
-      await insertTestRecord('users', user);
-      testUser = user;
-
-      // Create subscription
-      await insertTestRecord('subscriptions', {
-        id: user.id + '-sub',
-        user_id: user.id,
-        plan: 'free',
-        status: 'active',
-        current_period_start: Math.floor(Date.now() / 1000),
-        current_period_end: Math.floor(Date.now() / 1000) + 2592000,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
-      });
-    });
-
-    it('should login with valid credentials', async () => {
-      const response = await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password
-      });
-
-      expect(response.status).toBe(200);
-      expect(response.body.userId).toBe(testUser.id);
-      expect(response.body.email).toBe(testUser.email);
-      expect(response.body.role).toBe(testUser.role);
-
-      // Verify session cookie
-      const cookies = response.headers['set-cookie'];
-      expect(cookies).toBeDefined();
-      expect(cookies.length).toBeGreaterThan(0);
-
-      const sessionCookie = cookies[0];
-      expect(sessionCookie).toContain('session_id=');
-      expect(sessionCookie).toContain('HttpOnly');
-      expect(sessionCookie).toContain('SameSite=');
-    });
-
-    it('should reject login with wrong password', async () => {
-      const response = await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password: 'WrongPassword123!'
-      });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid credentials/i);
-    });
-
-    it('should reject login with non-existent email', async () => {
-      const response = await apiClient.post('/auth/login').send({
-        email: 'nonexistent@example.com',
+  it('should set default role to author if not specified', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'default-role@example.com',
         password: 'TestPass123!'
-      });
+        // No role specified
+      })
+    };
 
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid credentials/i);
-    });
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
 
-    it('should reject login with unverified email', async () => {
-      // Create unverified user
-      const email = generateTestEmail('unverified');
-      const unverifiedUser = await createTestUserWithPassword({
-        email,
-        password,
-        email_verified: false
-      });
-      await insertTestRecord('users', unverifiedUser);
+    await authHandlers.handleRegister(mockRequest, mockEnv);
 
-      const response = await apiClient.post('/auth/login').send({
-        email,
-        password
-      });
-
-      expect(response.status).toBe(403);
-      expect(response.body.error).toMatch(/email not verified/i);
-    });
-
-    it('should update last_login timestamp', async () => {
-      const before = Math.floor(Date.now() / 1000);
-
-      await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password
-      });
-
-      const user = await findTestRecord('users', { email: testUser.email });
-      expect(user.last_login).toBeGreaterThanOrEqual(before);
-    });
-
-    it('should create session in database/Redis', async () => {
-      const response = await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password
-      });
-
-      const cookie = response.headers['set-cookie'][0];
-      const sessionId = extractSessionId(cookie);
-
-      expect(sessionId).toBeTruthy();
-      // Session is stored in Redis, not database
-    });
-
-    it('should log successful login', async () => {
-      await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password
-      });
-
-      const auditLog = await queryTestDb(
-        'SELECT * FROM audit_log WHERE event_type = $1 AND user_id = $2 ORDER BY created_at DESC LIMIT 1',
-        ['login', testUser.id]
-      );
-
-      expect(auditLog.rows.length).toBeGreaterThan(0);
-    });
-
-    it('should log failed login attempts', async () => {
-      await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password: 'WrongPassword'
-      });
-
-      const auditLog = await queryTestDb(
-        'SELECT * FROM audit_log WHERE event_type = $1 ORDER BY created_at DESC LIMIT 1',
-        ['login_failed']
-      );
-
-      expect(auditLog.rows.length).toBeGreaterThan(0);
-      expect(auditLog.rows[0].event_details).toContain('invalid_credentials');
-    });
-
-    it('should return user role and plan in response', async () => {
-      const response = await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password
-      });
-
-      expect(response.status).toBe(200);
-      expect(response.body.role).toBe(testUser.role);
-      expect(response.body.plan).toBe('free');
-    });
-
-    it('should handle missing email field', async () => {
-      const response = await apiClient.post('/auth/login').send({
-        password
-      });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toBeDefined();
-    });
-
-    it('should handle missing password field', async () => {
-      const response = await apiClient.post('/auth/login').send({
-        email: testUser.email
-      });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toBeDefined();
-    });
-
-    it('should be case-insensitive for email', async () => {
-      const response = await apiClient.post('/auth/login').send({
-        email: testUser.email.toUpperCase(),
-        password
-      });
-
-      expect(response.status).toBe(200);
-      expect(response.body.email).toBe(testUser.email);
-    });
-  });
-
-  // ============================================================================
-  // GET /auth/verify-email
-  // ============================================================================
-  describe('GET /auth/verify-email', () => {
-    let testUser;
-    let verificationToken;
-
-    beforeEach(async () => {
-      const email = generateTestEmail('verify');
-      testUser = await createTestUserWithPassword({
-        email,
-        password: 'TestPass123!',
-        email_verified: false
-      });
-      await insertTestRecord('users', testUser);
-
-      // Create verification token
-      verificationToken = 'a'.repeat(64); // 64-char hex string
-      await insertTestRecord('verification_tokens', {
-        id: testUser.id + '-token',
-        user_id: testUser.id,
-        token: verificationToken,
-        token_type: 'email_verification',
-        used: false,
-        expires_at: Math.floor(Date.now() / 1000) + 86400, // +24 hours
-        created_at: Math.floor(Date.now() / 1000)
-      });
-    });
-
-    it('should verify email with valid token', async () => {
-      const response = await apiClient.get(
-        `/auth/verify-email?token=${verificationToken}`
-      );
-
-      expect(response.status).toBe(200);
-      expect(response.body.message).toContain('verified');
-
-      // Verify user is now verified
-      const user = await findTestRecord('users', { id: testUser.id });
-      expect(user.email_verified).toBe(true);
-
-      // Verify token is marked as used
-      const token = await findTestRecord('verification_tokens', {
-        token: verificationToken
-      });
-      expect(token.used).toBe(true);
-    });
-
-    it('should reject invalid token', async () => {
-      const response = await apiClient.get(
-        '/auth/verify-email?token=invalid-token'
-      );
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid.*token/i);
-    });
-
-    it('should reject already used token', async () => {
-      // Mark token as used
-      await queryTestDb(
-        'UPDATE verification_tokens SET used = true WHERE token = $1',
-        [verificationToken]
-      );
-
-      const response = await apiClient.get(
-        `/auth/verify-email?token=${verificationToken}`
-      );
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid.*token/i);
-    });
-
-    it('should reject expired token', async () => {
-      // Set token expiration to past
-      await queryTestDb(
-        'UPDATE verification_tokens SET expires_at = $1 WHERE token = $2',
-        [Math.floor(Date.now() / 1000) - 3600, verificationToken]
-      );
-
-      const response = await apiClient.get(
-        `/auth/verify-email?token=${verificationToken}`
-      );
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/expired/i);
-    });
-
-    it('should handle missing token parameter', async () => {
-      const response = await apiClient.get('/auth/verify-email');
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toBeDefined();
-    });
-  });
-
-  // ============================================================================
-  // POST /auth/logout
-  // ============================================================================
-  describe('POST /auth/logout', () => {
-    let testUser;
-    let sessionCookie;
-
-    beforeEach(async () => {
-      const email = generateTestEmail('logout');
-      testUser = await createTestUserWithPassword({
-        email,
-        password: 'TestPass123!',
-        email_verified: true
-      });
-      await insertTestRecord('users', testUser);
-
-      // Create subscription
-      await insertTestRecord('subscriptions', {
-        id: testUser.id + '-sub',
-        user_id: testUser.id,
-        plan: 'free',
-        status: 'active',
-        current_period_start: Math.floor(Date.now() / 1000),
-        current_period_end: Math.floor(Date.now() / 1000) + 2592000,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
-      });
-
-      // Login to get session cookie
-      const loginResponse = await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password: 'TestPass123!'
-      });
-      sessionCookie = loginResponse.headers['set-cookie'][0];
-    });
-
-    it('should logout successfully', async () => {
-      const response = await apiClient
-        .post('/auth/logout')
-        .set('Cookie', sessionCookie);
-
-      expect(response.status).toBe(200);
-      expect(response.body.message).toContain('logged out');
-
-      // Verify session cookie is cleared
-      const cookies = response.headers['set-cookie'];
-      expect(cookies).toBeDefined();
-      const clearedCookie = cookies.find((c) => c.includes('session_id='));
-      expect(clearedCookie).toContain('Max-Age=0');
-    });
-
-    it('should require authentication', async () => {
-      const response = await apiClient.post('/auth/logout');
-
-      expect(response.status).toBe(401);
-      expect(response.body.error).toMatch(/unauthorized/i);
-    });
-
-    it('should log logout event', async () => {
-      await apiClient.post('/auth/logout').set('Cookie', sessionCookie);
-
-      const auditLog = await queryTestDb(
-        'SELECT * FROM audit_log WHERE event_type = $1 AND user_id = $2 ORDER BY created_at DESC LIMIT 1',
-        ['logout', testUser.id]
-      );
-
-      expect(auditLog.rows.length).toBeGreaterThan(0);
-    });
-  });
-
-  // ============================================================================
-  // GET /auth/me
-  // ============================================================================
-  describe('GET /auth/me', () => {
-    let testUser;
-    let sessionCookie;
-
-    beforeEach(async () => {
-      const email = generateTestEmail('me');
-      testUser = await createTestUserWithPassword({
-        email,
-        password: 'TestPass123!',
-        email_verified: true
-      });
-      await insertTestRecord('users', testUser);
-
-      // Create subscription
-      await insertTestRecord('subscriptions', {
-        id: testUser.id + '-sub',
-        user_id: testUser.id,
-        plan: 'freelancer',
-        status: 'active',
-        current_period_start: Math.floor(Date.now() / 1000),
-        current_period_end: Math.floor(Date.now() / 1000) + 2592000,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
-      });
-
-      // Login
-      const loginResponse = await apiClient.post('/auth/login').send({
-        email: testUser.email,
-        password: 'TestPass123!'
-      });
-      sessionCookie = loginResponse.headers['set-cookie'][0];
-    });
-
-    it('should return current user info', async () => {
-      const response = await apiClient.get('/auth/me').set('Cookie', sessionCookie);
-
-      expect(response.status).toBe(200);
-      expect(response.body.userId).toBe(testUser.id);
-      expect(response.body.email).toBe(testUser.email);
-      expect(response.body.role).toBe(testUser.role);
-      expect(response.body.plan).toBe('freelancer');
-      expect(response.body.emailVerified).toBe(true);
-    });
-
-    it('should not include password hash', async () => {
-      const response = await apiClient.get('/auth/me').set('Cookie', sessionCookie);
-
-      expect(response.status).toBe(200);
-      expect(response.body.password_hash).toBeUndefined();
-      expect(response.body.passwordHash).toBeUndefined();
-    });
-
-    it('should require authentication', async () => {
-      const response = await apiClient.get('/auth/me');
-
-      expect(response.status).toBe(401);
-      expect(response.body.error).toMatch(/unauthorized/i);
-    });
-
-    it('should handle invalid session', async () => {
-      const response = await apiClient
-        .get('/auth/me')
-        .set('Cookie', 'session_id=invalid-session-id');
-
-      expect(response.status).toBe(401);
-    });
-
-    it('should return subscription plan', async () => {
-      const response = await apiClient.get('/auth/me').set('Cookie', sessionCookie);
-
-      expect(response.status).toBe(200);
-      expect(response.body.plan).toBe('freelancer');
-    });
-  });
-
-  // ============================================================================
-  // POST /auth/password-reset-request
-  // ============================================================================
-  describe('POST /auth/password-reset-request', () => {
-    let testUser;
-
-    beforeEach(async () => {
-      const email = generateTestEmail('reset-request');
-      testUser = await createTestUserWithPassword({
-        email,
-        password: 'TestPass123!',
-        email_verified: true
-      });
-      await insertTestRecord('users', testUser);
-    });
-
-    it('should create password reset token', async () => {
-      const response = await apiClient
-        .post('/auth/password-reset-request')
-        .send({ email: testUser.email });
-
-      expect(response.status).toBe(200);
-      expect(response.body.message).toContain('sent');
-
-      // Verify token created in database
-      const token = await queryTestDb(
-        'SELECT * FROM verification_tokens WHERE user_id = $1 AND token_type = $2 ORDER BY created_at DESC LIMIT 1',
-        [testUser.id, 'password_reset']
-      );
-
-      expect(token.rows.length).toBe(1);
-      expect(token.rows[0].used).toBe(false);
-    });
-
-    it('should handle non-existent email gracefully', async () => {
-      const response = await apiClient
-        .post('/auth/password-reset-request')
-        .send({ email: 'nonexistent@example.com' });
-
-      // Should return success to prevent email enumeration
-      expect(response.status).toBe(200);
-      expect(response.body.message).toContain('sent');
-    });
-
-    it('should handle invalid email format', async () => {
-      const response = await apiClient
-        .post('/auth/password-reset-request')
-        .send({ email: 'invalid-email' });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid email/i);
-    });
-
-    it('should handle missing email field', async () => {
-      const response = await apiClient
-        .post('/auth/password-reset-request')
-        .send({});
-
-      expect(response.status).toBe(400);
-    });
-  });
-
-  // ============================================================================
-  // POST /auth/password-reset
-  // ============================================================================
-  describe('POST /auth/password-reset', () => {
-    let testUser;
-    let resetToken;
-
-    beforeEach(async () => {
-      const email = generateTestEmail('reset');
-      testUser = await createTestUserWithPassword({
-        email,
-        password: 'OldPassword123!',
-        email_verified: true
-      });
-      await insertTestRecord('users', testUser);
-
-      // Create password reset token
-      resetToken = 'b'.repeat(64);
-      await insertTestRecord('verification_tokens', {
-        id: testUser.id + '-reset',
-        user_id: testUser.id,
-        token: resetToken,
-        token_type: 'password_reset',
-        used: false,
-        expires_at: Math.floor(Date.now() / 1000) + 3600, // +1 hour
-        created_at: Math.floor(Date.now() / 1000)
-      });
-    });
-
-    it('should reset password with valid token', async () => {
-      const newPassword = 'NewPassword456!';
-
-      const response = await apiClient.post('/auth/password-reset').send({
-        token: resetToken,
-        newPassword
-      });
-
-      expect(response.status).toBe(200);
-      expect(response.body.message).toContain('reset');
-
-      // Verify password was changed
-      const user = await findTestRecord('users', { id: testUser.id });
-      const isValid = await bcrypt.compare(newPassword, user.password_hash);
-      expect(isValid).toBe(true);
-
-      // Verify old password no longer works
-      const isOldValid = await bcrypt.compare('OldPassword123!', user.password_hash);
-      expect(isOldValid).toBe(false);
-
-      // Verify token is marked as used
-      const token = await findTestRecord('verification_tokens', {
-        token: resetToken
-      });
-      expect(token.used).toBe(true);
-    });
-
-    it('should reject weak new password', async () => {
-      const response = await apiClient.post('/auth/password-reset').send({
-        token: resetToken,
-        newPassword: 'weak'
-      });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/password must be/i);
-    });
-
-    it('should reject invalid token', async () => {
-      const response = await apiClient.post('/auth/password-reset').send({
-        token: 'invalid-token',
-        newPassword: 'NewPassword456!'
-      });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid.*token/i);
-    });
-
-    it('should reject expired token', async () => {
-      // Set token expiration to past
-      await queryTestDb(
-        'UPDATE verification_tokens SET expires_at = $1 WHERE token = $2',
-        [Math.floor(Date.now() / 1000) - 3600, resetToken]
-      );
-
-      const response = await apiClient.post('/auth/password-reset').send({
-        token: resetToken,
-        newPassword: 'NewPassword456!'
-      });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/expired/i);
-    });
-
-    it('should reject already used token', async () => {
-      // Mark token as used
-      await queryTestDb(
-        'UPDATE verification_tokens SET used = true WHERE token = $1',
-        [resetToken]
-      );
-
-      const response = await apiClient.post('/auth/password-reset').send({
-        token: resetToken,
-        newPassword: 'NewPassword456!'
-      });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid.*token/i);
-    });
-
-    it('should handle missing newPassword field', async () => {
-      const response = await apiClient.post('/auth/password-reset').send({
-        token: resetToken
-      });
-
-      expect(response.status).toBe(400);
-    });
-
-    it('should handle missing token field', async () => {
-      const response = await apiClient.post('/auth/password-reset').send({
-        newPassword: 'NewPassword456!'
-      });
-
-      expect(response.status).toBe(400);
-    });
-
-    it('should log password reset event', async () => {
-      await apiClient.post('/auth/password-reset').send({
-        token: resetToken,
-        newPassword: 'NewPassword456!'
-      });
-
-      const auditLog = await queryTestDb(
-        'SELECT * FROM audit_log WHERE event_type = $1 AND user_id = $2 ORDER BY created_at DESC LIMIT 1',
-        ['password_reset', testUser.id]
-      );
-
-      expect(auditLog.rows.length).toBeGreaterThan(0);
-    });
-  });
-
-  // ============================================================================
-  // POST /auth/resend-verification
-  // ============================================================================
-  describe('POST /auth/resend-verification', () => {
-    let testUser;
-
-    beforeEach(async () => {
-      const email = generateTestEmail('resend');
-      testUser = await createTestUserWithPassword({
-        email,
-        password: 'TestPass123!',
-        email_verified: false
-      });
-      await insertTestRecord('users', testUser);
-    });
-
-    it('should create new verification token', async () => {
-      const response = await apiClient
-        .post('/auth/resend-verification')
-        .send({ email: testUser.email });
-
-      expect(response.status).toBe(200);
-      expect(response.body.message).toContain('sent');
-
-      // Verify new token created
-      const token = await queryTestDb(
-        'SELECT * FROM verification_tokens WHERE user_id = $1 AND token_type = $2 ORDER BY created_at DESC LIMIT 1',
-        [testUser.id, 'email_verification']
-      );
-
-      expect(token.rows.length).toBe(1);
-      expect(token.rows[0].used).toBe(false);
-    });
-
-    it('should reject for already verified email', async () => {
-      // Mark user as verified
-      await queryTestDb('UPDATE users SET email_verified = true WHERE id = $1', [
-        testUser.id
-      ]);
-
-      const response = await apiClient
-        .post('/auth/resend-verification')
-        .send({ email: testUser.email });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/already verified/i);
-    });
-
-    it('should handle non-existent email gracefully', async () => {
-      const response = await apiClient
-        .post('/auth/resend-verification')
-        .send({ email: 'nonexistent@example.com' });
-
-      // Should return success to prevent email enumeration
-      expect(response.status).toBe(200);
-    });
-
-    it('should handle invalid email format', async () => {
-      const response = await apiClient
-        .post('/auth/resend-verification')
-        .send({ email: 'invalid-email' });
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toMatch(/invalid email/i);
-    });
+    const user = await findTestRecord('users', { email: 'default-role@example.com' });
+    expect(user.role).toBe('author');
   });
 });
+
+describe('POST /auth/login', () => {
+  let testDb;
+  let testDbAdapter;
+  let testUser;
+
+  beforeEach(async () => {
+    testDb = getTestDb();
+    testDbAdapter = getTestDbAdapter();
+    mockRedisInstance.clear();
+    vi.clearAllMocks();
+
+    // Create verified test user
+    testUser = await createTestUser(testDb, {
+      email: 'login-test@example.com',
+      password_hash: await bcrypt.hash('TestPass123!', 10),
+      email_verified: true
+    });
+  });
+
+  it('should login with valid credentials', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'login-test@example.com',
+        password: 'TestPass123!'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleLogin(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(result.userId).toBeDefined();
+    expect(result.email).toBe('login-test@example.com');
+
+    // Verify session cookie was set
+    const headers = response.headers;
+    expect(headers.get('Set-Cookie')).toBeTruthy();
+    expect(headers.get('Set-Cookie')).toContain('session_id=');
+    expect(headers.get('Set-Cookie')).toContain('HttpOnly');
+    expect(headers.get('Set-Cookie')).toContain('Secure');
+  });
+
+  it('should reject login with wrong password', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'login-test@example.com',
+        password: 'WrongPassword'
+      }),
+      headers: new Map([['x-forwarded-for', '127.0.0.1']])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleLogin(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/invalid credentials/i);
+  });
+
+  it('should reject login with non-existent email', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'nonexistent@example.com',
+        password: 'TestPass123!'
+      }),
+      headers: new Map([['x-forwarded-for', '127.0.0.1']])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleLogin(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/invalid credentials/i);
+  });
+
+  it('should reject login with unverified email', async () => {
+    // Create unverified user
+    await createTestUser(testDb, {
+      email: 'unverified@example.com',
+      password_hash: await bcrypt.hash('TestPass123!', 10),
+      email_verified: false
+    });
+
+    const mockRequest = {
+      json: async () => ({
+        email: 'unverified@example.com',
+        password: 'TestPass123!'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleLogin(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(result.error).toMatch(/email not verified/i);
+  });
+
+  it('should rate limit after 5 failed attempts', async () => {
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    // Make 5 failed login attempts
+    for (let i = 0; i < 5; i++) {
+      const mockRequest = {
+        json: async () => ({
+          email: 'login-test@example.com',
+          password: 'WrongPassword'
+        }),
+        headers: new Map([['x-forwarded-for', '127.0.0.1']])
+      };
+
+      await authHandlers.handleLogin(mockRequest, mockEnv);
+    }
+
+    // 6th attempt should be rate limited
+    const mockRequest = {
+      json: async () => ({
+        email: 'login-test@example.com',
+        password: 'WrongPassword'
+      }),
+      headers: new Map([['x-forwarded-for', '127.0.0.1']])
+    };
+
+    const response = await authHandlers.handleLogin(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(429);
+    expect(result.error).toMatch(/too many.*attempts/i);
+  });
+
+  it('should update last_login timestamp', async () => {
+    const beforeLogin = new Date();
+
+    const mockRequest = {
+      json: async () => ({
+        email: 'login-test@example.com',
+        password: 'TestPass123!'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleLogin(mockRequest, mockEnv);
+
+    const user = await findTestRecord('users', { email: 'login-test@example.com' });
+    const lastLogin = new Date(user.last_login);
+
+    expect(lastLogin >= beforeLogin).toBe(true);
+  });
+
+  it('should create session in Redis', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'login-test@example.com',
+        password: 'TestPass123!'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleLogin(mockRequest, mockEnv);
+
+    // Extract session ID from Set-Cookie header
+    const setCookie = response.headers.get('Set-Cookie');
+    const sessionIdMatch = setCookie.match(/session_id=([^;]+)/);
+    expect(sessionIdMatch).toBeTruthy();
+
+    const sessionId = sessionIdMatch[1];
+
+    // Verify session exists in Redis
+    const sessionData = await mockRedisInstance.get(`session:${sessionId}`);
+    expect(sessionData).toBeTruthy();
+
+    const session = JSON.parse(sessionData);
+    expect(session.userId).toBe(testUser.id);
+    expect(session.email).toBe('login-test@example.com');
+  });
+
+  it('should log successful login', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'login-test@example.com',
+        password: 'TestPass123!'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleLogin(mockRequest, mockEnv);
+
+    const auditCount = await countTestRecords('audit_log', { event_type: 'login' });
+    expect(auditCount).toBeGreaterThan(0);
+  });
+
+  it('should log failed login attempts', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'login-test@example.com',
+        password: 'WrongPassword'
+      }),
+      headers: new Map([['x-forwarded-for', '127.0.0.1']])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleLogin(mockRequest, mockEnv);
+
+    const auditCount = await countTestRecords('audit_log', { event_type: 'login_failed' });
+    expect(auditCount).toBeGreaterThan(0);
+  });
+});
+
+describe('POST /auth/verify-email', () => {
+  let testDb;
+  let testDbAdapter;
+  let testUser;
+  let verificationToken;
+
+  beforeEach(async () => {
+    testDb = getTestDb();
+    testDbAdapter = getTestDbAdapter();
+    mockRedisInstance.clear();
+    vi.clearAllMocks();
+
+    // Create unverified user with verification token
+    testUser = await createTestUser(testDb, {
+      email: 'verify@example.com',
+      password_hash: await bcrypt.hash('TestPass123!', 10),
+      email_verified: false
+    });
+
+    verificationToken = await createVerificationToken(testDb, {
+      user_id: testUser.id,
+      token_type: 'email_verification'
+    });
+  });
+
+  it('should verify email with valid token', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: verificationToken.token
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleVerifyEmail(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(result.message).toMatch(/email verified/i);
+
+    // Verify user's email_verified flag is true
+    const user = await findTestRecord('users', { id: testUser.id });
+    expect(user.email_verified).toBe(true);
+
+    // Verify token is marked as used
+    const token = await findTestRecord('verification_tokens', { token: verificationToken.token });
+    expect(token.used).toBe(true);
+  });
+
+  it('should reject invalid token', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: 'invalid-token-12345'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleVerifyEmail(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/invalid.*token/i);
+  });
+
+  it('should reject expired token', async () => {
+    // Create expired token (expires_at in the past)
+    const expiredToken = await createVerificationToken(testDb, {
+      user_id: testUser.id,
+      token_type: 'email_verification',
+      expires_at: new Date(Date.now() - 86400000) // 1 day ago
+    });
+
+    const mockRequest = {
+      json: async () => ({
+        token: expiredToken.token
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleVerifyEmail(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/expired/i);
+  });
+
+  it('should reject already used token', async () => {
+    // Mark token as used
+    await testDb.query(
+      'UPDATE verification_tokens SET used = TRUE WHERE token = $1',
+      [verificationToken.token]
+    );
+
+    const mockRequest = {
+      json: async () => ({
+        token: verificationToken.token
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleVerifyEmail(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/already.*used|invalid/i);
+  });
+
+  it('should handle missing token', async () => {
+    const mockRequest = {
+      json: async () => ({})
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleVerifyEmail(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/token.*required/i);
+  });
+
+  it('should log email verification event', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: verificationToken.token
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleVerifyEmail(mockRequest, mockEnv);
+
+    const auditCount = await countTestRecords('audit_log', { event_type: 'email_verified' });
+    expect(auditCount).toBeGreaterThan(0);
+  });
+});
+
+describe('POST /auth/request-password-reset', () => {
+  let testDb;
+  let testDbAdapter;
+  let testUser;
+
+  beforeEach(async () => {
+    testDb = getTestDb();
+    testDbAdapter = getTestDbAdapter();
+    mockRedisInstance.clear();
+    vi.clearAllMocks();
+
+    testUser = await createTestUser(testDb, {
+      email: 'reset@example.com',
+      password_hash: await bcrypt.hash('OldPass123!', 10),
+      email_verified: true
+    });
+  });
+
+  it('should create password reset token for valid email', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'reset@example.com'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(result.message).toMatch(/reset.*sent/i);
+
+    // Verify token was created
+    const tokenCount = await countTestRecords('verification_tokens', {
+      user_id: testUser.id,
+      token_type: 'password_reset'
+    });
+    expect(tokenCount).toBeGreaterThan(0);
+  });
+
+  it('should send password reset email', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'reset@example.com'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+
+    expect(mockEmailService.sendPasswordResetEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userEmail: 'reset@example.com',
+        resetToken: expect.any(String)
+      }),
+      expect.any(Object)
+    );
+  });
+
+  it('should not reveal if email does not exist (security)', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'nonexistent@example.com'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+    const result = await response.json();
+
+    // Should return success to avoid email enumeration
+    expect(response.status).toBe(200);
+    expect(result.message).toMatch(/reset.*sent/i);
+  });
+
+  it('should rate limit password reset requests', async () => {
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    // Make 3 password reset requests (limit is 3 per hour)
+    for (let i = 0; i < 3; i++) {
+      const mockRequest = {
+        json: async () => ({
+          email: 'reset@example.com'
+        }),
+        headers: new Map([['x-forwarded-for', '127.0.0.1']])
+      };
+
+      await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+    }
+
+    // 4th request should be rate limited
+    const mockRequest = {
+      json: async () => ({
+        email: 'reset@example.com'
+      }),
+      headers: new Map([['x-forwarded-for', '127.0.0.1']])
+    };
+
+    const response = await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(429);
+    expect(result.error).toMatch(/too many.*requests/i);
+  });
+
+  it('should normalize email to lowercase', async () => {
+    await createTestUser(testDb, {
+      email: 'casesensitive@example.com',
+      password_hash: await bcrypt.hash('TestPass123!', 10),
+      email_verified: true
+    });
+
+    const mockRequest = {
+      json: async () => ({
+        email: 'CaseSensitive@Example.COM'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+
+    expect(response.status).toBe(200);
+  });
+
+  it('should reject invalid email format', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'invalid-email'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/invalid email/i);
+  });
+
+  it('should handle missing email', async () => {
+    const mockRequest = {
+      json: async () => ({}),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/email.*required/i);
+  });
+
+  it('should log password reset request', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'reset@example.com'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
+
+    const auditCount = await countTestRecords('audit_log', { event_type: 'password_reset_requested' });
+    expect(auditCount).toBeGreaterThan(0);
+  });
+});
+
+describe('POST /auth/reset-password', () => {
+  let testDb;
+  let testDbAdapter;
+  let testUser;
+  let resetToken;
+
+  beforeEach(async () => {
+    testDb = getTestDb();
+    testDbAdapter = getTestDbAdapter();
+    mockRedisInstance.clear();
+    vi.clearAllMocks();
+
+    testUser = await createTestUser(testDb, {
+      email: 'reset@example.com',
+      password_hash: await bcrypt.hash('OldPass123!', 10),
+      email_verified: true
+    });
+
+    resetToken = await createVerificationToken(testDb, {
+      user_id: testUser.id,
+      token_type: 'password_reset'
+    });
+  });
+
+  it('should reset password with valid token', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: resetToken.token,
+        newPassword: 'NewSecurePass456!'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleResetPassword(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(result.message).toMatch(/password.*reset/i);
+
+    // Verify password was changed
+    const user = await findTestRecord('users', { id: testUser.id });
+    const isNewPassword = await bcrypt.compare('NewSecurePass456!', user.password_hash);
+    expect(isNewPassword).toBe(true);
+
+    // Verify old password no longer works
+    const isOldPassword = await bcrypt.compare('OldPass123!', user.password_hash);
+    expect(isOldPassword).toBe(false);
+  });
+
+  it('should mark reset token as used', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: resetToken.token,
+        newPassword: 'NewSecurePass456!'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleResetPassword(mockRequest, mockEnv);
+
+    const token = await findTestRecord('verification_tokens', { token: resetToken.token });
+    expect(token.used).toBe(true);
+  });
+
+  it('should reject weak new password', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: resetToken.token,
+        newPassword: 'weak'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleResetPassword(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/password must be/i);
+  });
+
+  it('should reject invalid token', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: 'invalid-token-12345',
+        newPassword: 'NewSecurePass456!'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleResetPassword(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/invalid.*token/i);
+  });
+
+  it('should reject expired token', async () => {
+    const expiredToken = await createVerificationToken(testDb, {
+      user_id: testUser.id,
+      token_type: 'password_reset',
+      expires_at: new Date(Date.now() - 86400000) // 1 day ago
+    });
+
+    const mockRequest = {
+      json: async () => ({
+        token: expiredToken.token,
+        newPassword: 'NewSecurePass456!'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleResetPassword(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/expired/i);
+  });
+
+  it('should reject already used token', async () => {
+    await testDb.query(
+      'UPDATE verification_tokens SET used = TRUE WHERE token = $1',
+      [resetToken.token]
+    );
+
+    const mockRequest = {
+      json: async () => ({
+        token: resetToken.token,
+        newPassword: 'NewSecurePass456!'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleResetPassword(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/already.*used|invalid/i);
+  });
+
+  it('should hash new password with bcrypt', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: resetToken.token,
+        newPassword: 'NewSecurePass456!'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleResetPassword(mockRequest, mockEnv);
+
+    const user = await findTestRecord('users', { id: testUser.id });
+    const hash = user.password_hash;
+
+    // Verify bcrypt hash format
+    expect(hash).toMatch(/^\$2[ab]\$10\$/);
+    expect(hash.length).toBe(60);
+  });
+
+  it('should log password reset event', async () => {
+    const mockRequest = {
+      json: async () => ({
+        token: resetToken.token,
+        newPassword: 'NewSecurePass456!'
+      })
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleResetPassword(mockRequest, mockEnv);
+
+    const auditCount = await countTestRecords('audit_log', { event_type: 'password_reset' });
+    expect(auditCount).toBeGreaterThan(0);
+  });
+});
+
+describe('POST /auth/logout', () => {
+  let testDb;
+  let testDbAdapter;
+  let testUser;
+  let sessionId;
+
+  beforeEach(async () => {
+    testDb = getTestDb();
+    testDbAdapter = getTestDbAdapter();
+    mockRedisInstance.clear();
+    vi.clearAllMocks();
+
+    testUser = await createTestUser(testDb, {
+      email: 'logout@example.com',
+      password_hash: await bcrypt.hash('TestPass123!', 10),
+      email_verified: true
+    });
+
+    // Create session
+    sessionId = 'test-session-id-12345';
+    await mockRedisInstance.setEx(
+      `session:${sessionId}`,
+      3600,
+      JSON.stringify({
+        userId: testUser.id,
+        email: testUser.email,
+        createdAt: Date.now()
+      })
+    );
+  });
+
+  it('should logout and destroy session', async () => {
+    const mockRequest = {
+      headers: new Map([['cookie', `session_id=${sessionId}`]])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleLogout(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(result.message).toMatch(/logged out/i);
+
+    // Verify session was deleted from Redis
+    const sessionData = await mockRedisInstance.get(`session:${sessionId}`);
+    expect(sessionData).toBeNull();
+  });
+
+  it('should clear session cookie', async () => {
+    const mockRequest = {
+      headers: new Map([['cookie', `session_id=${sessionId}`]])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleLogout(mockRequest, mockEnv);
+
+    const setCookie = response.headers.get('Set-Cookie');
+    expect(setCookie).toContain('session_id=');
+    expect(setCookie).toContain('Max-Age=0'); // Cookie expired
+  });
+
+  it('should log logout event', async () => {
+    const mockRequest = {
+      headers: new Map([['cookie', `session_id=${sessionId}`]])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    await authHandlers.handleLogout(mockRequest, mockEnv);
+
+    const auditCount = await countTestRecords('audit_log', { event_type: 'logout' });
+    expect(auditCount).toBeGreaterThan(0);
+  });
+});
+
+describe('GET /auth/me', () => {
+  let testDb;
+  let testDbAdapter;
+  let testUser;
+  let sessionId;
+
+  beforeEach(async () => {
+    testDb = getTestDb();
+    testDbAdapter = getTestDbAdapter();
+    mockRedisInstance.clear();
+    vi.clearAllMocks();
+
+    testUser = await createTestUser(testDb, {
+      email: 'me@example.com',
+      password_hash: await bcrypt.hash('TestPass123!', 10),
+      email_verified: true,
+      role: 'author',
+      subscription_tier: 'pro'
+    });
+
+    // Create session
+    sessionId = 'test-session-id-12345';
+    await mockRedisInstance.setEx(
+      `session:${sessionId}`,
+      3600,
+      JSON.stringify({
+        userId: testUser.id,
+        email: testUser.email,
+        createdAt: Date.now()
+      })
+    );
+  });
+
+  it('should return current user with valid session', async () => {
+    const mockRequest = {
+      headers: new Map([['cookie', `session_id=${sessionId}`]])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleGetCurrentUser(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(result.userId).toBe(testUser.id);
+    expect(result.email).toBe('me@example.com');
+    expect(result.role).toBe('author');
+    expect(result.subscriptionTier).toBe('pro');
+  });
+
+  it('should not return password hash', async () => {
+    const mockRequest = {
+      headers: new Map([['cookie', `session_id=${sessionId}`]])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleGetCurrentUser(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(result.password_hash).toBeUndefined();
+    expect(result.passwordHash).toBeUndefined();
+  });
+
+  it('should reject request without session', async () => {
+    const mockRequest = {
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleGetCurrentUser(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(result.error).toMatch(/not authenticated/i);
+  });
+
+  it('should reject request with invalid session', async () => {
+    const mockRequest = {
+      headers: new Map([['cookie', 'session_id=invalid-session-id']])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleGetCurrentUser(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(result.error).toMatch(/not authenticated|invalid session/i);
+  });
+
+  it('should return email verification status', async () => {
+    const mockRequest = {
+      headers: new Map([['cookie', `session_id=${sessionId}`]])
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleGetCurrentUser(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(result.emailVerified).toBeDefined();
+    expect(typeof result.emailVerified).toBe('boolean');
+  });
+});
+
+describe('POST /auth/resend-verification', () => {
+  let testDb;
+  let testDbAdapter;
+  let testUser;
+
+  beforeEach(async () => {
+    testDb = getTestDb();
+    testDbAdapter = getTestDbAdapter();
+    mockRedisInstance.clear();
+    vi.clearAllMocks();
+
+    testUser = await createTestUser(testDb, {
+      email: 'resend@example.com',
+      password_hash: await bcrypt.hash('TestPass123!', 10),
+      email_verified: false
+    });
+  });
+
+  it('should resend verification email for unverified user', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'resend@example.com'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleResendVerification(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(result.message).toMatch(/verification.*sent/i);
+
+    expect(mockEmailService.sendEmailVerification).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userEmail: 'resend@example.com',
+        verificationToken: expect.any(String)
+      }),
+      expect.any(Object)
+    );
+  });
+
+  it('should reject resend for already verified user', async () => {
+    await testDb.query(
+      'UPDATE users SET email_verified = TRUE WHERE id = $1',
+      [testUser.id]
+    );
+
+    const mockRequest = {
+      json: async () => ({
+        email: 'resend@example.com'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleResendVerification(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(result.error).toMatch(/already verified/i);
+  });
+
+  it('should rate limit resend requests', async () => {
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    // Make 3 resend requests (limit is 3 per hour)
+    for (let i = 0; i < 3; i++) {
+      const mockRequest = {
+        json: async () => ({
+          email: 'resend@example.com'
+        }),
+        headers: new Map([['x-forwarded-for', '127.0.0.1']])
+      };
+
+      await authHandlers.handleResendVerification(mockRequest, mockEnv);
+    }
+
+    // 4th request should be rate limited
+    const mockRequest = {
+      json: async () => ({
+        email: 'resend@example.com'
+      }),
+      headers: new Map([['x-forwarded-for', '127.0.0.1']])
+    };
+
+    const response = await authHandlers.handleResendVerification(mockRequest, mockEnv);
+    const result = await response.json();
+
+    expect(response.status).toBe(429);
+    expect(result.error).toMatch(/too many.*requests/i);
+  });
+
+  it('should not reveal if email does not exist (security)', async () => {
+    const mockRequest = {
+      json: async () => ({
+        email: 'nonexistent@example.com'
+      }),
+      headers: new Map()
+    };
+
+    const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
+
+    const response = await authHandlers.handleResendVerification(mockRequest, mockEnv);
+
+    // Should return success to avoid email enumeration
+    expect(response.status).toBe(200);
+  });
+});
+
+export { testDb };

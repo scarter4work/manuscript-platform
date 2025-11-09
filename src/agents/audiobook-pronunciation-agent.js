@@ -36,7 +36,7 @@ export class AudiobookPronunciationAgent {
     const characters = analysis.characters || {};
 
     // Get manuscript full text for comprehensive name/term extraction
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     const textContent = await extractManuscriptText(manuscript, 50000); // More text for thorough analysis
 
     const pronunciationGuide = await this.generatePronunciationGuide(
@@ -50,7 +50,7 @@ export class AudiobookPronunciationAgent {
 
     // Store results
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       manuscriptKey,
       'audiobook-pronunciation',
       pronunciationGuide

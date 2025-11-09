@@ -27,7 +27,7 @@ export class BookDescriptionAgent {
     const compTitles = developmentalAnalysis.compTitles || [];
 
     // Get manuscript excerpt for context
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     const textContent = await this.extractText(manuscript);
     const excerpt = textContent.substring(0, 5000); // First 5000 chars
 
@@ -214,7 +214,7 @@ Return this exact structure:
    * Store description in R2
    */
   async storeDescription(manuscriptKey, description) {
-    await this.env.MANUSCRIPTS_PROCESSED.put(
+    await this.env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-book-description.json`,
       JSON.stringify(description, null, 2),
       {

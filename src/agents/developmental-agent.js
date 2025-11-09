@@ -25,7 +25,7 @@ export class DevelopmentalAgent {
     console.log(`Starting developmental analysis for ${manuscriptKey}`);
     
     // 1. Retrieve manuscript from R2
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscript) {
       throw new Error('Manuscript not found');
     }
@@ -346,7 +346,7 @@ Return this exact structure:
     // Store comprehensive results in MANUSCRIPTS_PROCESSED
     const processedKey = manuscriptKey.replace('MANUSCRIPTS_RAW', 'PROCESSED');
     
-    await this.env.MANUSCRIPTS_PROCESSED.put(
+    await this.env.R2.getBucket('manuscripts_processed').put(
       `${processedKey}-analysis.json`,
       JSON.stringify(results, null, 2),
       {

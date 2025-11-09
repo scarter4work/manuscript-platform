@@ -27,7 +27,7 @@ async function handleAssetStatus(request, env, corsHeaders) {
       });
     }
 
-    const statusObj = await env.MANUSCRIPTS_RAW.get(`asset-status:${reportId}`);
+    const statusObj = await env.R2.getBucket('manuscripts_raw').get(`asset-status:${reportId}`);
 
     if (!statusObj) {
       return new Response(JSON.stringify({
@@ -101,7 +101,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
 
     // Look up the manuscript key from the short report ID
     // Report IDs are 8-character UUIDs that map to full manuscript storage keys
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -119,7 +119,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
     // Fetch developmental analysis (required input for all asset generators)
     // The developmental analysis contains plot, character, pacing, and theme insights
     // that inform all marketing materials
-    const devAnalysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`);
+    const devAnalysisObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-analysis.json`);
 
     if (!devAnalysisObj) {
       return new Response(JSON.stringify({
@@ -224,7 +224,7 @@ async function handleGenerateAssets(request, env, corsHeaders) {
 
     // Store the combined assets in R2 for later retrieval
     // This allows the /assets endpoint to fetch all assets in one request
-    await env.MANUSCRIPTS_PROCESSED.put(
+    await env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-assets.json`,
       JSON.stringify(combinedAssets, null, 2),
       {
@@ -278,7 +278,7 @@ async function handleGetAssets(request, env, corsHeaders) {
     console.log('Fetching assets for report:', reportId);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -293,7 +293,7 @@ async function handleGetAssets(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
 
     // Fetch combined assets
-    const assetsObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-assets.json`);
+    const assetsObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-assets.json`);
 
     if (!assetsObj) {
       return new Response(JSON.stringify({

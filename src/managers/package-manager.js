@@ -305,8 +305,8 @@ export async function createPlatformPackage(env, manuscriptId, userId, platform)
 
     // Get manuscript file (assuming it's stored in R2)
     const manuscriptKey = `${userId}/${manuscriptId}/${manuscript.filename}`;
-    const manuscriptObject = await env.MANUSCRIPTS_PROCESSED.get(manuscriptKey) ||
-                            await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObject = await env.R2.getBucket('manuscripts_processed').get(manuscriptKey) ||
+                            await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
 
     if (manuscriptObject) {
       const manuscriptBuffer = await manuscriptObject.arrayBuffer();
@@ -318,7 +318,7 @@ export async function createPlatformPackage(env, manuscriptId, userId, platform)
 
     // Get cover image if available
     if (manuscript.cover_image_key) {
-      const coverObject = await env.MARKETING_ASSETS.get(manuscript.cover_image_key);
+      const coverObject = await env.R2.getBucket('marketing_assets').get(manuscript.cover_image_key);
       if (coverObject) {
         const coverBuffer = await coverObject.arrayBuffer();
         const coverFile = platformSpec.files.find(f => f.key === 'cover' || f.key === 'cover_ebook');
@@ -378,8 +378,8 @@ export async function createAllPlatformsBundle(env, manuscriptId, userId, platfo
 
     // Get manuscript file once (to reuse)
     const manuscriptKey = `${userId}/${manuscriptId}/${manuscript.filename}`;
-    const manuscriptObject = await env.MANUSCRIPTS_PROCESSED.get(manuscriptKey) ||
-                            await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObject = await env.R2.getBucket('manuscripts_processed').get(manuscriptKey) ||
+                            await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     let manuscriptBuffer = null;
     if (manuscriptObject) {
       manuscriptBuffer = new Uint8Array(await manuscriptObject.arrayBuffer());
@@ -388,7 +388,7 @@ export async function createAllPlatformsBundle(env, manuscriptId, userId, platfo
     // Get cover once (to reuse)
     let coverBuffer = null;
     if (manuscript.cover_image_key) {
-      const coverObject = await env.MARKETING_ASSETS.get(manuscript.cover_image_key);
+      const coverObject = await env.R2.getBucket('marketing_assets').get(manuscript.cover_image_key);
       if (coverObject) {
         coverBuffer = new Uint8Array(await coverObject.arrayBuffer());
       }

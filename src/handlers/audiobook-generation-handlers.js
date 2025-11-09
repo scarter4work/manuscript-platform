@@ -50,8 +50,8 @@ export async function generateNarrationScript(request, env, manuscriptId) {
 
     // Get manuscript content from R2
     const manuscriptKey = `${user.id}/${manuscriptId}/${manuscript.filename}`;
-    const manuscriptObject = await env.MANUSCRIPTS_PROCESSED.get(manuscriptKey) ||
-                             await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObject = await env.R2.getBucket('manuscripts_processed').get(manuscriptKey) ||
+                             await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
 
     if (!manuscriptObject) {
       return new Response(JSON.stringify({ error: 'Manuscript file not found' }), {
@@ -129,8 +129,8 @@ export async function getChapterTiming(request, env, manuscriptId) {
 
     // Get manuscript content
     const manuscriptKey = `${user.id}/${manuscriptId}/${manuscript.filename}`;
-    const manuscriptObject = await env.MANUSCRIPTS_PROCESSED.get(manuscriptKey) ||
-                             await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObject = await env.R2.getBucket('manuscripts_processed').get(manuscriptKey) ||
+                             await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
 
     if (!manuscriptObject) {
       return new Response(JSON.stringify({ error: 'Manuscript file not found' }), {
@@ -207,8 +207,8 @@ export async function getPronunciationGuide(request, env, manuscriptId) {
 
     // Get manuscript content
     const manuscriptKey = `${user.id}/${manuscriptId}/${manuscript.filename}`;
-    const manuscriptObject = await env.MANUSCRIPTS_PROCESSED.get(manuscriptKey) ||
-                             await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObject = await env.R2.getBucket('manuscripts_processed').get(manuscriptKey) ||
+                             await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
 
     if (!manuscriptObject) {
       return new Response(JSON.stringify({ error: 'Manuscript file not found' }), {
@@ -275,8 +275,8 @@ export async function generateSamplePassages(request, env, manuscriptId) {
 
     // Get manuscript content
     const manuscriptKey = `${user.id}/${manuscriptId}/${manuscript.filename}`;
-    const manuscriptObject = await env.MANUSCRIPTS_PROCESSED.get(manuscriptKey) ||
-                             await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObject = await env.R2.getBucket('manuscripts_processed').get(manuscriptKey) ||
+                             await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
 
     if (!manuscriptObject) {
       return new Response(JSON.stringify({ error: 'Manuscript file not found' }), {
@@ -343,7 +343,7 @@ export async function getNarratorBrief(request, env, manuscriptId) {
     const analysisKey = `${user.id}/${manuscriptId}/analysis.json`;
     let analysis = null;
     try {
-      const analysisObject = await env.MANUSCRIPTS_PROCESSED.get(analysisKey);
+      const analysisObject = await env.R2.getBucket('manuscripts_processed').get(analysisKey);
       if (analysisObject) {
         analysis = JSON.parse(await analysisObject.text());
       }

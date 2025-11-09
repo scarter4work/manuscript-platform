@@ -8,8 +8,8 @@
  * Returns JSON with file contents for client-side ZIP generation
  *
  * Storage: Uses Backblaze B2 via storage adapter
- * - EPUBs: env.MANUSCRIPTS_PROCESSED
- * - Covers: env.MARKETING_ASSETS
+ * - EPUBs: env.R2.getBucket('manuscripts_processed')
+ * - Covers: env.R2.getBucket('marketing_assets')
  */
 
 import { generateEPUB } from './epub-generator.js';
@@ -80,7 +80,7 @@ export async function generateKDPPackage(params, env) {
     let epubContent;
     if (epubKey) {
       // Use existing EPUB from formatting engine
-      epubContent = await env.MANUSCRIPTS_PROCESSED.get(epubKey);
+      epubContent = await env.R2.getBucket('manuscripts_processed').get(epubKey);
       if (!epubContent) {
         throw new Error('EPUB file not found in storage');
       }
@@ -112,7 +112,7 @@ export async function generateKDPPackage(params, env) {
     }
 
     // 2. Get cover image
-    const coverObject = await env.MARKETING_ASSETS.get(coverKey);
+    const coverObject = await env.R2.getBucket('marketing_assets').get(coverKey);
     if (!coverObject) {
       throw new Error('Cover image not found in storage');
     }
@@ -586,7 +586,7 @@ export async function validateKDPPackage(params, env) {
   try {
     // Validate EPUB
     if (epubKey) {
-      const epubObject = await env.MANUSCRIPTS_PROCESSED.get(epubKey);
+      const epubObject = await env.R2.getBucket('manuscripts_processed').get(epubKey);
       if (epubObject) {
         const sizeMB = epubObject.size / (1024 * 1024);
         if (sizeMB > KDP_SPECS.MAX_FILE_SIZE_MB) {
@@ -607,7 +607,7 @@ export async function validateKDPPackage(params, env) {
 
     // Validate cover image
     if (coverKey) {
-      const coverObject = await env.MARKETING_ASSETS.get(coverKey);
+      const coverObject = await env.R2.getBucket('marketing_assets').get(coverKey);
       if (coverObject) {
         const sizeMB = coverObject.size / (1024 * 1024);
         if (sizeMB > KDP_SPECS.COVER_MAX_SIZE_MB) {

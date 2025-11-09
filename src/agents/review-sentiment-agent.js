@@ -64,7 +64,7 @@ export class ReviewSentimentAgent {
     // Store results
     const storageKey = `sentiment-${manuscriptId}-${Date.now()}`;
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       storageKey,
       'review-sentiment',
       aggregatedResults

@@ -50,7 +50,7 @@ export class PlatformMetadataAgent {
     // Store combined results
     const storageKey = `platform-metadata-${manuscriptId}-${Date.now()}`;
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       storageKey,
       'platform-metadata',
       {

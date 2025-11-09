@@ -143,7 +143,7 @@ export async function handleStartAnalysis(request, env, corsHeaders) {
     }
 
     // Initialize status
-    await env.MANUSCRIPTS_RAW.put(
+    await env.R2.getBucket('manuscripts_raw').put(
       `status:${reportId}`,
       JSON.stringify({
         status: 'queued',
@@ -197,7 +197,7 @@ export async function handleAnalysisStatus(request, env, corsHeaders) {
       });
     }
 
-    const statusObj = await env.MANUSCRIPTS_RAW.get(`status:${reportId}`);
+    const statusObj = await env.R2.getBucket('manuscripts_raw').get(`status:${reportId}`);
 
     if (!statusObj) {
       return new Response(JSON.stringify({

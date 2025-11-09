@@ -19,7 +19,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
     console.log('Formatting manuscript for report:', reportId);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -35,7 +35,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
     console.log('Found manuscript key:', manuscriptKey);
 
     // Fetch the original manuscript text
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
@@ -50,7 +50,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
     // Try to fetch back matter (optional)
     let backMatter = null;
     try {
-      const backMatterObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-back-matter.json`);
+      const backMatterObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-back-matter.json`);
       if (backMatterObj) {
         backMatter = await backMatterObj.json();
       }
@@ -103,7 +103,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
     if (result.results.epub) {
       console.log('Storing EPUB file...');
       storagePromises.push(
-        env.MANUSCRIPTS_PROCESSED.put(
+        env.R2.getBucket('manuscripts_processed').put(
           `${manuscriptKey}-formatted.epub`,
           result.results.epub.buffer,
           {
@@ -124,7 +124,7 @@ async function handleFormatManuscript(request, env, corsHeaders) {
     if (result.results.pdf) {
       console.log('Storing PDF file...');
       storagePromises.push(
-        env.MANUSCRIPTS_PROCESSED.put(
+        env.R2.getBucket('manuscripts_processed').put(
           `${manuscriptKey}-formatted.pdf`,
           result.results.pdf.buffer,
           {
@@ -210,7 +210,7 @@ async function handleDownloadFormatted(request, env, corsHeaders) {
     console.log('Downloading formatted file:', reportId, format);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -226,7 +226,7 @@ async function handleDownloadFormatted(request, env, corsHeaders) {
 
     // Fetch formatted file
     const fileKey = `${manuscriptKey}-formatted.${format}`;
-    const formattedFile = await env.MANUSCRIPTS_PROCESSED.get(fileKey);
+    const formattedFile = await env.R2.getBucket('manuscripts_processed').get(fileKey);
 
     if (!formattedFile) {
       return new Response(JSON.stringify({

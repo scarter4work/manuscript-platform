@@ -276,7 +276,7 @@ async function runWithProgress(analysisPromise, env, reportId, startProgress, en
  */
 async function updateStatus(env, reportId, statusData) {
   try {
-    await env.MANUSCRIPTS_RAW.put(
+    await env.R2.getBucket('manuscripts_raw').put(
       `status:${reportId}`,
       JSON.stringify(statusData),
       {

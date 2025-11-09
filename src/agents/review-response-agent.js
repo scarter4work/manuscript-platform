@@ -163,7 +163,7 @@ Return this exact structure:
     // Store results
     const storageKey = `response-${manuscriptId}-${review.id || Date.now()}`;
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       storageKey,
       'review-response',
       {
@@ -334,7 +334,7 @@ Return this exact structure:
     // Store template library
     const storageKey = `response-templates-${manuscriptId}-${Date.now()}`;
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       storageKey,
       'review-response-templates',
       templates

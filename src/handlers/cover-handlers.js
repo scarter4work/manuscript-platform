@@ -74,7 +74,7 @@ export async function uploadCover(request, env, manuscriptId) {
 
     // Store cover in R2
     const coverKey = `${user.id}/${manuscriptId}/covers/${coverFile.name}`;
-    await env.MARKETING_ASSETS.put(coverKey, coverBuffer, {
+    await env.R2.getBucket('marketing_assets').put(coverKey, coverBuffer, {
       httpMetadata: {
         contentType: coverFile.type || 'image/jpeg',
       },
@@ -151,7 +151,7 @@ export async function getCover(request, env, manuscriptId) {
     }
 
     // Get cover from R2
-    const coverObject = await env.MARKETING_ASSETS.get(manuscript.cover_image_key);
+    const coverObject = await env.R2.getBucket('marketing_assets').get(manuscript.cover_image_key);
 
     if (!coverObject) {
       return new Response(JSON.stringify({ error: 'Cover image not found in storage' }), {
@@ -312,7 +312,7 @@ export async function deleteCover(request, env, manuscriptId) {
     }
 
     // Delete from R2
-    await env.MARKETING_ASSETS.delete(manuscript.cover_image_key);
+    await env.R2.getBucket('marketing_assets').delete(manuscript.cover_image_key);
 
     // Update manuscript record
     const now = Math.floor(Date.now() / 1000);
@@ -380,7 +380,7 @@ export async function generateCoverBrief(request, env, manuscriptId) {
     let developmentalAnalysis = null;
     try {
       const analysisKey = `${manuscript.r2_key.replace('.pdf', '')}-developmental-analysis.json`;
-      const analysisObject = await env.MANUSCRIPTS_PROCESSED.get(analysisKey);
+      const analysisObject = await env.R2.getBucket('manuscripts_processed').get(analysisKey);
       if (analysisObject) {
         developmentalAnalysis = JSON.parse(await analysisObject.text());
       }

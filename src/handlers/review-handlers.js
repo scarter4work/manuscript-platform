@@ -379,7 +379,7 @@ export async function getReviewSentiment(request, env, manuscriptId) {
 
     // Look for sentiment analysis in R2
     const sentimentKey = `${user.userId}/${manuscriptId}/sentiment-${manuscriptId}`;
-    const listResult = await env.MANUSCRIPTS_PROCESSED.list({ prefix: sentimentKey });
+    const listResult = await env.R2.getBucket('manuscripts_processed').list({ prefix: sentimentKey });
 
     if (listResult.objects.length === 0) {
       return new Response(JSON.stringify({
@@ -395,7 +395,7 @@ export async function getReviewSentiment(request, env, manuscriptId) {
       b.uploaded.getTime() - a.uploaded.getTime()
     )[0].key;
 
-    const sentimentObj = await env.MANUSCRIPTS_PROCESSED.get(latestKey);
+    const sentimentObj = await env.R2.getBucket('manuscripts_processed').get(latestKey);
     const sentimentData = JSON.parse(await sentimentObj.text());
 
     return new Response(JSON.stringify({
@@ -544,7 +544,7 @@ export async function getReviewTrends(request, env, manuscriptId) {
 
     // Fetch latest trends from R2
     const trendsKey = `${user.userId}/${manuscriptId}/trends-${manuscriptId}`;
-    const listResult = await env.MANUSCRIPTS_PROCESSED.list({ prefix: trendsKey });
+    const listResult = await env.R2.getBucket('manuscripts_processed').list({ prefix: trendsKey });
 
     if (listResult.objects.length === 0) {
       return new Response(JSON.stringify({
@@ -560,7 +560,7 @@ export async function getReviewTrends(request, env, manuscriptId) {
       b.uploaded.getTime() - a.uploaded.getTime()
     )[0].key;
 
-    const trendsObj = await env.MANUSCRIPTS_PROCESSED.get(latestKey);
+    const trendsObj = await env.R2.getBucket('manuscripts_processed').get(latestKey);
     const trendsData = JSON.parse(await trendsObj.text());
 
     return new Response(JSON.stringify(trendsData), {

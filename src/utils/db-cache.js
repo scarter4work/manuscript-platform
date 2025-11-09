@@ -229,10 +229,10 @@ export class ManuscriptCache {
       async () => {
         // Batch R2 HEAD requests
         const [devAnalysis, lineAnalysis, copyAnalysis, assets] = await Promise.all([
-          env.MANUSCRIPTS_PROCESSED.head(`${manuscriptKey}-analysis.json`),
-          env.MANUSCRIPTS_PROCESSED.head(`${manuscriptKey}-line-analysis.json`),
-          env.MANUSCRIPTS_PROCESSED.head(`${manuscriptKey}-copy-analysis.json`),
-          env.MANUSCRIPTS_PROCESSED.head(`${manuscriptKey}-assets.json`),
+          env.R2.getBucket('manuscripts_processed').head(`${manuscriptKey}-analysis.json`),
+          env.R2.getBucket('manuscripts_processed').head(`${manuscriptKey}-line-analysis.json`),
+          env.R2.getBucket('manuscripts_processed').head(`${manuscriptKey}-copy-analysis.json`),
+          env.R2.getBucket('manuscripts_processed').head(`${manuscriptKey}-assets.json`),
         ]);
 
         return {

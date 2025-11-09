@@ -40,7 +40,7 @@ export async function handleGenerateEPUB(request, env) {
     const startTime = Date.now();
 
     // Get manuscript file from R2
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscript.file_key);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscript.file_key);
     if (!manuscriptObj) {
       return new Response(JSON.stringify({
         error: 'Manuscript file not found in storage'
@@ -55,7 +55,7 @@ export async function handleGenerateEPUB(request, env) {
     // Get cover image if available
     let coverBuffer = null;
     if (body.coverKey || manuscript.cover_key) {
-      const coverObj = await env.MARKETING_ASSETS.get(body.coverKey || manuscript.cover_key);
+      const coverObj = await env.R2.getBucket('marketing_assets').get(body.coverKey || manuscript.cover_key);
       if (coverObj) {
         coverBuffer = await coverObj.arrayBuffer();
       }
@@ -83,7 +83,7 @@ export async function handleGenerateEPUB(request, env) {
 
     // Store in R2
     const epubKey = `formatted/${manuscriptId}/epub/${Date.now()}.epub`;
-    await env.MANUSCRIPTS_PROCESSED.put(epubKey, epubBuffer, {
+    await env.R2.getBucket('manuscripts_processed').put(epubKey, epubBuffer, {
       customMetadata: {
         manuscriptId,
         userId,
@@ -184,7 +184,7 @@ export async function handleGeneratePDF(request, env) {
     const startTime = Date.now();
 
     // Get manuscript file from R2
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscript.file_key);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscript.file_key);
     if (!manuscriptObj) {
       return new Response(JSON.stringify({
         error: 'Manuscript file not found in storage'
@@ -230,7 +230,7 @@ export async function handleGeneratePDF(request, env) {
 
     // Store in R2
     const pdfKey = `formatted/${manuscriptId}/pdf/${Date.now()}.pdf`;
-    await env.MANUSCRIPTS_PROCESSED.put(pdfKey, pdfBuffer, {
+    await env.R2.getBucket('manuscripts_processed').put(pdfKey, pdfBuffer, {
       customMetadata: {
         manuscriptId,
         userId,
@@ -382,7 +382,7 @@ export async function handleDownloadFormatted(request, env) {
     }
 
     // Get file from R2
-    const fileObj = await env.MANUSCRIPTS_PROCESSED.get(formatted.file_key);
+    const fileObj = await env.R2.getBucket('manuscripts_processed').get(formatted.file_key);
     if (!fileObj) {
       return new Response(JSON.stringify({
         error: 'File not found in storage'

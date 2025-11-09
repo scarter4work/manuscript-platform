@@ -37,7 +37,7 @@ export class AudiobookTimingAgent {
     const chapters = structure?.chapters || [];
 
     // Get manuscript for chapter analysis
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     const textContent = await extractManuscriptText(manuscript, 30000); // Substantial excerpt for timing analysis
 
     const timingAnalysis = await this.generateTimingAnalysis(
@@ -52,7 +52,7 @@ export class AudiobookTimingAgent {
 
     // Store results
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       manuscriptKey,
       'audiobook-timing',
       timingAnalysis

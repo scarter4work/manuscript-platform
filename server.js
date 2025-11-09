@@ -85,13 +85,7 @@ async function initializeAdapters() {
       // Database
       DB: db,
 
-      // Storage buckets
-      MANUSCRIPTS_RAW: storage.getBucket('manuscripts_raw'),
-      MANUSCRIPTS_PROCESSED: storage.getBucket('manuscripts_processed'),
-      MARKETING_ASSETS: storage.getBucket('marketing_assets'),
-      BACKUPS: storage.getBucket('backups'),
-
-      // Direct storage access (for handlers that need it)
+      // Storage adapter (handlers use env.R2.getBucket('bucket_name'))
       R2: storage,
 
       // Redis client (for KV operations)

@@ -121,27 +121,27 @@ export const audiobookHandlers = {
       };
 
       try {
-        const narrationObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-audiobook-narration.json`);
+        const narrationObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-audiobook-narration.json`);
         if (narrationObj) audiobook.narration = await narrationObj.json();
       } catch (e) { console.error('Error loading narration:', e); }
 
       try {
-        const pronunciationObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-audiobook-pronunciation.json`);
+        const pronunciationObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-audiobook-pronunciation.json`);
         if (pronunciationObj) audiobook.pronunciation = await pronunciationObj.json();
       } catch (e) { console.error('Error loading pronunciation:', e); }
 
       try {
-        const timingObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-audiobook-timing.json`);
+        const timingObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-audiobook-timing.json`);
         if (timingObj) audiobook.timing = await timingObj.json();
       } catch (e) { console.error('Error loading timing:', e); }
 
       try {
-        const samplesObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-audiobook-samples.json`);
+        const samplesObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-audiobook-samples.json`);
         if (samplesObj) audiobook.samples = await samplesObj.json();
       } catch (e) { console.error('Error loading samples:', e); }
 
       try {
-        const metadataObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-audiobook-metadata.json`);
+        const metadataObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-audiobook-metadata.json`);
         if (metadataObj) audiobook.metadata = await metadataObj.json();
       } catch (e) { console.error('Error loading metadata:', e); }
 
@@ -214,7 +214,7 @@ export const audiobookHandlers = {
 
       // Load the specific asset from R2
       const manuscriptKey = manuscript.r2_key;
-      const assetObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-audiobook-${assetType}.json`);
+      const assetObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-audiobook-${assetType}.json`);
 
       if (!assetObj) {
         return new Response(JSON.stringify({
@@ -300,7 +300,7 @@ export const audiobookHandlers = {
 
       // Check that manuscript has been analyzed
       const manuscriptKey = manuscript.r2_key;
-      const devAnalysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`);
+      const devAnalysisObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-analysis.json`);
 
       if (!devAnalysisObj) {
         return new Response(JSON.stringify({

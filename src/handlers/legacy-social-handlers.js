@@ -21,7 +21,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
     console.log('Generating social media marketing for report:', reportId);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -37,7 +37,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
     console.log('Found manuscript key:', manuscriptKey);
 
     // Fetch the original manuscript text
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
@@ -52,7 +52,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
     // Fetch market analysis (if available, for better targeting)
     let marketAnalysis = null;
     try {
-      const marketAnalysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-market-analysis.json`);
+      const marketAnalysisObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-market-analysis.json`);
       if (marketAnalysisObj) {
         marketAnalysis = await marketAnalysisObj.json();
       }
@@ -83,7 +83,7 @@ async function handleGenerateSocialMedia(request, env, corsHeaders) {
     const report = agent.generateReport(result.marketingPackage);
 
     // Store results in R2
-    await env.MANUSCRIPTS_PROCESSED.put(
+    await env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-social-media.json`,
       JSON.stringify({
         reportId,
@@ -146,7 +146,7 @@ async function handleGetSocialMedia(request, env, corsHeaders) {
     }
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -161,7 +161,7 @@ async function handleGetSocialMedia(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
 
     // Fetch social media marketing results
-    const socialMediaObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-social-media.json`);
+    const socialMediaObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-social-media.json`);
 
     if (!socialMediaObj) {
       return new Response(JSON.stringify({

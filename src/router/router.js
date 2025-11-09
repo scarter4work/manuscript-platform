@@ -1910,10 +1910,10 @@ async function routeLegacyHandlers(path, method, request, env, addCorsHeaders, r
       });
     }
 
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
     if (mappingObject) {
       const manuscriptKey = await mappingObject.text();
-      const manuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+      const manuscript = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
 
       return new Response(JSON.stringify({
         found: true,

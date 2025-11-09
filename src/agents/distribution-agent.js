@@ -388,7 +388,7 @@ Provide response as JSON:
     // Store strategy
     const storageKey = `distribution-strategy-${manuscriptId}-${Date.now()}`;
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       storageKey,
       'distribution-strategy',
       strategy

@@ -150,6 +150,12 @@ export function mockRedis() {
     _clear: () => {
       store.clear();
       expirations.clear();
+    },
+
+    // Public clear method for tests
+    clear: () => {
+      store.clear();
+      expirations.clear();
     }
   };
 }

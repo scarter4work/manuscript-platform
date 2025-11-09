@@ -40,7 +40,7 @@ export async function handleScheduledBackup(env) {
 
     // Step 4: Upload to R2
     console.log(`[Backup] Uploading to R2: ${filename}`);
-    await env.BACKUPS.put(filename, compressed, {
+    await env.R2.getBucket('backups').put(filename, compressed, {
       httpMetadata: {
         contentType: 'application/gzip',
       },
@@ -69,7 +69,7 @@ export async function handleScheduledBackup(env) {
     });
 
     // Step 6: Clean up old backups (retention policy)
-    await cleanupOldBackups(env.BACKUPS);
+    await cleanupOldBackups(env.R2.getBucket('backups'));
 
     // Step 7: Record backup in database
     await recordBackupLog(env.DB, {
@@ -417,7 +417,7 @@ export async function restoreFromBackup(env, backupFilename) {
 
   try {
     // Step 1: Download backup from R2
-    const backup = await env.BACKUPS.get(backupFilename);
+    const backup = await env.R2.getBucket('backups').get(backupFilename);
     if (!backup) {
       throw new Error(`Backup file not found: ${backupFilename}`);
     }

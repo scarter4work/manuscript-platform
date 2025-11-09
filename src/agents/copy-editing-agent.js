@@ -26,7 +26,7 @@ export class CopyEditingAgent {
     console.log(`Starting copy editing analysis for ${manuscriptKey}`);
     
     // 1. Retrieve manuscript from R2
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscript) {
       throw new Error('Manuscript not found');
     }
@@ -466,7 +466,7 @@ Only flag clear, definite errors. If something is stylistic preference rather th
   async storeAnalysis(manuscriptKey, results) {
     const processedKey = manuscriptKey.replace('MANUSCRIPTS_RAW', 'PROCESSED');
     
-    await this.env.MANUSCRIPTS_PROCESSED.put(
+    await this.env.R2.getBucket('manuscripts_processed').put(
       `${processedKey}-copy-analysis.json`,
       JSON.stringify(results, null, 2),
       {

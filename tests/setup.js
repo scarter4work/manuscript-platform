@@ -17,7 +17,6 @@ import {
   resetTestDatabase,
   getTestDb,
 } from './test-helpers/database.js';
-import { initializeAdapters } from '../server.js';
 
 let testDb = null;
 
@@ -28,27 +27,18 @@ beforeAll(async () => {
   console.log('\n🧪 Setting up test environment...');
 
   try {
-    // Only initialize database if TEST_DATABASE_URL is set
-    // This allows unit tests that don't need a database to run independently
-    if (process.env.TEST_DATABASE_URL) {
-      testDb = await setupTestDatabase();
-      console.log('✓ Test database initialized');
+    // Always initialize test database (uses default TEST_DATABASE_URL if not set)
+    testDb = await setupTestDatabase();
+    console.log('✓ Test database initialized');
 
-      // Make test database globally available
-      global.testDb = testDb;
-
-      // Initialize server adapters for API tests
-      await initializeAdapters();
-      console.log('✓ Server adapters initialized');
-    } else {
-      console.log('ℹ Skipping database setup (TEST_DATABASE_URL not set)');
-      console.log('  Unit tests with mocks/factories only will run');
-      console.log('  Set TEST_DATABASE_URL for integration tests');
-    }
+    // Make test database globally available
+    global.testDb = testDb;
 
     console.log('✓ Test environment ready\n');
   } catch (error) {
     console.error('❌ Failed to set up test environment:', error);
+    console.error('💡 Ensure PostgreSQL is running on localhost:5432');
+    console.error('💡 Or set TEST_DATABASE_URL to your test database');
     throw error;
   }
 }, 60000); // 60 second timeout for setup

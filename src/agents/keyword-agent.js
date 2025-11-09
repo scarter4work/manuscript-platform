@@ -210,7 +210,7 @@ Return this exact structure:
    * Store keywords in R2
    */
   async storeKeywords(manuscriptKey, keywords) {
-    await this.env.MANUSCRIPTS_PROCESSED.put(
+    await this.env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-keywords.json`,
       JSON.stringify(keywords, null, 2),
       {

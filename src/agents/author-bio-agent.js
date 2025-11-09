@@ -194,7 +194,7 @@ Return this exact structure:
    * Store bio in R2
    */
   async storeBio(manuscriptKey, bio) {
-    await this.env.MANUSCRIPTS_PROCESSED.put(
+    await this.env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-author-bio.json`,
       JSON.stringify(bio, null, 2),
       {

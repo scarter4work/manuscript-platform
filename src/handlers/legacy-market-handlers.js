@@ -21,7 +21,7 @@ async function handleMarketAnalysis(request, env, corsHeaders) {
     console.log('Market analysis for report:', reportId);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -37,7 +37,7 @@ async function handleMarketAnalysis(request, env, corsHeaders) {
     console.log('Found manuscript key:', manuscriptKey);
 
     // Fetch the original manuscript text
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
@@ -62,7 +62,7 @@ async function handleMarketAnalysis(request, env, corsHeaders) {
     const report = agent.generateReport(result.analysis);
 
     // Store analysis results in R2
-    await env.MANUSCRIPTS_PROCESSED.put(
+    await env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-market-analysis.json`,
       JSON.stringify({
         reportId,
@@ -117,7 +117,7 @@ async function handleGetMarketAnalysis(request, env, corsHeaders) {
     }
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -132,7 +132,7 @@ async function handleGetMarketAnalysis(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
 
     // Fetch market analysis results
-    const analysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-market-analysis.json`);
+    const analysisObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-market-analysis.json`);
 
     if (!analysisObj) {
       return new Response(JSON.stringify({

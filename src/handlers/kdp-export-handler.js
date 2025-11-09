@@ -62,25 +62,25 @@ export async function generateKDPPackage(request, env, manuscriptId) {
     let coverImageUrl = null;
 
     try {
-      const descObj = await env.MARKETING_ASSETS.get(`${r2KeyPrefix}book-description.txt`);
+      const descObj = await env.R2.getBucket('marketing_assets').get(`${r2KeyPrefix}book-description.txt`);
       if (descObj) {
         bookDescription = await descObj.text();
       }
 
-      const keywordsObj = await env.MARKETING_ASSETS.get(`${r2KeyPrefix}keywords.json`);
+      const keywordsObj = await env.R2.getBucket('marketing_assets').get(`${r2KeyPrefix}keywords.json`);
       if (keywordsObj) {
         const keywordsData = JSON.parse(await keywordsObj.text());
         keywords = keywordsData.keywords ? keywordsData.keywords.slice(0, 7) : [];
       }
 
-      const categoriesObj = await env.MARKETING_ASSETS.get(`${r2KeyPrefix}categories.json`);
+      const categoriesObj = await env.R2.getBucket('marketing_assets').get(`${r2KeyPrefix}categories.json`);
       if (categoriesObj) {
         const categoriesData = JSON.parse(await categoriesObj.text());
         categories = categoriesData.categories ? categoriesData.categories.slice(0, 2) : [];
       }
 
       // Get cover image
-      const coverObj = await env.MARKETING_ASSETS.get(`${r2KeyPrefix}cover-design.png`);
+      const coverObj = await env.R2.getBucket('marketing_assets').get(`${r2KeyPrefix}cover-design.png`);
       if (coverObj) {
         coverImageUrl = `${r2KeyPrefix}cover-design.png`;
       }
@@ -102,7 +102,7 @@ export async function generateKDPPackage(request, env, manuscriptId) {
 
     // Get original manuscript file
     const manuscriptKey = `${userId}/${manuscriptId}/${manuscript.filename}`;
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
 
     if (!manuscriptObj) {
       return new Response(JSON.stringify({
@@ -118,7 +118,7 @@ export async function generateKDPPackage(request, env, manuscriptId) {
     // Get cover image if available
     let coverBuffer = null;
     if (coverImageUrl) {
-      const coverObj = await env.MARKETING_ASSETS.get(coverImageUrl);
+      const coverObj = await env.R2.getBucket('marketing_assets').get(coverImageUrl);
       if (coverObj) {
         coverBuffer = await coverObj.arrayBuffer();
       }
@@ -446,7 +446,7 @@ export async function downloadKDPFile(request, env, packageId, fileType) {
       case 'manuscript':
         // Get original manuscript
         const manuscriptKey = `${pkg.user_id}/${pkg.manuscript_id}/${pkg.filename}`;
-        const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+        const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
 
         if (!manuscriptObj) {
           return new Response(JSON.stringify({ error: 'Manuscript file not found' }), {
@@ -463,7 +463,7 @@ export async function downloadKDPFile(request, env, packageId, fileType) {
       case 'cover':
         // Get cover image
         const coverKey = `${pkg.user_id}/${pkg.manuscript_id}/cover-design.png`;
-        const coverObj = await env.MARKETING_ASSETS.get(coverKey);
+        const coverObj = await env.R2.getBucket('marketing_assets').get(coverKey);
 
         if (!coverObj) {
           return new Response(JSON.stringify({ error: 'Cover image not found' }), {

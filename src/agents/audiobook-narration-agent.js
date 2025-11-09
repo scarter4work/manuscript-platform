@@ -37,7 +37,7 @@ export class AudiobookNarrationAgent {
     const characters = analysis.characters || {};
 
     // Get manuscript excerpt for context
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     const textContent = await extractManuscriptText(manuscript, 10000); // First 10K chars for narration analysis
 
     const narrationBrief = await this.generateNarrationBrief(
@@ -52,7 +52,7 @@ export class AudiobookNarrationAgent {
 
     // Store results
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       manuscriptKey,
       'audiobook-narration',
       narrationBrief

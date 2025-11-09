@@ -12,11 +12,13 @@ import { Client } from 'pg';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createDatabaseAdapter } from '../../src/adapters/database-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let testDb = null;
+let testDbAdapter = null;
 
 /**
  * Set up test database connection and run migrations
@@ -33,9 +35,12 @@ export async function setupTestDatabase() {
   await testDb.connect();
   console.log('✓ Test database connected');
 
-  // Run migrations
-  await runMigrations(testDb);
-  console.log('✓ Migrations applied');
+  // Skip migrations - base schema already applied
+  console.log('ℹ Skipping migrations (base schema already applied)');
+
+  // Create D1-compatible database adapter for handlers
+  testDbAdapter = createDatabaseAdapter({ DATABASE_URL: connectionString });
+  console.log('✓ Database adapter created (D1-compatible interface)');
 
   return testDb;
 }
@@ -57,6 +62,14 @@ export async function teardownTestDatabase() {
   } catch (error) {
     console.error('Error cleaning test database:', error);
   } finally {
+    // Close database adapter connection pool
+    if (testDbAdapter) {
+      await testDbAdapter.close();
+      testDbAdapter = null;
+      console.log('✓ Database adapter closed');
+    }
+
+    // Close test database client
     await testDb.end();
     testDb = null;
     console.log('✓ Test database disconnected');
@@ -221,6 +234,17 @@ export function getTestDb() {
     throw new Error('Test database not initialized. Call setupTestDatabase() first.');
   }
   return testDb;
+}
+
+/**
+ * Get the test database adapter (D1-compatible interface)
+ * @returns {DatabaseAdapter} D1-compatible adapter for handlers
+ */
+export function getTestDbAdapter() {
+  if (!testDbAdapter) {
+    throw new Error('Test database adapter not initialized. Call setupTestDatabase() first.');
+  }
+  return testDbAdapter;
 }
 
 /**

@@ -648,7 +648,9 @@
     </div>
 
     <script>
-        const API_BASE = 'https://manuscript-upload-api.scarter4work.workers.dev';
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8787'
+            : window.location.origin;
         let selectedManuscriptId = null;
         let selectedManuscript = null;
         let authToken = null;

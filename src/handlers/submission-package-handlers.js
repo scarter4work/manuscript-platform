@@ -472,7 +472,7 @@ export async function downloadPackage(request, env, manuscriptId, packageId) {
       if (doc.document_type === 'manuscript') {
         // Get manuscript file from R2
         if (manuscript.processed_key) {
-          const manuscriptObj = await env.MANUSCRIPTS_PROCESSED.get(manuscript.processed_key);
+          const manuscriptObj = await env.R2.getBucket('manuscripts_processed').get(manuscript.processed_key);
           if (manuscriptObj) {
             const content = await manuscriptObj.text();
             files.push({

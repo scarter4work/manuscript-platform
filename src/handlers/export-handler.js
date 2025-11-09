@@ -84,7 +84,7 @@ export async function generatePlatformExportPackage(request, env, platformId, ma
 
     // Fetch manuscript file from R2
     const manuscriptKey = `manuscripts/${userId}/${manuscriptId}/edited.docx`;
-    const manuscriptObj = await env.MANUSCRIPTS_PROCESSED.get(manuscriptKey);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_processed').get(manuscriptKey);
 
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript file not found in storage' }), {
@@ -98,7 +98,7 @@ export async function generatePlatformExportPackage(request, env, platformId, ma
     // Fetch cover if available
     let coverBuffer = null;
     const coverKey = `assets/${userId}/${manuscriptId}/cover.jpg`;
-    const coverObj = await env.MARKETING_ASSETS.get(coverKey);
+    const coverObj = await env.R2.getBucket('marketing_assets').get(coverKey);
 
     if (coverObj) {
       coverBuffer = await coverObj.arrayBuffer();
@@ -150,21 +150,21 @@ export async function generatePlatformExportPackage(request, env, platformId, ma
     const basePath = `exports/${platformId}/${userId}/${packageId}`;
 
     if (exportPackage.files.manuscript) {
-      await env.MARKETING_ASSETS.put(
+      await env.R2.getBucket('marketing_assets').put(
         `${basePath}/${exportPackage.files.manuscriptName}`,
         exportPackage.files.manuscript
       );
     }
 
     if (exportPackage.files.cover) {
-      await env.MARKETING_ASSETS.put(
+      await env.R2.getBucket('marketing_assets').put(
         `${basePath}/${exportPackage.files.coverName}`,
         exportPackage.files.cover
       );
     }
 
     if (exportPackage.files.interior) {
-      await env.MARKETING_ASSETS.put(
+      await env.R2.getBucket('marketing_assets').put(
         `${basePath}/${exportPackage.files.interiorName}`,
         exportPackage.files.interior
       );
@@ -172,7 +172,7 @@ export async function generatePlatformExportPackage(request, env, platformId, ma
 
     // Generate README
     const readme = generateReadme(platformId, metadata, exportPackage);
-    await env.MARKETING_ASSETS.put(`${basePath}/README.txt`, readme);
+    await env.R2.getBucket('marketing_assets').put(`${basePath}/README.txt`, readme);
 
     // Store package record in database
     const expiresAt = Date.now() + (30 * 24 * 60 * 60 * 1000); // 30 days
@@ -403,7 +403,7 @@ export async function downloadPlatformExportFile(request, env, platformId, packa
     }
 
     // Fetch file from R2
-    const fileObj = await env.MARKETING_ASSETS.get(fileKey);
+    const fileObj = await env.R2.getBucket('marketing_assets').get(fileKey);
 
     if (!fileObj) {
       return new Response(JSON.stringify({ error: 'File not found in storage' }), {

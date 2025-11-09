@@ -11,8 +11,40 @@ const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://manuscript_platfo
 function convertSQLiteToPostgreSQL(sql) {
   let converted = sql;
 
-  // First pass: Replace all known timestamp column names with TIMESTAMP type
-  // This includes columns with and without defaults
+  // STEP 1: Convert triggers FIRST (before unixepoch conversion)
+  // Match triggers with or without "FOR EACH ROW"
+  // Pattern 1: WITH "FOR EACH ROW"
+  const triggerRegex1 = /CREATE TRIGGER(?:\s+IF NOT EXISTS)?\s+([^\s]+)\s+AFTER UPDATE ON ([^\s]+)\s+FOR EACH ROW\s+BEGIN\s+UPDATE ([^\s]+) SET updated_at = (?:unixepoch\(\)|NOW\(\)) WHERE id = NEW\.id;\s+END/gi;
+
+  // Pattern 2: WITHOUT "FOR EACH ROW" (SQLite allows this, implies FOR EACH ROW)
+  const triggerRegex2 = /CREATE TRIGGER(?:\s+IF NOT EXISTS)?\s+([^\s]+)\s+AFTER UPDATE ON ([^\s]+)\s+BEGIN\s+UPDATE ([^\s]+) SET updated_at = (?:unixepoch\(\)|NOW\(\)) WHERE id = NEW\.id;\s+END/gi;
+
+  const createTriggerFunction = (triggerName, tableName) => `
+-- Create trigger function for ${tableName}
+CREATE OR REPLACE FUNCTION update_${tableName}_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger
+DROP TRIGGER IF EXISTS ${triggerName} ON ${tableName};
+CREATE TRIGGER ${triggerName}
+  BEFORE UPDATE ON ${tableName}
+  FOR EACH ROW
+  EXECUTE FUNCTION update_${tableName}_timestamp();`;
+
+  converted = converted.replace(triggerRegex1, (match, triggerName, tableName, tableName2) => {
+    return createTriggerFunction(triggerName, tableName);
+  });
+
+  converted = converted.replace(triggerRegex2, (match, triggerName, tableName, tableName2) => {
+    return createTriggerFunction(triggerName, tableName);
+  });
+
+  // STEP 2: Replace all known timestamp column names with TIMESTAMP type
   const timestampColumns = [
     'created_at', 'updated_at', 'completed_at', 'expires_at', 'last_login',
     'scanned_at', 'checked_at', 'scheduled_at', 'triggered_at', 'resolved_at',
@@ -48,7 +80,7 @@ function convertSQLiteToPostgreSQL(sql) {
   // Replace INTEGER timestamps with TIMESTAMP (nullable)
   converted = converted.replace(
     new RegExp(`\\b(${timestampPattern})\\s+INTEGER(?![\\w])`, 'gi'),
-    '$1 BIGINT'
+    '$1 TIMESTAMP'
   );
 
   // Replace any remaining unixepoch() with NOW()
@@ -96,14 +128,14 @@ function convertSQLiteToPostgreSQL(sql) {
   // Replace boolean values in INSERT/UPDATE/WHERE clauses (convert 0/1 to FALSE/TRUE)
   // This handles VALUES (..., 0, ...) and SET column = 0, etc.
   for (const boolCol of booleanColumns) {
-    // In INSERT VALUES and UPDATE SET statements
+    // Handle table-aliased columns (e.g., g.is_active = 1)
     converted = converted.replace(
-      new RegExp(`\\b${boolCol}\\s*=\\s*1\\b`, 'gi'),
-      `${boolCol} = TRUE`
+      new RegExp(`(\\w+\\.)?${boolCol}\\s*=\\s*1\\b`, 'gi'),
+      (match, alias) => `${alias || ''}${boolCol} = TRUE`
     );
     converted = converted.replace(
-      new RegExp(`\\b${boolCol}\\s*=\\s*0\\b`, 'gi'),
-      `${boolCol} = FALSE`
+      new RegExp(`(\\w+\\.)?${boolCol}\\s*=\\s*0\\b`, 'gi'),
+      (match, alias) => `${alias || ''}${boolCol} = FALSE`
     );
     // In VALUES clauses - this is trickier, handled with context
     converted = converted.replace(
@@ -120,8 +152,60 @@ function convertSQLiteToPostgreSQL(sql) {
   // Since we're converting INTEGER timestamps to TIMESTAMP, no need for TO_TIMESTAMP
   converted = converted.replace(/DATE\((\w+),\s*'unixepoch'\)/gi, "$1::DATE");
 
-  // Replace unixepoch() function with EXTRACT(EPOCH FROM NOW())::INTEGER
+  // Convert unix timestamp date arithmetic (e.g., unixepoch() - (30 * 86400))
+  // Pattern: unixepoch() - (X * 86400) means "X days ago"
+  // PostgreSQL equivalent: NOW() - INTERVAL 'X days'
+  converted = converted.replace(/unixepoch\(\)\s*-\s*\((\d+)\s*\*\s*86400\)/gi, "NOW() - INTERVAL '$1 days'");
+
+  // Convert unixepoch() - timestamp_column to EXTRACT(EPOCH FROM (NOW() - timestamp_column))
+  // This handles patterns like: (unixepoch() - uw.started_at) / 86400
+  // List of known timestamp columns to handle
+  const timestampColPattern = timestampColumns.join('|');
+  converted = converted.replace(
+    new RegExp(`\\(unixepoch\\(\\)\\s*-\\s*(\\w+\\.(?:${timestampColPattern})|(?:${timestampColPattern}))\\)`, 'gi'),
+    (match, col) => `EXTRACT(EPOCH FROM (NOW() - ${col}))`
+  );
+  converted = converted.replace(
+    new RegExp(`\\((\\w+\\.(?:${timestampColPattern})|(?:${timestampColPattern}))\\s*-\\s*unixepoch\\(\\)\\)`, 'gi'),
+    (match, col) => `EXTRACT(EPOCH FROM (${col} - NOW()))`
+  );
+
+  // Convert timestamp_column1 - timestamp_column2 to EXTRACT(EPOCH FROM (col1 - col2))
+  // This handles patterns like: (uw.completed_at - uw.started_at) / 86400
+  converted = converted.replace(
+    new RegExp(`\\((\\w+\\.(?:${timestampColPattern})|(?:${timestampColPattern}))\\s*-\\s*(\\w+\\.(?:${timestampColPattern})|(?:${timestampColPattern}))\\)`, 'gi'),
+    (match, col1, col2) => `EXTRACT(EPOCH FROM (${col1} - ${col2}))`
+  );
+
+  // Replace remaining unixepoch() function with EXTRACT(EPOCH FROM NOW())::INTEGER
   converted = converted.replace(/unixepoch\(\)/gi, "EXTRACT(EPOCH FROM NOW())::INTEGER");
+
+  // Convert trailing 1/0 in INSERT VALUES for boolean columns
+  // Pattern: ]', <number>, 1) or ]', <number>, 0) commonly used for (version, is_active)
+  converted = converted.replace(/\]',\s*(\d+),\s*1\s*\)/g, "]', $1, TRUE)");
+  converted = converted.replace(/\]',\s*(\d+),\s*0\s*\)/g, "]', $1, FALSE)");
+
+  // Also handle simple trailing 1/0 after string literals (other INSERT patterns)
+  converted = converted.replace(/',\s*1\s*\)/g, "', TRUE)");
+  converted = converted.replace(/',\s*0\s*\)/g, "', FALSE)");
+
+  // Fix ROUND() function calls - PostgreSQL requires NUMERIC, not DOUBLE PRECISION
+  // Convert ROUND(expression, digits) to ROUND(CAST((expression) AS NUMERIC), digits)
+  // Use [\s\S]*? to match across newlines non-greedily
+  converted = converted.replace(
+    /ROUND\s*\(([\s\S]*?),\s*(\d+)\s*\)/gi,
+    (match, expr, digits) => {
+      // Count parentheses to ensure we're matching the right closing paren
+      let parenCount = 0;
+      let lastCommaPos = -1;
+      for (let i = 0; i < expr.length; i++) {
+        if (expr[i] === '(') parenCount++;
+        else if (expr[i] === ')') parenCount--;
+        else if (expr[i] === ',' && parenCount === 0) lastCommaPos = i;
+      }
+      return `ROUND(CAST((${expr.trim()}) AS NUMERIC), ${digits})`;
+    }
+  );
 
   // Replace SQLite group_concat() with PostgreSQL string_agg()
   converted = converted.replace(/group_concat\(([^,)]+),\s*'([^']+)'\)/gi, "string_agg($1, '$2')");
@@ -137,39 +221,6 @@ function convertSQLiteToPostgreSQL(sql) {
 
   // Fix ALTER TABLE DROP COLUMN to include CASCADE
   converted = converted.replace(/ALTER TABLE (\w+) DROP COLUMN (\w+);/gi, 'ALTER TABLE $1 DROP COLUMN IF EXISTS $2 CASCADE;');
-
-  // Replace SQLite triggers with PostgreSQL functions + triggers
-  // Match triggers with or without "FOR EACH ROW"
-  // Pattern 1: WITH "FOR EACH ROW"
-  const triggerRegex1 = /CREATE TRIGGER(?:\s+IF NOT EXISTS)?\s+([^\s]+)\s+AFTER UPDATE ON ([^\s]+)\s+FOR EACH ROW\s+BEGIN\s+UPDATE ([^\s]+) SET updated_at = (?:unixepoch\(\)|NOW\(\)) WHERE id = NEW\.id;\s+END/gi;
-
-  // Pattern 2: WITHOUT "FOR EACH ROW" (SQLite allows this, implies FOR EACH ROW)
-  const triggerRegex2 = /CREATE TRIGGER(?:\s+IF NOT EXISTS)?\s+([^\s]+)\s+AFTER UPDATE ON ([^\s]+)\s+BEGIN\s+UPDATE ([^\s]+) SET updated_at = (?:unixepoch\(\)|NOW\(\)) WHERE id = NEW\.id;\s+END/gi;
-
-  const createTriggerFunction = (triggerName, tableName) => `
--- Create trigger function for ${tableName}
-CREATE OR REPLACE FUNCTION update_${tableName}_timestamp()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Create trigger
-DROP TRIGGER IF EXISTS ${triggerName} ON ${tableName};
-CREATE TRIGGER ${triggerName}
-  BEFORE UPDATE ON ${tableName}
-  FOR EACH ROW
-  EXECUTE FUNCTION update_${tableName}_timestamp();`;
-
-  converted = converted.replace(triggerRegex1, (match, triggerName, tableName, tableName2) => {
-    return createTriggerFunction(triggerName, tableName);
-  });
-
-  converted = converted.replace(triggerRegex2, (match, triggerName, tableName, tableName2) => {
-    return createTriggerFunction(triggerName, tableName);
-  });
 
   return converted;
 }

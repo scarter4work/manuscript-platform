@@ -247,7 +247,7 @@ Return this exact structure:
    * Store categories in R2
    */
   async storeCategories(manuscriptKey, categories) {
-    await this.env.MANUSCRIPTS_PROCESSED.put(
+    await this.env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-categories.json`,
       JSON.stringify(categories, null, 2),
       {

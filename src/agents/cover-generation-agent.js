@@ -107,7 +107,7 @@ export class CoverGenerationAgent {
 
     // Store metadata in R2
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       manuscriptKey,
       'cover-images',
       result
@@ -228,7 +228,7 @@ export class CoverGenerationAgent {
       const imageKey = `${processedKey}-cover-variation-${variationIndex + 1}.png`;
 
       // Store in R2
-      await this.env.MANUSCRIPTS_PROCESSED.put(imageKey, imageBuffer, {
+      await this.env.R2.getBucket('manuscripts_processed').put(imageKey, imageBuffer, {
         httpMetadata: {
           contentType: 'image/png'
         },

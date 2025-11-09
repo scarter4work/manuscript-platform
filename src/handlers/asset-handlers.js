@@ -34,7 +34,7 @@ export async function handleAssetStatus(request, env, corsHeaders) {
       });
     }
 
-    const statusObj = await env.MANUSCRIPTS_RAW.get(`asset-status:${reportId}`);
+    const statusObj = await env.R2.getBucket('manuscripts_raw').get(`asset-status:${reportId}`);
 
     if (!statusObj) {
       return new Response(JSON.stringify({
@@ -94,7 +94,7 @@ export async function handleGenerateAssets(request, env, corsHeaders) {
     console.log('Generating assets for report:', reportId);
 
     // Look up the manuscript key from the short report ID
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -110,7 +110,7 @@ export async function handleGenerateAssets(request, env, corsHeaders) {
     console.log('Found manuscript key:', manuscriptKey);
 
     // Fetch developmental analysis (required input for all asset generators)
-    const devAnalysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`);
+    const devAnalysisObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-analysis.json`);
 
     if (!devAnalysisObj) {
       return new Response(JSON.stringify({
@@ -205,7 +205,7 @@ export async function handleGenerateAssets(request, env, corsHeaders) {
     };
 
     // Store the combined assets in R2 for later retrieval
-    await env.MANUSCRIPTS_PROCESSED.put(
+    await env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-assets.json`,
       JSON.stringify(combinedAssets, null, 2),
       {
@@ -262,7 +262,7 @@ export async function handleGetAssets(request, env, corsHeaders) {
     console.log('Fetching assets for report:', reportId);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -277,7 +277,7 @@ export async function handleGetAssets(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
 
     // Fetch combined assets
-    const assetsObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-assets.json`);
+    const assetsObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-assets.json`);
 
     if (!assetsObj) {
       return new Response(JSON.stringify({
@@ -329,7 +329,7 @@ export async function handleFormatManuscript(request, env, corsHeaders) {
     console.log('Formatting manuscript for report:', reportId);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -345,7 +345,7 @@ export async function handleFormatManuscript(request, env, corsHeaders) {
     console.log('Found manuscript key:', manuscriptKey);
 
     // Fetch the original manuscript text
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
@@ -360,7 +360,7 @@ export async function handleFormatManuscript(request, env, corsHeaders) {
     // Try to fetch back matter (optional)
     let backMatter = null;
     try {
-      const backMatterObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-back-matter.json`);
+      const backMatterObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-back-matter.json`);
       if (backMatterObj) {
         backMatter = await backMatterObj.json();
       }
@@ -413,7 +413,7 @@ export async function handleFormatManuscript(request, env, corsHeaders) {
     if (result.results.epub) {
       console.log('Storing EPUB file...');
       storagePromises.push(
-        env.MANUSCRIPTS_PROCESSED.put(
+        env.R2.getBucket('manuscripts_processed').put(
           `${manuscriptKey}-formatted.epub`,
           result.results.epub.buffer,
           {
@@ -434,7 +434,7 @@ export async function handleFormatManuscript(request, env, corsHeaders) {
     if (result.results.pdf) {
       console.log('Storing PDF file...');
       storagePromises.push(
-        env.MANUSCRIPTS_PROCESSED.put(
+        env.R2.getBucket('manuscripts_processed').put(
           `${manuscriptKey}-formatted.pdf`,
           result.results.pdf.buffer,
           {
@@ -523,7 +523,7 @@ export async function handleDownloadFormatted(request, env, corsHeaders) {
     console.log('Downloading formatted file:', reportId, format);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -539,7 +539,7 @@ export async function handleDownloadFormatted(request, env, corsHeaders) {
 
     // Fetch formatted file
     const fileKey = `${manuscriptKey}-formatted.${format}`;
-    const formattedFile = await env.MANUSCRIPTS_PROCESSED.get(fileKey);
+    const formattedFile = await env.R2.getBucket('manuscripts_processed').get(fileKey);
 
     if (!formattedFile) {
       return new Response(JSON.stringify({
@@ -596,7 +596,7 @@ export async function handleMarketAnalysis(request, env, corsHeaders) {
     console.log('Market analysis for report:', reportId);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -612,7 +612,7 @@ export async function handleMarketAnalysis(request, env, corsHeaders) {
     console.log('Found manuscript key:', manuscriptKey);
 
     // Fetch the original manuscript text
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
@@ -637,7 +637,7 @@ export async function handleMarketAnalysis(request, env, corsHeaders) {
     const report = agent.generateReport(result.analysis);
 
     // Store analysis results in R2
-    await env.MANUSCRIPTS_PROCESSED.put(
+    await env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-market-analysis.json`,
       JSON.stringify({
         reportId,
@@ -693,7 +693,7 @@ export async function handleGetMarketAnalysis(request, env, corsHeaders) {
     }
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -708,7 +708,7 @@ export async function handleGetMarketAnalysis(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
 
     // Fetch market analysis results
-    const analysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-market-analysis.json`);
+    const analysisObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-market-analysis.json`);
 
     if (!analysisObj) {
       return new Response(JSON.stringify({
@@ -757,7 +757,7 @@ export async function handleGenerateSocialMedia(request, env, corsHeaders) {
     console.log('Generating social media marketing for report:', reportId);
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -773,7 +773,7 @@ export async function handleGenerateSocialMedia(request, env, corsHeaders) {
     console.log('Found manuscript key:', manuscriptKey);
 
     // Fetch the original manuscript text
-    const manuscriptObj = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscriptObj = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscriptObj) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
@@ -788,7 +788,7 @@ export async function handleGenerateSocialMedia(request, env, corsHeaders) {
     // Fetch market analysis (if available, for better targeting)
     let marketAnalysis = null;
     try {
-      const marketAnalysisObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-market-analysis.json`);
+      const marketAnalysisObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-market-analysis.json`);
       if (marketAnalysisObj) {
         marketAnalysis = await marketAnalysisObj.json();
       }
@@ -819,7 +819,7 @@ export async function handleGenerateSocialMedia(request, env, corsHeaders) {
     const report = agent.generateReport(result.marketingPackage);
 
     // Store results in R2
-    await env.MANUSCRIPTS_PROCESSED.put(
+    await env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-social-media.json`,
       JSON.stringify({
         reportId,
@@ -883,7 +883,7 @@ export async function handleGetSocialMedia(request, env, corsHeaders) {
     }
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -898,7 +898,7 @@ export async function handleGetSocialMedia(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
 
     // Fetch social media marketing results
-    const socialMediaObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-social-media.json`);
+    const socialMediaObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-social-media.json`);
 
     if (!socialMediaObj) {
       return new Response(JSON.stringify({
@@ -967,7 +967,7 @@ export async function handleGenerateCovers(request, env, corsHeaders) {
     console.log('Generating covers for report:', reportId);
 
     // Look up the manuscript key from the short report ID
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -983,7 +983,7 @@ export async function handleGenerateCovers(request, env, corsHeaders) {
     console.log('Found manuscript key:', manuscriptKey);
 
     // Fetch cover brief (generated from /generate-assets or standalone)
-    const coverBriefObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-cover-brief.json`);
+    const coverBriefObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-cover-brief.json`);
 
     if (!coverBriefObj) {
       return new Response(JSON.stringify({
@@ -1060,7 +1060,7 @@ export async function handleGetCovers(request, env, corsHeaders) {
     }
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -1075,7 +1075,7 @@ export async function handleGetCovers(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
 
     // Fetch cover images metadata
-    const coverImagesObj = await env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-cover-images.json`);
+    const coverImagesObj = await env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-cover-images.json`);
 
     if (!coverImagesObj) {
       return new Response(JSON.stringify({
@@ -1093,7 +1093,7 @@ export async function handleGetCovers(request, env, corsHeaders) {
     const coversWithUrls = await Promise.all(
       coverImagesData.coverImages.map(async (cover) => {
         // Get the actual image from R2
-        const imageObj = await env.MANUSCRIPTS_PROCESSED.get(cover.r2Key);
+        const imageObj = await env.R2.getBucket('manuscripts_processed').get(cover.r2Key);
 
         if (imageObj) {
           // For now, return the R2 key and metadata
@@ -1149,7 +1149,7 @@ export async function handleDownloadCover(request, env, corsHeaders) {
     }
 
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -1168,7 +1168,7 @@ export async function handleDownloadCover(request, env, corsHeaders) {
     const imageKey = `${processedKey}-cover-variation-${variation}.png`;
 
     // Fetch the image from R2
-    const imageObj = await env.MANUSCRIPTS_PROCESSED.get(imageKey);
+    const imageObj = await env.R2.getBucket('manuscripts_processed').get(imageKey);
 
     if (!imageObj) {
       return new Response(JSON.stringify({

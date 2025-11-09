@@ -267,7 +267,7 @@ Return this exact structure:
    * Store back matter in R2
    */
   async storeBackMatter(manuscriptKey, backMatter) {
-    await this.env.MANUSCRIPTS_PROCESSED.put(
+    await this.env.R2.getBucket('manuscripts_processed').put(
       `${manuscriptKey}-back-matter.json`,
       JSON.stringify(backMatter, null, 2),
       {

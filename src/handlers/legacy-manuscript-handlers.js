@@ -152,7 +152,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     const wordCount = fileText.split(/\s+/).filter(w => w.length > 0).length;
 
     // Upload to R2
-    await env.MANUSCRIPTS_RAW.put(r2Key, new Uint8Array(fileBuffer), {
+    await env.R2.getBucket('manuscripts_raw').put(r2Key, new Uint8Array(fileBuffer), {
       customMetadata: {
         manuscriptId,
         userId: userId,
@@ -167,7 +167,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
     });
 
     // Store report ID mapping
-    await env.MANUSCRIPTS_RAW.put(`report-id:${reportId}`, r2Key, {
+    await env.R2.getBucket('manuscripts_raw').put(`report-id:${reportId}`, r2Key, {
       expirationTtl: 60 * 60 * 24 * 30 // 30 days
     });
 
@@ -206,7 +206,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
 
     try {
       // Initialize status tracking
-      await env.MANUSCRIPTS_RAW.put(
+      await env.R2.getBucket('manuscripts_raw').put(
         `status:${reportId}`,
         JSON.stringify({
           status: 'queued',
@@ -353,7 +353,7 @@ async function handleMarketingUpload(request, env, corsHeaders) {
     console.log(`[Marketing Upload] ✓ File clean: ${file.name} (scanned in ${scanResult.duration}ms)`);
 
     // Upload to marketing assets bucket (use buffer instead of stream after scanning)
-    await env.MARKETING_ASSETS.put(key, fileBuffer, {
+    await env.R2.getBucket('marketing_assets').put(key, fileBuffer, {
       customMetadata: {
         authorId: authorId,
         assetType: assetType,
@@ -385,7 +385,7 @@ async function handleMarketingUpload(request, env, corsHeaders) {
     console.warn('[Marketing Upload] Scan failed, allowing upload (fail-open mode)');
 
     // Upload to marketing assets bucket (original flow if scan fails in fail-open mode)
-    await env.MARKETING_ASSETS.put(key, file.stream(), {
+    await env.R2.getBucket('marketing_assets').put(key, file.stream(), {
       customMetadata: {
         authorId: authorId,
         assetType: assetType,
@@ -426,13 +426,13 @@ async function handleFileGet(request, env, corsHeaders) {
 
   switch(bucket) {
     case 'raw':
-      r2Bucket = env.MANUSCRIPTS_RAW;
+      r2Bucket = env.R2.getBucket('manuscripts_raw');
       break;
     case 'processed':
-      r2Bucket = env.MANUSCRIPTS_PROCESSED;
+      r2Bucket = env.R2.getBucket('manuscripts_processed');
       break;
     case 'marketing':
-      r2Bucket = env.MARKETING_ASSETS;
+      r2Bucket = env.R2.getBucket('marketing_assets');
       break;
     default:
       return new Response(JSON.stringify({ error: 'Invalid bucket' }), {
@@ -486,13 +486,13 @@ async function handleFileList(request, env, corsHeaders) {
   let r2Bucket;
   switch(bucket) {
     case 'raw':
-      r2Bucket = env.MANUSCRIPTS_RAW;
+      r2Bucket = env.R2.getBucket('manuscripts_raw');
       break;
     case 'processed':
-      r2Bucket = env.MANUSCRIPTS_PROCESSED;
+      r2Bucket = env.R2.getBucket('manuscripts_processed');
       break;
     case 'marketing':
-      r2Bucket = env.MARKETING_ASSETS;
+      r2Bucket = env.R2.getBucket('marketing_assets');
       break;
     default:
       return new Response(JSON.stringify({ error: 'Invalid bucket' }), {
@@ -536,13 +536,13 @@ async function handleFileDelete(request, env, corsHeaders) {
   let r2Bucket;
   switch(bucket) {
     case 'raw':
-      r2Bucket = env.MANUSCRIPTS_RAW;
+      r2Bucket = env.R2.getBucket('manuscripts_raw');
       break;
     case 'processed':
-      r2Bucket = env.MANUSCRIPTS_PROCESSED;
+      r2Bucket = env.R2.getBucket('manuscripts_processed');
       break;
     case 'marketing':
-      r2Bucket = env.MARKETING_ASSETS;
+      r2Bucket = env.R2.getBucket('marketing_assets');
       break;
     default:
       return new Response(JSON.stringify({ error: 'Invalid bucket' }), {

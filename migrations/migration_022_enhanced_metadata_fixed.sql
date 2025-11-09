@@ -86,7 +86,7 @@ SELECT
   MAX(m.word_count) as max_word_count
 FROM genres g
 LEFT JOIN manuscripts m ON m.primary_genre = g.id
-WHERE g.is_active = 1
+WHERE g.is_active != 0
 GROUP BY g.id, g.name, g.parent_genre_id;
 
 -- View for manuscripts with validation warnings

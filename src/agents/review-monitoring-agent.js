@@ -36,7 +36,7 @@ export class ReviewMonitoringAgent {
     // Store results in R2
     const storageKey = `reviews-${manuscriptId || bookIdentifier}-${Date.now()}`;
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       storageKey,
       'review-monitoring',
       reviewData

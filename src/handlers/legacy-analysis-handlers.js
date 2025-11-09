@@ -134,7 +134,7 @@ async function handleGetAnalysis(request, env, corsHeaders) {
   const processedKey = `${manuscriptKey}-analysis.json`;
 
   try {
-    const analysis = await env.MANUSCRIPTS_PROCESSED.get(processedKey);
+    const analysis = await env.R2.getBucket('manuscripts_processed').get(processedKey);
 
     if (!analysis) {
       return new Response(JSON.stringify({ error: 'Analysis not found' }), {
@@ -176,7 +176,7 @@ async function handleGenerateReport(request, env, corsHeaders) {
   try {
     // Get manuscript key from mapping
     console.log('Looking up report-id:', `report-id:${reportId}`);
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       console.error('No mapping found for report ID:', reportId);
@@ -195,9 +195,9 @@ async function handleGenerateReport(request, env, corsHeaders) {
     // Fetch all three analyses
     console.log('Fetching analyses from R2...');
     const [devAnalysis, lineAnalysis, copyAnalysis] = await Promise.all([
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`).then(r => r?.json()).catch(e => { console.error('Dev analysis error:', e); return null; }),
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(e => { console.error('Line analysis error:', e); return null; }),
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(e => { console.error('Copy analysis error:', e); return null; })
+      env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-analysis.json`).then(r => r?.json()).catch(e => { console.error('Dev analysis error:', e); return null; }),
+      env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(e => { console.error('Line analysis error:', e); return null; }),
+      env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(e => { console.error('Copy analysis error:', e); return null; })
     ]);
 
     console.log('Analyses fetched:', {
@@ -215,7 +215,7 @@ async function handleGenerateReport(request, env, corsHeaders) {
 
     // Get manuscript metadata
     console.log('Fetching manuscript metadata...');
-    const rawManuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const rawManuscript = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     const metadata = rawManuscript?.customMetadata || { originalName: 'Unknown', authorId: 'Unknown' };
     console.log('Metadata:', metadata);
 
@@ -272,7 +272,7 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
   try {
     // Get manuscript key from mapping
     console.log('Looking up report-id:', `report-id:${reportId}`);
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       console.error('No mapping found for report ID:', reportId);
@@ -289,7 +289,7 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
     const manuscriptKey = await mappingObject.text();
     console.log('Found manuscript key from mapping:', manuscriptKey);
     // Fetch the original manuscript text
-    const manuscript = await env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     if (!manuscript) {
       return new Response(JSON.stringify({ error: 'Manuscript not found' }), {
         status: 404,
@@ -303,8 +303,8 @@ async function handleGenerateAnnotatedManuscript(request, env, corsHeaders) {
 
     // Fetch all analyses
     const [lineAnalysis, copyAnalysis] = await Promise.all([
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(() => null),
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(() => null)
+      env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(() => null),
+      env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(() => null)
     ]);
 
     // Combine all issues from both analyses
@@ -375,7 +375,7 @@ async function handleGetAnalysisResults(request, env, corsHeaders) {
 
   try {
     // Get manuscript key from mapping
-    const mappingObject = await env.MANUSCRIPTS_RAW.get(`report-id:${reportId}`);
+    const mappingObject = await env.R2.getBucket('manuscripts_raw').get(`report-id:${reportId}`);
 
     if (!mappingObject) {
       return new Response(JSON.stringify({
@@ -391,9 +391,9 @@ async function handleGetAnalysisResults(request, env, corsHeaders) {
 
     // Fetch all three analyses
     const [devAnalysis, lineAnalysis, copyAnalysis] = await Promise.all([
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-analysis.json`).then(r => r?.json()).catch(() => null),
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(() => null),
-      env.MANUSCRIPTS_PROCESSED.get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(() => null)
+      env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-analysis.json`).then(r => r?.json()).catch(() => null),
+      env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-line-analysis.json`).then(r => r?.json()).catch(() => null),
+      env.R2.getBucket('manuscripts_processed').get(`${manuscriptKey}-copy-analysis.json`).then(r => r?.json()).catch(() => null)
     ]);
 
     return new Response(JSON.stringify({
@@ -435,7 +435,7 @@ async function handleStartAnalysis(request, env, corsHeaders) {
     }
 
     // Initialize status
-    await env.MANUSCRIPTS_RAW.put(
+    await env.R2.getBucket('manuscripts_raw').put(
       `status:${reportId}`,
       JSON.stringify({
         status: 'queued',
@@ -489,7 +489,7 @@ async function handleAnalysisStatus(request, env, corsHeaders) {
       });
     }
 
-    const statusObj = await env.MANUSCRIPTS_RAW.get(`status:${reportId}`);
+    const statusObj = await env.R2.getBucket('manuscripts_raw').get(`status:${reportId}`);
 
     if (!statusObj) {
       return new Response(JSON.stringify({

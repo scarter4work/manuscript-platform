@@ -540,7 +540,7 @@ export async function adminDeleteManuscript(request, env, corsHeaders, manuscrip
     }
 
     // Delete from R2
-    await env.MANUSCRIPTS_RAW.delete(manuscript.r2_key);
+    await env.R2.getBucket('manuscripts_raw').delete(manuscript.r2_key);
 
     // Delete from database
     await env.DB.prepare('DELETE FROM manuscripts WHERE id = ?').bind(manuscriptId).run();

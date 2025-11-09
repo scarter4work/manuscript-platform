@@ -36,7 +36,7 @@ export class AudiobookSampleAgent {
     const structure = developmentalAnalysis.structure;
 
     // Get manuscript for sample analysis
-    const manuscript = await this.env.MANUSCRIPTS_RAW.get(manuscriptKey);
+    const manuscript = await this.env.R2.getBucket('manuscripts_raw').get(manuscriptKey);
     const textContent = await extractManuscriptText(manuscript, 40000); // Large excerpt for sample selection
 
     const sampleSelections = await this.generateSampleSelections(
@@ -50,7 +50,7 @@ export class AudiobookSampleAgent {
 
     // Store results
     await storeAsset(
-      this.env.MANUSCRIPTS_PROCESSED,
+      this.env.R2.getBucket('manuscripts_processed'),
       manuscriptKey,
       'audiobook-samples',
       sampleSelections
