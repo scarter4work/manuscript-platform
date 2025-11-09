@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 020: Author Bio Generation System
 -- Creates tables for storing generated author bios
 
@@ -11,8 +14,8 @@ CREATE TABLE IF NOT EXISTS author_bios (
   length TEXT NOT NULL CHECK (length IN ('short', 'medium', 'long')),
   variations TEXT NOT NULL, -- JSON array of bio variations
   generated_at TEXT NOT NULL,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -27,7 +30,7 @@ CREATE TRIGGER IF NOT EXISTS update_author_bios_timestamp
 AFTER UPDATE ON author_bios
 FOR EACH ROW
 BEGIN
-  UPDATE author_bios SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE author_bios SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Add author profile fields to users table (if not exists)
@@ -38,7 +41,7 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS website TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS social_media TEXT; -- JSON: {twitter, facebook, instagram, etc}
 
 -- Author bio statistics view
-CREATE VIEW IF NOT EXISTS author_bio_stats AS
+CREATE OR REPLACE VIEW author_bio_stats AS
 SELECT
   user_id,
   COUNT(*) as total_bios,
@@ -62,5 +65,5 @@ GROUP BY user_id;
 --   'medium',
 --   '[{"id":"bio-medium-achievement-focused","approach":"achievement-focused","text":"Jane Author is an award-winning thriller writer whose debut novel topped the bestseller lists...","wordCount":180,"tone":"Mysterious and intriguing, with hints of suspense","length":"medium"}]',
 --   '2025-01-15T10:00:00Z',
---   unixepoch()
+--   EXTRACT(EPOCH FROM NOW())::BIGINT
 -- );

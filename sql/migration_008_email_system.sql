@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 008: Advanced Email Notification System
 -- Adds email preferences, logging, and comprehensive notification system
 -- Created: October 30, 2025
@@ -27,8 +29,8 @@ CREATE TABLE IF NOT EXISTS email_preferences (
   unsubscribe_token TEXT UNIQUE,            -- One-click unsubscribe token
 
   -- Timestamps
-  created_at INTEGER NOT NULL,              -- Unix timestamp
-  updated_at INTEGER NOT NULL,              -- Unix timestamp
+  created_at BIGINT NOT NULL,              -- Unix timestamp
+  updated_at BIGINT NOT NULL,              -- Unix timestamp
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   UNIQUE(user_id)                           -- One preference row per user
@@ -53,7 +55,7 @@ CREATE TABLE IF NOT EXISTS email_log (
 
   -- Delivery Status
   status TEXT DEFAULT 'pending',            -- pending/sent/failed/bounced
-  sent_at INTEGER,                          -- Unix timestamp when sent
+  sent_at BIGINT,                          -- Unix timestamp when sent
   failed_at INTEGER,                        -- Unix timestamp when failed
   error_message TEXT,                       -- Error details if failed
 
@@ -65,7 +67,7 @@ CREATE TABLE IF NOT EXISTS email_log (
 
   -- Metadata
   metadata TEXT,                            -- JSON: additional context
-  created_at INTEGER NOT NULL,              -- Unix timestamp
+  created_at BIGINT NOT NULL,              -- Unix timestamp
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
@@ -81,7 +83,7 @@ CREATE INDEX IF NOT EXISTS idx_email_log_sent_at ON email_log(sent_at DESC);
 -- ============================================================================
 
 -- View: Email stats by type
-CREATE VIEW IF NOT EXISTS email_stats_by_type AS
+CREATE OR REPLACE VIEW email_stats_by_type AS
 SELECT
   email_type,
   COUNT(*) as total_sent,
@@ -96,7 +98,7 @@ WHERE status = 'sent'
 GROUP BY email_type;
 
 -- View: Recent email activity (last 7 days)
-CREATE VIEW IF NOT EXISTS recent_email_activity AS
+CREATE OR REPLACE VIEW recent_email_activity AS
 SELECT
   el.id,
   el.user_id,

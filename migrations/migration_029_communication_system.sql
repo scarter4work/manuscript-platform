@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 029: Communication & Feedback System (Issue #55)
 -- Publisher-author messaging, form letters, notifications, revision requests
 
@@ -18,8 +20,8 @@ CREATE TABLE IF NOT EXISTS notification_preferences (
   digest_frequency TEXT DEFAULT 'immediate' CHECK (digest_frequency IN
     ('immediate', 'daily', 'weekly', 'none')),
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -30,7 +32,7 @@ CREATE INDEX IF NOT EXISTS idx_notification_preferences_user ON notification_pre
 CREATE TRIGGER IF NOT EXISTS update_notification_preferences_timestamp
 AFTER UPDATE ON notification_preferences
 BEGIN
-  UPDATE notification_preferences SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE notification_preferences SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Message templates for publishers (form letters)
@@ -52,8 +54,8 @@ CREATE TABLE IF NOT EXISTS message_templates (
   -- Usage tracking
   times_used INTEGER DEFAULT 0,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (publisher_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -66,7 +68,7 @@ CREATE INDEX IF NOT EXISTS idx_message_templates_system ON message_templates(is_
 CREATE TRIGGER IF NOT EXISTS update_message_templates_timestamp
 AFTER UPDATE ON message_templates
 BEGIN
-  UPDATE message_templates SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE message_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Messages on submissions (threaded conversations)
@@ -87,12 +89,12 @@ CREATE TABLE IF NOT EXISTS submission_messages (
 
   -- Read tracking
   is_read INTEGER DEFAULT 0,
-  read_at INTEGER,
+  read_at BIGINT,
 
   -- Reply threading
   parent_message_id TEXT, -- For threaded replies
 
-  sent_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  sent_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (sender_user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -135,8 +137,8 @@ CREATE TABLE IF NOT EXISTS revision_requests (
   decision TEXT, -- Publisher's decision after revision
   decision_at INTEGER,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (requested_by_user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -153,7 +155,7 @@ CREATE INDEX IF NOT EXISTS idx_revision_requests_created ON revision_requests(cr
 CREATE TRIGGER IF NOT EXISTS update_revision_requests_timestamp
 AFTER UPDATE ON revision_requests
 BEGIN
-  UPDATE revision_requests SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE revision_requests SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Notification queue (for email sending)
@@ -175,10 +177,10 @@ CREATE TABLE IF NOT EXISTS notification_queue (
   -- Send tracking
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN
     ('pending', 'sent', 'failed')),
-  sent_at INTEGER,
+  sent_at BIGINT,
   error_message TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
@@ -192,7 +194,7 @@ CREATE INDEX IF NOT EXISTS idx_notification_queue_type ON notification_queue(not
 CREATE INDEX IF NOT EXISTS idx_notification_queue_created ON notification_queue(created_at);
 
 -- Statistics view
-CREATE VIEW IF NOT EXISTS communication_stats AS
+CREATE OR REPLACE VIEW communication_stats AS
 SELECT
   u.id as user_id,
   u.email,

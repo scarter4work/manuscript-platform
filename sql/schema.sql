@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Manuscript Platform - D1 Database Schema
 -- Phase A: Foundation for multi-user manuscript management
 -- Created: October 12, 2025
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   full_name TEXT,                         -- User's full name (optional)
   role TEXT DEFAULT 'author',             -- author/publisher/admin
   subscription_tier TEXT DEFAULT 'FREE',  -- FREE/PRO/ENTERPRISE (for rate limiting)
-  created_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
   last_login INTEGER,                     -- Unix timestamp of last login
   email_verified INTEGER DEFAULT 0       -- 0 = not verified, 1 = verified
 );
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS manuscripts (
   file_type TEXT,                         -- .txt/.pdf/.docx
   metadata TEXT,                          -- JSON: additional metadata
   uploaded_at INTEGER NOT NULL,           -- Unix timestamp
-  updated_at INTEGER NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
   flagged_for_review INTEGER DEFAULT 0,  -- Boolean: flagged for DMCA/content issues
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -127,8 +128,8 @@ CREATE INDEX IF NOT EXISTS idx_dmca_submitted ON dmca_requests(submitted_at DESC
 CREATE TABLE IF NOT EXISTS sessions (
   session_id TEXT PRIMARY KEY,            -- UUID session identifier
   user_id TEXT NOT NULL,                  -- Foreign key to users
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  expires_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  expires_at BIGINT NOT NULL,            -- Unix timestamp
   ip_address TEXT,                        -- IP address of session creation
   user_agent TEXT,                        -- User agent string
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -145,8 +146,8 @@ CREATE TABLE IF NOT EXISTS verification_tokens (
   token TEXT PRIMARY KEY,                 -- Random token (32 bytes hex)
   user_id TEXT NOT NULL,                  -- Foreign key to users
   token_type TEXT NOT NULL,               -- email_verification/password_reset
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  expires_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  expires_at BIGINT NOT NULL,            -- Unix timestamp
   used INTEGER DEFAULT 0,                 -- 0 = not used, 1 = used
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -163,8 +164,7 @@ CREATE INDEX IF NOT EXISTS idx_tokens_expires ON verification_tokens(expires_at)
 -- Generate with: bcrypt.hash("Admin123!", 12)
 -- This is a placeholder - regenerate in production!
 
-INSERT OR IGNORE INTO users (id, email, password_hash, role, created_at, email_verified)
-VALUES (
+INSERT INTO users (id, email, password_hash, role, created_at, email_verified) VALUES (
   'admin-default-001',
   'admin@manuscript-platform.local',
   '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYzpLkJ7ZRy',  -- Admin123!
@@ -183,8 +183,7 @@ CREATE TABLE IF NOT EXISTS schema_version (
   description TEXT NOT NULL               -- Description of changes
 );
 
-INSERT OR IGNORE INTO schema_version (version, applied_at, description)
-VALUES (1, strftime('%s', 'now'), 'Initial schema - Phase A: Database Foundation');
+INSERT INTO schema_version (version, applied_at, description) VALUES (1, strftime('%s', 'now'), 'Initial schema - Phase A: Database Foundation');
 
 -- ============================================================================
 -- QUERY HELPERS & VIEWS
@@ -192,7 +191,7 @@ VALUES (1, strftime('%s', 'now'), 'Initial schema - Phase A: Database Foundation
 -- ============================================================================
 
 -- View: User's manuscripts with latest upload date
-CREATE VIEW IF NOT EXISTS user_manuscripts AS
+CREATE OR REPLACE VIEW user_manuscripts AS
 SELECT
   m.id,
   m.user_id,
@@ -208,7 +207,7 @@ FROM manuscripts m
 JOIN users u ON m.user_id = u.id;
 
 -- View: Pending DMCA requests (for admin dashboard)
-CREATE VIEW IF NOT EXISTS pending_dmca AS
+CREATE OR REPLACE VIEW pending_dmca AS
 SELECT
   d.*,
   m.title as manuscript_title,
@@ -220,7 +219,7 @@ WHERE d.status = 'pending'
 ORDER BY d.submitted_at DESC;
 
 -- View: Recent audit activity (last 24 hours)
-CREATE VIEW IF NOT EXISTS recent_activity AS
+CREATE OR REPLACE VIEW recent_activity AS
 SELECT
   a.*,
   u.email as user_email

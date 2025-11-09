@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 019: Series Management System
 -- Enables authors to organize manuscripts into series with proper ordering and cross-promotion
 
@@ -14,8 +16,8 @@ CREATE TABLE IF NOT EXISTS series (
   genre TEXT,
   series_status TEXT DEFAULT 'ongoing' CHECK (series_status IN ('ongoing', 'complete', 'hiatus', 'planned')),
   total_planned_books INTEGER,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   -- Marketing and metadata
   series_tagline TEXT,
@@ -49,7 +51,7 @@ CREATE TABLE IF NOT EXISTS series_manuscripts (
   id TEXT PRIMARY KEY,
   series_id TEXT NOT NULL,
   manuscript_id TEXT NOT NULL,
-  book_number REAL NOT NULL, -- Use REAL to allow 1.5 for novellas between books
+  book_number DOUBLE PRECISION NOT NULL, -- Use DOUBLE PRECISION to allow 1.5 for novellas between books
   book_type TEXT DEFAULT 'main' CHECK (book_type IN ('main', 'prequel', 'sequel', 'novella', 'short_story', 'companion')),
   reading_order_note TEXT, -- E.g., "Can be read standalone" or "Read after Book 3"
 
@@ -62,7 +64,7 @@ CREATE TABLE IF NOT EXISTS series_manuscripts (
   include_in_backmatter INTEGER DEFAULT 1, -- Include in "Books in this series" section
   include_sample_chapter INTEGER DEFAULT 0, -- Include sample chapter in other books
 
-  added_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  added_at INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
@@ -92,9 +94,9 @@ CREATE TABLE IF NOT EXISTS series_bundles (
   included_book_numbers TEXT NOT NULL, -- JSON array of book numbers, e.g., "[1,2,3]"
 
   -- Pricing and marketing
-  bundle_price_ebook REAL,
-  bundle_price_paperback REAL,
-  discount_percentage REAL, -- Discount compared to buying individually
+  bundle_price_ebook DOUBLE PRECISION,
+  bundle_price_paperback DOUBLE PRECISION,
+  discount_percentage DOUBLE PRECISION, -- Discount compared to buying individually
 
   -- Publishing status
   is_published INTEGER DEFAULT 0,
@@ -105,8 +107,8 @@ CREATE TABLE IF NOT EXISTS series_bundles (
   draft2digital_url TEXT,
   apple_books_url TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE
 );
@@ -129,7 +131,7 @@ CREATE TABLE IF NOT EXISTS series_reading_orders (
   -- Ordered list of book numbers
   book_order TEXT NOT NULL, -- JSON array, e.g., "[1, 3, 2, 4]"
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE
 );
@@ -146,8 +148,8 @@ CREATE TABLE IF NOT EXISTS series_promotions (
   id TEXT PRIMARY KEY,
   series_id TEXT NOT NULL,
   promotion_type TEXT NOT NULL CHECK (promotion_type IN ('backmatter', 'sample_chapter', 'bonus_content', 'newsletter_signup')),
-  source_book_number REAL, -- NULL means apply to all books
-  target_book_number REAL, -- Which book to promote
+  source_book_number DOUBLE PRECISION, -- NULL means apply to all books
+  target_book_number DOUBLE PRECISION, -- Which book to promote
 
   -- Content
   promotion_text TEXT, -- Custom text for the promotion
@@ -158,7 +160,7 @@ CREATE TABLE IF NOT EXISTS series_promotions (
   position TEXT DEFAULT 'end' CHECK (position IN ('start', 'end', 'both')),
   is_active INTEGER DEFAULT 1,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE
 );
@@ -184,7 +186,7 @@ CREATE TABLE IF NOT EXISTS series_analytics (
   -- Read-through metrics
   book_1_sales INTEGER DEFAULT 0,
   book_2_sales INTEGER DEFAULT 0,
-  read_through_rate REAL, -- Percentage of Book 1 readers who buy Book 2
+  read_through_rate DOUBLE PRECISION, -- Percentage of Book 1 readers who buy Book 2
 
   -- Platform breakdown
   amazon_sales INTEGER DEFAULT 0,
@@ -192,9 +194,9 @@ CREATE TABLE IF NOT EXISTS series_analytics (
   direct_sales INTEGER DEFAULT 0,
 
   -- Revenue
-  total_revenue REAL DEFAULT 0,
+  total_revenue DOUBLE PRECISION DEFAULT 0,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE,
 
@@ -209,7 +211,7 @@ CREATE INDEX IF NOT EXISTS idx_series_analytics_date ON series_analytics(metric_
 -- ============================================================================
 
 -- View: Series overview with book counts
-CREATE VIEW IF NOT EXISTS series_overview AS
+CREATE OR REPLACE VIEW series_overview AS
 SELECT
   s.id,
   s.user_id,
@@ -229,7 +231,7 @@ LEFT JOIN series_manuscripts sm ON s.id = sm.series_id
 GROUP BY s.id;
 
 -- View: Series reading order summary
-CREATE VIEW IF NOT EXISTS series_books_ordered AS
+CREATE OR REPLACE VIEW series_books_ordered AS
 SELECT
   sm.series_id,
   s.series_name,
@@ -247,7 +249,7 @@ JOIN manuscripts m ON sm.manuscript_id = m.id
 ORDER BY sm.series_id, sm.book_number;
 
 -- View: Series performance summary
-CREATE VIEW IF NOT EXISTS series_performance AS
+CREATE OR REPLACE VIEW series_performance AS
 SELECT
   s.id AS series_id,
   s.series_name,
@@ -272,19 +274,19 @@ GROUP BY s.id;
 CREATE TRIGGER IF NOT EXISTS update_series_timestamp
 AFTER INSERT ON series_manuscripts
 BEGIN
-  UPDATE series SET updated_at = unixepoch() WHERE id = NEW.series_id;
+  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.series_id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS update_series_timestamp_on_update
 AFTER UPDATE ON series_manuscripts
 BEGIN
-  UPDATE series SET updated_at = unixepoch() WHERE id = NEW.series_id;
+  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.series_id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS update_series_timestamp_on_delete
 AFTER DELETE ON series_manuscripts
 BEGIN
-  UPDATE series SET updated_at = unixepoch() WHERE id = OLD.series_id;
+  UPDATE series SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = OLD.series_id;
 END;
 
 -- Validate book numbers are sequential or intentionally skipped

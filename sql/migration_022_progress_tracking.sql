@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Migration 022: Progress Tracking Dashboard
 -- Tracks publication progress across multiple platforms with per-platform checklists
 
@@ -10,11 +11,11 @@ CREATE TABLE IF NOT EXISTS manuscript_publishing_progress (
   overall_completion_percentage INTEGER DEFAULT 0, -- 0-100
   estimated_time_to_completion INTEGER, -- minutes
   next_action_recommendation TEXT,
-  started_at INTEGER, -- Unix timestamp
+  started_at BIGINT, -- Unix timestamp
   uploaded_at INTEGER, -- Unix timestamp when files uploaded to platform
   published_at INTEGER, -- Unix timestamp when went live
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL,
+  created_at BIGINT NOT NULL,
+  updated_at BIGINT NOT NULL,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   UNIQUE(manuscript_id, platform)
 );
@@ -30,8 +31,8 @@ CREATE TABLE IF NOT EXISTS progress_checklist_items (
   completed_at INTEGER, -- Unix timestamp
   completion_notes TEXT, -- Optional notes when item is completed
   sort_order INTEGER DEFAULT 0, -- For displaying in correct order
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL,
+  created_at BIGINT NOT NULL,
+  updated_at BIGINT NOT NULL,
   FOREIGN KEY (progress_id) REFERENCES manuscript_publishing_progress(id) ON DELETE CASCADE,
   UNIQUE(progress_id, item_key)
 );

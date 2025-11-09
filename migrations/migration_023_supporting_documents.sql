@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 023: Supporting Documents (Issue #49)
 -- Enables query letters, synopsis, and sample chapters management
 
@@ -17,8 +20,8 @@ CREATE TABLE IF NOT EXISTS supporting_documents (
   notes TEXT,
   generated_by_ai INTEGER DEFAULT 0,
   ai_prompt TEXT, -- Store prompt used for AI generation
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -34,11 +37,11 @@ CREATE TRIGGER IF NOT EXISTS update_supporting_docs_timestamp
 AFTER UPDATE ON supporting_documents
 FOR EACH ROW
 BEGIN
-  UPDATE supporting_documents SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE supporting_documents SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Statistics view for supporting documents
-CREATE VIEW IF NOT EXISTS supporting_docs_stats AS
+CREATE OR REPLACE VIEW supporting_docs_stats AS
 SELECT
   user_id,
   manuscript_id,
@@ -52,7 +55,7 @@ FROM supporting_documents
 GROUP BY user_id, manuscript_id, document_type;
 
 -- View for current documents only
-CREATE VIEW IF NOT EXISTS current_supporting_documents AS
+CREATE OR REPLACE VIEW current_supporting_documents AS
 SELECT
   sd.*,
   m.title as manuscript_title,

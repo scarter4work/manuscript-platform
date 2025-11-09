@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 022: Enhanced Manuscript Metadata System (Issue #51) - FIXED
 -- Expands manuscript metadata for publishing decisions
 
@@ -26,8 +29,8 @@ CREATE TABLE IF NOT EXISTS genres (
   typical_word_count_max INTEGER,
   display_order INTEGER DEFAULT 0,
   is_active INTEGER DEFAULT 1,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (parent_genre_id) REFERENCES genres(id) ON DELETE SET NULL
 );
 
@@ -44,7 +47,7 @@ CREATE TABLE IF NOT EXISTS content_warning_types (
   severity TEXT CHECK (severity IN ('mild', 'moderate', 'severe')),
   display_order INTEGER DEFAULT 0,
   is_active INTEGER DEFAULT 1,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 CREATE INDEX IF NOT EXISTS idx_content_warnings_category ON content_warning_types(category);
@@ -58,7 +61,7 @@ CREATE TABLE IF NOT EXISTS manuscript_metadata_history (
   old_value TEXT,
   new_value TEXT,
   changed_by TEXT NOT NULL,
-  changed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  changed_at INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (changed_by) REFERENCES users(id)
 );
@@ -71,11 +74,11 @@ CREATE TRIGGER IF NOT EXISTS update_genres_timestamp
 AFTER UPDATE ON genres
 FOR EACH ROW
 BEGIN
-  UPDATE genres SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE genres SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Statistics view for genre usage
-CREATE VIEW IF NOT EXISTS genre_usage_stats AS
+CREATE OR REPLACE VIEW genre_usage_stats AS
 SELECT
   g.id,
   g.name,
@@ -90,7 +93,7 @@ WHERE g.is_active = 1
 GROUP BY g.id, g.name, g.parent_genre_id;
 
 -- View for manuscripts with validation warnings
-CREATE VIEW IF NOT EXISTS manuscript_metadata_validation AS
+CREATE OR REPLACE VIEW manuscript_metadata_validation AS
 SELECT
   m.id,
   m.title,

@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- ============================================================================
 -- Migration 038: Security Incidents & File Virus Scanning
 -- ============================================================================
@@ -16,7 +18,7 @@ CREATE TABLE IF NOT EXISTS security_incidents (
   details TEXT,                           -- JSON details
   ip_address TEXT,                        -- Source IP
   user_id TEXT,                           -- User involved (if authenticated)
-  created_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
   resolved INTEGER DEFAULT 0,             -- Resolution status
   resolved_at INTEGER,                    -- When resolved
   resolved_by TEXT,                       -- Admin user who resolved
@@ -55,7 +57,7 @@ CREATE TABLE IF NOT EXISTS file_scan_results (
   scanner_name TEXT NOT NULL,             -- clamav, virustotal, etc.
   viruses_found TEXT,                     -- JSON array of virus names
   scan_duration_ms INTEGER,               -- Scan time in milliseconds
-  scanned_at INTEGER NOT NULL,            -- Unix timestamp
+  scanned_at BIGINT NOT NULL,            -- Unix timestamp
   user_id TEXT,                           -- User who uploaded
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
@@ -74,9 +76,9 @@ CREATE TABLE IF NOT EXISTS scanner_health (
   id TEXT PRIMARY KEY,                    -- UUID
   scanner_name TEXT NOT NULL,             -- clamav, virustotal, etc.
   status TEXT NOT NULL,                   -- online, offline, degraded
-  last_successful_scan INTEGER,           -- Unix timestamp
+  last_successful_scan BIGINT,           -- Unix timestamp
   virus_definitions_version TEXT,         -- Version/date of virus DB
-  last_definition_update INTEGER,         -- Unix timestamp
+  last_definition_update BIGINT,         -- Unix timestamp
   error_message TEXT,                     -- Last error if offline
   checked_at INTEGER NOT NULL,            -- Unix timestamp
   response_time_ms INTEGER                -- Avg response time
@@ -90,7 +92,7 @@ CREATE INDEX IF NOT EXISTS idx_scanner_health_checked ON scanner_health(checked_
 -- SECURITY INCIDENTS ANALYTICS VIEW
 -- Summary of security incidents for dashboard
 -- ============================================================================
-CREATE VIEW IF NOT EXISTS security_incidents_summary AS
+CREATE OR REPLACE VIEW security_incidents_summary AS
 SELECT
   type,
   COUNT(*) as total_incidents,
@@ -107,7 +109,7 @@ ORDER BY total_incidents DESC;
 -- FILE SCAN STATISTICS VIEW
 -- Summary of file scanning activity
 -- ============================================================================
-CREATE VIEW IF NOT EXISTS file_scan_statistics AS
+CREATE OR REPLACE VIEW file_scan_statistics AS
 SELECT
   DATE(scanned_at, 'unixepoch') as scan_date,
   scan_status,
@@ -123,7 +125,7 @@ ORDER BY scan_date DESC, scan_status;
 -- MALWARE UPLOADS VIEW
 -- Track all detected malware uploads
 -- ============================================================================
-CREATE VIEW IF NOT EXISTS malware_uploads AS
+CREATE OR REPLACE VIEW malware_uploads AS
 SELECT
   fsr.id,
   fsr.file_name,
@@ -145,7 +147,7 @@ ORDER BY fsr.scanned_at DESC;
 -- SCANNER HEALTH MONITORING VIEW
 -- Current status of all virus scanners
 -- ============================================================================
-CREATE VIEW IF NOT EXISTS scanner_status AS
+CREATE OR REPLACE VIEW scanner_status AS
 SELECT
   scanner_name,
   status,
@@ -165,7 +167,7 @@ WHERE id IN (
 -- ============================================================================
 -- SEED DATA: Initial scanner health record
 -- ============================================================================
-INSERT OR IGNORE INTO scanner_health (
+INSERT INTO scanner_health (
   id,
   scanner_name,
   status,

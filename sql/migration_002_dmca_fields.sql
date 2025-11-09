@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Migration 002: Add DMCA Attestation and Additional Fields
 -- Adds required DMCA compliance fields to dmca_requests table
 -- Created: October 12, 2025

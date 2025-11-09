@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 027: Social Media Marketing Content Generator (Issue #45)
 -- AI-powered marketing kit generation with platform-specific social media posts,
 -- email templates, content calendar, trailer scripts, and reader magnets
@@ -11,10 +13,10 @@ CREATE TABLE IF NOT EXISTS marketing_kits (
   genre TEXT,
   target_audience TEXT, -- JSON: demographics, reader interests
   tone TEXT, -- 'professional', 'casual', 'humorous', 'dramatic'
-  generation_cost REAL, -- Claude API cost
-  generated_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  generation_cost DOUBLE PRECISION, -- Claude API cost
+  generated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -27,7 +29,7 @@ CREATE INDEX IF NOT EXISTS idx_marketing_kits_created ON marketing_kits(created_
 CREATE TRIGGER IF NOT EXISTS update_marketing_kits_timestamp
 AFTER UPDATE ON marketing_kits
 BEGIN
-  UPDATE marketing_kits SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE marketing_kits SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Social media posts (platform-specific)
@@ -47,7 +49,7 @@ CREATE TABLE IF NOT EXISTS social_media_posts (
   engagement_hook TEXT, -- Call-to-action or engagement strategy
   post_order INTEGER DEFAULT 0, -- Sequence in campaign
   is_used INTEGER DEFAULT 0, -- Boolean: has author used this post?
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (kit_id) REFERENCES marketing_kits(id) ON DELETE CASCADE
 );
 
@@ -71,7 +73,7 @@ CREATE TABLE IF NOT EXISTS content_calendar (
   priority TEXT CHECK (priority IN ('high', 'medium', 'low')),
   completed INTEGER DEFAULT 0, -- Boolean: has author completed this?
   notes TEXT,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (kit_id) REFERENCES marketing_kits(id) ON DELETE CASCADE,
   FOREIGN KEY (post_id) REFERENCES social_media_posts(id) ON DELETE SET NULL
 );
@@ -94,8 +96,8 @@ CREATE TABLE IF NOT EXISTS marketing_materials (
   word_count INTEGER,
   estimated_duration TEXT, -- For video scripts: "2-3 minutes"
   additional_notes TEXT, -- Production notes, requirements, tips
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (kit_id) REFERENCES marketing_kits(id) ON DELETE CASCADE
 );
 
@@ -106,7 +108,7 @@ CREATE INDEX IF NOT EXISTS idx_materials_type ON marketing_materials(material_ty
 CREATE TRIGGER IF NOT EXISTS update_marketing_materials_timestamp
 AFTER UPDATE ON marketing_materials
 BEGIN
-  UPDATE marketing_materials SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE marketing_materials SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Hashtag strategy table (optional, for tracking performance)
@@ -120,7 +122,7 @@ CREATE TABLE IF NOT EXISTS hashtag_strategy (
     ('genre', 'trending', 'community', 'author', 'promotional')),
   estimated_reach TEXT, -- 'high', 'medium', 'low'
   notes TEXT,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (kit_id) REFERENCES marketing_kits(id) ON DELETE CASCADE
 );
 
@@ -129,7 +131,7 @@ CREATE INDEX IF NOT EXISTS idx_hashtags_genre ON hashtag_strategy(genre);
 CREATE INDEX IF NOT EXISTS idx_hashtags_platform ON hashtag_strategy(platform);
 
 -- Statistics view
-CREATE VIEW IF NOT EXISTS marketing_kit_stats AS
+CREATE OR REPLACE VIEW marketing_kit_stats AS
 SELECT
   k.id as kit_id,
   k.manuscript_id,

@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 037: Competitive Analysis & Market Positioning
 -- Comp title analysis, author platform tracking, and marketing hooks generation
 
@@ -35,20 +38,20 @@ CREATE TABLE IF NOT EXISTS comp_titles (
   comp_isbn TEXT,
 
   -- Similarity Analysis
-  similarity_score REAL, -- 0.0-1.0 how similar to manuscript
+  similarity_score DOUBLE PRECISION, -- 0.0-1.0 how similar to manuscript
   why_comparable TEXT, -- AI-generated explanation
 
   -- Market Data
   amazon_sales_rank INTEGER,
   amazon_category_rank INTEGER,
   amazon_category TEXT,
-  price REAL,
+  price DOUBLE PRECISION,
   publication_date INTEGER, -- Unix timestamp
   page_count INTEGER,
   format TEXT, -- 'ebook', 'paperback', 'hardcover', 'audiobook'
 
   -- Review Data
-  avg_rating REAL, -- 0.0-5.0
+  avg_rating DOUBLE PRECISION, -- 0.0-5.0
   review_count INTEGER,
 
   -- Marketing Analysis
@@ -65,11 +68,11 @@ CREATE TABLE IF NOT EXISTS comp_titles (
   )),
 
   -- Tracking
-  last_updated INTEGER, -- Last time data was refreshed
+  last_updated BIGINT, -- Last time data was refreshed
   is_active INTEGER DEFAULT 1, -- Boolean: still tracking this comp?
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -107,7 +110,7 @@ CREATE TABLE IF NOT EXISTS author_platform (
   -- Metrics
   follower_count INTEGER,
   subscriber_count INTEGER, -- For email lists, YouTube, podcasts
-  engagement_rate REAL, -- Percentage (e.g., 0.05 for 5%)
+  engagement_rate DOUBLE PRECISION, -- Percentage (e.g., 0.05 for 5%)
 
   -- Verification
   verified INTEGER DEFAULT 0, -- Boolean: verified account?
@@ -118,16 +121,16 @@ CREATE TABLE IF NOT EXISTS author_platform (
 
   -- Monetization
   monetized INTEGER DEFAULT 0, -- Boolean: earning from this platform?
-  monthly_revenue REAL,
+  monthly_revenue DOUBLE PRECISION,
 
   -- Status
   is_active INTEGER DEFAULT 1, -- Boolean: still using this platform?
 
   -- Tracking
-  last_updated INTEGER NOT NULL DEFAULT (unixepoch()),
+  last_updated BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -157,7 +160,7 @@ CREATE TABLE IF NOT EXISTS marketing_hooks (
   hook_text TEXT NOT NULL,
 
   -- Effectiveness Metrics
-  effectiveness_score REAL, -- 0.0-1.0 AI-predicted effectiveness
+  effectiveness_score DOUBLE PRECISION, -- 0.0-1.0 AI-predicted effectiveness
   target_audience TEXT, -- Who this hook targets
 
   -- Variations
@@ -169,10 +172,10 @@ CREATE TABLE IF NOT EXISTS marketing_hooks (
 
   -- AI Metadata
   model_used TEXT,
-  generated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  generated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -200,12 +203,12 @@ CREATE TABLE IF NOT EXISTS bookstore_positioning (
     'table',       -- Featured table
     'window'       -- Window display
   )),
-  placement_probability REAL, -- 0.0-1.0 likelihood of face-out placement
+  placement_probability DOUBLE PRECISION, -- 0.0-1.0 likelihood of face-out placement
 
   -- Physical Book Design Recommendations
   cover_design_notes TEXT, -- AI recommendations for physical cover
   trim_size_recommendation TEXT, -- Recommended book size
-  spine_width_estimate REAL, -- Estimated spine width in inches
+  spine_width_estimate DOUBLE PRECISION, -- Estimated spine width in inches
 
   -- Positioning Strategy
   positioning_strategy TEXT, -- How to position the book in market
@@ -214,8 +217,8 @@ CREATE TABLE IF NOT EXISTS bookstore_positioning (
   -- Competitive Positioning
   differentiation_points TEXT, -- What makes it stand out on shelf
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -229,7 +232,7 @@ CREATE TABLE IF NOT EXISTS market_positioning_reports (
   user_id TEXT NOT NULL,
 
   -- Report Metadata
-  report_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  report_date BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   report_version INTEGER DEFAULT 1,
 
   -- Market Analysis
@@ -253,14 +256,14 @@ CREATE TABLE IF NOT EXISTS market_positioning_reports (
   -- Financial Projections
   estimated_sales_rank INTEGER, -- Predicted Amazon rank
   estimated_monthly_sales INTEGER,
-  estimated_monthly_revenue REAL,
+  estimated_monthly_revenue DOUBLE PRECISION,
 
   -- AI Metadata
   model_used TEXT,
-  confidence_score REAL, -- 0.0-1.0 how confident the analysis is
+  confidence_score DOUBLE PRECISION, -- 0.0-1.0 how confident the analysis is
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -285,21 +288,21 @@ CREATE TABLE IF NOT EXISTS author_platform_scores (
   -- Detailed Metrics
   total_followers INTEGER,
   total_subscribers INTEGER,
-  avg_engagement_rate REAL,
+  avg_engagement_rate DOUBLE PRECISION,
 
   -- Monetization
   estimated_monthly_reach INTEGER,
-  monetization_potential REAL, -- 0.0-1.0
+  monetization_potential DOUBLE PRECISION, -- 0.0-1.0
 
   -- Recommendations
   improvement_areas TEXT, -- JSON array of areas to improve
   next_steps TEXT, -- Recommended actions
 
   -- Tracking
-  score_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  score_date INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -339,48 +342,48 @@ CREATE TRIGGER IF NOT EXISTS comp_titles_updated
 AFTER UPDATE ON comp_titles
 FOR EACH ROW
 BEGIN
-  UPDATE comp_titles SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE comp_titles SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS author_platform_updated
 AFTER UPDATE ON author_platform
 FOR EACH ROW
 BEGIN
-  UPDATE author_platform SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE author_platform SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS marketing_hooks_updated
 AFTER UPDATE ON marketing_hooks
 FOR EACH ROW
 BEGIN
-  UPDATE marketing_hooks SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE marketing_hooks SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS bookstore_positioning_updated
 AFTER UPDATE ON bookstore_positioning
 FOR EACH ROW
 BEGIN
-  UPDATE bookstore_positioning SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE bookstore_positioning SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS market_reports_updated
 AFTER UPDATE ON market_positioning_reports
 FOR EACH ROW
 BEGIN
-  UPDATE market_positioning_reports SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE market_positioning_reports SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS platform_scores_updated
 AFTER UPDATE ON author_platform_scores
 FOR EACH ROW
 BEGIN
-  UPDATE author_platform_scores SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE author_platform_scores SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Views for Analytics
 
 -- Comp Title Summary
-CREATE VIEW IF NOT EXISTS comp_title_summary AS
+CREATE OR REPLACE VIEW comp_title_summary AS
 SELECT
   ct.manuscript_id,
   m.title as manuscript_title,
@@ -396,7 +399,7 @@ WHERE ct.is_active = 1
 GROUP BY ct.manuscript_id, m.title;
 
 -- Author Platform Summary
-CREATE VIEW IF NOT EXISTS author_platform_summary AS
+CREATE OR REPLACE VIEW author_platform_summary AS
 SELECT
   ap.user_id,
   COUNT(*) as total_platforms,
@@ -409,7 +412,7 @@ FROM author_platform ap
 GROUP BY ap.user_id;
 
 -- Marketing Hooks by Manuscript
-CREATE VIEW IF NOT EXISTS marketing_hooks_by_manuscript AS
+CREATE OR REPLACE VIEW marketing_hooks_by_manuscript AS
 SELECT
   mh.manuscript_id,
   m.title as manuscript_title,
@@ -422,7 +425,7 @@ JOIN manuscripts m ON mh.manuscript_id = m.id
 GROUP BY mh.manuscript_id, m.title, mh.hook_type;
 
 -- Market Positioning Overview
-CREATE VIEW IF NOT EXISTS market_positioning_overview AS
+CREATE OR REPLACE VIEW market_positioning_overview AS
 SELECT
   m.id as manuscript_id,
   m.title,

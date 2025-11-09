@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- ============================================================================
 -- MIGRATION 004: Cost Tracking and Budget Management
 -- Created: 2025-10-26
@@ -15,11 +17,11 @@ CREATE TABLE IF NOT EXISTS cost_tracking (
   cost_center TEXT NOT NULL,              -- claude_api, cloudflare_workers, cloudflare_d1, cloudflare_r2, cloudflare_kv, cloudflare_queues, stripe_fees, email
   feature_name TEXT NOT NULL,             -- analysis, asset_generation, formatting, social_media, auth, storage, etc
   operation TEXT NOT NULL,                -- Specific operation: analyze_developmental, generate_book_description, etc
-  cost_usd REAL NOT NULL,                 -- Cost in USD
+  cost_usd DOUBLE PRECISION NOT NULL,                 -- Cost in USD
   tokens_input INTEGER,                   -- Input tokens for Claude API (nullable)
   tokens_output INTEGER,                  -- Output tokens for Claude API (nullable)
   metadata TEXT,                          -- JSON: additional details (model used, file sizes, etc)
-  created_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE SET NULL
 );
@@ -38,22 +40,22 @@ CREATE INDEX IF NOT EXISTS idx_cost_user_date ON cost_tracking(user_id, created_
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS budget_config (
   id INTEGER PRIMARY KEY DEFAULT 1,      -- Single row config (enforced by CHECK)
-  monthly_limit_usd REAL NOT NULL,       -- Total monthly budget in USD
-  daily_limit_usd REAL,                  -- Optional daily limit
+  monthly_limit_usd DOUBLE PRECISION NOT NULL,       -- Total monthly budget in USD
+  daily_limit_usd DOUBLE PRECISION,                  -- Optional daily limit
   alert_threshold_50 INTEGER DEFAULT 1,  -- Send alert at 50% (boolean)
   alert_threshold_75 INTEGER DEFAULT 1,  -- Send alert at 75% (boolean)
   alert_threshold_90 INTEGER DEFAULT 1,  -- Send alert at 90% (boolean)
   alert_threshold_100 INTEGER DEFAULT 1, -- Send alert at 100% (boolean)
   auto_disable_at_limit INTEGER DEFAULT 1, -- Auto-disable expensive features at 100% (boolean)
   current_month TEXT NOT NULL,           -- YYYY-MM format
-  current_spend_usd REAL DEFAULT 0,      -- Running total for current month
+  current_spend_usd DOUBLE PRECISION DEFAULT 0,      -- Running total for current month
   last_alert_sent TEXT,                  -- Last alert threshold reached
-  updated_at INTEGER NOT NULL,           -- Unix timestamp
+  updated_at BIGINT NOT NULL,           -- Unix timestamp
   CHECK (id = 1)                         -- Enforce single row
 );
 
 -- Initialize with default budget ($2000/month as per MAN-35)
-INSERT OR IGNORE INTO budget_config (
+INSERT INTO budget_config (
   id,
   monthly_limit_usd,
   daily_limit_usd,
@@ -76,12 +78,12 @@ INSERT OR IGNORE INTO budget_config (
 CREATE TABLE IF NOT EXISTS budget_alerts (
   id TEXT PRIMARY KEY,                   -- UUID
   alert_type TEXT NOT NULL,              -- 50_percent, 75_percent, 90_percent, 100_percent, daily_limit, critical
-  threshold_amount_usd REAL NOT NULL,    -- Budget threshold that triggered alert
-  current_spend_usd REAL NOT NULL,       -- Actual spend when alert fired
+  threshold_amount_usd DOUBLE PRECISION NOT NULL,    -- Budget threshold that triggered alert
+  current_spend_usd DOUBLE PRECISION NOT NULL,       -- Actual spend when alert fired
   period TEXT NOT NULL,                  -- YYYY-MM or YYYY-MM-DD for daily alerts
   message TEXT NOT NULL,                 -- Alert message
   severity TEXT NOT NULL,                -- info, warning, critical
-  sent_at INTEGER NOT NULL,              -- Unix timestamp when alert was sent
+  sent_at BIGINT NOT NULL,              -- Unix timestamp when alert was sent
   acknowledged INTEGER DEFAULT 0,        -- Boolean: has admin reviewed?
   acknowledged_by TEXT,                  -- Admin user ID who acknowledged
   acknowledged_at INTEGER,               -- Unix timestamp of acknowledgment
@@ -99,12 +101,12 @@ CREATE INDEX IF NOT EXISTS idx_alerts_acknowledged ON budget_alerts(acknowledged
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS user_cost_limits (
   user_id TEXT PRIMARY KEY,              -- Foreign key to users
-  monthly_limit_usd REAL NOT NULL,       -- Per-user monthly cost limit
+  monthly_limit_usd DOUBLE PRECISION NOT NULL,       -- Per-user monthly cost limit
   current_month TEXT NOT NULL,           -- YYYY-MM format
-  current_spend_usd REAL DEFAULT 0,      -- Running total for current month
+  current_spend_usd DOUBLE PRECISION DEFAULT 0,      -- Running total for current month
   limit_exceeded INTEGER DEFAULT 0,      -- Boolean: has limit been exceeded?
   exceeded_at INTEGER,                   -- Unix timestamp when limit was exceeded
-  updated_at INTEGER NOT NULL,           -- Unix timestamp
+  updated_at BIGINT NOT NULL,           -- Unix timestamp
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -132,7 +134,7 @@ FROM users;
 -- ============================================================================
 
 -- View: Daily cost breakdown
-CREATE VIEW IF NOT EXISTS daily_costs AS
+CREATE OR REPLACE VIEW daily_costs AS
 SELECT
   date(created_at, 'unixepoch') as date,
   cost_center,
@@ -146,7 +148,7 @@ GROUP BY date(created_at, 'unixepoch'), cost_center, feature_name
 ORDER BY date DESC;
 
 -- View: User cost summary (current month)
-CREATE VIEW IF NOT EXISTS user_monthly_costs AS
+CREATE OR REPLACE VIEW user_monthly_costs AS
 SELECT
   u.id as user_id,
   u.email,
@@ -163,7 +165,7 @@ LEFT JOIN user_cost_limits l ON u.id = l.user_id
 GROUP BY u.id, u.email, u.subscription_tier, l.monthly_limit_usd, l.current_spend_usd, l.limit_exceeded;
 
 -- View: Feature cost breakdown (current month)
-CREATE VIEW IF NOT EXISTS feature_costs_monthly AS
+CREATE OR REPLACE VIEW feature_costs_monthly AS
 SELECT
   feature_name,
   cost_center,
@@ -178,7 +180,7 @@ GROUP BY feature_name, cost_center
 ORDER BY total_cost_usd DESC;
 
 -- View: Top cost generators (users spending the most this month)
-CREATE VIEW IF NOT EXISTS top_spenders_monthly AS
+CREATE OR REPLACE VIEW top_spenders_monthly AS
 SELECT
   u.id,
   u.email,

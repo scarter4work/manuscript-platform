@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 020: Author Bio Generation System
 -- Creates tables for storing generated author bios
 
@@ -11,8 +14,8 @@ CREATE TABLE author_bios (
   length TEXT NOT NULL CHECK (length IN ('short', 'medium', 'long')),
   variations TEXT NOT NULL,
   generated_at TEXT NOT NULL,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -27,7 +30,7 @@ CREATE TRIGGER update_author_bios_timestamp
 AFTER UPDATE ON author_bios
 FOR EACH ROW
 BEGIN
-  UPDATE author_bios SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE author_bios SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Author bio statistics view

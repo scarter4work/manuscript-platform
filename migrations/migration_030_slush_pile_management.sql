@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 030: Slush Pile Management System (Issue #54)
 -- Publisher inbox, assignments, ratings, consensus, decision workflow
 
@@ -7,13 +9,13 @@ CREATE TABLE IF NOT EXISTS submission_assignments (
   submission_id TEXT NOT NULL,
   assigned_to_user_id TEXT NOT NULL, -- FK to users (role=publisher)
   assigned_by_user_id TEXT NOT NULL, -- FK to users (who assigned)
-  assignment_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  assignment_date BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   completion_date INTEGER, -- When reader finished review
   status TEXT DEFAULT 'pending' CHECK (status IN
     ('pending', 'in_progress', 'completed', 'skipped')),
   notes TEXT,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (assigned_to_user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -30,7 +32,7 @@ CREATE INDEX IF NOT EXISTS idx_assignments_date ON submission_assignments(assign
 CREATE TRIGGER IF NOT EXISTS update_submission_assignments_timestamp
 AFTER UPDATE ON submission_assignments
 BEGIN
-  UPDATE submission_assignments SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_assignments SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Submission ratings (scoring system)
@@ -41,11 +43,11 @@ CREATE TABLE IF NOT EXISTS submission_ratings (
   assignment_id TEXT, -- Optional: linked to assignment
 
   -- Scoring (1-10 scale)
-  overall_score REAL NOT NULL CHECK (overall_score >= 1 AND overall_score <= 10),
-  plot_score REAL CHECK (plot_score >= 1 AND plot_score <= 10),
-  writing_quality_score REAL CHECK (writing_quality_score >= 1 AND writing_quality_score <= 10),
-  marketability_score REAL CHECK (marketability_score >= 1 AND marketability_score <= 10),
-  voice_score REAL CHECK (voice_score >= 1 AND voice_score <= 10),
+  overall_score DOUBLE PRECISION NOT NULL CHECK (overall_score >= 1 AND overall_score <= 10),
+  plot_score DOUBLE PRECISION CHECK (plot_score >= 1 AND plot_score <= 10),
+  writing_quality_score DOUBLE PRECISION CHECK (writing_quality_score >= 1 AND writing_quality_score <= 10),
+  marketability_score DOUBLE PRECISION CHECK (marketability_score >= 1 AND marketability_score <= 10),
+  voice_score DOUBLE PRECISION CHECK (voice_score >= 1 AND voice_score <= 10),
 
   -- Recommendation
   recommendation TEXT CHECK (recommendation IN
@@ -56,8 +58,8 @@ CREATE TABLE IF NOT EXISTS submission_ratings (
   weaknesses TEXT, -- What needs improvement
   notes TEXT, -- Internal notes for team
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (rater_user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -75,7 +77,7 @@ CREATE INDEX IF NOT EXISTS idx_ratings_created ON submission_ratings(created_at 
 CREATE TRIGGER IF NOT EXISTS update_submission_ratings_timestamp
 AFTER UPDATE ON submission_ratings
 BEGIN
-  UPDATE submission_ratings SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_ratings SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Submission discussions (internal comments/notes)
@@ -86,8 +88,8 @@ CREATE TABLE IF NOT EXISTS submission_discussions (
   comment_text TEXT NOT NULL,
   is_internal INTEGER DEFAULT 1, -- Boolean: internal vs sent to author
   parent_comment_id TEXT, -- For threaded discussions
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -104,11 +106,11 @@ CREATE INDEX IF NOT EXISTS idx_discussions_internal ON submission_discussions(is
 CREATE TRIGGER IF NOT EXISTS update_submission_discussions_timestamp
 AFTER UPDATE ON submission_discussions
 BEGIN
-  UPDATE submission_discussions SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_discussions SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Consensus view (aggregate ratings)
-CREATE VIEW IF NOT EXISTS submission_consensus AS
+CREATE OR REPLACE VIEW submission_consensus AS
 SELECT
   sr.submission_id,
   COUNT(DISTINCT sr.rater_user_id) as total_readers,
@@ -136,7 +138,7 @@ FROM submission_ratings sr
 GROUP BY sr.submission_id;
 
 -- Publisher slush pile statistics
-CREATE VIEW IF NOT EXISTS publisher_slush_stats AS
+CREATE OR REPLACE VIEW publisher_slush_stats AS
 SELECT
   u.id as publisher_id,
   u.email,

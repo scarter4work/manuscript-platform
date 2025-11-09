@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- ============================================================================
 -- MIGRATION 009: Audiobook Production Support
 -- Created: 2025-10-31
@@ -21,9 +23,9 @@ CREATE TABLE IF NOT EXISTS audiobook_generations (
   r2_key_prefix TEXT NOT NULL,            -- R2 key prefix for manuscript (userId/manuscriptId/filename)
 
   -- Timing
-  started_at INTEGER,                     -- Unix timestamp when generation started
+  started_at BIGINT,                     -- Unix timestamp when generation started
   completed_at INTEGER,                   -- Unix timestamp when generation completed
-  created_at INTEGER NOT NULL,            -- Unix timestamp when job was created
+  created_at BIGINT NOT NULL,            -- Unix timestamp when job was created
 
   -- Results summary
   narration_generated INTEGER DEFAULT 0,       -- Boolean: narration brief generated
@@ -33,12 +35,12 @@ CREATE TABLE IF NOT EXISTS audiobook_generations (
   metadata_generated INTEGER DEFAULT 0,        -- Boolean: ACX metadata generated
 
   -- Cost tracking
-  total_cost_usd REAL DEFAULT 0,          -- Total cost of this generation job
-  narration_cost_usd REAL DEFAULT 0,      -- Cost of narration agent
-  pronunciation_cost_usd REAL DEFAULT 0,  -- Cost of pronunciation agent
-  timing_cost_usd REAL DEFAULT 0,         -- Cost of timing agent
-  samples_cost_usd REAL DEFAULT 0,        -- Cost of samples agent
-  metadata_cost_usd REAL DEFAULT 0,       -- Cost of metadata agent
+  total_cost_usd DOUBLE PRECISION DEFAULT 0,          -- Total cost of this generation job
+  narration_cost_usd DOUBLE PRECISION DEFAULT 0,      -- Cost of narration agent
+  pronunciation_cost_usd DOUBLE PRECISION DEFAULT 0,  -- Cost of pronunciation agent
+  timing_cost_usd DOUBLE PRECISION DEFAULT 0,         -- Cost of timing agent
+  samples_cost_usd DOUBLE PRECISION DEFAULT 0,        -- Cost of samples agent
+  metadata_cost_usd DOUBLE PRECISION DEFAULT 0,       -- Cost of metadata agent
 
   -- Error handling
   error_message TEXT,                     -- Error message if failed
@@ -46,8 +48,8 @@ CREATE TABLE IF NOT EXISTS audiobook_generations (
 
   -- Audiobook metadata (extracted from results)
   estimated_runtime_minutes INTEGER,      -- Total audiobook runtime in minutes
-  estimated_studio_hours REAL,            -- Estimated studio production time
-  estimated_production_cost_usd REAL,     -- Estimated narrator/studio cost
+  estimated_studio_hours DOUBLE PRECISION,            -- Estimated studio production time
+  estimated_production_cost_usd DOUBLE PRECISION,     -- Estimated narrator/studio cost
   narrator_difficulty TEXT,               -- easy, moderate, challenging, expert
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
@@ -77,11 +79,11 @@ CREATE TABLE IF NOT EXISTS audiobook_productions (
   -- Narrator information
   narrator_name TEXT,                     -- Name of narrator
   narrator_email TEXT,                    -- Contact for narrator
-  narrator_cost_usd REAL,                 -- Actual cost paid to narrator
+  narrator_cost_usd DOUBLE PRECISION,                 -- Actual cost paid to narrator
   narrator_contract_type TEXT,            -- PFH (per finished hour), flat rate, royalty share
 
   -- Production timeline
-  production_started_at INTEGER,          -- Unix timestamp when production started
+  production_started_at BIGINT,          -- Unix timestamp when production started
   production_completed_at INTEGER,        -- Unix timestamp when production completed
   acx_submitted_at INTEGER,               -- Unix timestamp when submitted to ACX
   acx_approved_at INTEGER,                -- Unix timestamp when approved by ACX
@@ -101,18 +103,18 @@ CREATE TABLE IF NOT EXISTS audiobook_productions (
   audio_bitrate TEXT,                     -- 192kbps, etc.
 
   -- Retail information
-  retail_price_usd REAL,                  -- Retail price
-  royalty_rate REAL,                      -- Royalty percentage (35% or 40% for ACX exclusive)
+  retail_price_usd DOUBLE PRECISION,                  -- Retail price
+  royalty_rate DOUBLE PRECISION,                      -- Royalty percentage (35% or 40% for ACX exclusive)
   units_sold INTEGER DEFAULT 0,           -- Number of audiobooks sold
-  total_revenue_usd REAL DEFAULT 0,       -- Total revenue from sales
+  total_revenue_usd DOUBLE PRECISION DEFAULT 0,       -- Total revenue from sales
 
   -- Production notes
   production_notes TEXT,                  -- General production notes
   narrator_notes TEXT,                    -- Notes specific to narrator
   technical_notes TEXT,                   -- Technical audio notes
 
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  updated_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -132,7 +134,7 @@ CREATE INDEX IF NOT EXISTS idx_audiobook_prod_created ON audiobook_productions(c
 -- ============================================================================
 
 -- View: Audiobook generation summary
-CREATE VIEW IF NOT EXISTS audiobook_generation_summary AS
+CREATE OR REPLACE VIEW audiobook_generation_summary AS
 SELECT
   u.id as user_id,
   u.email,
@@ -150,7 +152,7 @@ WHERE ag.id IS NOT NULL
 GROUP BY u.id, u.email, u.subscription_tier;
 
 -- View: Audiobook production pipeline
-CREATE VIEW IF NOT EXISTS audiobook_production_pipeline AS
+CREATE OR REPLACE VIEW audiobook_production_pipeline AS
 SELECT
   m.id as manuscript_id,
   m.title,
@@ -176,7 +178,7 @@ WHERE ag.status = 'complete'
 ORDER BY ag.created_at DESC;
 
 -- View: Audiobook cost analysis (current month)
-CREATE VIEW IF NOT EXISTS audiobook_costs_monthly AS
+CREATE OR REPLACE VIEW audiobook_costs_monthly AS
 SELECT
   DATE(ag.created_at, 'unixepoch') as generation_date,
   COUNT(*) as generations_count,

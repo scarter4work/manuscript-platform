@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- ============================================================================
 -- MIGRATION 010: Review Monitoring & Management System
 -- Created: 2025-10-31
@@ -32,8 +34,8 @@ CREATE TABLE IF NOT EXISTS review_monitoring (
   next_check_scheduled INTEGER,           -- Unix timestamp for next scheduled check
 
   -- Metadata
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  updated_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -75,7 +77,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 
   -- Sentiment analysis (filled by ReviewSentimentAgent)
   sentiment TEXT,                         -- positive, negative, neutral, mixed
-  sentiment_score REAL,                   -- -1 to +1 sentiment score
+  sentiment_score DOUBLE PRECISION,                   -- -1 to +1 sentiment score
   themes TEXT,                            -- JSON array of themes mentioned
   praises TEXT,                           -- JSON array of specific praises
   criticisms TEXT,                        -- JSON array of specific criticisms
@@ -97,8 +99,8 @@ CREATE TABLE IF NOT EXISTS reviews (
   images TEXT,                            -- JSON array of image URLs (if any)
 
   -- Metadata
-  fetched_at INTEGER NOT NULL,            -- Unix timestamp when review was fetched
-  updated_at INTEGER NOT NULL,            -- Unix timestamp of last update
+  fetched_at BIGINT NOT NULL,            -- Unix timestamp when review was fetched
+  updated_at BIGINT NOT NULL,            -- Unix timestamp of last update
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -125,10 +127,10 @@ CREATE TABLE IF NOT EXISTS review_sentiment_analyses (
 
   -- Analysis metadata
   total_reviews_analyzed INTEGER NOT NULL,
-  analyzed_at INTEGER NOT NULL,           -- Unix timestamp
+  analyzed_at BIGINT NOT NULL,           -- Unix timestamp
 
   -- Sentiment metrics
-  average_sentiment_score REAL,           -- Average sentiment score (-1 to +1)
+  average_sentiment_score DOUBLE PRECISION,           -- Average sentiment score (-1 to +1)
   sentiment_distribution TEXT NOT NULL,   -- JSON: { positive: N, neutral: N, negative: N, mixed: N }
 
   -- Theme analysis
@@ -146,7 +148,7 @@ CREATE TABLE IF NOT EXISTS review_sentiment_analyses (
   r2_storage_key TEXT,                    -- Key in R2 where full analysis is stored
 
   -- Cost tracking
-  analysis_cost_usd REAL DEFAULT 0,       -- Cost of Claude API calls
+  analysis_cost_usd DOUBLE PRECISION DEFAULT 0,       -- Cost of Claude API calls
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -169,7 +171,7 @@ CREATE TABLE IF NOT EXISTS review_trend_analyses (
   total_reviews_analyzed INTEGER NOT NULL,
   date_range_start INTEGER,               -- Unix timestamp of earliest review
   date_range_end INTEGER,                 -- Unix timestamp of latest review
-  analyzed_at INTEGER NOT NULL,           -- Unix timestamp
+  analyzed_at BIGINT NOT NULL,           -- Unix timestamp
 
   -- Trend metrics
   overall_trend TEXT,                     -- improving, stable, declining
@@ -193,7 +195,7 @@ CREATE TABLE IF NOT EXISTS review_trend_analyses (
   r2_storage_key TEXT,                    -- Key in R2 where full analysis is stored
 
   -- Cost tracking
-  analysis_cost_usd REAL DEFAULT 0,       -- Cost of Claude API calls
+  analysis_cost_usd DOUBLE PRECISION DEFAULT 0,       -- Cost of Claude API calls
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -242,11 +244,11 @@ CREATE TABLE IF NOT EXISTS review_responses (
   r2_storage_key TEXT,                    -- Key in R2 where full response data is stored
 
   -- Metadata
-  generated_at INTEGER NOT NULL,          -- Unix timestamp
+  generated_at BIGINT NOT NULL,          -- Unix timestamp
   used_at INTEGER,                        -- Unix timestamp when response was posted
 
   -- Cost tracking
-  generation_cost_usd REAL DEFAULT 0,     -- Cost of Claude API call
+  generation_cost_usd DOUBLE PRECISION DEFAULT 0,     -- Cost of Claude API call
 
   FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
@@ -275,9 +277,9 @@ CREATE TABLE IF NOT EXISTS review_monitoring_jobs (
 
   -- Job status
   status TEXT NOT NULL DEFAULT 'pending', -- pending, processing, complete, failed
-  started_at INTEGER,                     -- Unix timestamp
+  started_at BIGINT,                     -- Unix timestamp
   completed_at INTEGER,                   -- Unix timestamp
-  created_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
 
   -- Results
   reviews_fetched INTEGER DEFAULT 0,      -- Number of reviews fetched
@@ -285,7 +287,7 @@ CREATE TABLE IF NOT EXISTS review_monitoring_jobs (
   error_message TEXT,                     -- Error if failed
 
   -- Cost tracking
-  total_cost_usd REAL DEFAULT 0,          -- Total cost of job
+  total_cost_usd DOUBLE PRECISION DEFAULT 0,          -- Total cost of job
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -302,7 +304,7 @@ CREATE INDEX IF NOT EXISTS idx_monitoring_jobs_created ON review_monitoring_jobs
 -- ============================================================================
 
 -- View: Review statistics by manuscript
-CREATE VIEW IF NOT EXISTS review_statistics_by_manuscript AS
+CREATE OR REPLACE VIEW review_statistics_by_manuscript AS
 SELECT
   m.id as manuscript_id,
   m.title,
@@ -328,7 +330,7 @@ LEFT JOIN reviews r ON m.id = r.manuscript_id
 GROUP BY m.id, m.title, m.user_id, u.email;
 
 -- View: Review monitoring health
-CREATE VIEW IF NOT EXISTS review_monitoring_health AS
+CREATE OR REPLACE VIEW review_monitoring_health AS
 SELECT
   rm.manuscript_id,
   m.title,
@@ -348,7 +350,7 @@ GROUP BY rm.manuscript_id, m.title, rm.user_id, rm.book_identifier,
          rm.is_active, rm.check_frequency, rm.last_checked, rm.next_check_scheduled;
 
 -- View: Monthly review monitoring costs
-CREATE VIEW IF NOT EXISTS review_monitoring_costs_monthly AS
+CREATE OR REPLACE VIEW review_monitoring_costs_monthly AS
 SELECT
   DATE(rsa.analyzed_at, 'unixepoch') as analysis_date,
   COUNT(DISTINCT rsa.manuscript_id) as manuscripts_analyzed,

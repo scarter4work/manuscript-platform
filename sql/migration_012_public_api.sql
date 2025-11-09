@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- ============================================================================
 -- MIGRATION 012: Public API & Webhooks System
 -- Created: 2025-10-31
@@ -27,7 +29,7 @@ CREATE TABLE IF NOT EXISTS api_keys (
 
   -- Status
   is_active INTEGER DEFAULT 1,            -- Boolean: key is active
-  created_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
   last_used_at INTEGER,                   -- Unix timestamp
   revoked_at INTEGER,                     -- Unix timestamp when revoked
 
@@ -75,7 +77,7 @@ CREATE TABLE IF NOT EXISTS webhooks (
 
   -- Status
   is_active INTEGER DEFAULT 1,            -- Boolean: webhook is active
-  created_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
   last_delivery_at INTEGER,               -- Unix timestamp of last successful delivery
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -134,7 +136,7 @@ CREATE INDEX IF NOT EXISTS idx_webhook_retries_webhook ON webhook_retries(webhoo
 -- ============================================================================
 
 -- View: API usage summary by user
-CREATE VIEW IF NOT EXISTS api_usage_summary AS
+CREATE OR REPLACE VIEW api_usage_summary AS
 SELECT
   u.id as user_id,
   u.email,
@@ -152,7 +154,7 @@ WHERE u.subscription_tier = 'enterprise'
 GROUP BY u.id, u.email, u.subscription_tier;
 
 -- View: API endpoint popularity
-CREATE VIEW IF NOT EXISTS api_endpoint_stats AS
+CREATE OR REPLACE VIEW api_endpoint_stats AS
 SELECT
   endpoint,
   method,
@@ -168,7 +170,7 @@ GROUP BY endpoint, method
 ORDER BY total_requests DESC;
 
 -- View: Recent API activity
-CREATE VIEW IF NOT EXISTS recent_api_activity AS
+CREATE OR REPLACE VIEW recent_api_activity AS
 SELECT
   u.email as user_email,
   ak.name as api_key_name,
@@ -184,7 +186,7 @@ ORDER BY aul.timestamp DESC
 LIMIT 100;
 
 -- View: Webhook delivery health
-CREATE VIEW IF NOT EXISTS webhook_health AS
+CREATE OR REPLACE VIEW webhook_health AS
 SELECT
   w.id as webhook_id,
   u.email as user_email,
@@ -261,7 +263,7 @@ VALUES (12, strftime('%s', 'now'), 'Migration 012: Public API & Webhooks System 
 -- - Enterprise tier differentiator
 -- - Enables B2B integrations
 -- - Programmatic access for automation
--- - Webhook notifications for real-time updates
+-- - Webhook notifications for DOUBLE PRECISION-time updates
 -- - API usage tracking for billing
 -- - Self-service API key management
 --

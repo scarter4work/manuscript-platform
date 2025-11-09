@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- ============================================================================
 -- MIGRATION 011: Multi-Platform Publishing Support
 -- Created: 2025-10-31
@@ -38,14 +40,14 @@ CREATE TABLE IF NOT EXISTS publishing_projects (
   distribution_strategy_r2_key TEXT,      -- Key for distribution strategy in R2
 
   -- Cost tracking
-  total_generation_cost_usd REAL DEFAULT 0,
-  metadata_generation_cost_usd REAL DEFAULT 0,
-  format_preparation_cost_usd REAL DEFAULT 0,
-  strategy_generation_cost_usd REAL DEFAULT 0,
+  total_generation_cost_usd DOUBLE PRECISION DEFAULT 0,
+  metadata_generation_cost_usd DOUBLE PRECISION DEFAULT 0,
+  format_preparation_cost_usd DOUBLE PRECISION DEFAULT 0,
+  strategy_generation_cost_usd DOUBLE PRECISION DEFAULT 0,
 
   -- Timestamps
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  updated_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -82,17 +84,17 @@ CREATE TABLE IF NOT EXISTS platform_publications (
   platform_metadata TEXT,                 -- Platform-specific metadata (categories, keywords, etc.)
 
   -- Pricing
-  price_usd REAL,                         -- Price in USD
-  royalty_rate REAL,                      -- Royalty percentage (0.35, 0.70, etc.)
+  price_usd DOUBLE PRECISION,                         -- Price in USD
+  royalty_rate DOUBLE PRECISION,                      -- Royalty percentage (0.35, 0.70, etc.)
 
   -- Performance tracking (updated separately)
   total_sales INTEGER DEFAULT 0,          -- Total units sold
-  total_revenue_usd REAL DEFAULT 0,       -- Total revenue from this platform
+  total_revenue_usd DOUBLE PRECISION DEFAULT 0,       -- Total revenue from this platform
   last_sale_date INTEGER,                 -- Unix timestamp of last sale
 
   -- Metadata
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  updated_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
 
   FOREIGN KEY (publishing_project_id) REFERENCES publishing_projects(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
@@ -136,11 +138,11 @@ CREATE TABLE IF NOT EXISTS format_preparations (
   validation_errors TEXT,                 -- JSON array of validation errors
 
   -- Cost tracking
-  preparation_cost_usd REAL DEFAULT 0,    -- Cost of AI-assisted preparation
+  preparation_cost_usd DOUBLE PRECISION DEFAULT 0,    -- Cost of AI-assisted preparation
 
   -- Metadata
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  updated_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
 
   FOREIGN KEY (publishing_project_id) REFERENCES publishing_projects(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
@@ -177,16 +179,16 @@ CREATE TABLE IF NOT EXISTS distribution_strategies (
   -- Implementation
   action_plan TEXT,                       -- Step-by-step action plan (JSON)
   tools_recommended TEXT,                 -- Recommended tools and services (JSON)
-  estimated_setup_cost_usd REAL,          -- Estimated cost to implement
+  estimated_setup_cost_usd DOUBLE PRECISION,          -- Estimated cost to implement
 
   -- R2 storage
   r2_storage_key TEXT,                    -- Full strategy document in R2
 
   -- Cost tracking
-  generation_cost_usd REAL DEFAULT 0,     -- Cost of AI generation
+  generation_cost_usd DOUBLE PRECISION DEFAULT 0,     -- Cost of AI generation
 
   -- Metadata
-  generated_at INTEGER NOT NULL,          -- Unix timestamp
+  generated_at BIGINT NOT NULL,          -- Unix timestamp
   implemented INTEGER DEFAULT 0,          -- Boolean: strategy has been implemented
 
   FOREIGN KEY (publishing_project_id) REFERENCES publishing_projects(id) ON DELETE CASCADE,
@@ -204,7 +206,7 @@ CREATE INDEX IF NOT EXISTS idx_distribution_strategies_user ON distribution_stra
 -- ============================================================================
 
 -- View: Publishing projects summary
-CREATE VIEW IF NOT EXISTS publishing_projects_summary AS
+CREATE OR REPLACE VIEW publishing_projects_summary AS
 SELECT
   u.id as user_id,
   u.email,
@@ -222,7 +224,7 @@ LEFT JOIN platform_publications plat ON pp.id = plat.publishing_project_id
 GROUP BY u.id, u.email, u.subscription_tier;
 
 -- View: Platform performance comparison
-CREATE VIEW IF NOT EXISTS platform_performance AS
+CREATE OR REPLACE VIEW platform_performance AS
 SELECT
   platform,
   COUNT(*) as total_publications,
@@ -239,7 +241,7 @@ GROUP BY platform
 ORDER BY total_revenue DESC;
 
 -- View: Recent publishing activity
-CREATE VIEW IF NOT EXISTS recent_publishing_activity AS
+CREATE OR REPLACE VIEW recent_publishing_activity AS
 SELECT
   pp.id as project_id,
   pp.project_name,
@@ -323,7 +325,7 @@ VALUES (11, strftime('%s', 'now'), 'Migration 011: Multi-Platform Publishing Sup
 -- Future Enhancements:
 -- 1. Direct API integration with platforms
 -- 2. Automated metadata upload to platforms
--- 3. Real-time sales data synchronization
+-- 3. DOUBLE PRECISION-time sales data synchronization
 -- 4. Advanced revenue analytics and reporting
 -- 5. Collaborative publishing for team members
 -- 6. ISBN management and tracking

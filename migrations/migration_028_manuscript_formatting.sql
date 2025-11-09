@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 028: Manuscript Formatting Engine (Issue #44)
 -- EPUB and PDF conversion with professional formatting for Amazon KDP publishing
 
@@ -49,10 +51,10 @@ CREATE TABLE IF NOT EXISTS formatted_manuscripts (
   passes_amazon_specs INTEGER DEFAULT 0,
 
   -- Metadata
-  generation_cost REAL, -- API/processing cost
+  generation_cost DOUBLE PRECISION, -- API/processing cost
   processing_time_ms INTEGER,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -68,7 +70,7 @@ CREATE INDEX IF NOT EXISTS idx_formatted_manuscripts_created ON formatted_manusc
 CREATE TRIGGER IF NOT EXISTS update_formatted_manuscripts_timestamp
 AFTER UPDATE ON formatted_manuscripts
 BEGIN
-  UPDATE formatted_manuscripts SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE formatted_manuscripts SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Formatting templates (reusable formatting configurations)
@@ -85,8 +87,8 @@ CREATE TABLE IF NOT EXISTS formatting_templates (
 
   -- Usage tracking
   times_used INTEGER DEFAULT 0,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -99,7 +101,7 @@ CREATE INDEX IF NOT EXISTS idx_formatting_templates_system ON formatting_templat
 CREATE TRIGGER IF NOT EXISTS update_formatting_templates_timestamp
 AFTER UPDATE ON formatting_templates
 BEGIN
-  UPDATE formatting_templates SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE formatting_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Formatting job queue (for async processing)
@@ -113,10 +115,10 @@ CREATE TABLE IF NOT EXISTS formatting_jobs (
   attempts INTEGER DEFAULT 0,
   max_attempts INTEGER DEFAULT 3,
   error_message TEXT,
-  started_at INTEGER,
+  started_at BIGINT,
   completed_at INTEGER,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (formatted_manuscript_id) REFERENCES formatted_manuscripts(id) ON DELETE CASCADE
 );
@@ -129,11 +131,11 @@ CREATE INDEX IF NOT EXISTS idx_formatting_jobs_created ON formatting_jobs(create
 CREATE TRIGGER IF NOT EXISTS update_formatting_jobs_timestamp
 AFTER UPDATE ON formatting_jobs
 BEGIN
-  UPDATE formatting_jobs SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE formatting_jobs SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Statistics view
-CREATE VIEW IF NOT EXISTS formatting_stats AS
+CREATE OR REPLACE VIEW formatting_stats AS
 SELECT
   f.manuscript_id,
   f.user_id,

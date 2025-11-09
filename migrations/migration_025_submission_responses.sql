@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 025: Nuanced Submission Response System (Issue #52)
 -- Expands submission tracking with detailed response types, feedback categorization, and R&R workflow
 
@@ -9,11 +11,11 @@ CREATE TABLE IF NOT EXISTS submissions (
   package_id TEXT, -- FK to submission_packages
   publisher_name TEXT NOT NULL,
   publisher_type TEXT CHECK (publisher_type IN ('agent', 'publisher', 'magazine', 'contest', 'other')),
-  submission_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  submission_date BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   response_date INTEGER,
   status TEXT DEFAULT 'pending', -- Legacy field for backwards compatibility
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (package_id) REFERENCES submission_packages(id) ON DELETE SET NULL
@@ -54,7 +56,7 @@ CREATE INDEX IF NOT EXISTS idx_submissions_date ON submissions(submission_date D
 CREATE TRIGGER IF NOT EXISTS update_submissions_timestamp
 AFTER UPDATE ON submissions
 BEGIN
-  UPDATE submissions SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submissions SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Feedback categorization table
@@ -67,8 +69,8 @@ CREATE TABLE IF NOT EXISTS submission_feedback (
   feedback_text TEXT NOT NULL,
   addressed INTEGER DEFAULT 0, -- Boolean: was this addressed in revision?
   response_notes TEXT, -- How author addressed this feedback
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (submission_id) REFERENCES submissions(id) ON DELETE CASCADE
 );
 
@@ -80,11 +82,11 @@ CREATE INDEX IF NOT EXISTS idx_submission_feedback_addressed ON submission_feedb
 CREATE TRIGGER IF NOT EXISTS update_submission_feedback_timestamp
 AFTER UPDATE ON submission_feedback
 BEGIN
-  UPDATE submission_feedback SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_feedback SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Submission statistics view
-CREATE VIEW IF NOT EXISTS submission_stats AS
+CREATE OR REPLACE VIEW submission_stats AS
 SELECT
   s.id,
   s.manuscript_id,

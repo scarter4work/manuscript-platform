@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Migration 005: Add full_name column to users table
 -- Created: October 26, 2025
 -- Purpose: Add full_name field for user profiles and personalized emails

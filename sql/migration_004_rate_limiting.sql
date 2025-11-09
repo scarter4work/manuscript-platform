@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Migration 004: Add rate limiting support
 -- MAN-25: Rate Limiting & DDoS Protection
 -- Created: October 25, 2025

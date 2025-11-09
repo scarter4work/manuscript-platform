@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 036: Platform-Specific AI Chat Assistants with Self-Updating Knowledge Base
 -- Specialized AI agents for each publishing platform (KDP, Draft2Digital, IngramSpark, etc.)
 -- with daily documentation crawling and automatic workflow updates
@@ -59,11 +62,11 @@ CREATE TABLE IF NOT EXISTS platform_docs (
   change_summary TEXT, -- Claude-generated summary of changes
 
   -- Metadata
-  fetched_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  analyzed_at INTEGER, -- When Claude analyzed changes
+  fetched_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  analyzed_at BIGINT, -- When Claude analyzed changes
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (previous_version_id) REFERENCES platform_docs(id) ON DELETE SET NULL
 );
@@ -94,7 +97,7 @@ CREATE TABLE IF NOT EXISTS agent_knowledge (
 
   -- Source Tracking
   source_doc_id TEXT, -- Link to platform_docs
-  confidence_score REAL DEFAULT 1.0, -- 0.0-1.0 confidence
+  confidence_score DOUBLE PRECISION DEFAULT 1.0, -- 0.0-1.0 confidence
 
   -- Versioning
   version INTEGER NOT NULL DEFAULT 1,
@@ -102,8 +105,8 @@ CREATE TABLE IF NOT EXISTS agent_knowledge (
 
   is_current INTEGER DEFAULT 1, -- Boolean: is this the current version?
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (source_doc_id) REFERENCES platform_docs(id) ON DELETE SET NULL,
   FOREIGN KEY (supersedes_id) REFERENCES agent_knowledge(id) ON DELETE SET NULL
@@ -146,8 +149,8 @@ CREATE TABLE IF NOT EXISTS workflows (
   changelog TEXT, -- Description of changes from previous version
   auto_generated INTEGER DEFAULT 0, -- Boolean: auto-generated from doc changes?
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (previous_version_id) REFERENCES workflows(id) ON DELETE SET NULL
 );
@@ -176,15 +179,15 @@ CREATE TABLE IF NOT EXISTS user_workflows (
   )),
 
   -- Metrics
-  started_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  started_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   completed_at INTEGER,
-  last_activity_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  last_activity_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   -- Blocking Issues
   blocked_reason TEXT, -- Why workflow is blocked
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE SET NULL,
@@ -223,9 +226,9 @@ CREATE TABLE IF NOT EXISTS agent_conversations (
   -- AI Metadata
   model_used TEXT, -- Claude model version
   tokens_used INTEGER,
-  cost REAL,
+  cost DOUBLE PRECISION,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (user_workflow_id) REFERENCES user_workflows(id) ON DELETE SET NULL
@@ -252,11 +255,11 @@ CREATE TABLE IF NOT EXISTS doc_fetch_log (
 
   error_message TEXT,
 
-  fetch_started_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  fetch_started_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   fetch_completed_at INTEGER,
-  duration_seconds REAL,
+  duration_seconds DOUBLE PRECISION,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 -- Platform Agent Configuration
@@ -290,8 +293,8 @@ CREATE TABLE IF NOT EXISTS agent_config (
 
   is_active INTEGER DEFAULT 1, -- Boolean: is agent active?
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 -- User Notifications for Workflow Changes
@@ -317,12 +320,12 @@ CREATE TABLE IF NOT EXISTS workflow_change_notifications (
 
   -- Notification Status
   notification_sent INTEGER DEFAULT 0, -- Boolean: has notification been sent?
-  notification_sent_at INTEGER,
+  notification_sent_at BIGINT,
 
   user_acknowledged INTEGER DEFAULT 0, -- Boolean: has user seen it?
   user_acknowledged_at INTEGER,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON DELETE CASCADE
@@ -576,52 +579,52 @@ CREATE TRIGGER IF NOT EXISTS platform_docs_updated
 AFTER UPDATE ON platform_docs
 FOR EACH ROW
 BEGIN
-  UPDATE platform_docs SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE platform_docs SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS agent_knowledge_updated
 AFTER UPDATE ON agent_knowledge
 FOR EACH ROW
 BEGIN
-  UPDATE agent_knowledge SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE agent_knowledge SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS workflows_updated
 AFTER UPDATE ON workflows
 FOR EACH ROW
 BEGIN
-  UPDATE workflows SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE workflows SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS user_workflows_updated
 AFTER UPDATE ON user_workflows
 FOR EACH ROW
 BEGIN
-  UPDATE user_workflows SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE user_workflows SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS agent_config_updated
 AFTER UPDATE ON agent_config
 FOR EACH ROW
 BEGIN
-  UPDATE agent_config SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE agent_config SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Views for Analytics
 
 -- Active User Workflows Summary
-CREATE VIEW IF NOT EXISTS active_workflows_summary AS
+CREATE OR REPLACE VIEW active_workflows_summary AS
 SELECT
   uw.platform,
   uw.status,
   COUNT(*) as workflow_count,
-  AVG((unixepoch() - uw.started_at) / 86400.0) as avg_days_in_progress
+  AVG((EXTRACT(EPOCH FROM NOW())::BIGINT - uw.started_at) / 86400.0) as avg_days_in_progress
 FROM user_workflows uw
 WHERE uw.status = 'in_progress'
 GROUP BY uw.platform, uw.status;
 
 -- Documentation Change Activity
-CREATE VIEW IF NOT EXISTS doc_change_activity AS
+CREATE OR REPLACE VIEW doc_change_activity AS
 SELECT
   pd.platform,
   pd.change_significance,
@@ -629,11 +632,11 @@ SELECT
   MAX(pd.fetched_at) as last_change_detected
 FROM platform_docs pd
 WHERE pd.change_detected = 1
-  AND pd.fetched_at >= unixepoch() - (30 * 86400) -- Last 30 days
+  AND pd.fetched_at >= EXTRACT(EPOCH FROM NOW())::BIGINT - (30 * 86400) -- Last 30 days
 GROUP BY pd.platform, pd.change_significance;
 
 -- Agent Conversation Stats
-CREATE VIEW IF NOT EXISTS agent_conversation_stats AS
+CREATE OR REPLACE VIEW agent_conversation_stats AS
 SELECT
   ac.platform,
   ac.user_id,
@@ -648,14 +651,14 @@ FROM agent_conversations ac
 GROUP BY ac.platform, ac.user_id;
 
 -- Workflow Completion Rates
-CREATE VIEW IF NOT EXISTS workflow_completion_rates AS
+CREATE OR REPLACE VIEW workflow_completion_rates AS
 SELECT
   uw.platform,
   w.workflow_name,
   COUNT(*) as total_started,
   COUNT(CASE WHEN uw.status = 'completed' THEN 1 END) as completed_count,
   ROUND(
-    CAST(COUNT(CASE WHEN uw.status = 'completed' THEN 1 END) AS REAL) / COUNT(*) * 100,
+    CAST(COUNT(CASE WHEN uw.status = 'completed' THEN 1 END) AS DOUBLE PRECISION) / COUNT(*) * 100,
     2
   ) as completion_rate_percent,
   AVG(CASE WHEN uw.completed_at IS NOT NULL

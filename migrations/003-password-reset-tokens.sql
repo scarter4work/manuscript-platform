@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Migration: Add password_reset_tokens table
 -- Purpose: Enable secure password reset functionality
 -- Date: 2025-10-25

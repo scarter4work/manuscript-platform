@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
 -- Migration 032: Amazon KDP Integration System
 -- Enables semi-automated Amazon KDP publishing with pre-filled metadata and validation
 
@@ -17,8 +19,8 @@ CREATE TABLE IF NOT EXISTS kdp_packages (
   instructions_key TEXT, -- R2 key for instructions.pdf
   validation_passed INTEGER DEFAULT 0,
   expiration_date INTEGER, -- Expires after 30 days
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -66,11 +68,11 @@ CREATE TABLE IF NOT EXISTS kdp_metadata (
   publication_date INTEGER, -- Unix timestamp (or NULL for "publish immediately")
 
   -- Pricing & Distribution
-  price_usd REAL,
-  price_gbp REAL,
-  price_eur REAL,
-  price_cad REAL,
-  price_aud REAL,
+  price_usd DOUBLE PRECISION,
+  price_gbp DOUBLE PRECISION,
+  price_eur DOUBLE PRECISION,
+  price_cad DOUBLE PRECISION,
+  price_aud DOUBLE PRECISION,
   royalty_option TEXT CHECK (royalty_option IN ('35', '70')),
   kdp_select_enrolled INTEGER DEFAULT 0, -- Exclusive to Amazon for 90 days
   enable_lending INTEGER DEFAULT 1,
@@ -85,8 +87,8 @@ CREATE TABLE IF NOT EXISTS kdp_metadata (
   adult_content INTEGER DEFAULT 0,
   public_domain INTEGER DEFAULT 0,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (package_id) REFERENCES kdp_packages(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -101,7 +103,7 @@ CREATE TABLE IF NOT EXISTS kdp_validation_results (
   status TEXT NOT NULL CHECK (status IN ('pass', 'fail', 'warning')),
   issues TEXT, -- JSON array of validation issues
   recommendations TEXT, -- JSON array of recommendations
-  validated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  validated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (package_id) REFERENCES kdp_packages(id) ON DELETE CASCADE
 );
 
@@ -119,8 +121,8 @@ CREATE TABLE IF NOT EXISTS kdp_publishing_status (
   kdp_url TEXT, -- URL to live book page
   error_message TEXT,
   published_at INTEGER, -- When it went live
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (package_id) REFERENCES kdp_packages(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -130,28 +132,28 @@ CREATE TABLE IF NOT EXISTS kdp_publishing_status (
 CREATE TABLE IF NOT EXISTS kdp_royalty_calculations (
   id TEXT PRIMARY KEY,
   package_id TEXT NOT NULL,
-  price_usd REAL NOT NULL,
+  price_usd DOUBLE PRECISION NOT NULL,
   royalty_option TEXT NOT NULL CHECK (royalty_option IN ('35', '70')),
 
   -- Calculated Royalties
-  royalty_per_sale_usd REAL,
-  delivery_cost_usd REAL, -- For 70% royalty (based on file size)
-  net_royalty_usd REAL,
+  royalty_per_sale_usd DOUBLE PRECISION,
+  delivery_cost_usd DOUBLE PRECISION, -- For 70% royalty (based on file size)
+  net_royalty_usd DOUBLE PRECISION,
 
   -- File size (affects delivery cost)
-  file_size_mb REAL,
+  file_size_mb DOUBLE PRECISION,
 
   -- Minimum price requirements
-  minimum_price_35 REAL,
-  maximum_price_35 REAL,
-  minimum_price_70 REAL,
-  maximum_price_70 REAL,
+  minimum_price_35 DOUBLE PRECISION,
+  maximum_price_35 DOUBLE PRECISION,
+  minimum_price_70 DOUBLE PRECISION,
+  maximum_price_70 DOUBLE PRECISION,
 
   -- Recommendation
   recommended_royalty TEXT,
   recommendation_reason TEXT,
 
-  calculated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  calculated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (package_id) REFERENCES kdp_packages(id) ON DELETE CASCADE
 );
 
@@ -180,25 +182,25 @@ CREATE TRIGGER IF NOT EXISTS kdp_packages_updated
 AFTER UPDATE ON kdp_packages
 FOR EACH ROW
 BEGIN
-  UPDATE kdp_packages SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE kdp_packages SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS kdp_metadata_updated
 AFTER UPDATE ON kdp_metadata
 FOR EACH ROW
 BEGIN
-  UPDATE kdp_metadata SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE kdp_metadata SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS kdp_publishing_status_updated
 AFTER UPDATE ON kdp_publishing_status
 FOR EACH ROW
 BEGIN
-  UPDATE kdp_publishing_status SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE kdp_publishing_status SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- View: KDP Package Statistics
-CREATE VIEW IF NOT EXISTS kdp_stats AS
+CREATE OR REPLACE VIEW kdp_stats AS
 SELECT
   COUNT(DISTINCT kp.id) as total_packages,
   COUNT(DISTINCT CASE WHEN kp.package_status = 'ready' THEN kp.id END) as ready_packages,

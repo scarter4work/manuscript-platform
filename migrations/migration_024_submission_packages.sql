@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 024: Submission Package Bundler (Issue #50)
 -- Creates tables for bundling manuscripts with supporting documents into submission packages
 
@@ -10,8 +12,8 @@ CREATE TABLE IF NOT EXISTS submission_packages (
   package_type TEXT NOT NULL CHECK (package_type IN
     ('partial', 'full', 'query_only', 'custom', 'contest')),
   description TEXT,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   metadata TEXT, -- JSON: { target_publisher, submission_guidelines, notes, etc. }
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -39,11 +41,11 @@ CREATE INDEX IF NOT EXISTS idx_package_document_map_package ON package_document_
 CREATE TRIGGER IF NOT EXISTS update_submission_packages_timestamp
 AFTER UPDATE ON submission_packages
 BEGIN
-  UPDATE submission_packages SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_packages SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Package statistics view
-CREATE VIEW IF NOT EXISTS package_stats AS
+CREATE OR REPLACE VIEW package_stats AS
 SELECT
   sp.id,
   sp.package_name,

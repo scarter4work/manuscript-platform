@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 007: Team Collaboration Features
 -- Adds team management, member roles, invitations, and manuscript sharing
 -- Created: October 29, 2025
@@ -13,8 +15,8 @@ CREATE TABLE IF NOT EXISTS teams (
   name TEXT NOT NULL,                     -- Team/organization name
   description TEXT,                       -- Optional team description
   max_members INTEGER DEFAULT 5,          -- Max team size (5 for Enterprise)
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  updated_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
   FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -53,8 +55,8 @@ CREATE TABLE IF NOT EXISTS team_invitations (
   role TEXT NOT NULL,                     -- admin/editor/viewer (role if accepted)
   token TEXT NOT NULL UNIQUE,             -- Invitation token (for acceptance)
   invited_by TEXT NOT NULL,               -- Foreign key to users (who sent invite)
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  expires_at INTEGER NOT NULL,            -- Unix timestamp (7 days from creation)
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  expires_at BIGINT NOT NULL,            -- Unix timestamp (7 days from creation)
   status TEXT DEFAULT 'pending',          -- pending/accepted/expired/cancelled
   accepted_at INTEGER,                    -- Unix timestamp when accepted
   FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
@@ -117,7 +119,7 @@ CREATE INDEX IF NOT EXISTS idx_team_activity_timestamp ON team_activity(timestam
 -- ============================================================================
 
 -- View: Team members with user details
-CREATE VIEW IF NOT EXISTS team_members_details AS
+CREATE OR REPLACE VIEW team_members_details AS
 SELECT
   tm.id,
   tm.team_id,
@@ -133,7 +135,7 @@ JOIN users u ON tm.user_id = u.id
 JOIN teams t ON tm.team_id = t.id;
 
 -- View: Team with member count
-CREATE VIEW IF NOT EXISTS teams_with_stats AS
+CREATE OR REPLACE VIEW teams_with_stats AS
 SELECT
   t.*,
   u.email as owner_email,

@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- ============================================================================
 -- MIGRATION 013: Amazon KDP Export System
 -- Created: 2025-10-31
@@ -36,8 +38,8 @@ CREATE TABLE IF NOT EXISTS kdp_export_packages (
   last_downloaded_at INTEGER,             -- Unix timestamp
 
   -- Lifecycle
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  expires_at INTEGER,                     -- Unix timestamp (30 days from creation)
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  expires_at BIGINT,                     -- Unix timestamp (30 days from creation)
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -52,7 +54,7 @@ CREATE INDEX IF NOT EXISTS idx_kdp_packages_created ON kdp_export_packages(creat
 -- KDP EXPORT ANALYTICS VIEW
 -- Summary of KDP export usage by user
 -- ============================================================================
-CREATE VIEW IF NOT EXISTS kdp_export_analytics AS
+CREATE OR REPLACE VIEW kdp_export_analytics AS
 SELECT
   u.id as user_id,
   u.email,

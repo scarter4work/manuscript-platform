@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 034: Sales & Royalty Tracking Dashboard
 -- Comprehensive sales analytics, royalty tracking, and performance metrics
 
@@ -15,10 +18,10 @@ CREATE TABLE IF NOT EXISTS sales_data (
 
   -- Financial Data
   units_sold INTEGER DEFAULT 0,
-  list_price REAL, -- Original list price
-  revenue REAL DEFAULT 0, -- Gross revenue (before platform cut)
-  royalty_earned REAL DEFAULT 0, -- Author's royalty
-  royalty_rate REAL, -- Percentage (e.g., 0.70 for 70%)
+  list_price DOUBLE PRECISION, -- Original list price
+  revenue DOUBLE PRECISION DEFAULT 0, -- Gross revenue (before platform cut)
+  royalty_earned DOUBLE PRECISION DEFAULT 0, -- Author's royalty
+  royalty_rate DOUBLE PRECISION, -- Percentage (e.g., 0.70 for 70%)
   currency TEXT DEFAULT 'USD',
 
   -- Geographic Data
@@ -31,11 +34,11 @@ CREATE TABLE IF NOT EXISTS sales_data (
 
   -- Kindle Unlimited (KDP specific)
   kenp_pages_read INTEGER DEFAULT 0, -- Kindle Unlimited pages read
-  kenp_revenue REAL DEFAULT 0, -- Revenue from KENP
+  kenp_revenue DOUBLE PRECISION DEFAULT 0, -- Revenue from KENP
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -55,27 +58,27 @@ CREATE TABLE IF NOT EXISTS royalty_payments (
   expected_payment_date INTEGER, -- Expected payment date
 
   -- Financial Data
-  amount REAL NOT NULL, -- Payment amount
+  amount DOUBLE PRECISION NOT NULL, -- Payment amount
   currency TEXT DEFAULT 'USD',
-  exchange_rate REAL, -- If converted from foreign currency
+  exchange_rate DOUBLE PRECISION, -- If converted from foreign currency
 
   -- Status
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN
     ('pending', 'processing', 'paid', 'reconciled', 'disputed')),
 
   -- Tax Data
-  tax_withheld REAL DEFAULT 0, -- Tax withholding (if applicable)
+  tax_withheld DOUBLE PRECISION DEFAULT 0, -- Tax withholding (if applicable)
   tax_country TEXT, -- Country where tax was withheld
 
   -- Reconciliation
   sales_count INTEGER, -- Number of sales in this payment
-  expected_amount REAL, -- Expected amount based on sales data
-  discrepancy REAL, -- Difference between expected and actual
+  expected_amount DOUBLE PRECISION, -- Expected amount based on sales data
+  discrepancy DOUBLE PRECISION, -- Difference between expected and actual
   reconciliation_notes TEXT,
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -95,7 +98,7 @@ CREATE TABLE IF NOT EXISTS bestseller_ranks (
   category_rank INTEGER, -- Rank within specific category
 
   -- Snapshot Metadata
-  tracked_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  tracked_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -118,8 +121,8 @@ CREATE TABLE IF NOT EXISTS sales_aggregations (
 
   -- Aggregated Metrics
   total_units_sold INTEGER DEFAULT 0,
-  total_revenue REAL DEFAULT 0,
-  total_royalties REAL DEFAULT 0,
+  total_revenue DOUBLE PRECISION DEFAULT 0,
+  total_royalties DOUBLE PRECISION DEFAULT 0,
 
   -- Format Breakdown
   ebook_units INTEGER DEFAULT 0,
@@ -127,20 +130,20 @@ CREATE TABLE IF NOT EXISTS sales_aggregations (
   hardcover_units INTEGER DEFAULT 0,
   audiobook_units INTEGER DEFAULT 0,
 
-  ebook_revenue REAL DEFAULT 0,
-  paperback_revenue REAL DEFAULT 0,
-  hardcover_revenue REAL DEFAULT 0,
-  audiobook_revenue REAL DEFAULT 0,
+  ebook_revenue DOUBLE PRECISION DEFAULT 0,
+  paperback_revenue DOUBLE PRECISION DEFAULT 0,
+  hardcover_revenue DOUBLE PRECISION DEFAULT 0,
+  audiobook_revenue DOUBLE PRECISION DEFAULT 0,
 
   -- Kindle Unlimited
   kenp_pages_read INTEGER DEFAULT 0,
-  kenp_revenue REAL DEFAULT 0,
+  kenp_revenue DOUBLE PRECISION DEFAULT 0,
 
   -- Geographic Breakdown (top 5 countries JSON)
   top_countries TEXT, -- JSON: [{"country": "US", "units": 100}, ...]
 
   -- Computed at
-  computed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  computed_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -163,7 +166,7 @@ CREATE TABLE IF NOT EXISTS platform_connections (
   api_secret_encrypted TEXT, -- Encrypted API secret
   access_token_encrypted TEXT, -- OAuth access token
   refresh_token_encrypted TEXT, -- OAuth refresh token
-  token_expires_at INTEGER, -- Token expiration timestamp
+  token_expires_at BIGINT, -- Token expiration timestamp
 
   -- Platform-specific metadata
   platform_user_id TEXT, -- User ID on the platform
@@ -176,8 +179,8 @@ CREATE TABLE IF NOT EXISTS platform_connections (
   next_sync_at INTEGER, -- Next scheduled sync
 
   -- Metadata
-  connected_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  connected_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   UNIQUE(user_id, platform)
@@ -195,8 +198,8 @@ CREATE TABLE IF NOT EXISTS sales_goals (
   goal_type TEXT NOT NULL CHECK (goal_type IN
     ('units', 'revenue', 'royalties', 'reviews', 'rank')),
 
-  target_value REAL NOT NULL, -- Target number (e.g., 1000 units, $5000 revenue)
-  current_value REAL DEFAULT 0, -- Current progress
+  target_value DOUBLE PRECISION NOT NULL, -- Target number (e.g., 1000 units, $5000 revenue)
+  current_value DOUBLE PRECISION DEFAULT 0, -- Current progress
 
   -- Time Frame
   start_date INTEGER NOT NULL,
@@ -212,8 +215,8 @@ CREATE TABLE IF NOT EXISTS sales_goals (
   last_notification_at INTEGER,
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
@@ -235,29 +238,29 @@ CREATE TABLE IF NOT EXISTS marketing_campaigns (
   end_date INTEGER,
 
   -- Budget & Spend
-  budget REAL,
-  spend REAL DEFAULT 0,
+  budget DOUBLE PRECISION,
+  spend DOUBLE PRECISION DEFAULT 0,
   currency TEXT DEFAULT 'USD',
 
   -- Target Metrics
   target_metric TEXT, -- 'sales', 'downloads', 'page_reads', 'reviews'
-  target_value REAL,
+  target_value DOUBLE PRECISION,
 
   -- Campaign Settings (JSON)
   settings TEXT, -- JSON: platform-specific settings
 
   -- Results (computed)
   units_sold INTEGER DEFAULT 0,
-  revenue REAL DEFAULT 0,
-  roi REAL, -- Return on investment
+  revenue DOUBLE PRECISION DEFAULT 0,
+  roi DOUBLE PRECISION, -- Return on investment
 
   -- Status
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN
     ('draft', 'scheduled', 'active', 'completed', 'cancelled')),
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
@@ -278,8 +281,8 @@ CREATE TABLE IF NOT EXISTS series_sales (
 
   -- Series Metrics
   total_units_sold INTEGER DEFAULT 0,
-  total_revenue REAL DEFAULT 0,
-  total_royalties REAL DEFAULT 0,
+  total_revenue DOUBLE PRECISION DEFAULT 0,
+  total_royalties DOUBLE PRECISION DEFAULT 0,
 
   -- Read-through Analysis
   book_1_sales INTEGER DEFAULT 0,
@@ -288,16 +291,16 @@ CREATE TABLE IF NOT EXISTS series_sales (
   book_4_sales INTEGER DEFAULT 0,
   book_5_sales INTEGER DEFAULT 0,
 
-  read_through_rate_1_to_2 REAL, -- Percentage of Book 1 readers who buy Book 2
-  read_through_rate_2_to_3 REAL,
-  read_through_rate_3_to_4 REAL,
+  read_through_rate_1_to_2 DOUBLE PRECISION, -- Percentage of Book 1 readers who buy Book 2
+  read_through_rate_2_to_3 DOUBLE PRECISION,
+  read_through_rate_3_to_4 DOUBLE PRECISION,
 
   -- Bundle Sales
   bundle_units_sold INTEGER DEFAULT 0,
-  bundle_revenue REAL DEFAULT 0,
+  bundle_revenue DOUBLE PRECISION DEFAULT 0,
 
   -- Computed at
-  computed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  computed_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -351,41 +354,41 @@ CREATE TRIGGER IF NOT EXISTS sales_data_updated
 AFTER UPDATE ON sales_data
 FOR EACH ROW
 BEGIN
-  UPDATE sales_data SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE sales_data SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS royalty_payments_updated
 AFTER UPDATE ON royalty_payments
 FOR EACH ROW
 BEGIN
-  UPDATE royalty_payments SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE royalty_payments SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS platform_connections_updated
 AFTER UPDATE ON platform_connections
 FOR EACH ROW
 BEGIN
-  UPDATE platform_connections SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE platform_connections SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS sales_goals_updated
 AFTER UPDATE ON sales_goals
 FOR EACH ROW
 BEGIN
-  UPDATE sales_goals SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE sales_goals SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS marketing_campaigns_updated
 AFTER UPDATE ON marketing_campaigns
 FOR EACH ROW
 BEGIN
-  UPDATE marketing_campaigns SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE marketing_campaigns SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Views for Analytics
 
 -- Sales Overview View
-CREATE VIEW IF NOT EXISTS sales_overview AS
+CREATE OR REPLACE VIEW sales_overview AS
 SELECT
   sd.manuscript_id,
   sd.user_id,
@@ -404,7 +407,7 @@ JOIN manuscripts m ON sd.manuscript_id = m.id
 GROUP BY sd.manuscript_id, sd.user_id, m.title;
 
 -- Platform Performance View
-CREATE VIEW IF NOT EXISTS platform_performance AS
+CREATE OR REPLACE VIEW platform_performance AS
 SELECT
   sd.platform,
   sd.user_id,
@@ -417,7 +420,7 @@ FROM sales_data sd
 GROUP BY sd.platform, sd.user_id;
 
 -- Recent Sales Activity View (Last 30 Days)
-CREATE VIEW IF NOT EXISTS recent_sales_activity AS
+CREATE OR REPLACE VIEW recent_sales_activity AS
 SELECT
   sd.manuscript_id,
   sd.user_id,
@@ -433,7 +436,7 @@ WHERE sd.sale_date >= unixepoch('now', '-30 days')
 GROUP BY sd.manuscript_id, sd.user_id, m.title, sd.platform, sd.format;
 
 -- Royalty Payment Summary View
-CREATE VIEW IF NOT EXISTS royalty_payment_summary AS
+CREATE OR REPLACE VIEW royalty_payment_summary AS
 SELECT
   rp.user_id,
   rp.platform,
@@ -447,7 +450,7 @@ FROM royalty_payments rp
 GROUP BY rp.user_id, rp.platform;
 
 -- Sales Goals Progress View
-CREATE VIEW IF NOT EXISTS sales_goals_progress AS
+CREATE OR REPLACE VIEW sales_goals_progress AS
 SELECT
   sg.id,
   sg.user_id,

@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Migration 006: Add password_reset_tokens table
 -- Created: October 26, 2025
 -- Purpose: Store password reset tokens with enhanced security (hashed tokens)

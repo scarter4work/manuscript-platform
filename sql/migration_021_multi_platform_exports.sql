@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 021: Multi-Platform Export Packages (MAN-40, MAN-41, MAN-42)
 -- Draft2Digital, IngramSpark, and Apple Books export package generation
 
@@ -34,9 +36,9 @@ CREATE TABLE IF NOT EXISTS d2d_export_packages (
 
   -- Tracking
   download_count INTEGER DEFAULT 0,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  generated_at INTEGER,
-  expires_at INTEGER, -- 30 days after generation
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  generated_at BIGINT,
+  expires_at BIGINT, -- 30 days after generation
   last_downloaded_at INTEGER,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id),
@@ -84,7 +86,7 @@ CREATE TABLE IF NOT EXISTS ingramspark_export_packages (
   distribution_territories TEXT, -- JSON array of territory codes
 
   -- Spine calculation
-  spine_width_inches REAL,
+  spine_width_inches DOUBLE PRECISION,
   spine_calculation_data TEXT, -- JSON with full calculation details
 
   -- Generation options
@@ -92,9 +94,9 @@ CREATE TABLE IF NOT EXISTS ingramspark_export_packages (
 
   -- Tracking
   download_count INTEGER DEFAULT 0,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  generated_at INTEGER,
-  expires_at INTEGER, -- 30 days after generation
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  generated_at BIGINT,
+  expires_at BIGINT, -- 30 days after generation
   last_downloaded_at INTEGER,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id),
@@ -142,9 +144,9 @@ CREATE TABLE IF NOT EXISTS apple_books_export_packages (
 
   -- Tracking
   download_count INTEGER DEFAULT 0,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  generated_at INTEGER,
-  expires_at INTEGER, -- 30 days after generation
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  generated_at BIGINT,
+  expires_at BIGINT, -- 30 days after generation
   last_downloaded_at INTEGER,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id),
@@ -161,7 +163,7 @@ CREATE INDEX idx_apple_export_packages_expires ON apple_books_export_packages(ex
 -- =============================================================================
 
 -- View: All export packages across platforms
-CREATE VIEW IF NOT EXISTS v_all_export_packages AS
+CREATE OR REPLACE VIEW v_all_export_packages AS
 SELECT
   'draft2digital' as platform,
   id,
@@ -215,7 +217,7 @@ SELECT
 FROM kdp_export_packages;
 
 -- View: Export package statistics by platform
-CREATE VIEW IF NOT EXISTS v_export_package_stats AS
+CREATE OR REPLACE VIEW v_export_package_stats AS
 SELECT
   platform,
   COUNT(*) as total_packages,
@@ -228,7 +230,7 @@ FROM v_all_export_packages
 GROUP BY platform;
 
 -- View: User export activity
-CREATE VIEW IF NOT EXISTS v_user_export_activity AS
+CREATE OR REPLACE VIEW v_user_export_activity AS
 SELECT
   user_id,
   platform,
@@ -243,4 +245,4 @@ GROUP BY user_id, platform;
 -- =============================================================================
 
 INSERT INTO schema_version (version, description, applied_at)
-VALUES (21, 'Multi-Platform Export Packages (Draft2Digital, IngramSpark, Apple Books)', unixepoch());
+VALUES (21, 'Multi-Platform Export Packages (Draft2Digital, IngramSpark, Apple Books)', EXTRACT(EPOCH FROM NOW())::BIGINT);

@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 003: Payment Processing Tables
 -- Adds subscription management, payment history, and usage tracking
 -- Created: October 13, 2025
@@ -16,8 +18,8 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   current_period_start INTEGER NOT NULL,  -- Unix timestamp
   current_period_end INTEGER NOT NULL,    -- Unix timestamp
   cancel_at_period_end INTEGER DEFAULT 0, -- Boolean: 0=will renew, 1=will cancel
-  created_at INTEGER NOT NULL,            -- Unix timestamp
-  updated_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -42,7 +44,7 @@ CREATE TABLE IF NOT EXISTS payment_history (
   status TEXT NOT NULL,                   -- succeeded/pending/failed/refunded
   description TEXT,                       -- Human-readable description
   metadata TEXT,                          -- JSON: additional payment details
-  created_at INTEGER NOT NULL,            -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (subscription_id) REFERENCES subscriptions(id) ON DELETE SET NULL
 );
@@ -88,7 +90,7 @@ CREATE INDEX IF NOT EXISTS idx_usage_tracking_timestamp ON usage_tracking(timest
 -- VIEW: Current User Subscriptions with Usage
 -- Useful for checking limits and displaying billing info
 -- ============================================================================
-CREATE VIEW IF NOT EXISTS user_subscriptions_with_usage AS
+CREATE OR REPLACE VIEW user_subscriptions_with_usage AS
 SELECT
   u.id as user_id,
   u.email,

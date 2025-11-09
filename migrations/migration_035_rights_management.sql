@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 035: Rights Management System
 -- Track publishing rights, territorial restrictions, and rights status for manuscripts
 
@@ -60,8 +63,8 @@ CREATE TABLE IF NOT EXISTS manuscript_rights (
   languages TEXT, -- JSON array of language codes (e.g., ["en", "es", "fr"])
 
   -- Financial Terms
-  advance REAL, -- Advance payment for rights
-  royalty_rate REAL, -- Royalty percentage (e.g., 0.10 for 10%)
+  advance DOUBLE PRECISION, -- Advance payment for rights
+  royalty_rate DOUBLE PRECISION, -- Royalty percentage (e.g., 0.10 for 10%)
   royalty_escalation TEXT, -- Description of royalty escalation clauses
 
   -- Contract Details
@@ -72,8 +75,8 @@ CREATE TABLE IF NOT EXISTS manuscript_rights (
   notes TEXT,
 
   -- Metadata
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -113,12 +116,12 @@ CREATE TABLE IF NOT EXISTS publication_history (
   -- Details
   isbn TEXT, -- ISBN if applicable
   circulation INTEGER, -- Circulation/distribution count
-  payment_received REAL, -- Payment received for publication
+  payment_received DOUBLE PRECISION, -- Payment received for publication
 
   notes TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -140,7 +143,7 @@ CREATE TABLE IF NOT EXISTS rights_offers (
   rights_offered TEXT NOT NULL, -- JSON array of rights types offered
 
   -- Offer Details
-  offer_date INTEGER NOT NULL DEFAULT (unixepoch()),
+  offer_date BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   response_deadline INTEGER, -- Deadline for publisher response
 
   -- Status
@@ -158,15 +161,15 @@ CREATE TABLE IF NOT EXISTS rights_offers (
   response_notes TEXT,
 
   -- Terms Proposed
-  proposed_advance REAL,
-  proposed_royalty_rate REAL,
+  proposed_advance DOUBLE PRECISION,
+  proposed_royalty_rate DOUBLE PRECISION,
   proposed_duration_years INTEGER,
   proposed_exclusive INTEGER DEFAULT 0,
 
   notes TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -192,7 +195,7 @@ CREATE TABLE IF NOT EXISTS rights_conflicts (
     'reversion_dispute'     -- Dispute over reversion status
   )),
 
-  conflict_detected_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  conflict_detected_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   -- Resolution
   resolved INTEGER DEFAULT 0, -- Boolean
@@ -231,8 +234,8 @@ CREATE TABLE IF NOT EXISTS rights_templates (
 
   is_active INTEGER DEFAULT 1, -- Boolean
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -336,34 +339,34 @@ CREATE TRIGGER IF NOT EXISTS manuscript_rights_updated
 AFTER UPDATE ON manuscript_rights
 FOR EACH ROW
 BEGIN
-  UPDATE manuscript_rights SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE manuscript_rights SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS publication_history_updated
 AFTER UPDATE ON publication_history
 FOR EACH ROW
 BEGIN
-  UPDATE publication_history SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE publication_history SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS rights_offers_updated
 AFTER UPDATE ON rights_offers
 FOR EACH ROW
 BEGIN
-  UPDATE rights_offers SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE rights_offers SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS rights_templates_updated
 AFTER UPDATE ON rights_templates
 FOR EACH ROW
 BEGIN
-  UPDATE rights_templates SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE rights_templates SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Views for Analytics
 
 -- Rights Summary by Manuscript
-CREATE VIEW IF NOT EXISTS rights_summary AS
+CREATE OR REPLACE VIEW rights_summary AS
 SELECT
   mr.manuscript_id,
   m.title as manuscript_title,
@@ -379,7 +382,7 @@ JOIN manuscripts m ON mr.manuscript_id = m.id
 GROUP BY mr.manuscript_id, m.title, mr.user_id;
 
 -- Available Rights by Manuscript
-CREATE VIEW IF NOT EXISTS available_rights AS
+CREATE OR REPLACE VIEW available_rights AS
 SELECT
   m.id as manuscript_id,
   m.title as manuscript_title,
@@ -397,7 +400,7 @@ LEFT JOIN manuscript_rights mr_granted ON m.id = mr_granted.manuscript_id
 WHERE mr_granted.id IS NULL;
 
 -- Rights Expiring Soon (next 90 days)
-CREATE VIEW IF NOT EXISTS rights_expiring_soon AS
+CREATE OR REPLACE VIEW rights_expiring_soon AS
 SELECT
   mr.id,
   mr.manuscript_id,
@@ -406,17 +409,17 @@ SELECT
   mr.rights_type,
   mr.granted_to_publisher_name,
   mr.grant_end_date,
-  (mr.grant_end_date - unixepoch()) / 86400 as days_until_expiration
+  (mr.grant_end_date - EXTRACT(EPOCH FROM NOW())::BIGINT) / 86400 as days_until_expiration
 FROM manuscript_rights mr
 JOIN manuscripts m ON mr.manuscript_id = m.id
 WHERE mr.rights_status = 'granted'
   AND mr.grant_end_date IS NOT NULL
-  AND mr.grant_end_date <= unixepoch() + (90 * 86400)
-  AND mr.grant_end_date > unixepoch()
+  AND mr.grant_end_date <= EXTRACT(EPOCH FROM NOW())::BIGINT + (90 * 86400)
+  AND mr.grant_end_date > EXTRACT(EPOCH FROM NOW())::BIGINT
 ORDER BY mr.grant_end_date ASC;
 
 -- Publication History Summary
-CREATE VIEW IF NOT EXISTS publication_history_summary AS
+CREATE OR REPLACE VIEW publication_history_summary AS
 SELECT
   ph.manuscript_id,
   m.title as manuscript_title,

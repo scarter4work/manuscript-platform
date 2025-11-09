@@ -1,3 +1,5 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 026: Human-Style Developmental Editor (Issue #60)
 -- AI editing agent that mimics conversational, encouraging editorial style from BA creative writing editor
 -- Source: 10 PDFs with ~100 pages of handwritten editorial feedback
@@ -17,8 +19,8 @@ CREATE TABLE IF NOT EXISTS human_style_edits (
   chapter_context TEXT, -- References to previous chapters if continuity issue
   addressed INTEGER DEFAULT 0, -- Boolean: has author addressed this feedback?
   author_response TEXT, -- Optional: author's notes about how they addressed it
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -35,7 +37,7 @@ CREATE INDEX IF NOT EXISTS idx_human_edits_created ON human_style_edits(created_
 CREATE TRIGGER IF NOT EXISTS update_human_edits_timestamp
 AFTER UPDATE ON human_style_edits
 BEGIN
-  UPDATE human_style_edits SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE human_style_edits SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Chapter analysis sessions (track when chapters were analyzed)
@@ -44,7 +46,7 @@ CREATE TABLE IF NOT EXISTS human_edit_sessions (
   manuscript_id TEXT NOT NULL,
   user_id TEXT NOT NULL,
   chapter_number INTEGER NOT NULL,
-  analysis_cost REAL, -- Claude API cost in USD
+  analysis_cost DOUBLE PRECISION, -- Claude API cost in USD
   annotation_count INTEGER DEFAULT 0,
   question_count INTEGER DEFAULT 0,
   suggestion_count INTEGER DEFAULT 0,
@@ -52,7 +54,7 @@ CREATE TABLE IF NOT EXISTS human_edit_sessions (
   issue_count INTEGER DEFAULT 0,
   continuity_count INTEGER DEFAULT 0,
   chapter_context TEXT, -- Summary of previous chapters used for continuity
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -62,7 +64,7 @@ CREATE INDEX IF NOT EXISTS idx_human_sessions_user ON human_edit_sessions(user_i
 CREATE INDEX IF NOT EXISTS idx_human_sessions_chapter ON human_edit_sessions(manuscript_id, chapter_number);
 
 -- Statistics view
-CREATE VIEW IF NOT EXISTS human_edit_stats AS
+CREATE OR REPLACE VIEW human_edit_stats AS
 SELECT
   h.manuscript_id,
   h.user_id,

@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 033: Market Analysis & Amazon Comp Title Research
 -- Enables data-driven publishing decisions through Amazon marketplace analysis
 
@@ -14,14 +17,14 @@ CREATE TABLE IF NOT EXISTS comp_titles (
   publication_date INTEGER, -- Unix timestamp
 
   -- Market Data
-  price_usd REAL,
+  price_usd DOUBLE PRECISION,
   price_currency TEXT DEFAULT 'USD',
   bestseller_rank INTEGER, -- Overall Amazon rank
   category_ranks TEXT, -- JSON array: [{category, rank}]
 
   -- Review Data
   review_count INTEGER DEFAULT 0,
-  average_rating REAL, -- 1.0 to 5.0
+  average_rating DOUBLE PRECISION, -- 1.0 to 5.0
   rating_distribution TEXT, -- JSON: {5: count, 4: count, ...}
 
   -- Metadata
@@ -40,8 +43,8 @@ CREATE TABLE IF NOT EXISTS comp_titles (
   last_scraped_at INTEGER,
   scrape_source TEXT, -- 'manual', 'api', 'web_scrape'
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 -- Market Analysis Reports Table
@@ -57,10 +60,10 @@ CREATE TABLE IF NOT EXISTS market_analysis_reports (
   comp_titles_count INTEGER DEFAULT 0, -- Number of comp titles analyzed
 
   -- Pricing Analysis
-  recommended_price_usd REAL,
-  price_range_min REAL,
-  price_range_max REAL,
-  price_confidence_score REAL, -- 0.0 to 1.0
+  recommended_price_usd DOUBLE PRECISION,
+  price_range_min DOUBLE PRECISION,
+  price_range_max DOUBLE PRECISION,
+  price_confidence_score DOUBLE PRECISION, -- 0.0 to 1.0
   price_reasoning TEXT,
 
   -- Category Recommendations
@@ -86,15 +89,15 @@ CREATE TABLE IF NOT EXISTS market_analysis_reports (
   -- Report Metadata
   report_text TEXT, -- Full markdown report
   report_summary TEXT, -- Executive summary
-  ai_cost REAL, -- Cost of Claude API calls
+  ai_cost DOUBLE PRECISION, -- Cost of Claude API calls
 
   -- Status
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN
     ('pending', 'analyzing', 'completed', 'failed')),
   error_message TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -105,9 +108,9 @@ CREATE TABLE IF NOT EXISTS analysis_comp_titles (
   id TEXT PRIMARY KEY,
   analysis_id TEXT NOT NULL,
   comp_title_id TEXT NOT NULL,
-  relevance_score REAL, -- 0.0 to 1.0, how relevant this comp is
+  relevance_score DOUBLE PRECISION, -- 0.0 to 1.0, how relevant this comp is
   similarity_reasons TEXT, -- JSON array of why this comp was selected
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (analysis_id) REFERENCES market_analysis_reports(id) ON DELETE CASCADE,
   FOREIGN KEY (comp_title_id) REFERENCES comp_titles(id) ON DELETE CASCADE,
   UNIQUE(analysis_id, comp_title_id)
@@ -130,7 +133,7 @@ CREATE TABLE IF NOT EXISTS amazon_search_queries (
   comp_titles_found TEXT, -- JSON array of ASINs
 
   -- Metadata
-  search_timestamp INTEGER NOT NULL DEFAULT (unixepoch()),
+  search_timestamp INTEGER NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   search_source TEXT, -- 'manual', 'automatic', 'scheduled'
 
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE SET NULL,
@@ -145,29 +148,29 @@ CREATE TABLE IF NOT EXISTS pricing_analysis (
 
   -- Price Distribution
   sample_size INTEGER NOT NULL, -- Number of books analyzed
-  min_price REAL,
-  max_price REAL,
-  avg_price REAL,
-  median_price REAL,
-  mode_price REAL, -- Most common price point
+  min_price DOUBLE PRECISION,
+  max_price DOUBLE PRECISION,
+  avg_price DOUBLE PRECISION,
+  median_price DOUBLE PRECISION,
+  mode_price DOUBLE PRECISION, -- Most common price point
 
   -- Price Ranges (percentiles)
-  price_p25 REAL, -- 25th percentile
-  price_p50 REAL, -- 50th percentile (median)
-  price_p75 REAL, -- 75th percentile
-  price_p90 REAL, -- 90th percentile
+  price_p25 DOUBLE PRECISION, -- 25th percentile
+  price_p50 DOUBLE PRECISION, -- 50th percentile (median)
+  price_p75 DOUBLE PRECISION, -- 75th percentile
+  price_p90 DOUBLE PRECISION, -- 90th percentile
 
   -- Sweet Spots
-  bestseller_avg_price REAL, -- Average price of top 100 bestsellers
-  high_rated_avg_price REAL, -- Average price of 4.5+ rated books
+  bestseller_avg_price DOUBLE PRECISION, -- Average price of top 100 bestsellers
+  high_rated_avg_price DOUBLE PRECISION, -- Average price of 4.5+ rated books
 
   -- Format Breakdown
-  kindle_avg_price REAL,
-  paperback_avg_price REAL,
-  hardcover_avg_price REAL,
+  kindle_avg_price DOUBLE PRECISION,
+  paperback_avg_price DOUBLE PRECISION,
+  hardcover_avg_price DOUBLE PRECISION,
 
   -- Metadata
-  analyzed_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  analyzed_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   data_freshness TEXT, -- 'fresh' (< 7 days), 'stale' (> 7 days)
 
   UNIQUE(genre, analyzed_at)
@@ -186,17 +189,17 @@ CREATE TABLE IF NOT EXISTS market_trends (
 
   -- Volume Metrics
   new_releases_count INTEGER,
-  bestseller_turnover_rate REAL, -- How often top 100 changes
-  avg_review_velocity REAL, -- Reviews per day for recent releases
+  bestseller_turnover_rate DOUBLE PRECISION, -- How often top 100 changes
+  avg_review_velocity DOUBLE PRECISION, -- Reviews per day for recent releases
 
   -- Saturation Indicators
   competition_level TEXT, -- 'low', 'medium', 'high', 'saturated'
   barrier_to_entry TEXT, -- 'low', 'medium', 'high'
 
   -- Pricing Trends
-  avg_price_change_pct REAL, -- % change from previous period
+  avg_price_change_pct DOUBLE PRECISION, -- % change from previous period
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 -- Indexes for performance
@@ -233,18 +236,18 @@ CREATE TRIGGER IF NOT EXISTS comp_titles_updated
 AFTER UPDATE ON comp_titles
 FOR EACH ROW
 BEGIN
-  UPDATE comp_titles SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE comp_titles SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 CREATE TRIGGER IF NOT EXISTS market_analysis_reports_updated
 AFTER UPDATE ON market_analysis_reports
 FOR EACH ROW
 BEGIN
-  UPDATE market_analysis_reports SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE market_analysis_reports SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- View: Market Analysis Statistics
-CREATE VIEW IF NOT EXISTS market_analysis_stats AS
+CREATE OR REPLACE VIEW market_analysis_stats AS
 SELECT
   COUNT(DISTINCT mar.id) as total_analyses,
   COUNT(DISTINCT mar.manuscript_id) as manuscripts_analyzed,
@@ -259,7 +262,7 @@ LEFT JOIN analysis_comp_titles act ON mar.id = act.analysis_id
 LEFT JOIN comp_titles ct ON act.comp_title_id = ct.id;
 
 -- View: Genre Pricing Summary
-CREATE VIEW IF NOT EXISTS genre_pricing_summary AS
+CREATE OR REPLACE VIEW genre_pricing_summary AS
 SELECT
   genre,
   COUNT(*) as book_count,

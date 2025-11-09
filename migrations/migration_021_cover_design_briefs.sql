@@ -1,3 +1,6 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
+-- WARNING: SQLite triggers detected - requires manual conversion to PostgreSQL function + trigger syntax
+-- NOTE: GROUP BY clauses may need manual review for PostgreSQL compatibility
 -- Migration 021: Cover Design Briefs System
 -- Creates table for storing AI-generated cover design briefs
 
@@ -9,8 +12,8 @@ CREATE TABLE cover_design_briefs (
   genre TEXT NOT NULL,
   brief_data TEXT NOT NULL, -- JSON: complete cover brief from CoverDesignAgent
   generated_at TEXT NOT NULL,
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -25,7 +28,7 @@ CREATE TRIGGER update_cover_briefs_timestamp
 AFTER UPDATE ON cover_design_briefs
 FOR EACH ROW
 BEGIN
-  UPDATE cover_design_briefs SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE cover_design_briefs SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Statistics view for cover briefs

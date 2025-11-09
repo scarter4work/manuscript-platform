@@ -1,3 +1,4 @@
+-- CONVERTED TO POSTGRESQL SYNTAX (2025-11-09)
 -- Migration 031: Submission Windows & Deadline Tracking (Issue #53)
 -- Publisher submission windows, deadlines, alerts
 
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS publishers (
 
   -- Historical data
   avg_response_time_days INTEGER, -- Average response time in days
-  acceptance_rate REAL, -- % of submissions accepted (0.0 - 1.0)
+  acceptance_rate DOUBLE PRECISION, -- % of submissions accepted (0.0 - 1.0)
 
   -- Metadata
   genres_accepted TEXT, -- JSON array of genres
@@ -22,8 +23,8 @@ CREATE TABLE IF NOT EXISTS publishers (
   notes TEXT,
 
   is_active INTEGER DEFAULT 1, -- Boolean: still accepting submissions
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
 );
 
 CREATE INDEX IF NOT EXISTS idx_publishers_type ON publishers(publisher_type);
@@ -34,7 +35,7 @@ CREATE INDEX IF NOT EXISTS idx_publishers_name ON publishers(name);
 CREATE TRIGGER IF NOT EXISTS update_publishers_timestamp
 AFTER UPDATE ON publishers
 BEGIN
-  UPDATE publishers SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE publishers SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Publisher submission windows
@@ -65,8 +66,8 @@ CREATE TABLE IF NOT EXISTS publisher_submission_windows (
   description TEXT,
   notes TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (publisher_id) REFERENCES publishers(id) ON DELETE CASCADE
 );
@@ -81,7 +82,7 @@ CREATE INDEX IF NOT EXISTS idx_windows_type ON publisher_submission_windows(wind
 CREATE TRIGGER IF NOT EXISTS update_submission_windows_timestamp
 AFTER UPDATE ON publisher_submission_windows
 BEGIN
-  UPDATE publisher_submission_windows SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE publisher_submission_windows SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Submission deadlines (per-submission tracking)
@@ -94,20 +95,20 @@ CREATE TABLE IF NOT EXISTS submission_deadlines (
     ('response_expected', 'revise_resubmit', 'contract_expires', 'contest', 'window_closes', 'other')),
 
   -- Timing
-  deadline_date INTEGER NOT NULL, -- Unix timestamp
+  deadline_date BIGINT NOT NULL, -- Unix timestamp
   reminder_days_before INTEGER DEFAULT 7, -- Send reminder N days before
 
   -- Reminders
   reminder_sent INTEGER DEFAULT 0, -- Boolean
-  reminder_sent_at INTEGER,
+  reminder_sent_at BIGINT,
 
   -- Metadata
   deadline_name TEXT, -- "R&R Deadline for Novel Submission"
   description TEXT,
   notes TEXT,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (submission_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
@@ -121,7 +122,7 @@ CREATE INDEX IF NOT EXISTS idx_deadlines_reminder_sent ON submission_deadlines(r
 CREATE TRIGGER IF NOT EXISTS update_submission_deadlines_timestamp
 AFTER UPDATE ON submission_deadlines
 BEGIN
-  UPDATE submission_deadlines SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE submission_deadlines SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- Window alerts (user subscriptions to publisher windows)
@@ -139,8 +140,8 @@ CREATE TABLE IF NOT EXISTS window_alerts (
   last_alerted_at INTEGER,
   alerts_sent_count INTEGER DEFAULT 0,
 
-  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
-  updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+  updated_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (publisher_id) REFERENCES publishers(id) ON DELETE CASCADE,
@@ -154,11 +155,11 @@ CREATE INDEX IF NOT EXISTS idx_window_alerts_publisher ON window_alerts(publishe
 CREATE TRIGGER IF NOT EXISTS update_window_alerts_timestamp
 AFTER UPDATE ON window_alerts
 BEGIN
-  UPDATE window_alerts SET updated_at = unixepoch() WHERE id = NEW.id;
+  UPDATE window_alerts SET updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = NEW.id;
 END;
 
 -- View: Currently open windows
-CREATE VIEW IF NOT EXISTS open_submission_windows AS
+CREATE OR REPLACE VIEW open_submission_windows AS
 SELECT
   psw.*,
   p.name as publisher_name,
@@ -169,7 +170,7 @@ SELECT
   -- Calculate days until close
   CASE
     WHEN psw.closes_at IS NOT NULL
-    THEN CAST((psw.closes_at - unixepoch()) / 86400.0 AS INTEGER)
+    THEN CAST((psw.closes_at - EXTRACT(EPOCH FROM NOW())::BIGINT) / 86400.0 AS INTEGER)
     ELSE NULL
   END as days_until_close,
 
@@ -183,11 +184,11 @@ SELECT
 FROM publisher_submission_windows psw
 JOIN publishers p ON psw.publisher_id = p.id
 WHERE psw.is_open = 1
-  AND (psw.closes_at IS NULL OR psw.closes_at > unixepoch())
+  AND (psw.closes_at IS NULL OR psw.closes_at > EXTRACT(EPOCH FROM NOW())::BIGINT)
   AND (psw.capacity_limit IS NULL OR psw.current_submissions < psw.capacity_limit);
 
 -- View: Opening soon (next 30 days)
-CREATE VIEW IF NOT EXISTS windows_opening_soon AS
+CREATE OR REPLACE VIEW windows_opening_soon AS
 SELECT
   psw.*,
   p.name as publisher_name,
@@ -195,18 +196,18 @@ SELECT
   p.website,
 
   -- Days until open
-  CAST((psw.opens_at - unixepoch()) / 86400.0 AS INTEGER) as days_until_open
+  CAST((psw.opens_at - EXTRACT(EPOCH FROM NOW())::BIGINT) / 86400.0 AS INTEGER) as days_until_open
 
 FROM publisher_submission_windows psw
 JOIN publishers p ON psw.publisher_id = p.id
 WHERE psw.is_open = 0
   AND psw.opens_at IS NOT NULL
-  AND psw.opens_at > unixepoch()
-  AND psw.opens_at <= (unixepoch() + 2592000) -- 30 days
+  AND psw.opens_at > EXTRACT(EPOCH FROM NOW())::BIGINT
+  AND psw.opens_at <= (EXTRACT(EPOCH FROM NOW())::BIGINT + 2592000) -- 30 days
 ORDER BY psw.opens_at ASC;
 
 -- View: Upcoming deadlines
-CREATE VIEW IF NOT EXISTS upcoming_deadlines AS
+CREATE OR REPLACE VIEW upcoming_deadlines AS
 SELECT
   sd.*,
   m.title as manuscript_title,
@@ -214,12 +215,12 @@ SELECT
   m.genre,
 
   -- Days until deadline
-  CAST((sd.deadline_date - unixepoch()) / 86400.0 AS INTEGER) as days_until_deadline,
+  CAST((sd.deadline_date - EXTRACT(EPOCH FROM NOW())::BIGINT) / 86400.0 AS INTEGER) as days_until_deadline,
 
   -- Overdue flag
-  CASE WHEN sd.deadline_date < unixepoch() THEN 1 ELSE 0 END as is_overdue
+  CASE WHEN sd.deadline_date < EXTRACT(EPOCH FROM NOW())::BIGINT THEN 1 ELSE 0 END as is_overdue
 
 FROM submission_deadlines sd
 JOIN manuscripts m ON sd.submission_id = m.id
-WHERE sd.deadline_date > (unixepoch() - 604800) -- Show 7 days past due
+WHERE sd.deadline_date > (EXTRACT(EPOCH FROM NOW())::BIGINT - 604800) -- Show 7 days past due
 ORDER BY sd.deadline_date ASC;
