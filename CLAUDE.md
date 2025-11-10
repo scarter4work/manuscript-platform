@@ -177,7 +177,26 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 
 ## Recent Activity Log
 
-### 2025-11-10 (Issue #73 Committed & Closed)
+### 2025-11-10 (Test Failures Analyzed & Issue #75 Fixed)
+- **Created 5 GitHub Issues for Test Failures (#75-#79)**
+  - Analyzed 106 failing tests from PostgreSQL migration
+  - Identified 5 distinct root causes
+  - Prioritized fixes by impact (HIGH/MEDIUM)
+  - Created comprehensive test failure summary (`.github-issues/test-failures-summary.md`)
+
+- **Fixed Issue #75: PostgreSQL Boolean/Integer Type Compatibility** ✅
+  - **Problem:** PostgreSQL rejected JavaScript booleans in INTEGER columns (59 errors)
+  - **Solution:** 3-line fix in `insertTestRecord()` to convert true→1, false→0
+  - **Results:** 106→91 failing tests (15 tests fixed), 172→187 passing
+  - **Commit:** `6f64ef3` - fix(tests): Resolve PostgreSQL boolean/integer type compatibility
+  - **Time:** 20 minutes (analysis + implementation + verification)
+  - **Status:** Issue #75 closed, 100% of boolean type errors eliminated
+
+- **Test Suite Status**
+  - Before: 106 failed | 172 passed (278 tests) - 4 failing test files
+  - After: 91 failed | 187 passed (278 tests) - 3 failing test files
+  - Remaining issues: Missing schema columns (`plan`, `report_id`)
+
 - **Committed Issue #73 Final Changes**
   - Commit `1ff9ada`: feat(issue-73): Complete Cloudflare migration - 100% Render infrastructure
   - 32 files committed: all handler updates, database adapters, test infrastructure
