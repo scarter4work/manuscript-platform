@@ -192,10 +192,18 @@ export async function insertTestRecord(table, data) {
     throw new Error('Test database not initialized');
   }
 
-  const columns = Object.keys(data);
+  // Auto-add required fields for specific tables
+  const enrichedData = { ...data };
+
+  // Subscriptions table requires stripe_customer_id (NOT NULL constraint)
+  if (table === 'subscriptions' && !enrichedData.stripe_customer_id) {
+    enrichedData.stripe_customer_id = 'cus_test_' + Math.random().toString(36).substring(7);
+  }
+
+  const columns = Object.keys(enrichedData);
   // Convert boolean values to integers for PostgreSQL INTEGER columns
   // PostgreSQL is strict about types: true → 1, false → 0
-  const values = Object.values(data).map(v =>
+  const values = Object.values(enrichedData).map(v =>
     typeof v === 'boolean' ? (v ? 1 : 0) : v
   );
   const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
