@@ -132,13 +132,14 @@ export function createTestSubscription(userId, overrides = {}) {
     status: 'active',
     stripe_subscription_id: null,
     stripe_price_id: null,
-    stripe_customer_id: 'cus_test_' + generateId().substring(0, 8),
     current_period_start: now,
     current_period_end: now + 2592000, // +30 days
     cancel_at_period_end: false,
     created_at: now,
     updated_at: now,
-    ...overrides
+    ...overrides,
+    // Ensure stripe_customer_id is never null (required by schema)
+    stripe_customer_id: overrides.stripe_customer_id || 'cus_test_' + generateId().substring(0, 8)
   };
 }
 
