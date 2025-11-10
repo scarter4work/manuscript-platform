@@ -60,7 +60,7 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
-        plan: 'free',
+        plan_type: 'free',
         status: 'active',
         current_period_start: Math.floor(Date.now() / 1000),
         current_period_end: Math.floor(Date.now() / 1000) + 2592000,
@@ -389,7 +389,7 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
-        plan: 'free',
+        plan_type: 'free',
         status: 'active',
         current_period_start: Math.floor(Date.now() / 1000),
         current_period_end: Math.floor(Date.now() / 1000) + 2592000,
@@ -803,7 +803,7 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
-        plan: 'freelancer',
+        plan_type: 'freelancer',
         status: 'active',
         stripe_subscription_id: 'sub_test_123',
         stripe_customer_id: 'cus_test_123',
@@ -827,7 +827,7 @@ describe('Payment & Webhook Handlers', () => {
         .set('Cookie', sessionCookie);
 
       if (response.status === 200) {
-        expect(response.body.plan).toBe('freelancer');
+        expect(response.body.plan_type).toBe('freelancer');
         expect(response.body.status).toBe('active');
         expect(response.body.currentPeriodEnd).toBeDefined();
       } else {
@@ -852,7 +852,7 @@ describe('Payment & Webhook Handlers', () => {
         .set('Cookie', sessionCookie);
 
       if (response.status === 200) {
-        expect(response.body.plan).toBe('free');
+        expect(response.body.plan_type).toBe('free');
       }
     });
 
@@ -898,7 +898,7 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
-        plan: 'freelancer',
+        plan_type: 'freelancer',
         status: 'active',
         current_period_start: Math.floor(Date.now() / 1000),
         current_period_end: Math.floor(Date.now() / 1000) + 2592000,
@@ -1021,7 +1021,7 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
-        plan: 'freelancer',
+        plan_type: 'freelancer',
         status: 'active',
         stripe_subscription_id: 'sub_test_123',
         current_period_start: Math.floor(Date.now() / 1000),

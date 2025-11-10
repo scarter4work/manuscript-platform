@@ -100,17 +100,17 @@ export function createTestManuscript(userId, overrides = {}) {
   return {
     id,
     user_id: userId,
-    report_id: generateId(), // Add report_id for analysis results
     title: `Test Manuscript ${id.slice(0, 8)}`,
+    r2_key: `manuscripts/raw/${id}.txt`, // Matches schema column name
+    file_hash: crypto.randomBytes(32).toString('hex'), // Matches schema column name
+    status: 'draft',
     genre: 'fiction',
-    subgenre: 'literary',
     word_count: 85000,
-    status: 'uploaded',
-    storage_key: `manuscripts/raw/${id}.txt`,
-    content_hash: crypto.randomBytes(32).toString('hex'),
-    file_size: 250000,
-    created_at: now,
+    file_type: 'txt',
+    metadata: null,
+    uploaded_at: now,
     updated_at: now,
+    flagged_for_review: 0,
     ...overrides
   };
 }
@@ -128,10 +128,11 @@ export function createTestSubscription(userId, overrides = {}) {
   return {
     id: generateId(),
     user_id: userId,
-    plan: 'free',
+    plan_type: 'free',
     status: 'active',
     stripe_subscription_id: null,
     stripe_price_id: null,
+    stripe_customer_id: 'cus_test_' + generateId().substring(0, 8),
     current_period_start: now,
     current_period_end: now + 2592000, // +30 days
     cancel_at_period_end: false,
@@ -393,7 +394,7 @@ export async function createCompleteTestUser(options = {}) {
   });
 
   const subscription = createTestSubscription(user.id, {
-    plan: options.plan || 'free'
+    plan_type: options.plan_type || options.plan || 'free'
   });
 
   const usageTracking = createTestUsageTracking(user.id);
