@@ -193,7 +193,11 @@ export async function insertTestRecord(table, data) {
   }
 
   const columns = Object.keys(data);
-  const values = Object.values(data);
+  // Convert boolean values to integers for PostgreSQL INTEGER columns
+  // PostgreSQL is strict about types: true → 1, false → 0
+  const values = Object.values(data).map(v =>
+    typeof v === 'boolean' ? (v ? 1 : 0) : v
+  );
   const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
 
   const query = `
