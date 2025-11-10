@@ -421,9 +421,15 @@ export async function handleGetMe(request, env) {
  */
 export async function handleVerifyEmail(request, env) {
   try {
-    // Get token from query parameters
-    const url = new URL(request.url);
-    const token = url.searchParams.get('token');
+    // Get token from request body (POST) or query parameters (GET)
+    let token;
+    if (request.json) {
+      const body = await request.json();
+      token = body.token;
+    } else if (request.url) {
+      const url = new URL(request.url);
+      token = url.searchParams.get('token');
+    }
 
     if (!token) {
       return errorResponse('Verification token is required');
