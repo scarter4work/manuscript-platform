@@ -113,7 +113,7 @@ SELECT
   u.full_name
 FROM email_log el
 LEFT JOIN users u ON el.user_id = u.id
-WHERE el.created_at > strftime('%s', 'now', '-7 days')
+WHERE el.created_at > EXTRACT(EPOCH FROM NOW() - INTERVAL '7 days')::BIGINT
 ORDER BY el.created_at DESC;
 
 -- ============================================================================
@@ -129,11 +129,11 @@ INSERT INTO email_preferences (
   updated_at
 )
 SELECT
-  hex(randomblob(16)),                      -- Generate UUID
+  gen_random_uuid()::text,                  -- Generate UUID
   id,
-  hex(randomblob(32)),                      -- Generate unsubscribe token
-  strftime('%s', 'now'),
-  strftime('%s', 'now')
+  encode(gen_random_bytes(32), 'hex'),      -- Generate unsubscribe token
+  EXTRACT(EPOCH FROM NOW())::BIGINT,
+  EXTRACT(EPOCH FROM NOW())::BIGINT
 FROM users
 WHERE id NOT IN (SELECT user_id FROM email_preferences);
 
@@ -155,4 +155,4 @@ WHERE id NOT IN (SELECT user_id FROM email_preferences);
 
 -- Update schema version
 INSERT INTO schema_version (version, applied_at, description)
-VALUES (8, strftime('%s', 'now'), 'Migration 008: Advanced email notification system (MAN-17)');
+VALUES (8, EXTRACT(EPOCH FROM NOW())::BIGINT, 'Migration 008: Advanced email notification system (MAN-17)');

@@ -13,7 +13,7 @@ import { DistributionAgent } from '../agents/distribution-agent.js';
 export async function generatePlatformMetadata(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,
@@ -92,7 +92,7 @@ export async function generatePlatformMetadata(request, env, manuscriptId) {
 export async function prepareFormats(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,
@@ -170,7 +170,7 @@ export async function prepareFormats(request, env, manuscriptId) {
 export async function generateDistributionStrategy(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,
@@ -254,7 +254,7 @@ export async function generateDistributionStrategy(request, env, manuscriptId) {
 export async function generatePublishingPackage(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,

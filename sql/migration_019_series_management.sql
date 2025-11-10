@@ -67,7 +67,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS series (
   id TEXT PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_id TEXT NOT NULL,
   series_name TEXT NOT NULL,
   series_description TEXT,
   genre TEXT,

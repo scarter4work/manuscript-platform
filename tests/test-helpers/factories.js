@@ -29,6 +29,14 @@ export function generateId() {
 }
 
 /**
+ * Alias for generateId (for backwards compatibility)
+ * @returns {string} UUID-like ID
+ */
+export function generateTestId() {
+  return generateId();
+}
+
+/**
  * Create test user data
  *
  * @param {object} overrides - Override default values
@@ -92,6 +100,7 @@ export function createTestManuscript(userId, overrides = {}) {
   return {
     id,
     user_id: userId,
+    report_id: generateId(), // Add report_id for analysis results
     title: `Test Manuscript ${id.slice(0, 8)}`,
     genre: 'fiction',
     subgenre: 'literary',
@@ -464,5 +473,42 @@ export function createCompleteTestSubmission(manuscriptId, options = {}) {
   return {
     submission,
     feedback
+  };
+}
+
+/**
+ * Create test analysis data
+ *
+ * @param {string} manuscriptId - Manuscript ID
+ * @param {object} overrides - Override default values
+ * @returns {object} Analysis record
+ */
+export function createTestAnalysis(manuscriptId, overrides = {}) {
+  const now = Math.floor(Date.now() / 1000);
+
+  return {
+    id: generateId(),
+    manuscript_id: manuscriptId,
+    analysis_type: 'developmental',
+    status: 'completed',
+    tokens_used: 15000,
+    cost: 0.45,
+    result: JSON.stringify({
+      overall_assessment: 'Strong opening with compelling characters. Consider tightening the middle section.',
+      strengths: [
+        'Engaging protagonist with clear motivation',
+        'Well-paced opening chapters',
+        'Strong dialogue that reveals character'
+      ],
+      weaknesses: [
+        'Middle section lacks tension',
+        'Secondary characters need development',
+        'Some plot threads remain unresolved'
+      ]
+    }),
+    created_at: now,
+    updated_at: now,
+    completed_at: now,
+    ...overrides
   };
 }

@@ -49,7 +49,7 @@ async function getOrCreatePreferences(userId, env) {
 export async function getEmailPreferences(request, env) {
   try {
     // Verify authentication
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
@@ -110,7 +110,7 @@ export async function getEmailPreferences(request, env) {
 export async function updateEmailPreferences(request, env) {
   try {
     // Verify authentication
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
@@ -365,7 +365,7 @@ export async function unsubscribeByToken(request, env) {
 export async function resubscribe(request, env) {
   try {
     // Verify authentication
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,

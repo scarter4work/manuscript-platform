@@ -282,6 +282,9 @@ export async function updateUser(request, env, corsHeaders, userId) {
       });
     }
 
+    // Always update updated_at timestamp
+    updates.push('updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT');
+
     params.push(userId);
 
     await env.DB.prepare(`
@@ -290,7 +293,7 @@ export async function updateUser(request, env, corsHeaders, userId) {
 
     // Log the update
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
+      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
       VALUES (?, ?, 'admin_update_user', 'user', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),
@@ -389,7 +392,7 @@ export async function adjustUserSubscription(request, env, corsHeaders, userId) 
 
     // Log the adjustment
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
+      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
       VALUES (?, ?, 'admin_adjust_subscription', 'subscription', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),
@@ -547,7 +550,7 @@ export async function adminDeleteManuscript(request, env, corsHeaders, manuscrip
 
     // Log deletion
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
+      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
       VALUES (?, ?, 'admin_delete_manuscript', 'manuscript', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),

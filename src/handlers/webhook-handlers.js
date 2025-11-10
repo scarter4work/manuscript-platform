@@ -15,7 +15,7 @@ export async function handleStripeWebhook(request, env, corsHeaders) {
   try {
     // Get raw body for signature verification
     const body = await request.text();
-    const signature = request.headers.get('stripe-signature');
+    const signature = request?.headers?.get('stripe-signature');
 
     if (!signature) {
       return new Response(JSON.stringify({ error: 'No signature provided' }), {
@@ -148,7 +148,7 @@ async function handleCheckoutCompleted(env, session) {
 
     // Update user's subscription tier
     await env.DB.prepare(`
-      UPDATE users SET subscription_tier = ? WHERE id = ?
+      UPDATE users SET subscription_tier = ?, updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = ?
     `).bind(planType, userId).run();
 
     console.log('[Webhook] Subscription created:', subscriptionId);
@@ -243,7 +243,7 @@ async function handleSubscriptionDeleted(env, subscription) {
 
   if (sub) {
     await env.DB.prepare(`
-      UPDATE users SET subscription_tier = 'free' WHERE id = ?
+      UPDATE users SET subscription_tier = 'free', updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = ?
     `).bind(sub.user_id).run();
   }
 

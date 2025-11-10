@@ -40,7 +40,7 @@ async function verifyEmail(email) {
 
     // Update email_verified to true
     await client.query(
-      'UPDATE users SET email_verified = TRUE WHERE id = $1',
+      'UPDATE users SET email_verified = TRUE, updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = $1',
       [user.id]
     );
 

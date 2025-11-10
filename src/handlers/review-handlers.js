@@ -14,7 +14,7 @@ import { ReviewTrendAgent } from '../agents/review-trend-agent.js';
 export async function getReviewMonitoring(request, env, manuscriptId) {
   try {
     // Authenticate and check access
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,
@@ -132,7 +132,7 @@ export async function getReviewMonitoring(request, env, manuscriptId) {
 export async function setupReviewMonitoring(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,
@@ -270,7 +270,7 @@ export async function setupReviewMonitoring(request, env, manuscriptId) {
 export async function fetchReviews(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,
@@ -346,7 +346,7 @@ export async function fetchReviews(request, env, manuscriptId) {
 export async function getReviewSentiment(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,
@@ -425,7 +425,7 @@ export async function getReviewSentiment(request, env, manuscriptId) {
 export async function getReviewResponses(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,
@@ -516,7 +516,7 @@ export async function getReviewResponses(request, env, manuscriptId) {
 export async function getReviewTrends(request, env, manuscriptId) {
   try {
     // Authenticate
-    const authHeader = request.headers.get('Authorization');
+    const authHeader = request?.headers?.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
         status: 401,

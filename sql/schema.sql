@@ -15,8 +15,10 @@ CREATE TABLE IF NOT EXISTS users (
   role TEXT DEFAULT 'author',             -- author/publisher/admin
   subscription_tier TEXT DEFAULT 'FREE',  -- FREE/PRO/ENTERPRISE (for rate limiting)
   created_at BIGINT NOT NULL,            -- Unix timestamp
+  updated_at BIGINT NOT NULL,            -- Unix timestamp
   last_login INTEGER,                     -- Unix timestamp of last login
-  email_verified INTEGER DEFAULT 0       -- 0 = not verified, 1 = verified
+  email_verified INTEGER DEFAULT 0,      -- 0 = not verified, 1 = verified
+  stripe_customer_id TEXT                 -- Stripe customer ID for payment processing
 );
 
 -- Index for fast email lookups during login
@@ -78,20 +80,20 @@ CREATE INDEX IF NOT EXISTS idx_submissions_status ON submissions(status);
 CREATE TABLE IF NOT EXISTS audit_log (
   id TEXT PRIMARY KEY,                    -- UUID
   user_id TEXT NOT NULL,                  -- Foreign key to users
-  action TEXT NOT NULL,                   -- upload/download/delete/update/view/login/logout
-  resource_type TEXT NOT NULL,            -- manuscript/user/submission
+  event_type TEXT NOT NULL,               -- upload/download/delete/update/view/login/logout/payment
+  resource_type TEXT NOT NULL,            -- manuscript/user/submission/payment
   resource_id TEXT NOT NULL,              -- ID of affected resource
-  timestamp INTEGER NOT NULL,             -- Unix timestamp
+  created_at BIGINT NOT NULL,            -- Unix timestamp
   ip_address TEXT,                        -- IP address of request
   user_agent TEXT,                        -- User agent string
-  metadata TEXT,                          -- JSON: additional context
+  event_details TEXT,                     -- JSON: additional context (was metadata)
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Indexes for audit queries
 CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_log(user_id);
-CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(timestamp DESC);
-CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
+CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_event_type ON audit_log(event_type);
 
 -- ============================================================================
 -- DMCA REQUESTS TABLE
@@ -164,12 +166,13 @@ CREATE INDEX IF NOT EXISTS idx_tokens_expires ON verification_tokens(expires_at)
 -- Generate with: bcrypt.hash("Admin123!", 12)
 -- This is a placeholder - regenerate in production!
 
-INSERT INTO users (id, email, password_hash, role, created_at, email_verified) VALUES (
+INSERT INTO users (id, email, password_hash, role, created_at, updated_at, email_verified) VALUES (
   'admin-default-001',
   'admin@manuscript-platform.local',
   '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYzpLkJ7ZRy',  -- Admin123!
   'admin',
-  strftime('%s', 'now'),
+  EXTRACT(EPOCH FROM NOW())::BIGINT,
+  EXTRACT(EPOCH FROM NOW())::BIGINT,
   1
 );
 
@@ -183,7 +186,7 @@ CREATE TABLE IF NOT EXISTS schema_version (
   description TEXT NOT NULL               -- Description of changes
 );
 
-INSERT INTO schema_version (version, applied_at, description) VALUES (1, strftime('%s', 'now'), 'Initial schema - Phase A: Database Foundation');
+INSERT INTO schema_version (version, applied_at, description) VALUES (1, EXTRACT(EPOCH FROM NOW())::BIGINT, 'Initial schema - Phase A: Database Foundation');
 
 -- ============================================================================
 -- QUERY HELPERS & VIEWS
@@ -225,8 +228,8 @@ SELECT
   u.email as user_email
 FROM audit_log a
 JOIN users u ON a.user_id = u.id
-WHERE a.timestamp > (strftime('%s', 'now') - 86400)
-ORDER BY a.timestamp DESC;
+WHERE a.created_at > (EXTRACT(EPOCH FROM NOW())::BIGINT - 86400)
+ORDER BY a.created_at DESC;
 
 -- ============================================================================
 -- NOTES FOR FUTURE MIGRATIONS

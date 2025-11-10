@@ -437,7 +437,7 @@ async function logEmail({ userId, toEmail, subject, emailType, status, errorMess
  */
 async function sendNotificationEmail({ userId, to, subject, html, emailType, env }) {
   // Check user preferences (skip for critical emails)
-  const criticalTypes = ['payment_failed', 'dmca_notification'];
+  const criticalTypes = ['payment_failed', 'dmca_notification', 'email_verification', 'password_reset'];
   if (userId && !criticalTypes.includes(emailType)) {
     const enabled = await checkEmailPreference(userId, emailType, env);
     if (!enabled) {

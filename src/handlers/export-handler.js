@@ -43,7 +43,7 @@ const PLATFORM_CONFIG = {
  * @returns {Response}
  */
 export async function generatePlatformExportPackage(request, env, platformId, manuscriptId) {
-  const userId = request.headers.get('X-User-Id');
+  const userId = request?.headers?.get('X-User-Id');
 
   if (!userId) {
     return new Response(JSON.stringify({ error: 'Authentication required' }), {
@@ -278,7 +278,7 @@ export async function generatePlatformExportPackage(request, env, platformId, ma
  * @returns {Response}
  */
 export async function listPlatformExportPackages(request, env, platformId) {
-  const userId = request.headers.get('X-User-Id');
+  const userId = request?.headers?.get('X-User-Id');
 
   if (!userId) {
     return new Response(JSON.stringify({ error: 'Authentication required' }), {
@@ -335,7 +335,7 @@ export async function listPlatformExportPackages(request, env, platformId) {
  * @returns {Response}
  */
 export async function downloadPlatformExportFile(request, env, platformId, packageId, fileType) {
-  const userId = request.headers.get('X-User-Id');
+  const userId = request?.headers?.get('X-User-Id');
 
   if (!userId) {
     return new Response(JSON.stringify({ error: 'Authentication required' }), {

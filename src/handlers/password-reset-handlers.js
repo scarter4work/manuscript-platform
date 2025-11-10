@@ -138,9 +138,10 @@ export async function handleResetPassword(request, env, corsHeaders) {
     const passwordHash = await auth.hashPassword(newPassword);
 
     // Update user's password
+    const now = Math.floor(Date.now() / 1000);
     await env.DB.prepare(`
       UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?
-    `).bind(passwordHash, new Date().toISOString(), resetToken.user_id).run();
+    `).bind(passwordHash, now, resetToken.user_id).run();
 
     // Mark token as used
     await env.DB.prepare(`

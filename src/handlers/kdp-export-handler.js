@@ -16,7 +16,7 @@
 export async function generateKDPPackage(request, env, manuscriptId) {
   try {
     // Get user
-    const userId = request.headers.get('X-User-Id');
+    const userId = request?.headers?.get('X-User-Id');
     if (!userId) {
       return new Response(JSON.stringify({
         error: 'Authentication required'
@@ -403,7 +403,7 @@ https://selfpubhub.co
 export async function downloadKDPFile(request, env, packageId, fileType) {
   try {
     // Get user
-    const userId = request.headers.get('X-User-Id');
+    const userId = request?.headers?.get('X-User-Id');
     if (!userId) {
       return new Response(JSON.stringify({
         error: 'Authentication required'
@@ -548,7 +548,7 @@ export async function downloadKDPFile(request, env, packageId, fileType) {
 export async function listKDPPackages(request, env) {
   try {
     // Get user
-    const userId = request.headers.get('X-User-Id');
+    const userId = request?.headers?.get('X-User-Id');
     if (!userId) {
       return new Response(JSON.stringify({
         error: 'Authentication required'

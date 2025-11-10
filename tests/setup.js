@@ -17,6 +17,7 @@ import {
   resetTestDatabase,
   getTestDb,
 } from './test-helpers/database.js';
+import { initializeAdapters } from '../server.js';
 
 let testDb = null;
 
@@ -31,13 +32,17 @@ beforeAll(async () => {
     testDb = await setupTestDatabase();
     console.log('✓ Test database initialized');
 
+    // Initialize server adapters (database, storage, session, etc.)
+    await initializeAdapters();
+    console.log('✓ Server adapters initialized');
+
     // Make test database globally available
     global.testDb = testDb;
 
     console.log('✓ Test environment ready\n');
   } catch (error) {
     console.error('❌ Failed to set up test environment:', error);
-    console.error('💡 Ensure PostgreSQL is running on localhost:5432');
+    console.error('💡 Ensure PostgreSQL is running on 127.0.0.1:5432');
     console.error('💡 Or set TEST_DATABASE_URL to your test database');
     throw error;
   }

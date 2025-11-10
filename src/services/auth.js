@@ -261,12 +261,12 @@ export class Auth {
       // Create user
       const userId = crypto.randomUUID();
       const passwordHash = await this.hashPassword(password);
-      const now = new Date().toISOString();
+      const now = Math.floor(Date.now() / 1000);
 
       await this.env.DB.prepare(`
-        INSERT INTO users (id, email, password_hash, full_name, created_at)
-        VALUES (?, ?, ?, ?, ?)
-      `).bind(userId, email, passwordHash, fullName || null, now).run();
+        INSERT INTO users (id, email, password_hash, full_name, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).bind(userId, email, passwordHash, fullName || null, now, now).run();
 
       // Generate token
       const token = await this.generateToken(userId, email);
@@ -305,9 +305,10 @@ export class Auth {
       }
 
       // Update last login
+      const now = Math.floor(Date.now() / 1000);
       await this.env.DB.prepare(
-        'UPDATE users SET last_login = ? WHERE id = ?'
-      ).bind(new Date().toISOString(), user.id).run();
+        'UPDATE users SET last_login = ?, updated_at = ? WHERE id = ?'
+      ).bind(now, now, user.id).run();
 
       // Generate token
       const token = await this.generateToken(user.id, user.email);

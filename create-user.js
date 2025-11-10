@@ -35,8 +35,8 @@ async function createUser() {
     
     // Insert user
     await client.query(`
-      INSERT INTO users (id, email, password_hash, full_name, created_at, plan, is_active, email_verified)
-      VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, 'free', TRUE, TRUE)
+      INSERT INTO users (id, email, password_hash, full_name, created_at, updated_at, plan, is_active, email_verified)
+      VALUES ($1, $2, $3, $4, EXTRACT(EPOCH FROM NOW())::BIGINT, EXTRACT(EPOCH FROM NOW())::BIGINT, 'free', TRUE, TRUE)
     `, [userId, email, passwordHash, fullName]);
 
     console.log('✅ User account created successfully!');

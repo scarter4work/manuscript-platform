@@ -1,14 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(if [ -n \"$DATABASE_URL\" ])",
-      "Bash(then echo \"DATABASE_URL is set\")",
-      "Bash(else echo \"DATABASE_URL not set\")",
-      "Bash(fi)",
-      "Bash(/c/Program Files/GitHub CLI/gh.exe issue view 74 --json title,state,labels)",
-      "Bash(/c/Program Files/GitHub CLI/gh.exe issue view 65 --json title,body,state,labels)",
-      "Bash(/c/Program\\ Files/GitHub\\ CLI/gh.exe issue view:*)",
-      "Bash(git mv:*)"
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

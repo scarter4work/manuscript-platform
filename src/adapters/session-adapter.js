@@ -14,9 +14,19 @@ import { createClient } from 'redis';
  */
 export async function createSessionStore(env) {
   const redisUrl = env.REDIS_URL;
+  const isTest = env.NODE_ENV === 'test';
 
-  if (!redisUrl) {
+  if (!redisUrl && !isTest) {
     throw new Error('REDIS_URL environment variable is required');
+  }
+
+  // In test mode without Redis, use in-memory store
+  if (!redisUrl && isTest) {
+    console.log('⚠ Running in test mode without Redis - using in-memory session store');
+    return {
+      store: null, // express-session will use MemoryStore
+      client: createMockRedisClient()
+    };
   }
 
   // Create Redis client
@@ -102,6 +112,24 @@ export function createSessionMiddleware(env, store) {
     },
     name: 'manuscript.sid',
   });
+}
+
+/**
+ * Create mock Redis client for test mode
+ * @returns {Object} Mock Redis client
+ */
+function createMockRedisClient() {
+  const store = new Map();
+
+  return {
+    get: async (key) => store.get(key) || null,
+    set: async (key, value) => { store.set(key, value); },
+    setEx: async (key, ttl, value) => { store.set(key, value); },
+    del: async (key) => { store.delete(key); },
+    connect: async () => {},
+    quit: async () => {},
+    on: () => {},
+  };
 }
 
 export default { createSessionStore, createSessionMiddleware };

@@ -106,7 +106,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
 
       if (scanResult.isInfected) {
         // Create security incident
-        const ipAddress = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+        const ipAddress = request?.headers?.get('CF-Connecting-IP') || request?.headers?.get('X-Forwarded-For') || 'unknown';
         await createMalwareIncident(env.DB, scanResult, userId, ipAddress);
 
         console.error(`[Upload] 🚨 MALWARE DETECTED: ${file.name}`, scanResult.viruses);
@@ -191,7 +191,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
 
     // Log audit event
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
+      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
       VALUES (?, ?, 'upload', 'manuscript', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),
@@ -332,7 +332,7 @@ async function handleMarketingUpload(request, env, corsHeaders) {
 
     if (scanResult.isInfected) {
       // Create security incident
-      const ipAddress = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+      const ipAddress = request?.headers?.get('CF-Connecting-IP') || request?.headers?.get('X-Forwarded-For') || 'unknown';
       await createMalwareIncident(env.DB, scanResult, null, ipAddress);
 
       console.error(`[Marketing Upload] 🚨 MALWARE DETECTED: ${file.name}`, scanResult.viruses);
@@ -530,7 +530,7 @@ async function handleFileDelete(request, env, corsHeaders) {
   const bucket = url.searchParams.get('bucket') || 'raw';
 
   // Add authentication check here in production
-  // const authHeader = request.headers.get('Authorization');
+  // const authHeader = request?.headers?.get('Authorization');
   // if (!isAuthorized(authHeader)) { ... }
 
   let r2Bucket;

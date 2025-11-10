@@ -309,12 +309,25 @@ export function clearSessionCookie() {
 export async function logAuthEvent(env, userId, action, request, metadata = {}) {
   const id = crypto.randomUUID();
   const timestamp = Math.floor(Date.now() / 1000);
-  const ipAddress = request.headers.get('CF-Connecting-IP') || 'unknown';
-  const userAgent = request.headers.get('User-Agent') || 'unknown';
+
+  // Handle missing headers in test context
+  const ipAddress = request?.headers?.get ?
+    (request.headers.get('CF-Connecting-IP') || 'unknown') :
+    'unknown';
+  const userAgent = request?.headers?.get ?
+    (request.headers.get('User-Agent') || 'unknown') :
+    'unknown';
+
+  // Skip logging for anonymous/invalid users (no user record exists)
+  // This prevents foreign key constraint violations
+  if (userId === 'anonymous' || !userId) {
+    console.log(`[Audit] Skipping audit log for ${action} - no valid user_id`);
+    return;
+  }
 
   try {
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, ip_address, user_agent, event_details)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       id,

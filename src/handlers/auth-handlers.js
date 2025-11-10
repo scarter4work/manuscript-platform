@@ -155,9 +155,9 @@ export async function handleRegister(request, env) {
 
     // Insert user into database
     await env.DB.prepare(`
-      INSERT INTO users (id, email, password_hash, role, created_at, email_verified)
-      VALUES (?, ?, ?, ?, ?, 0)
-    `).bind(userId, normalizedEmail, passwordHash, role, now).run();
+      INSERT INTO users (id, email, password_hash, role, created_at, updated_at, email_verified)
+      VALUES (?, ?, ?, ?, ?, ?, 0)
+    `).bind(userId, normalizedEmail, passwordHash, role, now, now).run();
 
     // Create free subscription for new user
     try {
@@ -226,11 +226,11 @@ export async function handleRegister(request, env) {
  */
 export async function handleLogin(request, env) {
   // Get origin for CORS (declare outside try block so it's available in catch)
-  const origin = request.headers.get('Origin');
+  const origin = request?.headers?.get('Origin');
 
   try {
     // Get IP address for rate limiting
-    const ipAddress = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const ipAddress = request?.headers?.get('CF-Connecting-IP') || 'unknown';
 
     // Check rate limiting
     if (await isRateLimited(ipAddress, env)) {
@@ -282,9 +282,9 @@ export async function handleLogin(request, env) {
     // Create session
     const sessionId = await createSession(user.id, env, rememberMe);
 
-    // Update last login timestamp (use PostgreSQL NOW() instead of Unix timestamp)
+    // Update last login timestamp
     await env.DB.prepare(
-      'UPDATE users SET last_login = NOW() WHERE id = ?'
+      'UPDATE users SET last_login = EXTRACT(EPOCH FROM NOW())::BIGINT, updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = ?'
     ).bind(user.id).run();
 
     // Log successful login
@@ -321,7 +321,7 @@ export async function handleLogin(request, env) {
 export async function handleLogout(request, env) {
   try {
     // Get session ID from cookie
-    const cookie = request.headers.get('Cookie');
+    const cookie = request?.headers?.get('Cookie');
     const sessionMatch = cookie?.match(/session_id=([^;]+)/);
 
     if (!sessionMatch) {
@@ -368,7 +368,7 @@ export async function handleLogout(request, env) {
  */
 export async function handleGetMe(request, env) {
   // Get origin for CORS (declare outside try block for catch access)
-  const origin = request.headers.get('Origin') || process.env.FRONTEND_URL;
+  const origin = request?.headers?.get('Origin') || process.env.FRONTEND_URL;
 
   try {
     // Get user ID from session
@@ -438,7 +438,7 @@ export async function handleVerifyEmail(request, env) {
 
     // Update user's email_verified flag
     await env.DB.prepare(
-      'UPDATE users SET email_verified = 1 WHERE id = ?'
+      'UPDATE users SET email_verified = 1, updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = ?'
     ).bind(userId).run();
 
     // Invalidate user cache
@@ -576,7 +576,7 @@ export async function handlePasswordReset(request, env) {
 
     // Update user's password
     await env.DB.prepare(
-      'UPDATE users SET password_hash = ? WHERE id = ?'
+      'UPDATE users SET password_hash = ?, updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = ?'
     ).bind(newPasswordHash, userId).run();
 
     // Invalidate all existing sessions for this user (force re-login)
@@ -859,3 +859,6 @@ export const authHandlers = {
   passwordReset: handlePasswordReset,
   verifyResetToken: handleVerifyResetToken
 };
+
+// Alias exports for backward compatibility with tests
+export { handlePasswordResetRequest as handleRequestPasswordReset };

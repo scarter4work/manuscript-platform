@@ -21,7 +21,7 @@ export function mockStorageAdapter() {
   const storage = new Map();
 
   const mockBucket = {
-    put: vi.fn(async ({ key, body }) => {
+    put: vi.fn(async (key, body) => {
       storage.set(key, body);
       return {
         key,
@@ -30,38 +30,37 @@ export function mockStorageAdapter() {
       };
     }),
 
-    get: vi.fn(async ({ key }) => {
+    get: vi.fn(async (key) => {
       const body = storage.get(key);
       if (!body) {
-        const error = new Error('Not Found');
-        error.statusCode = 404;
-        throw error;
+        return null;
       }
       return {
-        Body: body,
-        ContentLength: Buffer.isBuffer(body) ? body.length : Buffer.from(body).length,
-        ContentType: 'application/octet-stream'
+        key,
+        body,
+        size: Buffer.isBuffer(body) ? body.length : Buffer.from(body).length,
+        contentType: 'application/octet-stream'
       };
     }),
 
-    delete: vi.fn(async ({ key }) => {
+    delete: vi.fn(async (key) => {
       const existed = storage.has(key);
       storage.delete(key);
       return { deleted: existed };
     }),
 
-    list: vi.fn(async ({ prefix = '' }) => {
+    list: vi.fn(async ({ prefix = '' } = {}) => {
       const keys = Array.from(storage.keys())
         .filter(k => k.startsWith(prefix))
         .map(key => ({
-          Key: key,
-          Size: Buffer.isBuffer(storage.get(key))
+          key,
+          size: Buffer.isBuffer(storage.get(key))
             ? storage.get(key).length
             : Buffer.from(storage.get(key)).length,
-          LastModified: new Date()
+          lastModified: new Date()
         }));
 
-      return { Contents: keys };
+      return { objects: keys };
     }),
 
     // Helper to inspect storage (not part of real API)
@@ -140,6 +139,13 @@ export function mockRedis() {
       return remaining > 0 ? remaining : -2;
     }),
 
+    incr: vi.fn(async (key) => {
+      const currentValue = parseInt(store.get(key) || '0', 10);
+      const newValue = currentValue + 1;
+      store.set(key, String(newValue));
+      return newValue;
+    }),
+
     // Helper to inspect store (not part of real API)
     _inspect: () => ({
       size: store.size,
@@ -165,15 +171,22 @@ export function mockRedis() {
  *
  * Provides predictable AI responses for testing
  */
-export function mockClaudeAPI(responses = {}) {
+export function mockClaudeAPI(options = {}) {
+  const { responseText, responses = {} } = options;
+
   const defaultResponse = {
-    content: [{ text: 'This is a mock AI response for testing.' }],
+    content: [{ text: responseText || 'This is a mock AI response for testing.' }],
     usage: { input_tokens: 100, output_tokens: 200 }
   };
 
   return {
     messages: {
       create: vi.fn(async ({ messages }) => {
+        // If responseText is set, always use that
+        if (responseText) {
+          return defaultResponse;
+        }
+
         // Try to match a specific response based on prompt content
         const lastMessage = messages[messages.length - 1];
         const prompt = lastMessage.content;
@@ -246,7 +259,12 @@ export function mockEmailService() {
     _getSentEmails: () => sentEmails,
 
     // Helper to clear sent emails (not part of real API)
-    _clearSentEmails: () => sentEmails.splice(0, sentEmails.length)
+    _clearSentEmails: () => sentEmails.splice(0, sentEmails.length),
+
+    // Public methods for tests
+    getSentEmails: () => sentEmails,
+    findEmailTo: (email) => sentEmails.find(e => e.to === email),
+    clearSentEmails: () => sentEmails.splice(0, sentEmails.length)
   };
 }
 
@@ -298,11 +316,12 @@ export function mockStripe() {
 
     checkout: {
       sessions: {
-        create: vi.fn(async ({ customer, line_items, mode, success_url, cancel_url, metadata }) => {
+        create: vi.fn(async ({ customer, customer_email, line_items, mode, success_url, cancel_url, metadata }) => {
           const sessionId = `cs_test_${crypto.randomBytes(12).toString('hex')}`;
           const session = {
             id: sessionId,
             customer,
+            customer_email,
             line_items,
             mode,
             success_url,
@@ -327,6 +346,21 @@ export function mockStripe() {
           return session;
         })
       }
+    },
+
+    paymentIntents: {
+      create: vi.fn(async ({ amount, currency, metadata }) => {
+        const paymentId = `pi_test_${crypto.randomBytes(12).toString('hex')}`;
+        const payment = {
+          id: paymentId,
+          amount,
+          currency,
+          metadata,
+          status: 'succeeded',
+          created: Math.floor(Date.now() / 1000)
+        };
+        return payment;
+      })
     },
 
     subscriptions: {
@@ -381,7 +415,14 @@ export function mockStripe() {
 
     webhooks: {
       constructEvent: vi.fn((body, signature, secret) => {
-        // Validate signature format
+        // Accept 'test-signature' for simple testing
+        if (signature === 'test-signature') {
+          // Parse body as JSON and return as-is
+          const event = typeof body === 'string' ? JSON.parse(body) : body;
+          return event;
+        }
+
+        // Validate signature format for more realistic tests
         if (!signature || !signature.includes('t=') || !signature.includes('v1=')) {
           const error = new Error('Invalid signature');
           error.statusCode = 400;
