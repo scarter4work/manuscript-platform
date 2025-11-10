@@ -6,7 +6,9 @@
       "Bash(pkill:*)",
       "mcp__windows-mcp__Wait-Tool",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nfix(tests): Add payment routes and fix createTestUser to insert into database\n\n**Changes:**\n1. Added missing payment routes to router.js:\n   - /create-checkout-session (POST)\n   - /subscription (GET)\n   - /payment-history (GET)\n\n2. Fixed createTestUser factory to handle dual signatures:\n   - createTestUser(overrides) - just creates data\n   - createTestUser(db, overrides) - creates AND inserts into database\n   - Tests were calling with db but users weren''t being inserted!\n\n**Results:**\n- Auth tests: 30 failed → 23 failed (+7 fixes)\n- Payment routes: 404 errors → proper responses\n- Fixed tests now properly insert users into database before testing\n\nRemaining 23 auth failures are test expectations/rate limiting issues.\nEOF\n)\")"
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix(tests): Add payment routes and fix createTestUser to insert into database\n\n**Changes:**\n1. Added missing payment routes to router.js:\n   - /create-checkout-session (POST)\n   - /subscription (GET)\n   - /payment-history (GET)\n\n2. Fixed createTestUser factory to handle dual signatures:\n   - createTestUser(overrides) - just creates data\n   - createTestUser(db, overrides) - creates AND inserts into database\n   - Tests were calling with db but users weren''t being inserted!\n\n**Results:**\n- Auth tests: 30 failed → 23 failed (+7 fixes)\n- Payment routes: 404 errors → proper responses\n- Fixed tests now properly insert users into database before testing\n\nRemaining 23 auth failures are test expectations/rate limiting issues.\nEOF\n)\")",
+      "Bash(node test-createuser-debug.js:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

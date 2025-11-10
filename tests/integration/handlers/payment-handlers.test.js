@@ -32,7 +32,8 @@ import {
   createTestSubscription,
   createTestPayment,
   createTestManuscript,
-  generateTestEmail
+  generateTestEmail,
+  generateId
 } from '../../test-helpers/factories.js';
 import {
   mockStripe,
@@ -484,7 +485,7 @@ describe('Payment & Webhook Handlers', () => {
     it('should handle customer.subscription.deleted - downgrade to free', async () => {
       // Upgrade to paid plan first
       await queryTestDb(
-        'UPDATE subscriptions SET plan = $1, status = $2 WHERE user_id = $3',
+        'UPDATE subscriptions SET plan_type = $1, status = $2 WHERE user_id = $3',
         ['freelancer', 'active', testUser.id]
       );
 
@@ -520,8 +521,8 @@ describe('Payment & Webhook Handlers', () => {
         genre: 'fiction',
         word_count: 85000,
         status: 'uploaded',
-        storage_key: 'test-key',
-        content_hash: 'test-hash',
+        r2_key: 'test-key',
+        file_hash: 'test-hash',
         file_size: 250000,
         created_at: Math.floor(Date.now() / 1000),
         updated_at: Math.floor(Date.now() / 1000)

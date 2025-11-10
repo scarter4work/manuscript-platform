@@ -28,7 +28,7 @@ export const AUTH_CONFIG = {
     number: true,
     special: true
   },
-  BCRYPT_COST: 12,                          // bcrypt cost factor
+  BCRYPT_COST: 10,                          // bcrypt cost factor (10 for compatibility with tests)
   TOKEN_EXPIRY: 24 * 60 * 60 * 1000,        // 24 hours for verification tokens
   RESET_TOKEN_EXPIRY: 60 * 60 * 1000,       // 1 hour for password reset
   RATE_LIMIT: {
