@@ -1,0 +1,4557 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test REDIS_URL=redis://localhost:6379 vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mD:/manuscript-platform[39m
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/metadata-handlers.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/metadata-handlers.test.js [2m([22m[2m21 tests[22m[2m | [22m[33m21 skipped[39m[2m)[22m[33m 10783[2mms[22m[39m
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mGenre Validation[2m > [22mshould validate word count for romance novel
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mGenre Validation[2m > [22mshould flag word count outside genre norms
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mGenre Validation[2m > [22mshould accept novella word counts for appropriate genres
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mContent Warning Validation[2m > [22mshould validate content warning categories
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mContent Warning Validation[2m > [22mshould validate severity levels
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mContent Warning Validation[2m > [22mshould handle multiple content warnings
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mMetadata Structure[2m > [22mshould validate primary genre and subgenres
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mMetadata Structure[2m > [22mshould validate age category
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mMetadata Structure[2m > [22mshould validate manuscript status
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mMetadata Structure[2m > [22mshould validate series information
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mMetadata History Tracking[2m > [22mshould record metadata changes with timestamp
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mMetadata History Tracking[2m > [22mshould track multiple change types
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mGenre Hierarchy[2m > [22mshould validate parent-child genre relationships
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mGenre Hierarchy[2m > [22mshould handle subgenre depth
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mWord Count Validation Logic[2m > [22mshould categorize flash fiction correctly
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mWord Count Validation Logic[2m > [22mshould categorize novel correctly
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mWord Count Validation Logic[2m > [22mshould categorize epic correctly
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mEdge Cases[2m > [22mshould handle missing optional metadata fields
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mEdge Cases[2m > [22mshould handle empty subgenres array
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mEdge Cases[2m > [22mshould validate completion percentage range
+   [2m[90m↓[39m[22m Enhanced Metadata Handlers[2m > [22mEdge Cases[2m > [22mshould reject invalid completion percentage
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/submission-packages.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/submission-packages.test.js [2m([22m[2m31 tests[22m[2m | [22m[33m31 skipped[39m[2m)[22m[33m 10735[2mms[22m[39m
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have agent query template
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have full manuscript template
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have query only template
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have contest template
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould validate required documents
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould create package with metadata
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould include document list with ordering
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould validate package has at least one document
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould allow custom package names
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould allow selecting multiple documents
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould maintain document order
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould allow reordering documents
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould generate ZIP with multiple files
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould prefix files with order numbers
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould sanitize filenames
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould support different file formats
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould include metadata file in ZIP
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Duplication[2m > [22mshould create copy of existing package
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Duplication[2m > [22mshould increment copy counter in name
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould list packages for manuscript
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould update package details
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould delete package
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mValidation[2m > [22mshould validate package has required documents
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mValidation[2m > [22mshould validate document exists before adding to package
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mValidation[2m > [22mshould prevent duplicate documents in package
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mDownload Tracking[2m > [22mshould track download count
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mDownload Tracking[2m > [22mshould track last downloaded timestamp
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle empty package name
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle very long package name
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle package with only one document
+   [2m[90m↓[39m[22m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle large file sizes
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/webhook-signature-verification.test.js [2m([22m[2m9 tests[22m[2m | [22m[33m9 skipped[39m[2m)[22m[33m 11424[2mms[22m[39m
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mValid Signatures[2m > [22mshould accept webhook with valid signature
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mValid Signatures[2m > [22mshould accept webhook with recent timestamp (within 5 min)
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mMissing Signature[2m > [22mshould reject webhook with no signature header
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mMissing Signature[2m > [22mshould reject webhook with empty signature
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with incorrect signature
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with malformed signature format
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with tampered payload
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mReplay Attack Prevention[2m > [22mshould reject webhook with expired timestamp (>5 min old)
+   [2m[90m↓[39m[22m Webhook Signature Verification[2m > [22mReplay Attack Prevention[2m > [22mshould accept webhook with future timestamp (Stripe allows clock skew)
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/infrastructure.test.js [2m([22m[2m13 tests[22m[2m | [22m[33m13 skipped[39m[2m)[22m[33m 11599[2mms[22m[39m
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould insert and retrieve test records
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould count test records
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould reset database between tests
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mAPI Client[2m > [22mshould make HTTP requests
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client with expiration
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock storage adapter
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user data
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user with overrides
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test manuscript data
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould generate unique test emails
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated user into database
+   [2m[90m↓[39m[22m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated manuscript into database
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/auth-utils.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/auth-utils.test.js [2m([22m[2m22 tests[22m[2m | [22m[33m22 skipped[39m[2m)[22m[33m 11254[2mms[22m[39m
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould accept a valid password
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password shorter than 8 characters
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without uppercase letter
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without lowercase letter
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without number
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without special character
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject null or undefined password
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould accept password with all requirements
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould return multiple errors for invalid password
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould accept valid email addresses
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould reject invalid email addresses
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould handle edge cases
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould hash a password
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould produce different hashes for same password
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould verify correct password
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould reject incorrect password
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould handle empty passwords
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould be case sensitive
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould handle long passwords
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have valid configuration values
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have password requirements defined
+   [2m[90m↓[39m[22m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have rate limit configuration
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/unit/test-helpers.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/unit/test-helpers.test.js [2m([22m[2m24 tests[22m[2m | [22m[33m24 skipped[39m[2m)[22m[33m 11410[2mms[22m[39m
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould put and get objects
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould delete objects
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould list objects by prefix
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mRedis Mock[2m > [22mshould set and get values
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mRedis Mock[2m > [22mshould set values with expiration
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mRedis Mock[2m > [22mshould delete keys
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mRedis Mock[2m > [22mshould increment values
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mClaude API Mock[2m > [22mshould return mock AI responses
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mClaude API Mock[2m > [22mshould include custom response text
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould track sent emails
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould find emails by recipient
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould clear sent emails
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mStripe Mock[2m > [22mshould create checkout sessions
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mStripe Mock[2m > [22mshould create payment intents
+   [2m[90m↓[39m[22m Mock Factories[2m > [22mStripe Mock[2m > [22mshould construct webhook events
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mUser Factory[2m > [22mshould create valid user data
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mUser Factory[2m > [22mshould accept overrides
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mManuscript Factory[2m > [22mshould create valid manuscript data
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mManuscript Factory[2m > [22mshould accept overrides
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mAnalysis Factory[2m > [22mshould create valid analysis data
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mAnalysis Factory[2m > [22mshould include result JSON
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mPayment Factory[2m > [22mshould create valid payment data
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mUtility Functions[2m > [22mshould generate unique email addresses
+   [2m[90m↓[39m[22m Test Data Factories[2m > [22mUtility Functions[2m > [22mshould generate unique IDs
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/error-handling.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/error-handling.test.js [2m([22m[2m24 tests[22m[2m | [22m[33m24 skipped[39m[2m)[22m[33m 11874[2mms[22m[39m
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create AppError with correct properties
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould serialize AppError to JSON correctly
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create AuthenticationError with 401 status
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create AuthorizationError with 403 status
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create ValidationError with 400 status
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create NotFoundError with 404 status
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create RateLimitError with 429 status
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create ConflictError with 409 status
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create ServerError with 500 status
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Classes[2m > [22mshould create ExternalServiceError with service name
+   [2m[90m↓[39m[22m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould create Response with correct status and JSON
+   [2m[90m↓[39m[22m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould handle generic Error objects
+   [2m[90m↓[39m[22m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould include Retry-After header for rate limit errors
+   [2m[90m↓[39m[22m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould merge additional headers
+   [2m[90m↓[39m[22m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should not throw when condition is true
+   [2m[90m↓[39m[22m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should throw ValidationError when condition is false
+   [2m[90m↓[39m[22m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should include details in error
+   [2m[90m↓[39m[22m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should not throw when userId exists
+   [2m[90m↓[39m[22m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should throw when userId is null
+   [2m[90m↓[39m[22m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should throw when userId is undefined
+   [2m[90m↓[39m[22m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthorized should not throw when permission is true
+   [2m[90m↓[39m[22m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthorized should throw when permission is false
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Inheritance[2m > [22mshould maintain instanceof relationships
+   [2m[90m↓[39m[22m Error Handling[2m > [22mError Inheritance[2m > [22mshould have correct error names
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/document-generation.test.js [2m([22m[2m27 tests[22m[2m | [22m[33m27 skipped[39m[2m)[22m[33m 12285[2mms[22m[39m
+   [2m[90m↓[39m[22m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould generate query letter within word count range
+   [2m[90m↓[39m[22m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould include essential query letter components
+   [2m[90m↓[39m[22m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould validate query letter structure
+   [2m[90m↓[39m[22m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould reject query letters that are too short
+   [2m[90m↓[39m[22m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould reject query letters that are too long
+   [2m[90m↓[39m[22m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould generate short synopsis at 500 words
+   [2m[90m↓[39m[22m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould generate long synopsis at 2500 words
+   [2m[90m↓[39m[22m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould include beginning, middle, and end
+   [2m[90m↓[39m[22m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould reveal ending (unlike blurb)
+   [2m[90m↓[39m[22m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould maintain chronological order
+   [2m[90m↓[39m[22m Document Generation[2m > [22mVersion Management[2m > [22mshould create new version on update
+   [2m[90m↓[39m[22m Document Generation[2m > [22mVersion Management[2m > [22mshould track version metadata
+   [2m[90m↓[39m[22m Document Generation[2m > [22mVersion Management[2m > [22mshould allow rollback to previous version
+   [2m[90m↓[39m[22m Document Generation[2m > [22mVersion Management[2m > [22mshould maintain version history after rollback
+   [2m[90m↓[39m[22m Document Generation[2m > [22mDocument Validation[2m > [22mshould validate document type
+   [2m[90m↓[39m[22m Document Generation[2m > [22mDocument Validation[2m > [22mshould reject invalid document type
+   [2m[90m↓[39m[22m Document Generation[2m > [22mDocument Validation[2m > [22mshould validate required fields
+   [2m[90m↓[39m[22m Document Generation[2m > [22mDocument Validation[2m > [22mshould calculate word count accurately
+   [2m[90m↓[39m[22m Document Generation[2m > [22mDocument Validation[2m > [22mshould handle empty document
+   [2m[90m↓[39m[22m Document Generation[2m > [22mAI Generation Metadata[2m > [22mshould track generation parameters
+   [2m[90m↓[39m[22m Document Generation[2m > [22mAI Generation Metadata[2m > [22mshould calculate cost based on token usage
+   [2m[90m↓[39m[22m Document Generation[2m > [22mBatch Generation[2m > [22mshould generate all document types at once
+   [2m[90m↓[39m[22m Document Generation[2m > [22mBatch Generation[2m > [22mshould track individual generation status
+   [2m[90m↓[39m[22m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle very short manuscript title
+   [2m[90m↓[39m[22m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle very long manuscript title
+   [2m[90m↓[39m[22m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle special characters in content
+   [2m[90m↓[39m[22m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle unicode characters
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/auth-handlers.test.js [2m([22m[2m53 tests[22m[2m | [22m[33m53 skipped[39m[2m)[22m[33m 11982[2mms[22m[39m
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould register a new user with valid credentials
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould reject registration with weak password
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould reject registration with invalid email
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould reject registration with duplicate email
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould hash password with bcrypt
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould normalize email to lowercase
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould create verification token
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould send verification email
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould log registration event in audit log
+   [2m[90m↓[39m[22m POST /auth/register[2m > [22mshould set default role to author if not specified
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould login with valid credentials
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould reject login with wrong password
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould reject login with non-existent email
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould reject login with unverified email
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould rate limit after 5 failed attempts
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould update last_login timestamp
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould create session in Redis
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould log successful login
+   [2m[90m↓[39m[22m POST /auth/login[2m > [22mshould log failed login attempts
+   [2m[90m↓[39m[22m POST /auth/verify-email[2m > [22mshould verify email with valid token
+   [2m[90m↓[39m[22m POST /auth/verify-email[2m > [22mshould reject invalid token
+   [2m[90m↓[39m[22m POST /auth/verify-email[2m > [22mshould reject expired token
+   [2m[90m↓[39m[22m POST /auth/verify-email[2m > [22mshould reject already used token
+   [2m[90m↓[39m[22m POST /auth/verify-email[2m > [22mshould handle missing token
+   [2m[90m↓[39m[22m POST /auth/verify-email[2m > [22mshould log email verification event
+   [2m[90m↓[39m[22m POST /auth/request-password-reset[2m > [22mshould create password reset token for valid email
+   [2m[90m↓[39m[22m POST /auth/request-password-reset[2m > [22mshould send password reset email
+   [2m[90m↓[39m[22m POST /auth/request-password-reset[2m > [22mshould not reveal if email does not exist (security)
+   [2m[90m↓[39m[22m POST /auth/request-password-reset[2m > [22mshould rate limit password reset requests
+   [2m[90m↓[39m[22m POST /auth/request-password-reset[2m > [22mshould normalize email to lowercase
+   [2m[90m↓[39m[22m POST /auth/request-password-reset[2m > [22mshould reject invalid email format
+   [2m[90m↓[39m[22m POST /auth/request-password-reset[2m > [22mshould handle missing email
+   [2m[90m↓[39m[22m POST /auth/request-password-reset[2m > [22mshould log password reset request
+   [2m[90m↓[39m[22m POST /auth/reset-password[2m > [22mshould reset password with valid token
+   [2m[90m↓[39m[22m POST /auth/reset-password[2m > [22mshould mark reset token as used
+   [2m[90m↓[39m[22m POST /auth/reset-password[2m > [22mshould reject weak new password
+   [2m[90m↓[39m[22m POST /auth/reset-password[2m > [22mshould reject invalid token
+   [2m[90m↓[39m[22m POST /auth/reset-password[2m > [22mshould reject expired token
+   [2m[90m↓[39m[22m POST /auth/reset-password[2m > [22mshould reject already used token
+   [2m[90m↓[39m[22m POST /auth/reset-password[2m > [22mshould hash new password with bcrypt
+   [2m[90m↓[39m[22m POST /auth/reset-password[2m > [22mshould log password reset event
+   [2m[90m↓[39m[22m POST /auth/logout[2m > [22mshould logout and destroy session
+   [2m[90m↓[39m[22m POST /auth/logout[2m > [22mshould clear session cookie
+   [2m[90m↓[39m[22m POST /auth/logout[2m > [22mshould log logout event
+   [2m[90m↓[39m[22m GET /auth/me[2m > [22mshould return current user with valid session
+   [2m[90m↓[39m[22m GET /auth/me[2m > [22mshould not return password hash
+   [2m[90m↓[39m[22m GET /auth/me[2m > [22mshould reject request without session
+   [2m[90m↓[39m[22m GET /auth/me[2m > [22mshould reject request with invalid session
+   [2m[90m↓[39m[22m GET /auth/me[2m > [22mshould return email verification status
+   [2m[90m↓[39m[22m POST /auth/resend-verification[2m > [22mshould resend verification email for unverified user
+   [2m[90m↓[39m[22m POST /auth/resend-verification[2m > [22mshould reject resend for already verified user
+   [2m[90m↓[39m[22m POST /auth/resend-verification[2m > [22mshould rate limit resend requests
+   [2m[90m↓[39m[22m POST /auth/resend-verification[2m > [22mshould not reveal if email does not exist (security)
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+Connecting to Redis at redis://localhost:6379...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis Client Reconnecting...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mRedis reconnection failed after 10 attempts
+Redis Client Error: AggregateError: 
+[90m    at internalConnectMultiple (node:net:1134:18)[39m
+[90m    at afterConnectMultiple (node:net:1715:7)[39m {
+  code: [32m'ECONNREFUSED'[39m,
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'::1'[39m,
+      port: [33m6379[39m
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+    [90m    at createConnectionError (node:net:1678:14)[39m
+    [90m    at afterConnectMultiple (node:net:1708:16)[39m {
+      errno: [33m-4078[39m,
+      code: [32m'ECONNREFUSED'[39m,
+      syscall: [32m'connect'[39m,
+      address: [32m'127.0.0.1'[39m,
+      port: [33m6379[39m
+    }
+  ]
+}
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m❌ Redis connection failed: Redis reconnection failed
+Redis URL format: redis://localhost:6379
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mFailed to initialize adapters: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m❌ Failed to set up test environment: Error: Failed to connect to Redis: Redis reconnection failed
+    at createSessionStore [90m(D:\manuscript-platform\[39msrc\adapters\session-adapter.js:62:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:76:44[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:36:5
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/payment-handlers.test.js [2m([22m[2m54 tests[22m[2m | [22m[33m54 skipped[39m[2m)[22m[33m 11419[2mms[22m[39m
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create checkout session for valid subscription
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould require authentication for checkout
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould reject invalid price IDs
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould include userId in session metadata
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing priceId field
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing planType field
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create customer if not exists
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould set correct success and cancel URLs
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle Stripe API errors gracefully
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould log checkout session creation
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould accept webhook with valid signature
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with invalid signature
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with missing signature
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with expired signature (>5 minutes)
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject replay attacks (duplicate event ID)
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould handle malformed signature header
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould log signature verification failures
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould return 400 for invalid signatures (not 500)
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - activate subscription
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - record payment
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.updated - sync status
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - downgrade to free
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - preserve data
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - record payment
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - extend billing period
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - mark past_due
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - cancel after 3 failures
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould ignore unhandled event types
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle duplicate webhook deliveries (idempotent)
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle webhook for deleted user gracefully
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle malformed webhook data gracefully
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould log all webhook events
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould return 200 for all webhooks (even errors)
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould process webhook in under 5 seconds
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return current subscription details
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould require authentication
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return free plan for users without subscription
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include Stripe subscription ID
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include current period dates
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return payment history for user
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould require authentication
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return empty array for no payments
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould order payments by date (newest first)
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould not include other users payments
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track manuscript analysis usage
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track different analysis types
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track asset generation separately
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould calculate usage within billing period
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould separate usage across different billing periods
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track usage for users without subscription (pay-per-use)
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould link usage to specific manuscript
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould accumulate credits across multiple analyses
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track timestamp for usage analytics
+   [2m[90m↓[39m[22m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould delete usage records when manuscript is deleted (CASCADE)
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 10 [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/auth-utils.test.js[2m [ tests/auth-utils.test.js ][22m
+[41m[1m FAIL [22m[49m tests/document-generation.test.js[2m [ tests/document-generation.test.js ][22m
+[41m[1m FAIL [22m[49m tests/error-handling.test.js[2m [ tests/error-handling.test.js ][22m
+[41m[1m FAIL [22m[49m tests/metadata-handlers.test.js[2m [ tests/metadata-handlers.test.js ][22m
+[41m[1m FAIL [22m[49m tests/submission-packages.test.js[2m [ tests/submission-packages.test.js ][22m
+[41m[1m FAIL [22m[49m tests/integration/infrastructure.test.js[2m [ tests/integration/infrastructure.test.js ][22m
+[41m[1m FAIL [22m[49m tests/integration/webhook-signature-verification.test.js[2m [ tests/integration/webhook-signature-verification.test.js ][22m
+[41m[1m FAIL [22m[49m tests/unit/test-helpers.test.js[2m [ tests/unit/test-helpers.test.js ][22m
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m [ tests/integration/handlers/auth-handlers.test.js ][22m
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m [ tests/integration/handlers/payment-handlers.test.js ][22m
+[31m[1mError[22m: Failed to connect to Redis: Redis reconnection failed[39m
+[36m [2m❯[22m createSessionStore src/adapters/session-adapter.js:[2m62:11[22m[39m
+    [90m 60| [39m    console[33m.[39m[34merror[39m([32m'❌ Redis connection failed:'[39m[33m,[39m error[33m.[39mmessage)[33m;[39m
+    [90m 61| [39m    console.error('Redis URL format:', redisUrl.replace(/:[^:]*@/, ':*…
+    [90m 62| [39m    [35mthrow[39m [35mnew[39m [33mError[39m([32m`Failed to connect to Redis: [39m[36m${[39merror[33m.[39mmessage[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m          [31m^[39m
+    [90m 63| [39m  }
+    [90m 64| [39m
+[90m [2m❯[22m initializeAdapters server.js:[2m76:44[22m[39m
+[90m [2m❯[22m tests/setup.js:[2m36:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m10 failed[39m[22m[90m (10)[39m
+[2m      Tests [22m [33m278 skipped[39m[90m (278)[39m
+[2m   Start at [22m 17:25:16
+[2m   Duration [22m 136.39s[2m (transform 524ms, setup 18.02s, collect 583ms, tests 114.76s, environment 2ms, prepare 1.15s)[22m
+

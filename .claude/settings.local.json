@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add:*)"
+      "Bash(npm test:*)",
+      "Bash(tee:*)",
+      "Bash(pkill:*)",
+      "mcp__windows-mcp__Wait-Tool"
     ],
     "deny": [],
     "ask": []

@@ -573,7 +573,7 @@ describe('POST /auth/verify-email', () => {
   it('should reject already used token', async () => {
     // Mark token as used
     await testDb.query(
-      'UPDATE verification_tokens SET used = TRUE WHERE token = $1',
+      'UPDATE verification_tokens SET used = 1 WHERE token = $1',
       [verificationToken.token]
     );
 
@@ -928,7 +928,7 @@ describe('POST /auth/reset-password', () => {
 
   it('should reject already used token', async () => {
     await testDb.query(
-      'UPDATE verification_tokens SET used = TRUE WHERE token = $1',
+      'UPDATE verification_tokens SET used = 1 WHERE token = $1',
       [resetToken.token]
     );
 
@@ -1214,7 +1214,7 @@ describe('POST /auth/resend-verification', () => {
 
   it('should reject resend for already verified user', async () => {
     await testDb.query(
-      'UPDATE users SET email_verified = TRUE WHERE id = $1',
+      'UPDATE users SET email_verified = 1 WHERE id = $1',
       [testUser.id]
     );
 

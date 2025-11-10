@@ -31,6 +31,7 @@ import {
   createTestUserWithPassword,
   createTestSubscription,
   createTestPayment,
+  createTestManuscript,
   generateTestEmail
 } from '../../test-helpers/factories.js';
 import {

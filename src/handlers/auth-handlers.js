@@ -862,3 +862,5 @@ export const authHandlers = {
 
 // Alias exports for backward compatibility with tests
 export { handlePasswordResetRequest as handleRequestPasswordReset };
+export { handleGetMe as handleGetCurrentUser };
+export { handlePasswordReset as handleResetPassword };

@@ -1,0 +1,2243 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mD:/manuscript-platform[39m
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mQuery Letter Generation[2m > [22m[2mshould generate query letter within word count range
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mQuery Letter Generation[2m > [22m[2mshould generate query letter within word count range
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mSynopsis Generation[2m > [22m[2mshould include beginning, middle, and end
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mSynopsis Generation[2m > [22m[2mshould reveal ending (unlike blurb)
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mSynopsis Generation[2m > [22m[2mshould maintain chronological order
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mVersion Management[2m > [22m[2mshould create new version on update
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mVersion Management[2m > [22m[2mshould track version metadata
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mVersion Management[2m > [22m[2mshould allow rollback to previous version
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mVersion Management[2m > [22m[2mshould maintain version history after rollback
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mDocument Validation[2m > [22m[2mshould validate document type
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mDocument Validation[2m > [22m[2mshould reject invalid document type
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mDocument Validation[2m > [22m[2mshould validate required fields
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mDocument Validation[2m > [22m[2mshould calculate word count accurately
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mDocument Validation[2m > [22m[2mshould handle empty document
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mAI Generation Metadata[2m > [22m[2mshould track generation parameters
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mAI Generation Metadata[2m > [22m[2mshould calculate cost based on token usage
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mBatch Generation[2m > [22m[2mshould generate all document types at once
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mBatch Generation[2m > [22m[2mshould track individual generation status
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mEdge Cases[2m > [22m[2mshould handle very short manuscript title
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mEdge Cases[2m > [22m[2mshould handle very long manuscript title
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mEdge Cases[2m > [22m[2mshould handle special characters in content
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mEdge Cases[2m > [22m[2mshould handle unicode characters
+[22m[39mNo tables found to reset
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstderr[2m | tests/document-generation.test.js
+[22m[39mError cleaning test database: error: schema "public" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg[24m\lib\client.js:545:17
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at teardownTestDatabase [90m(D:\manuscript-platform\[39mtests\test-helpers\database.js:61:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:59:7 {
+  length: [33m96[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'3F000'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'namespace.c'[39m,
+  line: [32m'3544'[39m,
+  routine: [32m'get_namespace_oid'[39m
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/document-generation.test.js [2m([22m[2m27 tests[22m[2m)[22m[33m 32640[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould generate query letter within word count range [33m 1956[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould include essential query letter components [33m 2464[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould validate query letter structure [33m 2867[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould reject query letters that are too short [33m 3516[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould reject query letters that are too long [33m 2715[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould generate short synopsis at 500 words [33m 2493[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould generate long synopsis at 2500 words [33m 2628[2mms[22m[39m
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Payment] Free subscription created for user 0b76b88e-9886-4dfd-be19-dfcb8b1c8e24
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39mDatabase query error: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:65:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+Query: SELECT email_verification FROM email_preferences WHERE user_id = $1
+Params: [ [32m'0b76b88e-9886-4dfd-be19-dfcb8b1c8e24'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Email] Error checking preferences: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:65:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39mVerification email sent to: newuser@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould reject registration with duplicate email
+[22m[39m[Payment] Free subscription created for user 54047df6-0136-445b-8e81-dc774fbfe6c8
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould reject registration with duplicate email
+[22m[39mDatabase query error: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:133:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+Query: SELECT email_verification FROM email_preferences WHERE user_id = $1
+Params: [ [32m'54047df6-0136-445b-8e81-dc774fbfe6c8'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould reject registration with duplicate email
+[22m[39m[Email] Error checking preferences: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:133:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould reject registration with duplicate email
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould reject registration with duplicate email
+[22m[39mVerification email sent to: duplicate@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Payment] Free subscription created for user 156daf25-a8d4-496d-9c57-2e6578a1c210
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39mDatabase query error: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:150:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+Query: SELECT email_verification FROM email_preferences WHERE user_id = $1
+Params: [ [32m'156daf25-a8d4-496d-9c57-2e6578a1c210'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Email] Error checking preferences: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:150:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39mVerification email sent to: bcrypt-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Payment] Free subscription created for user 32cf9831-f86d-4b2c-894f-b16dce53c600
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mDatabase query error: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:174:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+Query: SELECT email_verification FROM email_preferences WHERE user_id = $1
+Params: [ [32m'32cf9831-f86d-4b2c-894f-b16dce53c600'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Email] Error checking preferences: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:174:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mDatabase query error: error: insert or update on table "email_log" violates foreign key constraint "email_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:416:5[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:453:3[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:174:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m293[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(32cf9831-f86d-4b2c-894f-b16dce53c600) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'email_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'email_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO email_log (id, user_id, to_email, subject, email_type, status, sent_at, created_at, error_message)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'fe4b9253-9a14-45eb-90c9-a7a33fe17776'[39m,
+  [32m'32cf9831-f86d-4b2c-894f-b16dce53c600'[39m,
+  [32m'casesensitive@example.com'[39m,
+  [32m'📧 Verify Your Email - ManuscriptHub'[39m,
+  [32m'email_verification'[39m,
+  [32m'failed'[39m,
+  [1mnull[22m,
+  [33m1762727816[39m,
+  [32m'MailChannels API error'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Email] Error logging email: error: insert or update on table "email_log" violates foreign key constraint "email_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:416:5[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:453:3[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:174:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m293[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(32cf9831-f86d-4b2c-894f-b16dce53c600) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'email_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'email_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mVerification email sent to: casesensitive@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Payment] Free subscription created for user 607ce9fa-1fa2-4d6b-ad46-e29c511b5e0b
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39mDatabase query error: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:190:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+Query: SELECT email_verification FROM email_preferences WHERE user_id = $1
+Params: [ [32m'607ce9fa-1fa2-4d6b-ad46-e29c511b5e0b'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Email] Error checking preferences: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:190:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39mVerification email sent to: verify-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Payment] Free subscription created for user 4d77a694-ae82-4815-a856-d5ec19eb181b
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39mDatabase query error: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:217:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+Query: SELECT email_verification FROM email_preferences WHERE user_id = $1
+Params: [ [32m'4d77a694-ae82-4815-a856-d5ec19eb181b'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Email] Error checking preferences: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:217:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39mVerification email sent to: email-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Payment] Free subscription created for user 2d8d5a4f-2d9a-43f6-8624-9e06befbdf22
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39mDatabase query error: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:238:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+Query: SELECT email_verification FROM email_preferences WHERE user_id = $1
+Params: [ [32m'2d8d5a4f-2d9a-43f6-8624-9e06befbdf22'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Email] Error checking preferences: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:238:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39mVerification email sent to: audit-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Payment] Free subscription created for user 07cd2c75-2811-45ba-8b9b-be3f9ec5629f
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39mDatabase query error: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:255:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+Query: SELECT email_verification FROM email_preferences WHERE user_id = $1
+Params: [ [32m'07cd2c75-2811-45ba-8b9b-be3f9ec5629f'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Email] Error checking preferences: error: column "email_verification" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at checkEmailPreference [90m(D:\manuscript-platform\[39msrc\services\email-service.js:396:19[90m)[39m
+    at sendNotificationEmail [90m(D:\manuscript-platform\[39msrc\services\email-service.js:442:21[90m)[39m
+    at sendEmailVerification [90m(D:\manuscript-platform\[39msrc\services\email-service.js:863:10[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:182:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:255:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m117[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'8'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'3721'[39m,
+  routine: [32m'errorMissingColumn'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39mVerification email sent to: default-role@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould login with valid credentials
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with wrong password
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with non-existent email
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with unverified email
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould update last_login timestamp
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould create session in Redis
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log successful login
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log failed login attempts
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:252:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:478:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'54'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id, email, password_hash, email_verified FROM users WHERE email = $1
+Params: [ [32m'login-test@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log failed login attempts
+[22m[39mLogin error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:252:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:478:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'54'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould verify email with valid token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould reject invalid token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould reject expired token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould reject already used token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould handle missing token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould log email verification event
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould create password reset token for valid email
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould create password reset token for valid email
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:653:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'reset@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould create password reset token for valid email
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:653:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould send password reset email
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould send password reset email
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:677:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'reset@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould send password reset email
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:677:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould not reveal if email does not exist (security)
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould not reveal if email does not exist (security)
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:698:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'nonexistent@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould not reveal if email does not exist (security)
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:698:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'reset@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'reset@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'reset@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:729:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'reset@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:729:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould normalize email to lowercase
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould normalize email to lowercase
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:752:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'casesensitive@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould normalize email to lowercase
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:752:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould reject invalid email format
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould handle missing email
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould log password reset request
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould log password reset request
+[22m[39mDatabase query error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:799:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'reset@example.com'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould log password reset request
+[22m[39mPassword reset request error: error: relation "users" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:124:20[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:490:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:799:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould reset password with valid token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould mark reset token as used
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould reject weak new password
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould reject invalid token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould reject expired token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould reject already used token
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould hash new password with bcrypt
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould log password reset event
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould logout and destroy session
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould clear session cookie
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould log logout event
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return current user with valid session
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould not return password hash
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould reject request without session
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould reject request with invalid session
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return email verification status
+[22m[39mNo tables found to reset
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39mNo tables found to reset
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/auth-handlers.test.js [2m([22m[2m53 tests[22m[2m | [22m[31m44 failed[39m[2m)[22m[33m 74842[2mms[22m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould register a new user with valid credentials[39m[33m 4129[2mms[22m[39m
+[31m     → expected 'Registration successful. Please check…' to match /registered successfully/i[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with weak password [33m 3700[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with invalid email [33m 3207[2mms[22m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould reject registration with duplicate email[39m[33m 3257[2mms[22m[39m
+[31m     → expected 201 to be 409 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould hash password with bcrypt[39m[33m 3829[2mms[22m[39m
+[31m     → expected '$2b$12$YMR8CJDqOpezG.YW1wj9weZHnOubw1…' to match /^\$2[ab]\$10\$/[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould normalize email to lowercase[39m[33m 4398[2mms[22m[39m
+[31m     → expected null to be truthy[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould create verification token[39m[33m 3389[2mms[22m[39m
+[31m     → expected +0 to be false // Object.is equality[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould send verification email[39m[33m 2861[2mms[22m[39m
+[31m     → expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould log registration event in audit log [33m 2441[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould set default role to author if not specified [33m 3815[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould login with valid credentials[39m[33m 3104[2mms[22m[39m
+[31m     → expected 400 to be 200 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with wrong password [33m 2869[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with non-existent email [33m 3468[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould reject login with unverified email[39m[33m 3267[2mms[22m[39m
+[31m     → expected 400 to be 403 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould rate limit after 5 failed attempts [33m 3425[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould update last_login timestamp[39m[33m 2592[2mms[22m[39m
+[31m     → Cannot read properties of null (reading 'last_login')[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould create session in Redis[39m[33m 3781[2mms[22m[39m
+[31m     → Cannot read properties of null (reading 'match')[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould log successful login[39m[33m 3933[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould log failed login attempts[39m[33m 2558[2mms[22m[39m
+[31m     → relation "audit_log" does not exist[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould verify email with valid token[39m[32m 69[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould reject invalid token[39m[32m 64[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould reject expired token[39m[32m 62[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould reject already used token[39m[32m 63[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould handle missing token[39m[32m 62[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould log email verification event[39m[32m 62[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould create password reset token for valid email[39m[32m 103[2mms[22m[39m
+[31m     → expected 500 to be 200 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould send password reset email[39m[32m 115[2mms[22m[39m
+[31m     → expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould not reveal if email does not exist (security)[39m[32m 110[2mms[22m[39m
+[31m     → expected 500 to be 200 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould rate limit password reset requests[39m[32m 220[2mms[22m[39m
+[31m     → expected 500 to be 429 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould normalize email to lowercase[39m[32m 163[2mms[22m[39m
+[31m     → expected 500 to be 200 // Object.is equality[39m
+   [32m✓[39m POST /auth/request-password-reset[2m > [22mshould reject invalid email format[32m 62[2mms[22m[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould handle missing email[39m[32m 65[2mms[22m[39m
+[31m     → expected 'Invalid email address' to match /email.*required/i[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould log password reset request[39m[32m 106[2mms[22m[39m
+[31m     → relation "audit_log" does not exist[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reset password with valid token[39m[32m 61[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould mark reset token as used[39m[32m 62[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reject weak new password[39m[32m 60[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reject invalid token[39m[32m 60[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reject expired token[39m[32m 61[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reject already used token[39m[32m 61[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould hash new password with bcrypt[39m[32m 62[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould log password reset event[39m[32m 61[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/logout[2m > [22mshould logout and destroy session[39m[32m 62[2mms[22m[39m
+[31m     → expected 401 to be 200 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/logout[2m > [22mshould clear session cookie[39m[32m 62[2mms[22m[39m
+[31m     → the given combination of arguments (null and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string[39m
+[31m   [31m×[31m POST /auth/logout[2m > [22mshould log logout event[39m[32m 63[2mms[22m[39m
+[31m     → relation "audit_log" does not exist[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould return current user with valid session[39m[32m 64[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould not return password hash[39m[32m 63[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould reject request without session[39m[32m 71[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould reject request with invalid session[39m[32m 62[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould return email verification status[39m[32m 62[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould resend verification email for unverified user[39m[32m 103[2mms[22m[39m
+[31m     → expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould reject resend for already verified user[39m[33m 319[2mms[22m[39m
+[31m     → column "email_verified" is of type integer but expression is of type boolean[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould rate limit resend requests[39m[33m 465[2mms[22m[39m
+[31m     → expected 200 to be 429 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould not reveal if email does not exist (security) [33m 421[2mms[22m[39m
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/error-handling.test.js[2m > [22m[2mError Handling[2m > [22m[2mError Classes[2m > [22m[2mshould create AppError with correct properties
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/error-handling.test.js[2m > [22m[2mError Handling[2m > [22m[2mError Classes[2m > [22m[2mshould create AppError with correct properties
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/error-handling.test.js [2m([22m[2m24 tests[22m[2m)[22m[33m 94090[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create AppError with correct properties [33m 2304[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould serialize AppError to JSON correctly [33m 4433[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create AuthenticationError with 401 status [33m 4109[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create AuthorizationError with 403 status [33m 3335[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create ValidationError with 400 status [33m 2656[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create NotFoundError with 404 status [33m 2584[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create RateLimitError with 429 status [33m 4163[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create ConflictError with 409 status [33m 3583[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create ServerError with 500 status [33m 2652[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create ExternalServiceError with service name [33m 3878[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould create Response with correct status and JSON [33m 3364[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould handle generic Error objects [33m 3150[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould include Retry-After header for rate limit errors [33m 4151[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould merge additional headers [33m 2557[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should not throw when condition is true [33m 3456[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should throw ValidationError when condition is false [33m 2508[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should include details in error [33m 4117[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should not throw when userId exists [33m 3498[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should throw when userId is null [33m 4063[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should throw when userId is undefined [33m 3432[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthorized should not throw when permission is true [33m 4226[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthorized should throw when permission is false [33m 2951[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Inheritance[2m > [22mshould maintain instanceof relationships [33m 3855[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Inheritance[2m > [22mshould have correct error names [33m 4751[2mms[22m[39m
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/infrastructure.test.js[2m > [22m[2mTest Infrastructure[2m > [22m[2mDatabase Utilities[2m > [22m[2mshould insert and retrieve test records
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/infrastructure.test.js[2m > [22m[2mTest Infrastructure[2m > [22m[2mDatabase Utilities[2m > [22m[2mshould insert and retrieve test records
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[0mGET /health [32m200[0m 8.846 ms - 105[0m
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/infrastructure.test.js [2m([22m[2m13 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[33m 35946[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould insert and retrieve test records[39m[33m 1910[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould count test records[39m[33m 2048[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould reset database between tests [33m 1961[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mAPI Client[2m > [22mshould make HTTP requests [33m 1805[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client [33m 3053[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client with expiration [33m 1808[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock storage adapter[39m[33m 1882[2mms[22m[39m
+[31m     → The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user data [33m 3320[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user with overrides [33m 1781[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test manuscript data [33m 2373[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould generate unique test emails [33m 1787[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated user into database[39m[33m 2418[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated manuscript into database[39m[33m 2721[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Webhook] Processing event: checkout.session.completed evt_test_bc4f6b8b5c3292c2bae9a27b
+[Webhook] Checkout completed for user: user-123 plan: [90mundefined[39m
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Webhook] One-time payment recorded: 5d7d3072-613d-4a33-8a5f-fd687b0903cb
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Budget] Error updating spend: TypeError: env.DB.prepare(...).first is not a function
+    at updateBudgetSpend [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:226:85[90m)[39m
+    at logCost [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:164:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at handleCheckoutCompleted [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:181:7[90m)[39m
+    at handleStripeWebhook [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:54:9[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\webhook-signature-verification.test.js:107:26
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Budget] Error updating user spend: TypeError: Cannot read properties of null (reading 'current_spend_usd')
+    at updateUserSpend [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:291:34[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at logCost [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:168:7[90m)[39m
+    at handleCheckoutCompleted [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:181:7[90m)[39m
+    at handleStripeWebhook [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:54:9[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\webhook-signature-verification.test.js:107:26
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with recent timestamp (within 5 min)
+[22m[39m[Webhook] Processing event: checkout.session.completed evt_test_7deabf9f58389a0d43df65af
+[Webhook] Checkout completed for user: [90mundefined[39m plan: [90mundefined[39m
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with recent timestamp (within 5 min)
+[22m[39m[Webhook] One-time payment recorded: 78f442d5-f0be-4e15-9320-921c3f47a7a7
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with recent timestamp (within 5 min)
+[22m[39m[Budget] Error updating spend: TypeError: env.DB.prepare(...).first is not a function
+    at updateBudgetSpend [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:226:85[90m)[39m
+    at logCost [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:164:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at handleCheckoutCompleted [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:181:7[90m)[39m
+    at handleStripeWebhook [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:54:9[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\webhook-signature-verification.test.js:107:26
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with recent timestamp (within 5 min)
+[22m[39m[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mInvalid Signatures[2m > [22m[2mshould reject webhook with incorrect signature
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mInvalid Signatures[2m > [22m[2mshould reject webhook with malformed signature format
+[22m[39m[Webhook] Signature verification failed: No signatures found with expected scheme
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mInvalid Signatures[2m > [22m[2mshould reject webhook with tampered payload
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould reject webhook with expired timestamp (>5 min old)
+[22m[39m[Webhook] Signature verification failed: Timestamp outside the tolerance zone
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould accept webhook with future timestamp (Stripe allows clock skew)
+[22m[39m[Webhook] Processing event: checkout.session.completed evt_test_f4aefe874c781aecdf6563e7
+[Webhook] Checkout completed for user: [90mundefined[39m plan: [90mundefined[39m
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould accept webhook with future timestamp (Stripe allows clock skew)
+[22m[39m[Webhook] One-time payment recorded: cc07c9e6-56ff-4b5a-aecf-c7363340d778
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould accept webhook with future timestamp (Stripe allows clock skew)
+[22m[39m[Budget] Error updating spend: TypeError: env.DB.prepare(...).first is not a function
+    at updateBudgetSpend [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:226:85[90m)[39m
+    at logCost [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:164:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at handleCheckoutCompleted [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:181:7[90m)[39m
+    at handleStripeWebhook [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:54:9[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\webhook-signature-verification.test.js:107:26
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould accept webhook with future timestamp (Stripe allows clock skew)
+[22m[39m[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/integration/webhook-signature-verification.test.js [2m([22m[2m9 tests[22m[2m)[22m[33m 34826[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mValid Signatures[2m > [22mshould accept webhook with valid signature [33m 2777[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mValid Signatures[2m > [22mshould accept webhook with recent timestamp (within 5 min) [33m 2803[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mMissing Signature[2m > [22mshould reject webhook with no signature header [33m 2893[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mMissing Signature[2m > [22mshould reject webhook with empty signature [33m 2614[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with incorrect signature [33m 2671[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with malformed signature format [33m 3851[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with tampered payload [33m 2572[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mReplay Attack Prevention[2m > [22mshould reject webhook with expired timestamp (>5 min old) [33m 2604[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mReplay Attack Prevention[2m > [22mshould accept webhook with future timestamp (Stripe allows clock skew) [33m 3982[2mms[22m[39m
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /create-checkout-session[2m > [22m[2mshould create checkout session for valid subscription
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /create-checkout-session[2m > [22m[2mshould create checkout session for valid subscription
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 26.202 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject webhook with invalid signature
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 3.039 ms - 29[0m
+[0mPOST /webhooks/stripe [33m400[0m 1.200 ms - 33[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject webhook with expired signature (>5 minutes)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.352 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject replay attacks (duplicate event ID)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.666 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould handle malformed signature header
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.589 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould log signature verification failures
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.613 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould return 400 for invalid signatures (not 500)
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.909 ms - 29[0m
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/payment-handlers.test.js [2m([22m[2m54 tests[22m[2m | [22m[31m48 failed[39m[2m)[22m[33m 110713[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create checkout session for valid subscription[39m[33m 2776[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould require authentication for checkout[39m[33m 4027[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould reject invalid price IDs[39m[33m 2763[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould include userId in session metadata[39m[33m 2577[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing priceId field[39m[33m 1539[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing planType field[39m[33m 1566[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create customer if not exists[39m[33m 1746[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould set correct success and cancel URLs[39m[33m 2571[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle Stripe API errors gracefully[39m[33m 1489[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould log checkout session creation[39m[33m 2691[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould accept webhook with valid signature[39m[33m 1773[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with invalid signature [33m 1469[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with missing signature [33m 2255[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with expired signature (>5 minutes) [33m 1812[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject replay attacks (duplicate event ID)[39m[33m 2226[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould handle malformed signature header [33m 1536[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould log signature verification failures [33m 1542[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould return 400 for invalid signatures (not 500) [33m 1539[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - activate subscription[39m[33m 2323[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - record payment[39m[33m 1887[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.updated - sync status[39m[33m 1489[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - downgrade to free[39m[33m 1866[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - preserve data[39m[33m 1522[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - record payment[39m[33m 1482[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - extend billing period[39m[33m 1388[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - mark past_due[39m[33m 1895[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - cancel after 3 failures[39m[33m 2120[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould ignore unhandled event types[39m[33m 1567[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle duplicate webhook deliveries (idempotent)[39m[33m 2053[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle webhook for deleted user gracefully[39m[33m 1493[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle malformed webhook data gracefully[39m[33m 1492[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould log all webhook events[39m[33m 1967[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould return 200 for all webhooks (even errors)[39m[33m 2182[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould process webhook in under 5 seconds[39m[33m 1497[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return current subscription details[39m[33m 2150[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould require authentication[39m[33m 1493[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return free plan for users without subscription[39m[33m 1496[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include Stripe subscription ID[39m[33m 1909[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include current period dates[39m[33m 2106[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return payment history for user[39m[33m 1475[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould require authentication[39m[33m 1476[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return empty array for no payments[39m[33m 1378[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould order payments by date (newest first)[39m[33m 1395[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould not include other users payments[39m[33m 1469[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track manuscript analysis usage[39m[33m 1971[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track different analysis types[39m[33m 2356[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track asset generation separately[39m[33m 1589[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould calculate usage within billing period[39m[33m 1495[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould separate usage across different billing periods[39m[33m 2061[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track usage for users without subscription (pay-per-use)[39m[33m 1517[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould link usage to specific manuscript[39m[33m 1686[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould accumulate credits across multiple analyses[39m[33m 2505[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track timestamp for usage analytics[39m[33m 1547[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould delete usage records when manuscript is deleted (CASCADE)[39m[33m 2215[2mms[22m[39m
+[31m     → invalid input syntax for type integer: "true"[39m

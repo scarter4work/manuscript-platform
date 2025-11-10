@@ -1,0 +1,1739 @@
+
+> manuscript-upload-api@1.0.0 test
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mD:/manuscript-platform[39m
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+Initializing adapters...
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mFailed to initialize adapters: Error: DATABASE_URL environment variable is required
+    at createDatabaseAdapter [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:214:11[90m)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:68:16[90m)[39m
+    at start [90m(D:\manuscript-platform\[39mserver.js:306:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mserver.js:320:3
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+    at VitestExecutor.directRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:375:3[90m)[39m
+    at VitestExecutor.cachedRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:189:11[90m)[39m
+    at VitestExecutor.dependencyRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:239:10[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\test-helpers\api-client.js:12:1
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+    at VitestExecutor.directRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:375:3[90m)[39m
+    at VitestExecutor.cachedRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:189:11[90m)[39m
+    at VitestExecutor.dependencyRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:239:10[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\payment-handlers.test.js:19:1
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39mFailed to initialize adapters: Error: DATABASE_URL environment variable is required
+    at createDatabaseAdapter [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:214:11[90m)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:68:16[90m)[39m
+    at start [90m(D:\manuscript-platform\[39mserver.js:306:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mserver.js:320:3
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+    at VitestExecutor.directRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:375:3[90m)[39m
+    at VitestExecutor.cachedRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:189:11[90m)[39m
+    at VitestExecutor.dependencyRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:239:10[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\test-helpers\api-client.js:12:1
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+    at VitestExecutor.directRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:375:3[90m)[39m
+    at VitestExecutor.cachedRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:189:11[90m)[39m
+    at VitestExecutor.dependencyRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:239:10[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\payment-handlers.test.js:19:1
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+Server will continue running but API requests will fail until adapters are ready
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+✓ Server running on port 3000
+✓ Environment: development
+✓ Health check: http://localhost:3000/health
+⏳ Initializing adapters...
+
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database initialized
+✓ Test environment ready
+
+
+[0mPOST /webhooks/stripe [31m503[0m 11.490 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.645 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.415 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.235 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 1.847 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.365 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.306 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.317 ms - 46[0m
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/payment-handlers.test.js [2m([22m[2m54 tests[22m[2m | [22m[31m54 failed[39m[2m)[22m[33m 115279[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create checkout session for valid subscription[39m[33m 1490[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould require authentication for checkout[39m[33m 1814[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould reject invalid price IDs[39m[33m 1434[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould include userId in session metadata[39m[33m 1542[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing priceId field[39m[33m 1743[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing planType field[39m[33m 2372[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create customer if not exists[39m[33m 1480[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould set correct success and cancel URLs[39m[33m 2055[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle Stripe API errors gracefully[39m[33m 1521[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould log checkout session creation[39m[33m 2115[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould accept webhook with valid signature[39m[33m 1917[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 503[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with invalid signature[39m[33m 1469[2mms[22m[39m
+[31m     → expected [ 400, 404 ] to include 503[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with missing signature[39m[33m 1729[2mms[22m[39m
+[31m     → expected [ 400, 404 ] to include 503[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with expired signature (>5 minutes)[39m[33m 1573[2mms[22m[39m
+[31m     → expected [ 400, 404 ] to include 503[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject replay attacks (duplicate event ID)[39m[33m 1572[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 503[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould handle malformed signature header[39m[33m 1465[2mms[22m[39m
+[31m     → expected [ 400, 404 ] to include 503[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould log signature verification failures[39m[33m 1402[2mms[22m[39m
+[31m     → column "event_type" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould return 400 for invalid signatures (not 500)[39m[33m 1902[2mms[22m[39m
+[31m     → expected [ 400, 404 ] to include 503[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - activate subscription[39m[33m 2498[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - record payment[39m[33m 1508[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.updated - sync status[39m[33m 2272[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - downgrade to free[39m[33m 1706[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - preserve data[39m[33m 1767[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - record payment[39m[33m 2745[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - extend billing period[39m[33m 1865[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - mark past_due[39m[33m 1747[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - cancel after 3 failures[39m[33m 2739[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould ignore unhandled event types[39m[33m 1736[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle duplicate webhook deliveries (idempotent)[39m[33m 2671[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle webhook for deleted user gracefully[39m[33m 1775[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle malformed webhook data gracefully[39m[33m 1772[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould log all webhook events[39m[33m 2288[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould return 200 for all webhooks (even errors)[39m[33m 1891[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould process webhook in under 5 seconds[39m[33m 1827[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return current subscription details[39m[33m 2625[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould require authentication[39m[33m 1784[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return free plan for users without subscription[39m[33m 2725[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include Stripe subscription ID[39m[33m 2393[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include current period dates[39m[33m 2517[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return payment history for user[39m[33m 1778[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould require authentication[39m[33m 1765[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return empty array for no payments[39m[33m 2624[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould order payments by date (newest first)[39m[33m 1810[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould not include other users payments[39m[33m 1765[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track manuscript analysis usage[39m[33m 2813[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track different analysis types[39m[33m 1809[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track asset generation separately[39m[33m 2180[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould calculate usage within billing period[39m[33m 2739[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould separate usage across different billing periods[39m[33m 2665[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track usage for users without subscription (pay-per-use)[39m[33m 2547[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould link usage to specific manuscript[39m[33m 2805[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould accumulate credits across multiple analyses[39m[33m 3447[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track timestamp for usage analytics[39m[33m 1891[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould delete usage records when manuscript is deleted (CASCADE)[39m[33m 2038[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database initialized
+✓ Test environment ready
+
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Payment] Free subscription created for user 28aad383-5862-4ec0-bd57-a29d68e5a22c
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39mRegistration error: TypeError: Cannot read properties of undefined (reading 'get')
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:312:37[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:23[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:65:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould reject registration with duplicate email
+[22m[39m[Payment] Free subscription created for user 3dc79e95-72e8-4325-97bf-adf8bc7fcae0
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould reject registration with duplicate email
+[22m[39mRegistration error: TypeError: Cannot read properties of undefined (reading 'get')
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:312:37[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:23[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:133:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Payment] Free subscription created for user e361d64a-c4f5-4f62-8798-13999a6da092
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39mRegistration error: TypeError: Cannot read properties of undefined (reading 'get')
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:312:37[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:23[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:150:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Payment] Free subscription created for user 96398066-da28-439b-8b6d-9bd1ea4b603b
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mRegistration error: TypeError: Cannot read properties of undefined (reading 'get')
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:312:37[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:23[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:174:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Payment] Free subscription created for user dfea0b0d-ed3d-4306-b23c-a7c361202c07
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39mRegistration error: TypeError: Cannot read properties of undefined (reading 'get')
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:312:37[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:23[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:190:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Payment] Free subscription created for user 5d9ba121-a08b-4975-9799-55c7d5d7eb59
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39mRegistration error: TypeError: Cannot read properties of undefined (reading 'get')
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:312:37[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:23[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:217:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Payment] Free subscription created for user c71cf9ae-d2ef-4536-80ef-9abbc8591af1
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39mRegistration error: TypeError: Cannot read properties of undefined (reading 'get')
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:312:37[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:23[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:238:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Payment] Free subscription created for user 6e097f3d-d399-4cbf-819e-b6a2f461da50
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39mRegistration error: TypeError: Cannot read properties of undefined (reading 'get')
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:312:37[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:23[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:255:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould login with valid credentials
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:292:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'c05dac84-e847-45b1-bd71-6e2c91016bc0'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722464[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould login with valid credentials
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:292:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with wrong password
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:318:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'9410baa3-2500-480b-966e-86287bdf1272'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722466[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with wrong password
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:318:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with non-existent email
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:336:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'69bfd0cc-36f3-4ee8-b6d6-373e53691748'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722468[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"nonexistent@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with non-existent email
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:336:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with unverified email
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:361:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'0b207e48-1751-4b14-9564-5e58fb6fac3f'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722469[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"unverified@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with unverified email
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:361:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'fa9cc75d-6775-4020-aa3c-f7b774089a2d'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722472[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'2d5da403-bea6-4217-9398-813f565c5e8c'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722472[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'b257982e-5145-4298-94ea-0c7cca411e13'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722472[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'4b8f6eb3-abac-4ae5-ab30-6d8efde5bf4b'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722472[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'63c96d30-777d-4809-ac7f-975bd06cb45a'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722472[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:381:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould update last_login timestamp
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:413:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'b23a97c7-a6cd-4ac9-bb2a-c8a7cee8ae5f'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722473[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould update last_login timestamp
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:413:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould create session in Redis
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:432:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'b4002fb3-c73e-4bfe-8ab8-7189a09358cb'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722475[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould create session in Redis
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:432:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log successful login
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:461:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'3ad1f405-0b27-49f5-8ce7-46aed5b7e884'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722477[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log successful login
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:461:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log failed login attempts
+[22m[39mDatabase query error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:478:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'f059b94f-a244-4e01-bf2b-fd684ac7166c'[39m,
+  [32m'anonymous'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'anonymous'[39m,
+  [33m1762722479[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log failed login attempts
+[22m[39mAudit log error: error: insert or update on table "audit_log" violates foreign key constraint "audit_log_user_id_fkey"
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:316:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:478:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m266[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'23503'[39m,
+  detail: [32m'Key (user_id)=(anonymous) is not present in table "users".'[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [32m'public'[39m,
+  table: [32m'audit_log'[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [32m'audit_log_user_id_fkey'[39m,
+  file: [32m'ri_triggers.c'[39m,
+  line: [32m'2610'[39m,
+  routine: [32m'ri_ReportViolation'[39m
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/auth-handlers.test.js [2m([22m[2m53 tests[22m[2m | [22m[31m45 failed[39m[2m)[22m[33m 107503[2mms[22m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould register a new user with valid credentials[39m[33m 1882[2mms[22m[39m
+[31m     → expected 500 to be 201 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with weak password [33m 1388[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with invalid email [33m 1623[2mms[22m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould reject registration with duplicate email[39m[33m 1920[2mms[22m[39m
+[31m     → expected 500 to be 409 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould hash password with bcrypt[39m[33m 2007[2mms[22m[39m
+[31m     → expected '$2b$12$Vwtgz6CN6L6GEKrBDgIeDe0T6.C3ro…' to match /^\$2[ab]\$10\$/[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould normalize email to lowercase [33m 2236[2mms[22m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould create verification token[39m[33m 1641[2mms[22m[39m
+[31m     → expected undefined to be truthy[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould send verification email[39m[33m 1668[2mms[22m[39m
+[31m     → expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould log registration event in audit log[39m[33m 3464[2mms[22m[39m
+[31m     → column "event_type" does not exist[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould set default role to author if not specified [33m 2003[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould login with valid credentials[39m[33m 1859[2mms[22m[39m
+[31m     → expected 400 to be 200 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with wrong password [33m 1493[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with non-existent email [33m 1561[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould reject login with unverified email[39m[33m 1679[2mms[22m[39m
+[31m     → expected 400 to be 403 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould rate limit after 5 failed attempts [33m 2526[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould update last_login timestamp[39m[33m 1735[2mms[22m[39m
+[31m     → Cannot read properties of null (reading 'last_login')[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould create session in Redis[39m[33m 1769[2mms[22m[39m
+[31m     → Cannot read properties of null (reading 'match')[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould log successful login[39m[33m 1768[2mms[22m[39m
+[31m     → column "event_type" does not exist[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould log failed login attempts[39m[33m 1747[2mms[22m[39m
+[31m     → column "event_type" does not exist[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould verify email with valid token[39m[33m 1547[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould reject invalid token[39m[33m 1784[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould reject expired token[39m[33m 1840[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould reject already used token[39m[33m 2806[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould handle missing token[39m[33m 1399[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould log email verification event[39m[33m 1462[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould create password reset token for valid email[39m[33m 1490[2mms[22m[39m
+[31m     → handleRequestPasswordReset is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould send password reset email[39m[33m 2090[2mms[22m[39m
+[31m     → handleRequestPasswordReset is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould not reveal if email does not exist (security)[39m[33m 1950[2mms[22m[39m
+[31m     → handleRequestPasswordReset is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould rate limit password reset requests[39m[33m 1747[2mms[22m[39m
+[31m     → handleRequestPasswordReset is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould normalize email to lowercase[39m[33m 2351[2mms[22m[39m
+[31m     → handleRequestPasswordReset is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould reject invalid email format[39m[33m 1413[2mms[22m[39m
+[31m     → handleRequestPasswordReset is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould handle missing email[39m[33m 2528[2mms[22m[39m
+[31m     → handleRequestPasswordReset is not a function[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould log password reset request[39m[33m 1724[2mms[22m[39m
+[31m     → handleRequestPasswordReset is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reset password with valid token[39m[33m 1754[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould mark reset token as used[39m[33m 1998[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reject weak new password[39m[33m 1546[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reject invalid token[39m[33m 1586[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reject expired token[39m[33m 1883[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reject already used token[39m[33m 2131[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould hash new password with bcrypt[39m[33m 1355[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould log password reset event[39m[33m 1493[2mms[22m[39m
+[31m     → createVerificationToken is not a function[39m
+[31m   [31m×[31m POST /auth/logout[2m > [22mshould logout and destroy session[39m[33m 2508[2mms[22m[39m
+[31m     → expected 401 to be 200 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/logout[2m > [22mshould clear session cookie[39m[33m 1748[2mms[22m[39m
+[31m     → the given combination of arguments (null and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string[39m
+[31m   [31m×[31m POST /auth/logout[2m > [22mshould log logout event[39m[33m 1506[2mms[22m[39m
+[31m     → column "event_type" does not exist[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould return current user with valid session[39m[33m 2034[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould not return password hash[39m[33m 2196[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould reject request without session[39m[33m 1756[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould reject request with invalid session[39m[33m 1755[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould return email verification status[39m[33m 1527[2mms[22m[39m
+[31m     → handleGetCurrentUser is not a function[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould resend verification email for unverified user[39m[33m 1574[2mms[22m[39m
+[31m     → expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould reject resend for already verified user[39m[33m 2473[2mms[22m[39m
+[31m     → column "email_verified" is of type integer but expression is of type boolean[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould rate limit resend requests[39m[33m 1957[2mms[22m[39m
+[31m     → expected 200 to be 429 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould not reveal if email does not exist (security) [33m 2304[2mms[22m[39m
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Initializing adapters...
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mFailed to initialize adapters: Error: DATABASE_URL environment variable is required
+    at createDatabaseAdapter [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:214:11[90m)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:68:16[90m)[39m
+    at start [90m(D:\manuscript-platform\[39mserver.js:306:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mserver.js:320:3
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+    at VitestExecutor.directRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:375:3[90m)[39m
+    at VitestExecutor.cachedRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:189:11[90m)[39m
+    at VitestExecutor.dependencyRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:239:10[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\test-helpers\api-client.js:12:1
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+    at VitestExecutor.directRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:375:3[90m)[39m
+    at VitestExecutor.cachedRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:189:11[90m)[39m
+    at VitestExecutor.dependencyRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:239:10[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\infrastructure.test.js:13:1
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+
+[90mstderr[2m | tests/integration/infrastructure.test.js
+[22m[39mFailed to initialize adapters: Error: DATABASE_URL environment variable is required
+    at createDatabaseAdapter [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:214:11[90m)[39m
+    at initializeAdapters [90m(D:\manuscript-platform\[39mserver.js:68:16[90m)[39m
+    at start [90m(D:\manuscript-platform\[39mserver.js:306:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mserver.js:320:3
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+    at VitestExecutor.directRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:375:3[90m)[39m
+    at VitestExecutor.cachedRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:189:11[90m)[39m
+    at VitestExecutor.dependencyRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:239:10[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\test-helpers\api-client.js:12:1
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+    at VitestExecutor.directRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:375:3[90m)[39m
+    at VitestExecutor.cachedRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:189:11[90m)[39m
+    at VitestExecutor.dependencyRequest [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:239:10[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\infrastructure.test.js:13:1
+    at VitestExecutor.runModule [90m(file:///D:/manuscript-platform/[39mnode_modules/[4mvite-node[24m/dist/client.mjs:397:4[90m)[39m
+Server will continue running but API requests will fail until adapters are ready
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+✓ Server running on port 3000
+✓ Environment: development
+✓ Health check: http://localhost:3000/health
+⏳ Initializing adapters...
+
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database initialized
+✓ Test environment ready
+
+
+[0mGET /health [31m503[0m 2.793 ms - 46[0m
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/infrastructure.test.js [2m([22m[2m13 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 31872[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould insert and retrieve test records[39m[33m 1781[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould count test records[39m[33m 1379[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould reset database between tests [33m 1455[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mAPI Client[2m > [22mshould make HTTP requests[39m[33m 1501[2mms[22m[39m
+[31m     → expected 503 to be less than or equal to 404[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client [33m 2347[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client with expiration [33m 2114[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock storage adapter[39m[33m 1546[2mms[22m[39m
+[31m     → The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received undefined[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user data [33m 2495[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user with overrides [33m 1950[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test manuscript data [33m 1410[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould generate unique test emails [33m 2971[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated user into database[39m[33m 1578[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated manuscript into database[39m[33m 2553[2mms[22m[39m
+[31m     → column "updated_at" of relation "users" does not exist[39m
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database initialized
+✓ Test environment ready
+
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/auth-utils.test.js [2m([22m[2m22 tests[22m[2m)[22m[33m 51308[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould accept a valid password [33m 1404[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password shorter than 8 characters [33m 1440[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without uppercase letter [33m 1464[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without lowercase letter [33m 2404[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without number [33m 2454[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without special character [33m 1486[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject null or undefined password [33m 2156[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould accept password with all requirements [33m 1729[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould return multiple errors for invalid password [33m 1542[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould accept valid email addresses [33m 2488[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould reject invalid email addresses [33m 1702[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould handle edge cases [33m 1689[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould hash a password [33m 2506[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould produce different hashes for same password [33m 2336[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould verify correct password [33m 1948[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould reject incorrect password [33m 2539[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould handle empty passwords [33m 2367[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould be case sensitive [33m 2289[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould handle long passwords [33m 2483[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have valid configuration values [33m 1613[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have password requirements defined [33m 1336[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have rate limit configuration [33m 1541[2mms[22m[39m
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database initialized
+✓ Test environment ready
+
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/submission-packages.test.js [2m([22m[2m31 tests[22m[2m)[22m[33m 64961[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have agent query template [33m 1456[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have full manuscript template [33m 1533[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have query only template [33m 2121[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have contest template [33m 1437[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould validate required documents [33m 1447[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould create package with metadata [33m 2432[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould include document list with ordering [33m 1856[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould validate package has at least one document [33m 2293[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould allow custom package names [33m 1482[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould allow selecting multiple documents [33m 1512[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould maintain document order [33m 1717[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould allow reordering documents [33m 1820[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould generate ZIP with multiple files [33m 1469[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould prefix files with order numbers [33m 1480[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould sanitize filenames [33m 1761[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould support different file formats [33m 2334[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould include metadata file in ZIP [33m 1842[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Duplication[2m > [22mshould create copy of existing package [33m 2234[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Duplication[2m > [22mshould increment copy counter in name [33m 2089[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould list packages for manuscript [33m 1437[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould update package details [33m 1558[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould delete package [33m 1856[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mValidation[2m > [22mshould validate package has required documents [33m 1412[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mValidation[2m > [22mshould validate document exists before adding to package [33m 1560[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mValidation[2m > [22mshould prevent duplicate documents in package [33m 2869[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDownload Tracking[2m > [22mshould track download count [33m 1434[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDownload Tracking[2m > [22mshould track last downloaded timestamp [33m 2139[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle empty package name [33m 1467[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle very long package name [33m 1491[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle package with only one document [33m 2086[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle large file sizes [33m 2063[2mms[22m[39m
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mAI Generation Metadata[2m > [22m[2mshould calculate cost based on token usage
+[22m[39mError resetting test database: error: deadlock detected
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg[24m\lib\client.js:545:17
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at resetTestDatabase [90m(D:\manuscript-platform\[39mtests\test-helpers\database.js:108:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\setup.js:77:5 {
+  length: [33m327[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'40P01'[39m,
+  detail: [32m'Process 21180 waits for AccessExclusiveLock on relation 451517 of database 26919; blocked by process 34252.\n'[39m +
+    [32m'Process 34252 waits for AccessShareLock on relation 451985 of database 26919; blocked by process 21180.'[39m,
+  hint: [32m'See server log for query details.'[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'deadlock.c'[39m,
+  line: [32m'1135'[39m,
+  routine: [32m'DeadLockReport'[39m
+}
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/document-generation.test.js [2m([22m[2m27 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 66957[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould generate query letter within word count range [33m 1473[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould include essential query letter components [33m 1438[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould validate query letter structure [33m 1375[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould reject query letters that are too short [33m 1445[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould reject query letters that are too long [33m 2926[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould generate short synopsis at 500 words [33m 2181[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould generate long synopsis at 2500 words [33m 1888[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould include beginning, middle, and end [33m 1651[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould reveal ending (unlike blurb) [33m 1363[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould maintain chronological order [33m 1406[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mVersion Management[2m > [22mshould create new version on update [33m 2541[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mVersion Management[2m > [22mshould track version metadata [33m 1814[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mVersion Management[2m > [22mshould allow rollback to previous version [33m 1734[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mVersion Management[2m > [22mshould maintain version history after rollback [33m 2170[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould validate document type [33m 1472[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould reject invalid document type [33m 1786[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould validate required fields [33m 3392[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould calculate word count accurately [33m 1920[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould handle empty document [33m 2633[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mAI Generation Metadata[2m > [22mshould track generation parameters [33m 1815[2mms[22m[39m
+[31m   [31m×[31m Document Generation[2m > [22mAI Generation Metadata[2m > [22mshould calculate cost based on token usage[39m[33m 1021[2mms[22m[39m
+[31m     → deadlock detected[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mBatch Generation[2m > [22mshould generate all document types at once [33m 3622[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mBatch Generation[2m > [22mshould track individual generation status [33m 1749[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle very short manuscript title [33m 2635[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle very long manuscript title [33m 1985[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle special characters in content [33m 5963[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle unicode characters [33m 3843[2mms[22m[39m

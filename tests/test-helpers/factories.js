@@ -514,3 +514,8 @@ export function createTestAnalysis(manuscriptId, overrides = {}) {
     ...overrides
   };
 }
+
+/**
+ * Export aliases for backward compatibility with test imports
+ */
+export const createVerificationToken = createTestVerificationToken;

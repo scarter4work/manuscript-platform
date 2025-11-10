@@ -1,0 +1,6 @@
+
+> manuscript-upload-api@1.0.0 test
+> NODE_ENV=test vitest run
+
+'NODE_ENV' is not recognized as an internal or external command,
+operable program or batch file.
