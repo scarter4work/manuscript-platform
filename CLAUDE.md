@@ -177,7 +177,13 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 
 ## Recent Activity Log
 
-### 2025-11-10 (Test Failures Analyzed & Issue #75 Fixed)
+### 2025-11-10 (Test Fix Marathon: 39 Tests Fixed! 🎉)
+- **🎯 Major Milestone: 106 → 67 Test Failures (37% Reduction)**
+  - Session duration: 3 hours
+  - Tests fixed: 39 (106 → 67 failures)
+  - Pass rate improvement: 61.9% → 75.9% (+14%)
+  - Commits: 7 (3 core fixes + documentation)
+
 - **Created 5 GitHub Issues for Test Failures (#75-#79)**
   - Analyzed 106 failing tests from PostgreSQL migration
   - Identified 5 distinct root causes
@@ -185,17 +191,34 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
   - Created comprehensive test failure summary (`.github-issues/test-failures-summary.md`)
 
 - **Fixed Issue #75: PostgreSQL Boolean/Integer Type Compatibility** ✅
+  - **Impact:** 15 tests fixed
   - **Problem:** PostgreSQL rejected JavaScript booleans in INTEGER columns (59 errors)
-  - **Solution:** 3-line fix in `insertTestRecord()` to convert true→1, false→0
-  - **Results:** 106→91 failing tests (15 tests fixed), 172→187 passing
-  - **Commit:** `6f64ef3` - fix(tests): Resolve PostgreSQL boolean/integer type compatibility
-  - **Time:** 20 minutes (analysis + implementation + verification)
+  - **Solution:** Modified `insertTestRecord()` to convert booleans → integers (0/1)
+  - **Commit:** `6f64ef3`
   - **Status:** Issue #75 closed, 100% of boolean type errors eliminated
 
-- **Test Suite Status**
-  - Before: 106 failed | 172 passed (278 tests) - 4 failing test files
-  - After: 91 failed | 187 passed (278 tests) - 3 failing test files
-  - Remaining issues: Missing schema columns (`plan`, `report_id`)
+- **Fixed Schema Column Mismatches** ✅
+  - **Impact:** 24 tests fixed
+  - **Problems:**
+    - Subscriptions: `plan` → should be `plan_type`
+    - Manuscripts: `report_id`, `storage_key`, `content_hash` → wrong column names
+  - **Solutions:**
+    - Fixed test factories to match actual PostgreSQL schema
+    - Updated payment-handlers test file expectations
+  - **Commits:** `9a6cc4a`, `f5acb8d`, `0ae89cf`
+
+- **Fixed stripe_customer_id NULL Constraint Issues** ✅
+  - **Impact:** Additional fixes ensuring schema compatibility
+  - **Solutions:**
+    - Factory: Auto-generate if overrides provides null
+    - insertTestRecord: Auto-add for subscriptions table if missing
+  - **Commits:** `f5acb8d`, `0ae89cf`
+
+- **Test Suite Progress**
+  - **Start:** 106 failed | 172 passed (278 tests) - 61.9% pass rate
+  - **End:** 67 failed | 211 passed (278 tests) - 75.9% pass rate ✅
+  - **Improvement:** 39 tests fixed, +14% pass rate
+  - Remaining 67 failures: Auth implementation issues (not schema issues)
 
 - **Committed Issue #73 Final Changes**
   - Commit `1ff9ada`: feat(issue-73): Complete Cloudflare migration - 100% Render infrastructure
