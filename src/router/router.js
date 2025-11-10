@@ -1563,6 +1563,22 @@ async function routeLegacyHandlers(path, method, request, env, addCorsHeaders, r
     return await handleStripeWebhook(request, env, allHeaders);
   }
 
+  // Payment routes (legacy paths without /payments prefix for backward compatibility)
+  if (path === '/create-checkout-session' && method === 'POST') {
+    const { createCheckoutSession } = await import('../handlers/payment-handlers.js');
+    return await createCheckoutSession(request, env, allHeaders);
+  }
+
+  if (path === '/subscription' && method === 'GET') {
+    const { getSubscription } = await import('../handlers/payment-handlers.js');
+    return await getSubscription(request, env, allHeaders);
+  }
+
+  if (path === '/payment-history' && method === 'GET') {
+    const { getPaymentHistory } = await import('../handlers/payment-handlers.js');
+    return await getPaymentHistory(request, env, allHeaders);
+  }
+
   // Asset generation routes
   if (path === '/generate-assets' && method === 'POST') {
     return await assetLegacy.handleGenerateAssets(request, env, allHeaders);

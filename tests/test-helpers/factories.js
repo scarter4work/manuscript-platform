@@ -37,15 +37,24 @@ export function generateTestId() {
 }
 
 /**
- * Create test user data
+ * Create test user data (and optionally insert into database)
  *
- * @param {object} overrides - Override default values
- * @returns {object} User record
+ * BACKWARDS COMPATIBLE: Accepts either (overrides) or (db, overrides)
+ * - If called with db client: creates user data AND inserts into database
+ * - If called without db: just returns user data
+ *
+ * @param {object} dbOrOverrides - Database client OR overrides object
+ * @param {object} overrides - Override default values (if first param is db)
+ * @returns {Promise<object>|object} User record
  */
-export function createTestUser(overrides = {}) {
+export async function createTestUser(dbOrOverrides = {}, overrides = {}) {
+  // Detect if first param is a database client
+  const isDbClient = dbOrOverrides && typeof dbOrOverrides.query === 'function';
+  const actualOverrides = isDbClient ? overrides : dbOrOverrides;
+
   const now = Math.floor(Date.now() / 1000);
 
-  return {
+  const userData = {
     id: generateId(),
     email: generateTestEmail(),
     password_hash: '$2a$10$MOCKED_HASH', // Mock bcrypt hash
@@ -55,8 +64,16 @@ export function createTestUser(overrides = {}) {
     updated_at: now,
     last_login: null,
     stripe_customer_id: null,
-    ...overrides
+    ...actualOverrides
   };
+
+  // If database client was provided, insert the user
+  if (isDbClient) {
+    const { insertTestRecord } = await import('./database.js');
+    await insertTestRecord('users', userData);
+  }
+
+  return userData;
 }
 
 /**
