@@ -188,27 +188,16 @@ export function createTestPayment(userId, overrides = {}) {
 }
 
 /**
- * Create test verification token data (and optionally insert into database)
+ * Create test verification token data
  *
- * BACKWARDS COMPATIBLE: Accepts either (userId, overrides) or (db, overrides)
- * - If called with db client: creates token data AND inserts into database
- * - If called without db: just returns token data
- *
- * @param {object|string} dbOrUserId - Database client OR user ID
+ * @param {string} userId - User ID
  * @param {object} overrides - Override default values
- * @returns {Promise<object>|object} Verification token record
+ * @returns {object} Verification token record
  */
-export async function createTestVerificationToken(dbOrUserId, overrides = {}) {
-  // Detect if first param is a database client
-  const isDbClient = dbOrUserId && typeof dbOrUserId.query === 'function';
-
-  // Extract user_id from overrides if DB client provided
-  const userId = isDbClient ? overrides.user_id : dbOrUserId;
-  const actualOverrides = isDbClient ? overrides : (overrides || {});
-
+export function createTestVerificationToken(userId, overrides = {}) {
   const now = Math.floor(Date.now() / 1000);
 
-  const tokenData = {
+  return {
     id: generateId(),
     user_id: userId,
     token: crypto.randomBytes(32).toString('hex'),
@@ -216,16 +205,8 @@ export async function createTestVerificationToken(dbOrUserId, overrides = {}) {
     used: false,
     expires_at: now + 86400, // +24 hours
     created_at: now,
-    ...actualOverrides
+    ...overrides
   };
-
-  // If database client was provided, insert the token
-  if (isDbClient) {
-    const { insertTestRecord } = await import('./database.js');
-    await insertTestRecord('verification_tokens', tokenData);
-  }
-
-  return tokenData;
 }
 
 /**
