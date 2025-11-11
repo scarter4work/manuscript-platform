@@ -179,7 +179,6 @@ export function createTestPayment(userId, overrides = {}) {
     currency: 'usd',
     status: 'succeeded',
     stripe_payment_intent_id: stripePaymentId,
-    stripe_payment_id: stripePaymentId, // Alias for compatibility
     stripe_invoice_id: `in_${crypto.randomBytes(12).toString('hex')}`,
     payment_type: 'one_time',
     description: 'Freelancer Plan - Monthly',
