@@ -170,13 +170,16 @@ export function createTestSubscription(userId, overrides = {}) {
 export function createTestPayment(userId, overrides = {}) {
   const now = Math.floor(Date.now() / 1000);
 
+  const stripePaymentId = `pi_${crypto.randomBytes(12).toString('hex')}`;
+
   return {
     id: generateId(),
     user_id: userId,
     amount: 2999, // $29.99
     currency: 'usd',
     status: 'succeeded',
-    stripe_payment_intent_id: `pi_${crypto.randomBytes(12).toString('hex')}`,
+    stripe_payment_intent_id: stripePaymentId,
+    stripe_payment_id: stripePaymentId, // Alias for compatibility
     stripe_invoice_id: `in_${crypto.randomBytes(12).toString('hex')}`,
     payment_type: 'one_time',
     description: 'Freelancer Plan - Monthly',

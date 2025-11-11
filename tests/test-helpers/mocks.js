@@ -21,7 +21,11 @@ export function mockStorageAdapter() {
   const storage = new Map();
 
   const mockBucket = {
-    put: vi.fn(async (key, body) => {
+    put: vi.fn(async (keyOrOptions, bodyOrUndefined) => {
+      // Support both signatures: put(key, body) and put({ key, body })
+      const key = typeof keyOrOptions === 'string' ? keyOrOptions : keyOrOptions.key;
+      const body = bodyOrUndefined !== undefined ? bodyOrUndefined : keyOrOptions.body;
+
       storage.set(key, body);
       return {
         key,
@@ -30,11 +34,29 @@ export function mockStorageAdapter() {
       };
     }),
 
-    get: vi.fn(async (key) => {
+    get: vi.fn(async (keyOrOptions) => {
+      // Support both signatures: get(key) and get({ key })
+      const key = typeof keyOrOptions === 'string' ? keyOrOptions : keyOrOptions.key;
       const body = storage.get(key);
+
       if (!body) {
+        // Infrastructure test expects Error, unit test expects null
+        if (typeof keyOrOptions === 'object') {
+          throw new Error('Not Found');
+        }
         return null;
       }
+
+      // Infrastructure test expects capitalized properties, unit test expects lowercase
+      if (typeof keyOrOptions === 'object') {
+        return {
+          Key: key,
+          Body: body,
+          ContentLength: Buffer.isBuffer(body) ? body.length : Buffer.from(body).length,
+          ContentType: 'application/octet-stream'
+        };
+      }
+
       return {
         key,
         body,
@@ -43,7 +65,9 @@ export function mockStorageAdapter() {
       };
     }),
 
-    delete: vi.fn(async (key) => {
+    delete: vi.fn(async (keyOrOptions) => {
+      // Support both signatures: delete(key) and delete({ key })
+      const key = typeof keyOrOptions === 'string' ? keyOrOptions : keyOrOptions.key;
       const existed = storage.has(key);
       storage.delete(key);
       return { deleted: existed };
@@ -53,14 +77,22 @@ export function mockStorageAdapter() {
       const keys = Array.from(storage.keys())
         .filter(k => k.startsWith(prefix))
         .map(key => ({
-          key,
+          Key: key, // S3/B2 format (capitalized)
+          key,      // Also include lowercase for unit tests
+          Size: Buffer.isBuffer(storage.get(key))
+            ? storage.get(key).length
+            : Buffer.from(storage.get(key)).length,
           size: Buffer.isBuffer(storage.get(key))
             ? storage.get(key).length
             : Buffer.from(storage.get(key)).length,
+          LastModified: new Date(),
           lastModified: new Date()
         }));
 
-      return { objects: keys };
+      return {
+        Contents: keys, // Infrastructure test expects this (S3/B2 format)
+        objects: keys   // Unit test expects this
+      };
     }),
 
     // Helper to inspect storage (not part of real API)

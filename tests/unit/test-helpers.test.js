@@ -265,8 +265,8 @@ describe('Test Data Factories', () => {
 
       expect(manuscript.id).toBeTruthy();
       expect(manuscript.user_id).toBe(userId);
-      expect(manuscript.report_id).toBeTruthy();
       expect(manuscript.title).toBeTruthy();
+      expect(manuscript.r2_key).toBeTruthy();
       expect(manuscript.genre).toBe('fiction');
       expect(manuscript.word_count).toBeGreaterThan(0);
     });
