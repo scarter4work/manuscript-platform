@@ -73,7 +73,7 @@ describe('POST /auth/register', () => {
     // Verify user in database
     const user = await findTestRecord('users', { email: 'newuser@example.com' });
     expect(user).toBeTruthy();
-    expect(user.email_verified).toBe(false);
+    expect(user.email_verified).toBeFalsy(); // PostgreSQL returns 0 for false
     expect(user.role).toBe('author');
   });
 

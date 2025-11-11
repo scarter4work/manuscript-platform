@@ -198,11 +198,10 @@ export function createTestVerificationToken(userId, overrides = {}) {
   const now = Math.floor(Date.now() / 1000);
 
   return {
-    id: generateId(),
     user_id: userId,
     token: crypto.randomBytes(32).toString('hex'),
     token_type: 'email_verification',
-    used: false,
+    used: 0, // PostgreSQL INTEGER (0 = false, 1 = true)
     expires_at: now + 86400, // +24 hours
     created_at: now,
     ...overrides
