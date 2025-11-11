@@ -319,7 +319,7 @@ describe('Test Data Factories', () => {
       expect(payment.amount).toBeGreaterThan(0);
       expect(payment.currency).toBe('usd');
       expect(payment.status).toBe('succeeded');
-      expect(payment.stripe_payment_id).toMatch(/^pi_/);
+      expect(payment.stripe_payment_intent_id).toMatch(/^pi_/);
     });
   });
 
