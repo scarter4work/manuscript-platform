@@ -523,7 +523,6 @@ describe('Payment & Webhook Handlers', () => {
         status: 'uploaded',
         r2_key: 'test-key',
         file_hash: 'test-hash',
-        file_size: 250000,
         created_at: Math.floor(Date.now() / 1000),
         updated_at: Math.floor(Date.now() / 1000)
       });

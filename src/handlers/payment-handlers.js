@@ -284,11 +284,11 @@ export async function getSubscription(request, env, corsHeaders) {
 
     if (!subscription) {
       return new Response(JSON.stringify({
-        planType: 'free',
+        plan_type: 'free',
         status: 'active',
         manuscriptsThisPeriod: 0,
         monthlyLimit: 1,
-        periodEnd: Date.now() + (30 * 24 * 60 * 60 * 1000)
+        currentPeriodEnd: Date.now() + (30 * 24 * 60 * 60 * 1000)
       }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -296,13 +296,13 @@ export async function getSubscription(request, env, corsHeaders) {
     }
 
     return new Response(JSON.stringify({
-      planType: subscription.plan_type,
+      plan_type: subscription.plan_type,
       status: subscription.subscription_status,
       stripeSubscriptionId: subscription.stripe_subscription_id,
       manuscriptsThisPeriod: subscription.manuscripts_this_period,
       monthlyLimit: subscription.monthly_limit,
-      periodStart: subscription.current_period_start * 1000,
-      periodEnd: subscription.current_period_end * 1000,
+      currentPeriodStart: subscription.current_period_start * 1000,
+      currentPeriodEnd: subscription.current_period_end * 1000,
       cancelAtPeriodEnd: subscription.cancel_at_period_end === 1
     }), {
       status: 200,

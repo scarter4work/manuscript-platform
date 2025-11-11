@@ -115,7 +115,7 @@ LEFT JOIN subscriptions s ON u.id = s.user_id AND s.status = 'active'
 LEFT JOIN usage_tracking ut ON u.id = ut.user_id
   AND ut.billing_period_start = s.current_period_start
   AND ut.billing_period_end = s.current_period_end
-GROUP BY u.id, s.id;
+GROUP BY u.id, u.email, u.subscription_tier, s.id, s.stripe_subscription_id, s.stripe_customer_id, s.plan_type, s.status, s.current_period_start, s.current_period_end, s.cancel_at_period_end;
 
 -- ============================================================================
 -- INSERT DEFAULT FREE SUBSCRIPTIONS FOR EXISTING USERS

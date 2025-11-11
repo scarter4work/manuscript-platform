@@ -1,0 +1,559 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test vitest run tests/integration/handlers/payment-handlers.test.js
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mD:/manuscript-platform[39m
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /create-checkout-session[2m > [22m[2mshould create checkout session for valid subscription
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /create-checkout-session[2m > [22m[2mshould create checkout session for valid subscription
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[0mPOST /auth/login [32m200[0m 345.751 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 24.177 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 91.854 ms - 128[0m
+[0mPOST /create-checkout-session [33m401[0m 2.034 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 69.953 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 1.153 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 295.543 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 0.937 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 219.264 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 2.508 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 68.643 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 3.957 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 89.540 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 1.272 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 80.455 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 2.045 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 77.639 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 1.101 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 241.171 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 0.870 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 3.978 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject webhook with invalid signature
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.603 ms - 29[0m
+[0mPOST /webhooks/stripe [33m400[0m 0.938 ms - 33[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject webhook with expired signature (>5 minutes)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.753 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject replay attacks (duplicate event ID)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.617 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould handle malformed signature header
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.252 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould log signature verification failures
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.256 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould return 400 for invalid signatures (not 500)
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.074 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle checkout.session.completed - activate subscription
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.728 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle checkout.session.completed - record payment
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.127 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle customer.subscription.updated - sync status
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.990 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle customer.subscription.deleted - downgrade to free
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.592 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle invoice.payment_succeeded - record payment
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.623 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle invoice.payment_succeeded - extend billing period
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.433 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle invoice.payment_failed - mark past_due
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.028 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle invoice.payment_failed - cancel after 3 failures
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.808 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould ignore unhandled event types
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.483 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle duplicate webhook deliveries (idempotent)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.342 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle duplicate webhook deliveries (idempotent)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.212 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle webhook for deleted user gracefully
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.262 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle malformed webhook data gracefully
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 0.962 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould log all webhook events
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.473 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould return 200 for all webhooks (even errors)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.120 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould process webhook in under 5 seconds
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.750 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 125.780 ms - 132[0m
+[0mGET /subscription [32m200[0m 6.891 ms - 206[0m
+[0mPOST /auth/login [32m200[0m 77.590 ms - 132[0m
+[0mGET /subscription [33m401[0m 1.521 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 82.533 ms - 132[0m
+[0mGET /subscription [32m200[0m 6.361 ms - 160[0m
+[0mPOST /auth/login [32m200[0m 82.006 ms - 132[0m
+[0mGET /subscription [32m200[0m 7.076 ms - 206[0m
+[0mPOST /auth/login [32m200[0m 78.038 ms - 132[0m
+[0mGET /subscription [32m200[0m 6.368 ms - 206[0m
+[0mPOST /auth/login [32m200[0m 425.310 ms - 135[0m
+[0mGET /payment-history [32m200[0m 3.812 ms - 534[0m
+[0mPOST /auth/login [32m200[0m 96.373 ms - 135[0m
+[0mGET /payment-history [33m401[0m 1.212 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 104.615 ms - 135[0m
+[0mGET /payment-history [32m200[0m 3.792 ms - 15[0m
+[0mPOST /auth/login [32m200[0m 108.695 ms - 135[0m
+[0mGET /payment-history [32m200[0m 4.177 ms - 534[0m
+[0mPOST /auth/login [32m200[0m 104.304 ms - 135[0m
+[0mGET /payment-history [32m200[0m 4.002 ms - 534[0m
+[0mPOST /auth/login [32m200[0m 765.391 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 94.892 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 71.381 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 84.251 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 126.905 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 64.908 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 65.962 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 222.475 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 102.651 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 219.385 ms - 134[0m
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/payment-handlers.test.js [2m([22m[2m54 tests[22m[2m | [22m[31m14 failed[39m[2m)[22m[33m 130384[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create checkout session for valid subscription[39m[33m 2015[2mms[22m[39m
+[31m     → expected [ 200, 404, 501 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould require authentication for checkout [33m 1823[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould reject invalid price IDs [33m 1517[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould include userId in session metadata [33m 1786[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing priceId field [33m 2374[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing planType field [33m 1988[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create customer if not exists [33m 1922[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould set correct success and cancel URLs [33m 1776[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle Stripe API errors gracefully [33m 1826[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould log checkout session creation [33m 3062[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould accept webhook with valid signature[39m[33m 1728[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with invalid signature [33m 1723[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with missing signature [33m 2450[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with expired signature (>5 minutes) [33m 1677[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject replay attacks (duplicate event ID)[39m[33m 2148[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould handle malformed signature header [33m 2245[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould log signature verification failures [33m 1705[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould return 400 for invalid signatures (not 500) [33m 2681[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - activate subscription [33m 1711[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - record payment [33m 2308[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.updated - sync status[39m[33m 3202[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - downgrade to free [33m 1802[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - preserve data[39m[33m 2235[2mms[22m[39m
+[31m     → column "file_size" of relation "manuscripts" does not exist[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - record payment[39m[33m 1754[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - extend billing period [33m 2055[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - mark past_due [33m 3205[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - cancel after 3 failures [33m 1713[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould ignore unhandled event types[39m[33m 2217[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 400[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle duplicate webhook deliveries (idempotent)[39m[33m 1705[2mms[22m[39m
+[31m     → expected [ 200, 404 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle webhook for deleted user gracefully [33m 1703[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle malformed webhook data gracefully [33m 2536[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould log all webhook events [33m 2177[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould return 200 for all webhooks (even errors)[39m[33m 2087[2mms[22m[39m
+[31m     → expected [ 200, 404, 500 ] to include 400[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould process webhook in under 5 seconds [33m 2023[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return current subscription details[39m[33m 1826[2mms[22m[39m
+[31m     → expected undefined to be 'freelancer' // Object.is equality[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould require authentication [33m 4650[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return free plan for users without subscription[39m[33m 1817[2mms[22m[39m
+[31m     → expected undefined to be 'free' // Object.is equality[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include Stripe subscription ID [33m 2384[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include current period dates[39m[33m 1808[2mms[22m[39m
+[31m     → expected undefined to be defined[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return payment history for user [33m 4011[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould require authentication [33m 2628[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return empty array for no payments [33m 3416[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould order payments by date (newest first)[39m[33m 3804[2mms[22m[39m
+[31m     → actual value must be number or bigint, received "string"[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould not include other users payments [33m 2842[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track manuscript analysis usage [33m 3945[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track different analysis types [33m 2591[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track asset generation separately [33m 2680[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould calculate usage within billing period [33m 2143[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould separate usage across different billing periods [33m 2451[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track usage for users without subscription (pay-per-use) [33m 1686[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould link usage to specific manuscript [33m 1555[2mms[22m[39m
+[31m   [31m×[31m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould accumulate credits across multiple analyses[39m[33m 2431[2mms[22m[39m
+[31m     → expected '5' to be 5 // Object.is equality[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track timestamp for usage analytics [33m 2646[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould delete usage records when manuscript is deleted (CASCADE) [33m 2602[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 14 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create checkout session for valid subscription
+[31m[1mAssertionError[22m: expected [ 200, 404, 501 ] to include 400[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m95:33[22m[39m
+    [90m 93| [39m        expect(response.body.url).toMatch(/checkout\.stripe\.com|strip…
+    [90m 94| [39m      } [35melse[39m {
+    [90m 95| [39m        [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m[33m,[39m [34m501[39m])[33m.[39m[34mtoContain[39m(response[33m.[39mstatus)[33m;[39m
+    [90m   | [39m                                [31m^[39m
+    [90m 96| [39m      }
+    [90m 97| [39m    })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould accept webhook with valid signature
+[31m[1mAssertionError[22m: expected [ 200, 404 ] to include 400[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m252:26[22m[39m
+    [90m250| [39m
+    [90m251| [39m      [90m// Accept 200 (processed) or 404 (endpoint not implemented)[39m
+    [90m252| [39m      [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m])[33m.[39m[34mtoContain[39m(response[33m.[39mstatus)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m253| [39m    })[33m;[39m
+    [90m254| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject replay attacks (duplicate event ID)
+[31m[1mAssertionError[22m: expected [ 200, 404 ] to include 400[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m318:26[22m[39m
+    [90m316| [39m        [33m.[39m[34msend[39m(payload)[33m;[39m
+    [90m317| [39m
+    [90m318| [39m      [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m])[33m.[39m[34mtoContain[39m(response1[33m.[39mstatus)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m319| [39m
+    [90m320| [39m      [90m// Duplicate request with same event ID should be idempotent[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.updated - sync status
+[31m[1mAssertionError[22m: expected [ 200, 404 ] to include 400[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m482:26[22m[39m
+    [90m480| [39m        [33m.[39m[34msend[39m(payload)[33m;[39m
+    [90m481| [39m
+    [90m482| [39m      [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m])[33m.[39m[34mtoContain[39m(response[33m.[39mstatus)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m483| [39m    })[33m;[39m
+    [90m484| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - preserve data
+[31m[1merror[22m: column "file_size" of relation "manuscripts" does not exist[39m
+[90m [2m❯[22m node_modules/pg/lib/client.js:[2m545:17[22m[39m
+[36m [2m❯[22m insertTestRecord tests/test-helpers/database.js:[2m217:18[22m[39m
+    [90m215| [39m  `[39m[33m;[39m
+    [90m216| [39m
+    [90m217| [39m  [35mconst[39m result [33m=[39m [35mawait[39m testDb[33m.[39m[34mquery[39m(query[33m,[39m values)[33m;[39m
+    [90m   | [39m                 [31m^[39m
+    [90m218| [39m  [35mreturn[39m result[33m.[39mrows[[34m0[39m][33m;[39m
+    [90m219| [39m}
+[90m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m517:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - record payment
+[31m[1mAssertionError[22m: expected [ 200, 404 ] to include 400[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m569:26[22m[39m
+    [90m567| [39m        [33m.[39m[34msend[39m(payload)[33m;[39m
+    [90m568| [39m
+    [90m569| [39m      [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m])[33m.[39m[34mtoContain[39m(response[33m.[39mstatus)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m570| [39m    })[33m;[39m
+    [90m571| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould ignore unhandled event types
+[31m[1mAssertionError[22m: expected [ 200, 404 ] to include 400[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m658:26[22m[39m
+    [90m656| [39m
+    [90m657| [39m      [90m// Should return 200 even for unhandled events[39m
+    [90m658| [39m      [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m])[33m.[39m[34mtoContain[39m(response[33m.[39mstatus)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m659| [39m    })[33m;[39m
+    [90m660| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle duplicate webhook deliveries (idempotent)
+[31m[1mAssertionError[22m: expected [ 200, 404 ] to include 400[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m683:26[22m[39m
+    [90m681| [39m
+    [90m682| [39m      [90m// Both should succeed (idempotent)[39m
+    [90m683| [39m      [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m])[33m.[39m[34mtoContain[39m(response1[33m.[39mstatus)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m684| [39m      [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m])[33m.[39m[34mtoContain[39m(response2[33m.[39mstatus)[33m;[39m
+    [90m685| [39m    })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould return 200 for all webhooks (even errors)
+[31m[1mAssertionError[22m: expected [ 200, 404, 500 ] to include 400[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m762:31[22m[39m
+    [90m760| [39m
+    [90m761| [39m      [90m// Stripe expects 200 even if processing fails[39m
+    [90m762| [39m      [34mexpect[39m([[34m200[39m[33m,[39m [34m404[39m[33m,[39m [34m500[39m])[33m.[39m[34mtoContain[39m(response[33m.[39mstatus)[33m;[39m
+    [90m   | [39m                              [31m^[39m
+    [90m763| [39m    })[33m;[39m
+    [90m764| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return current subscription details
+[31m[1mAssertionError[22m: expected undefined to be 'freelancer' // Object.is equality[39m
+
+[32m- Expected:[39m 
+"freelancer"
+
+[31m+ Received:[39m 
+undefined
+
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m832:41[22m[39m
+    [90m830| [39m
+    [90m831| [39m      [35mif[39m (response[33m.[39mstatus [33m===[39m [34m200[39m) {
+    [90m832| [39m        [34mexpect[39m(response[33m.[39mbody[33m.[39mplan_type)[33m.[39m[34mtoBe[39m([32m'freelancer'[39m)[33m;[39m
+    [90m   | [39m                                        [31m^[39m
+    [90m833| [39m        [34mexpect[39m(response[33m.[39mbody[33m.[39mstatus)[33m.[39m[34mtoBe[39m([32m'active'[39m)[33m;[39m
+    [90m834| [39m        [34mexpect[39m(response[33m.[39mbody[33m.[39mcurrentPeriodEnd)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return free plan for users without subscription
+[31m[1mAssertionError[22m: expected undefined to be 'free' // Object.is equality[39m
+
+[32m- Expected:[39m 
+"free"
+
+[31m+ Received:[39m 
+undefined
+
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m857:41[22m[39m
+    [90m855| [39m
+    [90m856| [39m      [35mif[39m (response[33m.[39mstatus [33m===[39m [34m200[39m) {
+    [90m857| [39m        [34mexpect[39m(response[33m.[39mbody[33m.[39mplan_type)[33m.[39m[34mtoBe[39m([32m'free'[39m)[33m;[39m
+    [90m   | [39m                                        [31m^[39m
+    [90m858| [39m      }
+    [90m859| [39m    })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include current period dates
+[31m[1mAssertionError[22m: expected undefined to be defined[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m877:50[22m[39m
+    [90m875| [39m
+    [90m876| [39m      [35mif[39m (response[33m.[39mstatus [33m===[39m [34m200[39m) {
+    [90m877| [39m        [34mexpect[39m(response[33m.[39mbody[33m.[39mcurrentPeriodStart)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m   | [39m                                                 [31m^[39m
+    [90m878| [39m        [34mexpect[39m(response[33m.[39mbody[33m.[39mcurrentPeriodEnd)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m879| [39m      }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould order payments by date (newest first)
+[31m[1mTypeError[22m: actual value must be number or bigint, received "string"[39m
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m975:40[22m[39m
+    [90m973| [39m      if (response.status === 200 && response.body.payments.length >= …
+    [90m974| [39m        [35mconst[39m payments [33m=[39m response[33m.[39mbody[33m.[39mpayments[33m;[39m
+    [90m975| [39m        [34mexpect[39m(payments[[34m0[39m][33m.[39mcreated_at)[33m.[39m[34mtoBeGreaterThanOrEqual[39m(
+    [90m   | [39m                                       [31m^[39m
+    [90m976| [39m          payments[[34m1[39m][33m.[39mcreated_at
+    [90m977| [39m        )[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/payment-handlers.test.js[2m > [22mPayment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould accumulate credits across multiple analyses
+[31m[1mAssertionError[22m: expected '5' to be 5 // Object.is equality[39m
+
+[32m- Expected:[39m 
+5
+
+[31m+ Received:[39m 
+"5"
+
+[36m [2m❯[22m tests/integration/handlers/payment-handlers.test.js:[2m1364:44[22m[39m
+    [90m1362| [39m      )[33m;[39m
+    [90m1363| [39m
+    [90m1364| [39m      [34mexpect[39m(result[33m.[39mrows[[34m0[39m][33m.[39mtotal_credits)[33m.[39m[34mtoBe[39m([34m5[39m)[33m;[39m
+    [90m   | [39m                                           [31m^[39m
+    [90m1365| [39m    })[33m;[39m
+    [90m1366| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m14 failed[39m[22m[2m | [22m[1m[32m40 passed[39m[22m[90m (54)[39m
+[2m   Start at [22m 20:09:00
+[2m   Duration [22m 134.67s[2m (transform 429ms, setup 3.56s, collect 149ms, tests 130.38s, environment 0ms, prepare 366ms)[22m
+
