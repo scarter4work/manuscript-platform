@@ -17,7 +17,7 @@ import { mockRedis, mockStorageAdapter } from '../test-helpers/mocks.js';
 describe('Test Infrastructure', () => {
   describe('Database Utilities', () => {
     it('should insert and retrieve test records', async () => {
-      const user = createTestUser({ email: generateTestEmail('infra-test') });
+      const user = await createTestUser({ email: generateTestEmail('infra-test') });
 
       const inserted = await insertTestRecord('users', user);
       expect(inserted.id).toBe(user.id);
@@ -29,9 +29,9 @@ describe('Test Infrastructure', () => {
     });
 
     it('should count test records', async () => {
-      const user1 = createTestUser({ role: 'author' });
-      const user2 = createTestUser({ role: 'author' });
-      const user3 = createTestUser({ role: 'publisher' });
+      const user1 = await createTestUser({ role: 'author' });
+      const user2 = await createTestUser({ role: 'author' });
+      const user3 = await createTestUser({ role: 'publisher' });
 
       await insertTestRecord('users', user1);
       await insertTestRecord('users', user2);
@@ -156,7 +156,7 @@ describe('Test Infrastructure', () => {
 
   describe('Integration: Factories + Database', () => {
     it('should insert factory-generated user into database', async () => {
-      const user = createTestUser({
+      const user = await createTestUser({
         email: generateTestEmail('factory-db-test')
       });
 
@@ -169,7 +169,7 @@ describe('Test Infrastructure', () => {
     });
 
     it('should insert factory-generated manuscript into database', async () => {
-      const user = createTestUser();
+      const user = await createTestUser();
       await insertTestRecord('users', user);
 
       const manuscript = createTestManuscript(user.id, {
