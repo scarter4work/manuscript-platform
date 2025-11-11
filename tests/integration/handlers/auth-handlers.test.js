@@ -1003,22 +1003,24 @@ describe('POST /auth/logout', () => {
       email_verified: true
     });
 
-    // Create session
+    // Create session (match format from createSession in auth-utils.js)
     sessionId = 'test-session-id-12345';
+    const now = Date.now();
     await mockRedisInstance.setEx(
       `session:${sessionId}`,
       3600,
       JSON.stringify({
         userId: testUser.id,
-        email: testUser.email,
-        createdAt: Date.now()
+        createdAt: now,
+        expiresAt: now + (3600 * 1000),
+        rememberMe: false
       })
     );
   });
 
   it('should logout and destroy session', async () => {
     const mockRequest = {
-      headers: new Map([['cookie', `session_id=${sessionId}`]])
+      headers: new Map([['Cookie', `session_id=${sessionId}`]])
     };
 
     const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
@@ -1036,7 +1038,7 @@ describe('POST /auth/logout', () => {
 
   it('should clear session cookie', async () => {
     const mockRequest = {
-      headers: new Map([['cookie', `session_id=${sessionId}`]])
+      headers: new Map([['Cookie', `session_id=${sessionId}`]])
     };
 
     const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
@@ -1050,7 +1052,7 @@ describe('POST /auth/logout', () => {
 
   it('should log logout event', async () => {
     const mockRequest = {
-      headers: new Map([['cookie', `session_id=${sessionId}`]])
+      headers: new Map([['Cookie', `session_id=${sessionId}`]])
     };
 
     const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
@@ -1082,22 +1084,24 @@ describe('GET /auth/me', () => {
       subscription_tier: 'pro'
     });
 
-    // Create session
+    // Create session (match format from createSession in auth-utils.js)
     sessionId = 'test-session-id-12345';
+    const now = Date.now();
     await mockRedisInstance.setEx(
       `session:${sessionId}`,
       3600,
       JSON.stringify({
         userId: testUser.id,
-        email: testUser.email,
-        createdAt: Date.now()
+        createdAt: now,
+        expiresAt: now + (3600 * 1000),
+        rememberMe: false
       })
     );
   });
 
   it('should return current user with valid session', async () => {
     const mockRequest = {
-      headers: new Map([['cookie', `session_id=${sessionId}`]])
+      headers: new Map([['Cookie', `session_id=${sessionId}`]])
     };
 
     const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
@@ -1114,7 +1118,7 @@ describe('GET /auth/me', () => {
 
   it('should not return password hash', async () => {
     const mockRequest = {
-      headers: new Map([['cookie', `session_id=${sessionId}`]])
+      headers: new Map([['Cookie', `session_id=${sessionId}`]])
     };
 
     const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
@@ -1142,7 +1146,7 @@ describe('GET /auth/me', () => {
 
   it('should reject request with invalid session', async () => {
     const mockRequest = {
-      headers: new Map([['cookie', 'session_id=invalid-session-id']])
+      headers: new Map([['Cookie', 'session_id=invalid-session-id']])
     };
 
     const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
@@ -1156,7 +1160,7 @@ describe('GET /auth/me', () => {
 
   it('should return email verification status', async () => {
     const mockRequest = {
-      headers: new Map([['cookie', `session_id=${sessionId}`]])
+      headers: new Map([['Cookie', `session_id=${sessionId}`]])
     };
 
     const mockEnv = { DB: testDbAdapter, REDIS: mockRedisInstance };
