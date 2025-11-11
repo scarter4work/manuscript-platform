@@ -111,8 +111,8 @@ describe('Test Infrastructure', () => {
   });
 
   describe('Test Data Factories', () => {
-    it('should create test user data', () => {
-      const user = createTestUser();
+    it('should create test user data', async () => {
+      const user = await createTestUser();
 
       expect(user.id).toBeTruthy();
       expect(user.email).toContain('@example.com');
@@ -121,8 +121,8 @@ describe('Test Infrastructure', () => {
       expect(user.created_at).toBeGreaterThan(0);
     });
 
-    it('should create test user with overrides', () => {
-      const user = createTestUser({
+    it('should create test user with overrides', async () => {
+      const user = await createTestUser({
         email: 'custom@example.com',
         role: 'publisher',
         email_verified: false

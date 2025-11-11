@@ -235,8 +235,8 @@ describe('Mock Factories', () => {
 
 describe('Test Data Factories', () => {
   describe('User Factory', () => {
-    it('should create valid user data', () => {
-      const user = createTestUser();
+    it('should create valid user data', async () => {
+      const user = await createTestUser();
 
       expect(user.id).toBeTruthy();
       expect(user.email).toMatch(/@example\.com$/);
@@ -245,8 +245,8 @@ describe('Test Data Factories', () => {
       expect(user.email_verified).toBe(true);
     });
 
-    it('should accept overrides', () => {
-      const user = createTestUser({
+    it('should accept overrides', async () => {
+      const user = await createTestUser({
         email: 'custom@test.com',
         role: 'publisher',
         plan: 'premium',
