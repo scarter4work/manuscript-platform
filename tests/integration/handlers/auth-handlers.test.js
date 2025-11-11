@@ -501,10 +501,10 @@ describe('POST /auth/verify-email', () => {
       email_verified: false
     });
 
-    verificationToken = await createVerificationToken(testDb, {
-      user_id: testUser.id,
+    verificationToken = createVerificationToken(testUser.id, {
       token_type: 'email_verification'
     });
+    await insertTestRecord('verification_tokens', verificationToken);
   });
 
   it('should verify email with valid token', async () => {
@@ -549,11 +549,11 @@ describe('POST /auth/verify-email', () => {
 
   it('should reject expired token', async () => {
     // Create expired token (expires_at in the past)
-    const expiredToken = await createVerificationToken(testDb, {
-      user_id: testUser.id,
+    const expiredToken = createVerificationToken(testUser.id, {
       token_type: 'email_verification',
-      expires_at: new Date(Date.now() - 86400000) // 1 day ago
+      expires_at: Math.floor(Date.now() / 1000) - 86400 // 1 day ago (unix timestamp)
     });
+    await insertTestRecord('verification_tokens', expiredToken);
 
     const mockRequest = {
       json: async () => ({
@@ -821,10 +821,10 @@ describe('POST /auth/reset-password', () => {
       email_verified: true
     });
 
-    resetToken = await createVerificationToken(testDb, {
-      user_id: testUser.id,
+    resetToken = createVerificationToken(testUser.id, {
       token_type: 'password_reset'
     });
+    await insertTestRecord('verification_tokens', resetToken);
   });
 
   it('should reset password with valid token', async () => {
@@ -904,11 +904,11 @@ describe('POST /auth/reset-password', () => {
   });
 
   it('should reject expired token', async () => {
-    const expiredToken = await createVerificationToken(testDb, {
-      user_id: testUser.id,
+    const expiredToken = createVerificationToken(testUser.id, {
       token_type: 'password_reset',
-      expires_at: new Date(Date.now() - 86400000) // 1 day ago
+      expires_at: Math.floor(Date.now() / 1000) - 86400 // 1 day ago (unix timestamp)
     });
+    await insertTestRecord('verification_tokens', expiredToken);
 
     const mockRequest = {
       json: async () => ({
