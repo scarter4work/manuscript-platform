@@ -298,6 +298,7 @@ export async function getSubscription(request, env, corsHeaders) {
     return new Response(JSON.stringify({
       planType: subscription.plan_type,
       status: subscription.subscription_status,
+      stripeSubscriptionId: subscription.stripe_subscription_id,
       manuscriptsThisPeriod: subscription.manuscripts_this_period,
       monthlyLimit: subscription.monthly_limit,
       periodStart: subscription.current_period_start * 1000,
@@ -337,7 +338,7 @@ export async function getPaymentHistory(request, env, corsHeaders) {
     }
 
     const payments = await env.DB.prepare(`
-      SELECT id, amount, currency, payment_type, status, description, created_at
+      SELECT id, user_id, amount, currency, payment_type, status, description, created_at
       FROM payment_history
       WHERE user_id = ?
       ORDER BY created_at DESC
