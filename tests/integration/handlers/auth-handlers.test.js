@@ -35,7 +35,7 @@ const mockEmailService = {
   sendPasswordResetEmail: vi.fn().mockResolvedValue({ success: true }),
 };
 
-vi.mock('../../../src/services/user-notifier.js', () => ({
+vi.mock('../../../src/services/email-service.js', () => ({
   sendEmailVerification: mockEmailService.sendEmailVerification,
   sendPasswordResetEmail: mockEmailService.sendPasswordResetEmail,
 }));
