@@ -258,8 +258,8 @@ export async function handleLogin(request, env) {
       // Record failed login attempt
       await recordLoginAttempt(ipAddress, env);
 
-      // Log failed login
-      await logAuthEvent(env, 'anonymous', 'login_failed', request, {
+      // Log failed login (use user.id if user exists, otherwise 'anonymous')
+      await logAuthEvent(env, user?.id || 'anonymous', 'login_failed', request, {
         email: normalizedEmail,
         reason: 'invalid_credentials'
       });
@@ -481,6 +481,18 @@ export async function handleVerifyEmail(request, env) {
  */
 export async function handlePasswordResetRequest(request, env) {
   try {
+    // Get IP address for rate limiting
+    const ipAddress = request?.headers?.get('x-forwarded-for') || request?.headers?.get('CF-Connecting-IP') || 'unknown';
+
+    // Check rate limiting (3 requests per hour)
+    if (env.REDIS) {
+      const key = `rate_limit:password_reset:${ipAddress}`;
+      const attempts = await env.REDIS.get(key);
+      if (attempts && parseInt(attempts) >= 3) {
+        return errorResponse('Too many password reset requests. Please try again later.', 429);
+      }
+    }
+
     // Parse request body
     const { email } = await request.json();
 
@@ -524,6 +536,13 @@ export async function handlePasswordResetRequest(request, env) {
     } catch (emailError) {
       console.error('Failed to send password reset email:', emailError);
       // Don't fail the request if email fails - still return success
+    }
+
+    // Increment rate limit counter
+    if (env.REDIS) {
+      const key = `rate_limit:password_reset:${ipAddress}`;
+      const current = await env.REDIS.get(key);
+      await env.REDIS.set(key, (parseInt(current) || 0) + 1, { EX: 3600 }); // 1 hour expiry
     }
 
     return jsonResponse({
@@ -663,6 +682,18 @@ export async function handleVerifyResetToken(request, env) {
  */
 export async function handleResendVerification(request, env) {
   try {
+    // Get IP address for rate limiting
+    const ipAddress = request?.headers?.get('x-forwarded-for') || request?.headers?.get('CF-Connecting-IP') || 'unknown';
+
+    // Check rate limiting (3 requests per hour)
+    if (env.REDIS) {
+      const key = `rate_limit:resend_verification:${ipAddress}`;
+      const attempts = await env.REDIS.get(key);
+      if (attempts && parseInt(attempts) >= 3) {
+        return errorResponse('Too many verification resend requests. Please try again later.', 429);
+      }
+    }
+
     // Parse request body
     const { email } = await request.json();
 
@@ -712,6 +743,13 @@ export async function handleResendVerification(request, env) {
     await logAuthEvent(env, user.id, 'verification_resent', request, {
       email: normalizedEmail
     });
+
+    // Increment rate limit counter
+    if (env.REDIS) {
+      const key = `rate_limit:resend_verification:${ipAddress}`;
+      const current = await env.REDIS.get(key);
+      await env.REDIS.set(key, (parseInt(current) || 0) + 1, { EX: 3600 }); // 1 hour expiry
+    }
 
     return jsonResponse({
       message: 'Verification email sent. Please check your inbox.',
