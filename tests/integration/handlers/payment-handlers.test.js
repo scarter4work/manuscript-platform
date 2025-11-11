@@ -523,7 +523,7 @@ describe('Payment & Webhook Handlers', () => {
         status: 'uploaded',
         r2_key: 'test-key',
         file_hash: 'test-hash',
-        created_at: Math.floor(Date.now() / 1000),
+        uploaded_at: Math.floor(Date.now() / 1000),
         updated_at: Math.floor(Date.now() / 1000)
       });
 
@@ -1360,7 +1360,7 @@ describe('Payment & Webhook Handlers', () => {
         [testUser.id, subscription.current_period_start]
       );
 
-      expect(result.rows[0].total_credits).toBe(5);
+      expect(parseInt(result.rows[0].total_credits)).toBe(5);
     });
 
     it('should track timestamp for usage analytics', async () => {

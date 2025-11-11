@@ -282,7 +282,7 @@ export async function getSubscription(request, env, corsHeaders) {
       SELECT * FROM user_subscriptions_with_usage WHERE user_id = ?
     `).bind(userId).first();
 
-    if (!subscription) {
+    if (!subscription || !subscription.plan_type) {
       return new Response(JSON.stringify({
         plan_type: 'free',
         status: 'active',
@@ -349,7 +349,7 @@ export async function getPaymentHistory(request, env, corsHeaders) {
       payments: payments.results.map(p => ({
         ...p,
         amount: p.amount / 100, // Convert cents to dollars
-        createdAt: p.created_at * 1000 // Convert to milliseconds
+        created_at: parseInt(p.created_at) * 1000 // Convert to milliseconds
       }))
     }), {
       status: 200,
