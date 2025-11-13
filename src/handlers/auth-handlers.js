@@ -284,7 +284,7 @@ export async function handleLogin(request, env) {
 
     // Update last login timestamp
     await env.DB.prepare(
-      'UPDATE users SET last_login = EXTRACT(EPOCH FROM NOW())::BIGINT, updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = ?'
+      'UPDATE users SET last_login = NOW() WHERE id = ?'
     ).bind(user.id).run();
 
     // Log successful login

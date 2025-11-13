@@ -327,7 +327,7 @@ export async function logAuthEvent(env, userId, action, request, metadata = {}) 
 
   try {
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, ip_address, user_agent, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       id,
