@@ -223,7 +223,8 @@ async function updateBudgetSpend(env, costUSD) {
 
   try {
     // Get current budget config
-    const config = await env.DB.prepare('SELECT * FROM budget_config WHERE id = 1').first();
+    const result = await env.DB.prepare('SELECT * FROM budget_config WHERE id = 1').all();
+    const config = result.results?.[0];
 
     if (!config) {
       console.error('[Budget] No budget config found');
@@ -264,15 +265,17 @@ async function updateUserSpend(env, userId, costUSD) {
 
   try {
     // Get or create user cost limit
-    let userLimit = await env.DB.prepare(
+    const userLimitResult = await env.DB.prepare(
       'SELECT * FROM user_cost_limits WHERE user_id = ?'
-    ).bind(userId).first();
+    ).bind(userId).all();
+    let userLimit = userLimitResult.results?.[0];
 
     if (!userLimit) {
       // Create default limit based on user tier
-      const user = await env.DB.prepare(
+      const userResult = await env.DB.prepare(
         'SELECT subscription_tier FROM users WHERE id = ?'
-      ).bind(userId).first();
+      ).bind(userId).all();
+      const user = userResult.results?.[0];
 
       const defaultLimit = user?.subscription_tier === 'PRO' ? 50.00 :
                           user?.subscription_tier === 'ENTERPRISE' ? 500.00 : 5.00;
@@ -282,9 +285,10 @@ async function updateUserSpend(env, userId, costUSD) {
         VALUES (?, ?, ?, 0, ?)
       `).bind(userId, defaultLimit, currentMonth, Math.floor(Date.now() / 1000)).run();
 
-      userLimit = await env.DB.prepare(
+      const newUserLimitResult = await env.DB.prepare(
         'SELECT * FROM user_cost_limits WHERE user_id = ?'
-      ).bind(userId).first();
+      ).bind(userId).all();
+      userLimit = newUserLimitResult.results?.[0];
     }
 
     // Reset if new month
@@ -336,10 +340,11 @@ async function checkBudgetAlerts(env, config, newSpend, period) {
     if (percentage < threshold.percent) continue;
 
     // Check if alert already sent for this threshold in this period
-    const existingAlert = await env.DB.prepare(`
+    const existingAlertResult = await env.DB.prepare(`
       SELECT id FROM budget_alerts
       WHERE alert_type = ? AND period = ?
-    `).bind(threshold.type, period).first();
+    `).bind(threshold.type, period).all();
+    const existingAlert = existingAlertResult.results?.[0];
 
     if (existingAlert) continue;
 
@@ -437,9 +442,10 @@ async function sendBudgetAlert(env, alertData) {
  */
 export async function checkUserCostLimit(env, userId) {
   try {
-    const userLimit = await env.DB.prepare(
+    const userLimitResult = await env.DB.prepare(
       'SELECT * FROM user_cost_limits WHERE user_id = ?'
-    ).bind(userId).first();
+    ).bind(userId).all();
+    const userLimit = userLimitResult.results?.[0];
 
     if (!userLimit) {
       return { exceeded: false, limit: 0, spent: 0 };
@@ -463,7 +469,8 @@ export async function checkUserCostLimit(env, userId) {
  */
 export async function checkPlatformBudget(env) {
   try {
-    const config = await env.DB.prepare('SELECT * FROM budget_config WHERE id = 1').first();
+    const result = await env.DB.prepare('SELECT * FROM budget_config WHERE id = 1').all();
+    const config = result.results?.[0];
 
     if (!config) {
       return { exceeded: false, limit: 0, spent: 0 };

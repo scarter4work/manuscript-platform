@@ -64,14 +64,17 @@ describe('Webhook Signature Verification', () => {
 
     // Mock database adapter
     // We only need this for tests that pass signature verification
+    const mockPreparedStatement = {
+      bind: function(...params) {
+        return this; // Return self for chaining
+      },
+      run: async () => ({ success: true }),
+      first: async () => null,
+      all: async () => ({ success: true, results: [] }),
+    };
+
     const mockDatabase = {
-      prepare: () => ({
-        bind: () => ({
-          run: async () => ({ success: true }),
-          first: async () => null,
-          all: async () => ({ results: [] }),
-        }),
-      }),
+      prepare: () => mockPreparedStatement,
     };
 
     // Mock environment

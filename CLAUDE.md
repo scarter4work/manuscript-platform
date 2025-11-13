@@ -105,6 +105,20 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
   - Fix: Restart conversation
 - Package-lock.json removed from git to prevent cross-platform conflicts
 
+### Critical Behavioral Reminders
+**ALWAYS Report Results of Long-Running Operations**
+- When executing long-running commands (tests, builds, deployments), ALWAYS check back and report the final result
+- Use BashOutput to monitor progress periodically
+- Never let a long execution "drop off" without reporting completion status
+- User feedback: "you waited but never checked back in again. you told me the other night you weren't going to do that again."
+- This is a REPEATED mistake - must be corrected going forward
+- Examples of operations requiring follow-up:
+  - Test suite execution (npm test)
+  - Build processes (npm run build)
+  - Database migrations
+  - Deployment operations
+  - Any command that takes >30 seconds
+
 ## API Endpoints
 
 ### File Management
