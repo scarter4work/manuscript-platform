@@ -283,7 +283,9 @@ export async function updateUser(request, env, corsHeaders, userId) {
     }
 
     // Always update updated_at timestamp
-    updates.push('updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT');
+    const now = Math.floor(Date.now() / 1000);
+    updates.push('updated_at = ?');
+    params.push(now);
 
     params.push(userId);
 

@@ -147,9 +147,10 @@ async function handleCheckoutCompleted(env, session) {
     ).run();
 
     // Update user's subscription tier
+    const now = Math.floor(Date.now() / 1000);
     await env.DB.prepare(`
-      UPDATE users SET subscription_tier = ?, updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = ?
-    `).bind(planType, userId).run();
+      UPDATE users SET subscription_tier = ?, updated_at = ? WHERE id = ?
+    `).bind(planType, now, userId).run();
 
     console.log('[Webhook] Subscription created:', subscriptionId);
 
@@ -242,9 +243,10 @@ async function handleSubscriptionDeleted(env, subscription) {
   `).bind(subscription.id).first();
 
   if (sub) {
+    const now = Math.floor(Date.now() / 1000);
     await env.DB.prepare(`
-      UPDATE users SET subscription_tier = 'free', updated_at = EXTRACT(EPOCH FROM NOW())::BIGINT WHERE id = ?
-    `).bind(sub.user_id).run();
+      UPDATE users SET subscription_tier = 'free', updated_at = ? WHERE id = ?
+    `).bind(now, sub.user_id).run();
   }
 
   console.log('[Webhook] Subscription deleted:', subscription.id);
