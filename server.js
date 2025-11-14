@@ -318,6 +318,11 @@ async function start() {
 // Only start server if not running in test mode
 if (NODE_ENV !== 'test') {
   start();
+} else {
+  // In test mode, initialize adapters immediately (but don't start HTTP server)
+  initializeAdapters().catch(error => {
+    console.error('Failed to initialize adapters in test mode:', error);
+  });
 }
 
 // Export for tests

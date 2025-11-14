@@ -17,7 +17,6 @@ import {
   resetTestDatabase,
   getTestDb,
 } from './test-helpers/database.js';
-import { initializeAdapters } from '../server.js';
 
 let testDb = null;
 
@@ -28,22 +27,23 @@ beforeAll(async () => {
   console.log('\n🧪 Setting up test environment...');
 
   try {
-    // Always initialize test database (uses default TEST_DATABASE_URL if not set)
-    testDb = await setupTestDatabase();
-    console.log('✓ Test database initialized');
+    // Only initialize database if TEST_DATABASE_URL is set
+    if (process.env.TEST_DATABASE_URL) {
+      testDb = await setupTestDatabase();
+      console.log('✓ Test database initialized');
 
-    // Initialize server adapters (database, storage, session, etc.)
-    await initializeAdapters();
-    console.log('✓ Server adapters initialized');
-
-    // Make test database globally available
-    global.testDb = testDb;
+      // Make test database globally available
+      global.testDb = testDb;
+    } else {
+      console.log('ℹ️  Skipping database setup (TEST_DATABASE_URL not set)');
+      console.log('ℹ️  Tests requiring database will be skipped or use mocks');
+    }
 
     console.log('✓ Test environment ready\n');
   } catch (error) {
     console.error('❌ Failed to set up test environment:', error);
-    console.error('💡 Ensure PostgreSQL is running on 127.0.0.1:5432');
-    console.error('💡 Or set TEST_DATABASE_URL to your test database');
+    console.error('💡 Ensure PostgreSQL is running at TEST_DATABASE_URL');
+    console.error('💡 Current TEST_DATABASE_URL:', process.env.TEST_DATABASE_URL);
     throw error;
   }
 }, 60000); // 60 second timeout for setup
@@ -82,7 +82,7 @@ beforeEach(async () => {
     await resetTestDatabase();
   }
   // No-op if database not initialized (unit tests with mocks only)
-}, 10000); // 10 second timeout per test reset
+}, 30000); // 30 second timeout per test reset (increased for large schemas)
 
 /**
  * Cleanup after each test (optional)

@@ -13,6 +13,7 @@
  */
 
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 // ============================================================================
 // CONFIGURATION
@@ -280,7 +281,14 @@ export async function getUserFromRequest(request, env) {
 export function createSessionCookie(sessionId, rememberMe = false) {
   const maxAge = rememberMe ? AUTH_CONFIG.SESSION_DURATION_REMEMBER : AUTH_CONFIG.SESSION_DURATION;
 
-  return `session_id=${sessionId}; Path=/; Domain=.selfpubhub.co; HttpOnly; Secure; SameSite=None; Max-Age=${maxAge}`;
+  // In development/test, don't set Domain (defaults to current host)
+  // In production, set to .selfpubhub.co for cross-subdomain cookies
+  const isProduction = process.env.NODE_ENV === 'production';
+  const domain = isProduction ? '; Domain=.selfpubhub.co' : '';
+  const secure = isProduction ? '; Secure' : '';
+  const sameSite = isProduction ? '; SameSite=None' : '; SameSite=Lax';
+
+  return `session_id=${sessionId}; Path=/; HttpOnly${domain}${secure}${sameSite}; Max-Age=${maxAge}`;
 }
 
 /**
@@ -289,7 +297,14 @@ export function createSessionCookie(sessionId, rememberMe = false) {
  * @returns {string} Set-Cookie header value
  */
 export function clearSessionCookie() {
-  return 'session_id=; Path=/; Domain=.selfpubhub.co; HttpOnly; Secure; SameSite=None; Max-Age=0';
+  // In development/test, don't set Domain (defaults to current host)
+  // In production, set to .selfpubhub.co for cross-subdomain cookies
+  const isProduction = process.env.NODE_ENV === 'production';
+  const domain = isProduction ? '; Domain=.selfpubhub.co' : '';
+  const secure = isProduction ? '; Secure' : '';
+  const sameSite = isProduction ? '; SameSite=None' : '; SameSite=Lax';
+
+  return `session_id=; Path=/; HttpOnly${domain}${secure}${sameSite}; Max-Age=0`;
 }
 
 // ============================================================================
@@ -327,7 +342,7 @@ export async function logAuthEvent(env, userId, action, request, metadata = {}) 
 
   try {
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, ip_address, user_agent, event_details)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       id,

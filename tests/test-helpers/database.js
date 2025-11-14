@@ -27,10 +27,28 @@ export async function setupTestDatabase() {
   const connectionString = process.env.TEST_DATABASE_URL ||
     'postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test';
 
+  // Parse connection string to extract host
+  const urlMatch = connectionString.match(/@([^:/]+)(?::(\d+))?/);
+  const host = urlMatch ? urlMatch[1] : '127.0.0.1';
+  const port = urlMatch && urlMatch[2] ? parseInt(urlMatch[2]) : 5432;
+
+  // Use explicit parameters instead of connection string for better WSL compatibility
   testDb = new Client({
-    connectionString,
-    ssl: false
+    host: host,
+    port: port,
+    user: 'postgres',
+    password: 'Bjoran32!',
+    database: 'manuscript_platform_test',
+    ssl: false,
+    keepalive: true,
+    keepaliveInitialDelayMillis: 10000,
+    connectionTimeoutMillis: 10000,
+    query_timeout: 30000,
+    statement_timeout: 30000
   });
+
+  console.log('🔌 Attempting to connect to test database...');
+  console.log(`📍 Host: ${host}:${port}, Database: manuscript_platform_test`);
 
   await testDb.connect();
   console.log('✓ Test database connected');
@@ -117,16 +135,37 @@ export async function resetTestDatabase() {
 }
 
 /**
+ * Convert WSL path to Windows path for psql.exe
+ * /mnt/d/manuscript-platform → D:\manuscript-platform
+ */
+function wslToWindowsPath(wslPath) {
+  // Match /mnt/X/path pattern
+  const match = wslPath.match(/^\/mnt\/([a-z])\/(.*)/);
+  if (match) {
+    const drive = match[1].toUpperCase();
+    const path = match[2].replace(/\//g, '\\');
+    return `${drive}:\\${path}`;
+  }
+  return wslPath;
+}
+
+/**
  * Run all migration files in order using psql directly
  */
 async function runMigrations(db) {
   const { execFileSync } = await import('child_process');
   const projectRoot = path.join(__dirname, '..', '..');
 
-  const psqlPath = 'C:\\Program Files\\PostgreSQL\\17\\bin\\psql.exe';
+  // Extract host from connection string
+  const connectionString = process.env.TEST_DATABASE_URL ||
+    'postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test';
+  const urlMatch = connectionString.match(/@([^:]+):/);
+  const host = urlMatch ? urlMatch[1] : '127.0.0.1';
+
+  const psqlPath = '/mnt/c/Program Files/PostgreSQL/17/bin/psql.exe';
   const psqlArgs = [
     '-U', 'postgres',
-    '-h', '127.0.0.1',
+    '-h', host,
     '-d', 'manuscript_platform_test',
     '-v', 'ON_ERROR_STOP=0' // Continue on errors (for idempotent migrations)
   ];
@@ -136,7 +175,8 @@ async function runMigrations(db) {
 
     // Apply base schema
     const baseSchemaPath = path.join(projectRoot, 'sql', 'schema.sql');
-    execFileSync(psqlPath, [...psqlArgs, '-f', baseSchemaPath], {
+    const windowsBaseSchemaPath = wslToWindowsPath(baseSchemaPath);
+    execFileSync(psqlPath, [...psqlArgs, '-f', windowsBaseSchemaPath], {
       env: { ...process.env, PGPASSWORD: 'Bjoran32!' },
       stdio: 'pipe'
     });
@@ -149,7 +189,8 @@ async function runMigrations(db) {
 
     for (const file of sqlFiles) {
       const filePath = path.join(sqlDir, file);
-      execFileSync(psqlPath, [...psqlArgs, '-f', filePath], {
+      const windowsFilePath = wslToWindowsPath(filePath);
+      execFileSync(psqlPath, [...psqlArgs, '-f', windowsFilePath], {
         env: { ...process.env, PGPASSWORD: 'Bjoran32!' },
         stdio: 'pipe'
       });
@@ -163,7 +204,8 @@ async function runMigrations(db) {
 
     for (const file of migrationFiles) {
       const filePath = path.join(migrationsDir, file);
-      execFileSync(psqlPath, [...psqlArgs, '-f', filePath], {
+      const windowsFilePath = wslToWindowsPath(filePath);
+      execFileSync(psqlPath, [...psqlArgs, '-f', windowsFilePath], {
         env: { ...process.env, PGPASSWORD: 'Bjoran32!' },
         stdio: 'pipe'
       });
