@@ -44,7 +44,13 @@
       "mcp__render__list_logs",
       "Bash(git commit:*)",
       "mcp__render__list_postgres_instances",
-      "mcp__render__query_render_postgres"
+      "mcp__render__query_render_postgres",
+      "mcp__render__get_postgres",
+      "Bash(chmod:*)",
+      "mcp__render__get_service",
+      "Bash(DATABASE_URL=\"postgresql://manuscript_platform_user:dcxKtPenX4XsMHokULvVlgxZpWOPe15v@dpg-d45bhn6uk2gs73cdp7vg-a.oregon-postgres.render.com/manuscript_platform\" node scripts/apply-missing-migrations.js:*)",
+      "Bash(DATABASE_URL=\"postgresql://manuscript_platform_user:dcxKtPenX4XsMHokULvVlgxZpWOPe15v@dpg-d45bhn6uk2gs73cdp7vg-a.oregon-postgres.render.com/manuscript_platform\" psql:*)",
+      "Bash(PGPASSWORD='dcxKtPenX4XsMHokULvVlgxZpWOPe15v' psql:*)"
     ],
     "deny": [],
     "ask": []
