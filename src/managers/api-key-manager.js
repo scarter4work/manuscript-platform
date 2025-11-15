@@ -2,6 +2,7 @@
 // Handles generation, validation, and management of API keys for Enterprise tier
 
 import { createHash, randomBytes } from 'crypto';
+import crypto from 'crypto';
 
 export class APIKeyManager {
   constructor(env) {

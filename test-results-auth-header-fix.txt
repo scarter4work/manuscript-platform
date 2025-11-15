@@ -1,0 +1,777 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test vitest run tests/integration/handlers/auth-handlers.test.js
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mD:/manuscript-platform[39m
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Payment] Free subscription created for user 58feca89-be72-4aba-9677-dc8253e9499f
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39mVerification email sent to: newuser@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Payment] Free subscription created for user a2672cee-bd83-4a08-b2cd-789bbaf0c762
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39mVerification email sent to: bcrypt-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Payment] Free subscription created for user baa03924-7f0a-4d39-9567-3c00b8225feb
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mVerification email sent to: casesensitive@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Payment] Free subscription created for user 39d3ebde-43e7-4376-b006-e127fa73c472
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39mVerification email sent to: verify-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Payment] Free subscription created for user df963ef9-0287-44c6-b4b0-d67591063feb
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39mVerification email sent to: email-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Payment] Free subscription created for user 97f48868-12eb-4152-a772-8a8499f1f7c2
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39mVerification email sent to: audit-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Payment] Free subscription created for user 65ddfaa3-27d3-408f-abd0-74b4d4eced60
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39mVerification email sent to: default-role@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with wrong password
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with non-existent email
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log failed login attempts
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould create password reset token for valid email
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:792:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:522:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:653:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould send password reset email
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:792:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:522:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:677:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:792:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:522:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:792:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:522:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:792:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:522:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:718:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:792:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:522:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:729:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould normalize email to lowercase
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:792:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:522:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:752:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould log password reset request
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:792:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:522:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:799:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return current user with valid session
+[22m[39mCache get error for key user:0e4c01bc2771a264b7ce642dfb3f4ecf: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1109:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return current user with valid session
+[22m[39mCache set error for key user:0e4c01bc2771a264b7ce642dfb3f4ecf: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1109:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould not return password hash
+[22m[39mCache get error for key user:d99c006631bce710369b0e3452af82f1: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1126:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould not return password hash
+[22m[39mCache set error for key user:d99c006631bce710369b0e3452af82f1: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1126:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return email verification status
+[22m[39mCache get error for key user:a3ec9268303d201f3ac8c02d113c7b9f: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1168:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return email verification status
+[22m[39mCache set error for key user:a3ec9268303d201f3ac8c02d113c7b9f: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1168:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/auth-handlers.test.js [2m([22m[2m53 tests[22m[2m | [22m[31m19 failed[39m[2m)[22m[33m 105126[2mms[22m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould register a new user with valid credentials[39m[33m 1986[2mms[22m[39m
+[31m     → expected 'Registration successful. Please check…' to match /registered successfully/i[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with weak password [33m 1627[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with invalid email [33m 1401[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with duplicate email [33m 1535[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould hash password with bcrypt [33m 2861[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould normalize email to lowercase [33m 1849[2mms[22m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould create verification token[39m[33m 1869[2mms[22m[39m
+[31m     → expected +0 to be false // Object.is equality[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould send verification email[39m[33m 1486[2mms[22m[39m
+[31m     → expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould log registration event in audit log [33m 1485[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould set default role to author if not specified [33m 2107[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould login with valid credentials [33m 2417[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with wrong password [33m 2300[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with non-existent email [33m 2308[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with unverified email [33m 1670[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould rate limit after 5 failed attempts [33m 1680[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould update last_login timestamp[39m[33m 2258[2mms[22m[39m
+[31m     → expected false to be true // Object.is equality[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould create session in Redis[39m[33m 1586[2mms[22m[39m
+[31m     → expected undefined to be 'login-test@example.com' // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould log successful login [33m 1602[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould log failed login attempts[39m[33m 2174[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould verify email with valid token[39m[33m 1727[2mms[22m[39m
+[31m     → expected 400 to be 200 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject invalid token [33m 1402[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject expired token [33m 1975[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject already used token [33m 2446[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould handle missing token [33m 1466[2mms[22m[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould log email verification event[39m[33m 2337[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould create password reset token for valid email [33m 1854[2mms[22m[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould send password reset email[39m[33m 1521[2mms[22m[39m
+[31m     → expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould not reveal if email does not exist (security) [33m 1655[2mms[22m[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould rate limit password reset requests[39m[33m 3719[2mms[22m[39m
+[31m     → expected 200 to be 429 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould normalize email to lowercase [33m 1547[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould reject invalid email format [33m 1475[2mms[22m[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould handle missing email[39m[33m 1459[2mms[22m[39m
+[31m     → expected 'Invalid email address' to match /email.*required/i[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould log password reset request [33m 1945[2mms[22m[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould reset password with valid token[39m[33m 1541[2mms[22m[39m
+[31m     → expected 400 to be 200 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould mark reset token as used[39m[33m 2268[2mms[22m[39m
+[31m     → Cannot read properties of null (reading 'used')[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject weak new password [33m 2338[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject invalid token [33m 1374[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject expired token [33m 1550[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject already used token [33m 2332[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould hash new password with bcrypt [33m 1795[2mms[22m[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould log password reset event[39m[33m 1532[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+[31m   [31m×[31m POST /auth/logout[2m > [22mshould logout and destroy session[39m[33m 2636[2mms[22m[39m
+[31m     → expected 'Logout successful' to match /logged out/i[39m
+   [33m[2m✓[22m[39m POST /auth/logout[2m > [22mshould clear session cookie [33m 1840[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/logout[2m > [22mshould log logout event [33m 1483[2mms[22m[39m
+[31m   [31m×[31m GET /auth/me[2m > [22mshould return current user with valid session[39m[33m 1575[2mms[22m[39m
+[31m     → expected undefined to be 'pro' // Object.is equality[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould not return password hash [33m 2123[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould reject request without session [33m 1468[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould reject request with invalid session [33m 1474[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould return email verification status [33m 2118[2mms[22m[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould resend verification email for unverified user[39m[33m 1538[2mms[22m[39m
+[31m     → expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould reject resend for already verified user[39m[33m 1451[2mms[22m[39m
+[31m     → expected 409 to be 400 // Object.is equality[39m
+[31m   [31m×[31m POST /auth/resend-verification[2m > [22mshould rate limit resend requests[39m[33m 2633[2mms[22m[39m
+[31m     → expected 200 to be 429 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould not reveal if email does not exist (security) [33m 1716[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 19 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/register[2m > [22mshould register a new user with valid credentials
+[31m[1mAssertionError[22m: expected 'Registration successful. Please check…' to match /registered successfully/i[39m
+
+[32m- Expected:[39m 
+/registered successfully/i
+
+[31m+ Received:[39m 
+"Registration successful. Please check your email to verify your account."
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m71:28[22m[39m
+    [90m 69| [39m    [34mexpect[39m(result[33m.[39muserId)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m 70| [39m    [34mexpect[39m(result[33m.[39mverificationToken)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m 71| [39m    [34mexpect[39m(result[33m.[39mmessage)[33m.[39m[34mtoMatch[39m([36m/registered successfully/i[39m)[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m 72| [39m
+    [90m 73| [39m    [90m// Verify user in database[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/register[2m > [22mshould create verification token
+[31m[1mAssertionError[22m: expected +0 to be false // Object.is equality[39m
+
+[32m- Expected:[39m 
+false
+
+[31m+ Received:[39m 
+0
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m204:38[22m[39m
+    [90m202| [39m    [34mexpect[39m(tokenRecord[33m.[39mrows[33m.[39mlength)[33m.[39m[34mtoBe[39m([34m1[39m)[33m;[39m
+    [90m203| [39m    [34mexpect[39m(tokenRecord[33m.[39mrows[[34m0[39m][33m.[39mtoken_type)[33m.[39m[34mtoBe[39m([32m'email_verification'[39m)[33m;[39m
+    [90m204| [39m    [34mexpect[39m(tokenRecord[33m.[39mrows[[34m0[39m][33m.[39mused)[33m.[39m[34mtoBe[39m([35mfalse[39m)[33m;[39m
+    [90m   | [39m                                     [31m^[39m
+    [90m205| [39m  })[33m;[39m
+    [90m206| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/register[2m > [22mshould send verification email
+[31m[1mAssertionError[22m: expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m219:52[22m[39m
+    [90m217| [39m    [35mawait[39m authHandlers[33m.[39m[34mhandleRegister[39m(mockRequest[33m,[39m mockEnv)[33m;[39m
+    [90m218| [39m
+    [90m219| [39m    expect(mockEmailService.sendEmailVerification).toHaveBeenCalledWit…
+    [90m   | [39m                                                   [31m^[39m
+    [90m220| [39m      expect[33m.[39m[34mobjectContaining[39m({
+    [90m221| [39m        userEmail[33m:[39m [32m'email-test@example.com'[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/login[2m > [22mshould update last_login timestamp
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m418:38[22m[39m
+    [90m416| [39m    [35mconst[39m lastLogin [33m=[39m [35mnew[39m [33mDate[39m(user[33m.[39mlast_login)[33m;[39m
+    [90m417| [39m
+    [90m418| [39m    [34mexpect[39m(lastLogin [33m>=[39m beforeLogin)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                                     [31m^[39m
+    [90m419| [39m  })[33m;[39m
+    [90m420| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/login[2m > [22mshould create session in Redis
+[31m[1mAssertionError[22m: expected undefined to be 'login-test@example.com' // Object.is equality[39m
+
+[32m- Expected:[39m 
+"login-test@example.com"
+
+[31m+ Received:[39m 
+undefined
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m447:27[22m[39m
+    [90m445| [39m    [35mconst[39m session [33m=[39m [33mJSON[39m[33m.[39m[34mparse[39m(sessionData)[33m;[39m
+    [90m446| [39m    [34mexpect[39m(session[33m.[39muserId)[33m.[39m[34mtoBe[39m(testUser[33m.[39mid)[33m;[39m
+    [90m447| [39m    [34mexpect[39m(session[33m.[39memail)[33m.[39m[34mtoBe[39m([32m'login-test@example.com'[39m)[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m448| [39m  })[33m;[39m
+    [90m449| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/login[2m > [22mshould log failed login attempts
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m481:24[22m[39m
+    [90m479| [39m
+    [90m480| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m481| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m482| [39m  })[33m;[39m
+    [90m483| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/verify-email[2m > [22mshould verify email with valid token
+[31m[1mAssertionError[22m: expected 400 to be 200 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 400[39m
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m522:29[22m[39m
+    [90m520| [39m    [35mconst[39m result [33m=[39m [35mawait[39m response[33m.[39m[34mjson[39m()[33m;[39m
+    [90m521| [39m
+    [90m522| [39m    [34mexpect[39m(response[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m523| [39m    [34mexpect[39m(result[33m.[39mmessage)[33m.[39m[34mtoMatch[39m([36m/email verified/i[39m)[33m;[39m
+    [90m524| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/verify-email[2m > [22mshould log email verification event
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m621:24[22m[39m
+    [90m619| [39m
+    [90m620| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m621| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m622| [39m  })[33m;[39m
+    [90m623| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/request-password-reset[2m > [22mshould send password reset email
+[31m[1mAssertionError[22m: expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m679:53[22m[39m
+    [90m677| [39m    await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv…
+    [90m678| [39m
+    [90m679| [39m    expect(mockEmailService.sendPasswordResetEmail).toHaveBeenCalledWi…
+    [90m   | [39m                                                    [31m^[39m
+    [90m680| [39m      expect[33m.[39m[34mobjectContaining[39m({
+    [90m681| [39m        userEmail[33m:[39m [32m'reset@example.com'[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/request-password-reset[2m > [22mshould rate limit password reset requests
+[31m[1mAssertionError[22m: expected 200 to be 429 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 429[39m
+[31m+ 200[39m
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m732:29[22m[39m
+    [90m730| [39m    [35mconst[39m result [33m=[39m [35mawait[39m response[33m.[39m[34mjson[39m()[33m;[39m
+    [90m731| [39m
+    [90m732| [39m    [34mexpect[39m(response[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m429[39m)[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m733| [39m    [34mexpect[39m(result[33m.[39merror)[33m.[39m[34mtoMatch[39m([36m/too many.*requests/i[39m)[33m;[39m
+    [90m734| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/request-password-reset[2m > [22mshould handle missing email
+[31m[1mAssertionError[22m: expected 'Invalid email address' to match /email.*required/i[39m
+
+[32m- Expected:[39m 
+/email.*required/i
+
+[31m+ Received:[39m 
+"Invalid email address"
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m786:26[22m[39m
+    [90m784| [39m
+    [90m785| [39m    [34mexpect[39m(response[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m400[39m)[33m;[39m
+    [90m786| [39m    [34mexpect[39m(result[33m.[39merror)[33m.[39m[34mtoMatch[39m([36m/email.*required/i[39m)[33m;[39m
+    [90m   | [39m                         [31m^[39m
+    [90m787| [39m  })[33m;[39m
+    [90m788| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/reset-password[2m > [22mshould reset password with valid token
+[31m[1mAssertionError[22m: expected 400 to be 200 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 400[39m
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m843:29[22m[39m
+    [90m841| [39m    [35mconst[39m result [33m=[39m [35mawait[39m response[33m.[39m[34mjson[39m()[33m;[39m
+    [90m842| [39m
+    [90m843| [39m    [34mexpect[39m(response[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m844| [39m    [34mexpect[39m(result[33m.[39mmessage)[33m.[39m[34mtoMatch[39m([36m/password.*reset/i[39m)[33m;[39m
+    [90m845| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/reset-password[2m > [22mshould mark reset token as used
+[31m[1mTypeError[22m: Cannot read properties of null (reading 'used')[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m869:18[22m[39m
+    [90m867| [39m
+    [90m868| [39m    const token = await findTestRecord('verification_tokens', { token:…
+    [90m869| [39m    [34mexpect[39m(token[33m.[39mused)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m   | [39m                 [31m^[39m
+    [90m870| [39m  })[33m;[39m
+    [90m871| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/reset-password[2m > [22mshould log password reset event
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m984:24[22m[39m
+    [90m982| [39m
+    [90m983| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m984| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m985| [39m  })[33m;[39m
+    [90m986| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/logout[2m > [22mshould logout and destroy session
+[31m[1mAssertionError[22m: expected 'Logout successful' to match /logged out/i[39m
+
+[32m- Expected:[39m 
+/logged out/i
+
+[31m+ Received:[39m 
+"Logout successful"
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m1032:28[22m[39m
+    [90m1030| [39m
+    [90m1031| [39m    [34mexpect[39m(response[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m1032| [39m    [34mexpect[39m(result[33m.[39mmessage)[33m.[39m[34mtoMatch[39m([36m/logged out/i[39m)[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m1033| [39m
+    [90m1034| [39m    [90m// Verify session was deleted from Redis[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mGET /auth/me[2m > [22mshould return current user with valid session
+[31m[1mAssertionError[22m: expected undefined to be 'pro' // Object.is equality[39m
+
+[32m- Expected:[39m 
+"pro"
+
+[31m+ Received:[39m 
+undefined
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m1116:37[22m[39m
+    [90m1114| [39m    [34mexpect[39m(result[33m.[39memail)[33m.[39m[34mtoBe[39m([32m'me@example.com'[39m)[33m;[39m
+    [90m1115| [39m    [34mexpect[39m(result[33m.[39mrole)[33m.[39m[34mtoBe[39m([32m'author'[39m)[33m;[39m
+    [90m1116| [39m    [34mexpect[39m(result[33m.[39msubscriptionTier)[33m.[39m[34mtoBe[39m([32m'pro'[39m)[33m;[39m
+    [90m   | [39m                                    [31m^[39m
+    [90m1117| [39m  })[33m;[39m
+    [90m1118| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/resend-verification[2m > [22mshould resend verification email for unverified user
+[31m[1mAssertionError[22m: expected "spy" to be called with arguments: [ ObjectContaining{…}, Any<Object> ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m1210:52[22m[39m
+    [90m1208| [39m    [34mexpect[39m(result[33m.[39mmessage)[33m.[39m[34mtoMatch[39m([36m/verification.*sent/i[39m)[33m;[39m
+    [90m1209| [39m
+    [90m1210| [39m    expect(mockEmailService.sendEmailVerification).toHaveBeenCalledWit…
+    [90m   | [39m                                                   [31m^[39m
+    [90m1211| [39m      expect[33m.[39m[34mobjectContaining[39m({
+    [90m1212| [39m        userEmail[33m:[39m [32m'resend@example.com'[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/resend-verification[2m > [22mshould reject resend for already verified user
+[31m[1mAssertionError[22m: expected 409 to be 400 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 400[39m
+[31m+ 409[39m
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m1237:29[22m[39m
+    [90m1235| [39m    [35mconst[39m result [33m=[39m [35mawait[39m response[33m.[39m[34mjson[39m()[33m;[39m
+    [90m1236| [39m
+    [90m1237| [39m    [34mexpect[39m(response[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m400[39m)[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m1238| [39m    [34mexpect[39m(result[33m.[39merror)[33m.[39m[34mtoMatch[39m([36m/already verified/i[39m)[33m;[39m
+    [90m1239| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/resend-verification[2m > [22mshould rate limit resend requests
+[31m[1mAssertionError[22m: expected 200 to be 429 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 429[39m
+[31m+ 200[39m
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m1267:29[22m[39m
+    [90m1265| [39m    [35mconst[39m result [33m=[39m [35mawait[39m response[33m.[39m[34mjson[39m()[33m;[39m
+    [90m1266| [39m
+    [90m1267| [39m    [34mexpect[39m(response[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m429[39m)[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m1268| [39m    [34mexpect[39m(result[33m.[39merror)[33m.[39m[34mtoMatch[39m([36m/too many.*requests/i[39m)[33m;[39m
+    [90m1269| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/19]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m19 failed[39m[22m[2m | [22m[1m[32m34 passed[39m[22m[90m (53)[39m
+[2m   Start at [22m 11:41:57
+[2m   Duration [22m 109.44s[2m (transform 464ms, setup 3.55s, collect 103ms, tests 105.13s, environment 0ms, prepare 449ms)[22m
+

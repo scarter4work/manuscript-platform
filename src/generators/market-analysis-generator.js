@@ -1,4 +1,6 @@
 /**
+import crypto from 'crypto';
+
  * Market Analysis Generator
  * Analyzes Amazon marketplace for comparable titles and provides strategic recommendations
  *

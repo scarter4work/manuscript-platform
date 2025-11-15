@@ -1,6 +1,8 @@
 // Authentication Module
 // Handles user signup, login, JWT tokens, and session management
 
+import crypto from 'crypto';
+
 export class Auth {
   constructor(env) {
     this.env = env;

@@ -8,6 +8,7 @@
  */
 
 import { generateExportPackage } from './document-processor.js';
+import crypto from 'crypto';
 
 /**
  * Platform configuration

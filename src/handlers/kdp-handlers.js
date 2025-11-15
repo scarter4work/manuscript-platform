@@ -4,6 +4,7 @@
  */
 
 import { generateKDPPackage, validateKDPPackage, calculateRoyalties } from '../generators/kdp-package-generator.js';
+import crypto from 'crypto';
 
 /**
  * POST /manuscripts/:id/kdp/prepare

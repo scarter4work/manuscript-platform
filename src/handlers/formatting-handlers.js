@@ -7,6 +7,7 @@
 import { generateEPUBFromDOCX, validateEPUB } from '../generators/epub-generator.js';
 import { generatePrintPDF, TRIM_SIZES } from '../generators/pdf-generator.js';
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 /**
  * POST /manuscripts/:id/format/epub

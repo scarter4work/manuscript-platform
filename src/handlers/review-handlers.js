@@ -6,6 +6,7 @@ import { ReviewMonitoringAgent, structureReviewData } from '../agents/review-mon
 import { ReviewSentimentAgent } from '../agents/review-sentiment-agent.js';
 import { ReviewResponseAgent } from '../agents/review-response-agent.js';
 import { ReviewTrendAgent } from '../agents/review-trend-agent.js';
+import crypto from 'crypto';
 
 /**
  * Get review monitoring configuration and status for a manuscript

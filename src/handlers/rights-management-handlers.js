@@ -1,4 +1,6 @@
 /**
+import crypto from 'crypto';
+
  * Rights Management Handlers
  * API endpoints for publishing rights tracking, territorial restrictions, and rights status
  */

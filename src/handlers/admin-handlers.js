@@ -10,6 +10,7 @@
  */
 
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 // ============================================================================
 // MIDDLEWARE: ADMIN AUTHORIZATION
@@ -191,7 +192,7 @@ export async function getUserDetails(request, env, corsHeaders, userId) {
 
     // Get recent activity from audit log
     const activity = await env.DB.prepare(`
-      SELECT action, resource_type, timestamp, metadata
+      SELECT action, resource_type, created_at, metadata
       FROM audit_log WHERE user_id = ?
       ORDER BY timestamp DESC
       LIMIT 50
@@ -295,7 +296,7 @@ export async function updateUser(request, env, corsHeaders, userId) {
 
     // Log the update
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
       VALUES (?, ?, 'admin_update_user', 'user', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),
@@ -394,7 +395,7 @@ export async function adjustUserSubscription(request, env, corsHeaders, userId) 
 
     // Log the adjustment
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
       VALUES (?, ?, 'admin_adjust_subscription', 'subscription', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),
@@ -552,7 +553,7 @@ export async function adminDeleteManuscript(request, env, corsHeaders, manuscrip
 
     // Log deletion
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
       VALUES (?, ?, 'admin_delete_manuscript', 'manuscript', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),

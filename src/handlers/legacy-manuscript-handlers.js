@@ -2,6 +2,8 @@
 // These handlers manage manuscript uploads, file operations, and marketing assets
 
 // Handle manuscript uploads with authentication and usage limits
+import crypto from 'crypto';
+
 async function handleManuscriptUpload(request, env, corsHeaders) {
   try {
     console.log('Processing manuscript upload...');
@@ -191,7 +193,7 @@ async function handleManuscriptUpload(request, env, corsHeaders) {
 
     // Log audit event
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
       VALUES (?, ?, 'upload', 'manuscript', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),

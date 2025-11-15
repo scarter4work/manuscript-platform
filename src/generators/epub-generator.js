@@ -7,6 +7,7 @@
 
 import JSZip from 'jszip';
 import mammoth from 'mammoth';
+import crypto from 'crypto';
 
 /**
  * Parse DOCX content to extract chapters and metadata

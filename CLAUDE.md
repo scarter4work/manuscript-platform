@@ -89,15 +89,58 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 **"I'm not on Linux, I'm on Windows, and I have to deal with it"**
 
 - Use **Render MCP** for Render deployment operations (deployments, logs, services)
-  - ✅ **Configured**: MCP server at `~/.claude/mcp.json`
-  - Endpoint: `https://mcp.render.com/mcp` (SSE transport)
-  - API token stored in MCP config (rotate regularly)
+  - ✅ **Configured**: MCP server at `/home/scarter/.claude/mcp.json`
+  - **Global settings**: `/home/scarter/.claude/settings.local.json` (`enableAllProjectMcpServers: true`)
+  - API token: `rnd_w9xM8IlICH4le9I5wbCqTVVznWUR` (rotate regularly)
   - Check deployment status, view logs, manage services
   - Prefer MCP over manual API calls or web console checks
   - **Note**: Requires Claude Code restart after config changes
+  - **Verify after reboot**: `ls -lah /home/scarter/.claude/mcp.json` (should exist and be ~217 bytes)
+  - **If missing**: Recreate using the configuration documented in this file
 - Use **Windows MCP** for desktop operations when needed
 - Bash commands may not work as expected - prefer MCP tools
 - PowerShell available via `mcp__windows-mcp__Powershell-Tool` if needed
+
+### WSL2 PostgreSQL Connection Setup
+**Problem**: WSL2 runs in a VM, so `127.0.0.1` in WSL2 refers to WSL2's localhost, NOT Windows. PostgreSQL running on Windows cannot be reached via `localhost` from WSL2.
+
+**Solution** (Applied 2025-11-13):
+
+**1. Windows Firewall Configuration**
+```powershell
+# Run as Administrator in Windows PowerShell
+New-NetFirewallRule -DisplayName "PostgreSQL from WSL" -Direction Inbound -LocalPort 5432 -Protocol TCP -Action Allow -RemoteAddress 172.23.176.0/24
+```
+
+**2. Connection String Configuration**
+- Test database connection uses Windows host IP instead of localhost
+- `package.json` test script:
+  ```
+  TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@172.23.176.1:5432/manuscript_platform_test
+  ```
+- Host IP (`172.23.176.1`) is the WSL gateway address (check with `ip route show | grep default`)
+
+**3. Test Migration Script Fixes** (`tests/test-helpers/database.js`)
+- **Extract host from connection string**: Parse `TEST_DATABASE_URL` to get the host dynamically
+- **Use WSL path format for psql.exe**: `/mnt/c/Program Files/PostgreSQL/17/bin/psql.exe`
+- **Convert WSL paths to Windows paths**: Created `wslToWindowsPath()` function
+  - Converts `/mnt/d/manuscript-platform/sql/schema.sql` → `D:\manuscript-platform\sql\schema.sql`
+  - Required because psql.exe is a Windows binary that can't read WSL `/mnt/` paths
+
+**4. Verification**
+```bash
+# Test connection from WSL
+PGPASSWORD='Bjoran32!' psql -h 172.23.176.1 -U postgres -d manuscript_platform_test -c "SELECT version();"
+```
+
+**Key Files Modified**:
+- `package.json` - Updated test script connection string
+- `tests/test-helpers/database.js` - Dynamic host extraction, path conversion for migrations
+
+**Why Not Use localhost?**
+- WSL2's localhost forwarding is unreliable and breaks frequently
+- Using the gateway IP (`172.23.176.1`) is the documented Microsoft solution
+- Alternative: Enable WSL2 Mirrored Networking (Windows 11 22H2+) via `.wslconfig`
 
 ### Known Issues
 - Claude Code 2.0.31 occasionally gets stuck in error loops after 400 errors
@@ -190,6 +233,25 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 - Claude API: ~$2-4 per manuscript analysis
 
 ## Recent Activity Log
+
+### 2025-11-14 (MCP Configuration ACTUALLY Fixed - FOR GOOD)
+- **Fixed Render MCP Server Configuration (ROOT CAUSE)**
+  - **Original Problem:** Tried using npm package `@modelcontextprotocol/server-render` (doesn't exist)
+  - **Second Attempt:** Switched to `@niyogi/render-mcp` npm package (unofficial, still didn't work)
+  - **ROOT CAUSE DISCOVERED:** Official Render MCP server is a **hosted HTTP service**, NOT an npm package!
+  - **Permanent Solution:**
+    - Changed from `command: "npx"` to `type: "http"` in mcp.json
+    - URL: `https://mcp.render.com/mcp` (official hosted endpoint)
+    - Uses HTTP transport with Bearer token authentication
+  - **Research Findings:**
+    - Official Render MCP server: Go binary hosted at `https://mcp.render.com/mcp` (recommended)
+    - Unofficial `@niyogi/render-mcp`: Community npm package (not used by us)
+    - HTTP transport is the correct approach for Claude Code integration
+  - **Files Permanently Fixed:**
+    - `/home/scarter/.claude/mcp.json` - Corrected to HTTP transport
+    - `CLAUDE.md` - MCP Configuration Reference section (documented why npm approach was wrong)
+  - **Status:** Configuration now uses official Render infrastructure, will auto-update with new capabilities
+  - **Verification:** Will confirm MCP tools load after restart (should see `mcp__render__*` tools)
 
 ### 2025-11-10 (Test Fix Marathon: 39 Tests Fixed! 🎉)
 - **🎯 Major Milestone: 106 → 67 Test Failures (37% Reduction)**
@@ -423,6 +485,42 @@ All adapters provide drop-in compatibility with original Cloudflare APIs:
 - Backblaze B2 is more cost-effective than R2 for large file storage
 - Redis provides production-ready queue features (retries, scheduling, DLQ)
 - Consolidated infrastructure reduces complexity and vendor lock-in
+
+## MCP Configuration Reference
+
+**CRITICAL: Official Render MCP Server Uses HTTP Transport (NOT npm package)**
+
+If `/home/scarter/.claude/mcp.json` goes missing, recreate with:
+
+```json
+{
+  "mcpServers": {
+    "render": {
+      "type": "http",
+      "url": "https://mcp.render.com/mcp",
+      "headers": {
+        "Authorization": "Bearer rnd_w9xM8IlICH4le9I5wbCqTVVznWUR"
+      }
+    }
+  }
+}
+```
+
+**Also ensure global settings at `/home/scarter/.claude/settings.local.json`:**
+
+```json
+{
+  "enableAllProjectMcpServers": true
+}
+```
+
+**Key Facts:**
+- The **official Render MCP server** is hosted at `https://mcp.render.com/mcp` (HTTP transport)
+- There is an **unofficial npm package** `@niyogi/render-mcp` but it's NOT what we use
+- The official server auto-updates with new capabilities (recommended by Render)
+- Configuration uses `type: "http"`, NOT `command: "npx"`
+
+**After recreation:** Restart Claude Code for changes to take effect.
 
 ---
 

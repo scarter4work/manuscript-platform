@@ -2,6 +2,7 @@
 // Publisher inbox, assignments, ratings, consensus, decision workflow
 
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 // ========================================================================
 // PUBLISHER INBOX

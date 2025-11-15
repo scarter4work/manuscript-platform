@@ -4,6 +4,7 @@
  */
 
 import { generateMarketAnalysis, saveCompTitles } from '../generators/market-analysis-generator.js';
+import crypto from 'crypto';
 
 /**
  * POST /manuscripts/:id/market-analysis

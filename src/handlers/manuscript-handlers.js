@@ -15,6 +15,7 @@
 
 import { getUserFromRequest } from '../utils/auth-utils.js';
 import { initCache } from '../utils/db-cache.js';
+import crypto from 'crypto';
 
 /**
  * Helper: Check if user can access a manuscript
@@ -472,7 +473,7 @@ export const manuscriptHandlers = {
 
       // Log audit event
       await env.DB.prepare(`
-        INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+        INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
         VALUES (?, ?, 'delete', 'manuscript', ?, ?, ?)
       `).bind(
         crypto.randomUUID(),

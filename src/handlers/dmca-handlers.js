@@ -1,4 +1,6 @@
 /**
+import crypto from 'crypto';
+
  * DMCA Takedown Request Handler
  *
  * Public endpoint for copyright holders to submit DMCA takedown requests
@@ -122,7 +124,7 @@ export async function handleDMCASubmission(request, env, corsHeaders) {
 
     // Log DMCA submission to audit log
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
       VALUES (?, ?, 'dmca_request', 'manuscript', ?, ?, ?)
     `).bind(
       crypto.randomUUID(),

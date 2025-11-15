@@ -7,6 +7,7 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import { callClaudeWithCostTracking } from '../utils/agent-utils.js';
+import crypto from 'crypto';
 
 /**
  * Platform specifications and best practices

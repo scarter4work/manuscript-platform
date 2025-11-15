@@ -5,6 +5,7 @@
  */
 
 import { logError } from './logging.js';
+import crypto from 'crypto';
 
 // ============================================================================
 // ERROR CLASSES

@@ -12,6 +12,7 @@ import {
   getValidationSummary,
 } from '../validators/cover-validator.js';
 import { CoverDesignAgent } from '../agents/cover-design-agent.js';
+import crypto from 'crypto';
 
 /**
  * Upload and validate cover image for a manuscript

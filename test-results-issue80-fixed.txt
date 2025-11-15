@@ -1,0 +1,93 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@172.23.176.1:5432/manuscript_platform_test vitest run
+
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database connected
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  Applying base schema...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Server adapters initialized
+✓ Test environment ready
+
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+Login error: ReferenceError: crypto is not defined
+    at createSession [90m(/mnt/d/manuscript-platform/[39msrc/utils/auth-utils.js:140:21[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:284:42[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:244:29
+
+[0mPOST /auth/login [31m500[0m 298.933 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should require authentication for checkout
+Login error: ReferenceError: crypto is not defined
+    at createSession [90m(/mnt/d/manuscript-platform/[39msrc/utils/auth-utils.js:140:21[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:284:42[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:244:29
+
+[0mPOST /auth/login [31m500[0m 72.356 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should reject invalid price IDs
+Login error: ReferenceError: crypto is not defined
+    at createSession [90m(/mnt/d/manuscript-platform/[39msrc/utils/auth-utils.js:140:21[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:284:42[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:244:29
+
+[0mPOST /auth/login [31m500[0m 72.196 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should include userId in session metadata
+Login error: ReferenceError: crypto is not defined
+    at createSession [90m(/mnt/d/manuscript-platform/[39msrc/utils/auth-utils.js:140:21[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:284:42[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:244:29
+
+[0mPOST /auth/login [31m500[0m 70.364 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle missing priceId field
+Login error: ReferenceError: crypto is not defined
+    at createSession [90m(/mnt/d/manuscript-platform/[39msrc/utils/auth-utils.js:140:21[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:284:42[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:244:29
+
+[0mPOST /auth/login [31m500[0m 73.753 ms - 33[0m

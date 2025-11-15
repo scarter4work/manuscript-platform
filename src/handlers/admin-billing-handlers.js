@@ -1,4 +1,6 @@
 /**
+import crypto from 'crypto';
+
  * Phase G: Admin Billing Management Handlers
  * API endpoints for managing payments, subscriptions, and revenue
  */
@@ -464,7 +466,7 @@ export async function issueRefund(request, env, corsHeaders) {
 
     // Log audit event
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).bind(
       crypto.randomUUID(),
@@ -581,7 +583,7 @@ export async function cancelSubscription(request, env, corsHeaders) {
 
     // Log audit event
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).bind(
       crypto.randomUUID(),

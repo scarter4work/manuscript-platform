@@ -13,6 +13,7 @@
 import { getUserFromRequest } from '../utils/auth-utils.js';
 import { generateQueryLetter, validateQueryLetter } from '../generators/query-letter-generator.js';
 import { generateSynopsis, validateSynopsis, generateBothSynopses } from '../generators/synopsis-generator.js';
+import crypto from 'crypto';
 
 /**
  * POST /manuscripts/:id/documents/generate

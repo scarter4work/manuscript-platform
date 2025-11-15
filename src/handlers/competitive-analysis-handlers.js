@@ -6,6 +6,8 @@
 // ============================================================================
 
 /**
+import crypto from 'crypto';
+
  * Analyze manuscript and suggest comparable titles using AI
  * POST /manuscripts/:id/comp-titles/analyze
  */

@@ -1,0 +1,1543 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mD:/manuscript-platform[39m
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Payment] Free subscription created for user 37eee1f1-387e-4a8e-a67d-73af071e5005
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39mVerification email sent to: newuser@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Payment] Free subscription created for user 0df061c0-9ab6-4dd0-95ad-00e63760bebe
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39mVerification email sent to: bcrypt-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Payment] Free subscription created for user de14bd81-714c-41d7-8007-fe13bd8a4573
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mVerification email sent to: casesensitive@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Payment] Free subscription created for user 7e1791f2-5316-4f92-a322-713f7dfc4d68
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39mVerification email sent to: verify-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Payment] Free subscription created for user fb2a4bb8-526f-441d-8788-e2439b986957
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39mVerification email sent to: email-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Payment] Free subscription created for user 08d2079b-2135-4ca2-8e0f-5e8950de17e6
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39mVerification email sent to: audit-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Payment] Free subscription created for user 49f32087-4e07-447a-a0e7-5f803247187d
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39mVerification email sent to: default-role@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with non-existent email
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould verify email with valid token
+[22m[39mCache delete many error: TypeError: Cannot read properties of undefined (reading 'delete')
+    at [90mD:\manuscript-platform\[39msrc\utils\db-cache.js:109:49
+    at Array.map (<anonymous>)
+    at CacheManager.deleteMany [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:109:30[90m)[39m
+    at UserCache.invalidate [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:185:22[90m)[39m
+    at Module.handleVerifyEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:452:22[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:523:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould verify email with valid token
+[22m[39mCache INVALIDATED: user a7e2a801cfacf78261f9f8f01dd92da2
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould log email verification event
+[22m[39mCache delete many error: TypeError: Cannot read properties of undefined (reading 'delete')
+    at [90mD:\manuscript-platform\[39msrc\utils\db-cache.js:109:49
+    at Array.map (<anonymous>)
+    at CacheManager.deleteMany [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:109:30[90m)[39m
+    at UserCache.invalidate [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:185:22[90m)[39m
+    at Module.handleVerifyEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:452:22[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:622:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould log email verification event
+[22m[39mCache INVALIDATED: user 569b377ef819daf6d6d0a3052b0276c6
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould create password reset token for valid email
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:657:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould send password reset email
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:681:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould normalize email to lowercase
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:761:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould log password reset request
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:808:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return current user with valid session
+[22m[39mCache get error for key user:441fe0d5f14aa9a05f3ac803014a4b44: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1118:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return current user with valid session
+[22m[39mCache set error for key user:441fe0d5f14aa9a05f3ac803014a4b44: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1118:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould not return password hash
+[22m[39mCache get error for key user:a256b0b26ff4e166d2b8ff8c0c0dcc86: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1135:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould not return password hash
+[22m[39mCache set error for key user:a256b0b26ff4e166d2b8ff8c0c0dcc86: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1135:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return email verification status
+[22m[39mCache get error for key user:9bd5a1ed3f89bd232418bf405a9c8457: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1177:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return email verification status
+[22m[39mCache set error for key user:9bd5a1ed3f89bd232418bf405a9c8457: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1177:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/integration/handlers/auth-handlers.test.js [2m([22m[2m53 tests[22m[2m)[22m[33m 112306[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould register a new user with valid credentials [33m 1627[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with weak password [33m 1611[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with invalid email [33m 1563[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with duplicate email [33m 1534[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould hash password with bcrypt [33m 1546[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould normalize email to lowercase [33m 2667[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould create verification token [33m 2169[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould send verification email [33m 1847[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould log registration event in audit log [33m 2100[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould set default role to author if not specified [33m 1678[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould login with valid credentials [33m 2227[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with wrong password [33m 1831[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with non-existent email [33m 1683[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with unverified email [33m 2452[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould rate limit after 5 failed attempts [33m 1880[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould update last_login timestamp [33m 1980[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould create session in Redis [33m 2473[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould log successful login [33m 1733[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould log failed login attempts [33m 2087[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould verify email with valid token [33m 1635[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject invalid token [33m 1511[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject expired token [33m 4491[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject already used token [33m 1816[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould handle missing token [33m 2490[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould log email verification event [33m 1573[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould create password reset token for valid email [33m 1892[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould send password reset email [33m 2555[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould not reveal if email does not exist (security) [33m 1709[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould rate limit password reset requests [33m 2169[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould normalize email to lowercase [33m 1809[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould reject invalid email format [33m 1490[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould handle missing email [33m 1552[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould log password reset request [33m 3359[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reset password with valid token [33m 1822[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould mark reset token as used [33m 2292[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject weak new password [33m 1579[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject invalid token [33m 1544[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject expired token [33m 1838[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject already used token [33m 2439[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould hash new password with bcrypt [33m 1804[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould log password reset event [33m 2702[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/logout[2m > [22mshould logout and destroy session [33m 1463[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/logout[2m > [22mshould clear session cookie [33m 1847[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/logout[2m > [22mshould log logout event [33m 1890[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould return current user with valid session [33m 1423[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould not return password hash [33m 1955[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould reject request without session [33m 2349[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould reject request with invalid session [33m 1560[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould return email verification status [33m 1745[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould resend verification email for unverified user [33m 1629[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould reject resend for already verified user [33m 1639[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould rate limit resend requests [33m 2629[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould not reveal if email does not exist (security) [33m 3103[2mms[22m[39m
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /create-checkout-session[2m > [22m[2mshould create checkout session for valid subscription
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /create-checkout-session[2m > [22m[2mshould create checkout session for valid subscription
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[0mPOST /auth/login [32m200[0m 125.670 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 6.439 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 455.982 ms - 128[0m
+[0mPOST /create-checkout-session [33m401[0m 2.003 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 78.959 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 1.912 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 92.467 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 0.941 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 274.492 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 0.981 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 217.200 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 1.353 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 67.845 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 1.055 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 168.590 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 2.232 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 69.404 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 1.839 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 218.531 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 0.747 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 4.332 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject webhook with invalid signature
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 0.978 ms - 29[0m
+[0mPOST /webhooks/stripe [33m400[0m 0.514 ms - 33[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject webhook with expired signature (>5 minutes)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.473 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject replay attacks (duplicate event ID)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.086 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould reject replay attacks (duplicate event ID)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.832 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould handle malformed signature header
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.503 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould log signature verification failures
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.547 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Signature Verification[2m > [22m[2mshould return 400 for invalid signatures (not 500)
+[22m[39m[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.360 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle checkout.session.completed - activate subscription
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.153 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle checkout.session.completed - record payment
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.097 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle customer.subscription.updated - sync status
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.012 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle customer.subscription.deleted - downgrade to free
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.238 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle customer.subscription.deleted - preserve data
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.791 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle invoice.payment_succeeded - record payment
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.119 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle invoice.payment_succeeded - extend billing period
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.416 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle invoice.payment_failed - mark past_due
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.189 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle invoice.payment_failed - cancel after 3 failures
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.212 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould ignore unhandled event types
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 0.959 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle duplicate webhook deliveries (idempotent)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.043 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle duplicate webhook deliveries (idempotent)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.121 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle webhook for deleted user gracefully
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.100 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould handle malformed webhook data gracefully
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.079 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould log all webhook events
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.581 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould return 200 for all webhooks (even errors)
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 0.954 ms - 29[0m
+[90mstderr[2m | tests/integration/handlers/payment-handlers.test.js[2m > [22m[2mPayment & Webhook Handlers[2m > [22m[2mPOST /webhooks/stripe - Event Handling[2m > [22m[2mshould process webhook in under 5 seconds
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.248 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 111.100 ms - 132[0m
+[0mGET /subscription [32m200[0m 7.365 ms - 221[0m
+[0mPOST /auth/login [32m200[0m 128.315 ms - 132[0m
+[0mGET /subscription [33m401[0m 1.158 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 66.394 ms - 132[0m
+[0mGET /subscription [32m200[0m 4.869 ms - 114[0m
+[0mPOST /auth/login [32m200[0m 355.481 ms - 132[0m
+[0mGET /subscription [32m200[0m 6.596 ms - 221[0m
+[0mPOST /auth/login [32m200[0m 74.278 ms - 132[0m
+[0mGET /subscription [32m200[0m 6.158 ms - 221[0m
+[0mPOST /auth/login [32m200[0m 66.654 ms - 135[0m
+[0mGET /payment-history [32m200[0m 3.712 ms - 484[0m
+[0mPOST /auth/login [32m200[0m 69.129 ms - 135[0m
+[0mGET /payment-history [33m401[0m 1.093 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 72.357 ms - 135[0m
+[0mGET /payment-history [32m200[0m 3.444 ms - 15[0m
+[0mPOST /auth/login [32m200[0m 232.668 ms - 135[0m
+[0mGET /payment-history [32m200[0m 4.389 ms - 484[0m
+[0mPOST /auth/login [32m200[0m 107.007 ms - 135[0m
+[0mGET /payment-history [32m200[0m 5.032 ms - 484[0m
+[0mPOST /auth/login [32m200[0m 69.687 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 222.401 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 83.415 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 71.852 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 277.336 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 70.488 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 251.360 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 68.063 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 75.301 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 69.907 ms - 134[0m
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/payment-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/integration/handlers/payment-handlers.test.js [2m([22m[2m54 tests[22m[2m)[22m[33m 110000[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create checkout session for valid subscription [33m 1575[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould require authentication for checkout [33m 2037[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould reject invalid price IDs [33m 1719[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould include userId in session metadata [33m 1537[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing priceId field [33m 1895[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle missing planType field [33m 2941[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould create customer if not exists [33m 1638[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould set correct success and cancel URLs [33m 2347[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould handle Stripe API errors gracefully [33m 1492[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /create-checkout-session[2m > [22mshould log checkout session creation [33m 2034[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould accept webhook with valid signature [33m 2203[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with invalid signature [33m 1409[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with missing signature [33m 1365[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject webhook with expired signature (>5 minutes) [33m 1776[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould reject replay attacks (duplicate event ID) [33m 2609[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould handle malformed signature header [33m 1366[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould log signature verification failures [33m 1951[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Signature Verification[2m > [22mshould return 400 for invalid signatures (not 500) [33m 1537[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - activate subscription [33m 1441[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle checkout.session.completed - record payment [33m 1611[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.updated - sync status [33m 2084[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - downgrade to free [33m 2157[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle customer.subscription.deleted - preserve data [33m 1950[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - record payment [33m 1487[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_succeeded - extend billing period [33m 1430[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - mark past_due [33m 1477[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle invoice.payment_failed - cancel after 3 failures [33m 2109[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould ignore unhandled event types [33m 1983[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle duplicate webhook deliveries (idempotent) [33m 1606[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle webhook for deleted user gracefully [33m 2011[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould handle malformed webhook data gracefully [33m 1475[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould log all webhook events [33m 1505[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould return 200 for all webhooks (even errors) [33m 1796[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mPOST /webhooks/stripe - Event Handling[2m > [22mshould process webhook in under 5 seconds [33m 2572[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return current subscription details [33m 1494[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould require authentication [33m 2474[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould return free plan for users without subscription [33m 1642[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include Stripe subscription ID [33m 2453[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /subscription[2m > [22mshould include current period dates [33m 2260[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return payment history for user [33m 1498[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould require authentication [33m 4610[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould return empty array for no payments [33m 1505[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould order payments by date (newest first) [33m 2312[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mGET /payment-history[2m > [22mshould not include other users payments [33m 2037[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track manuscript analysis usage [33m 1669[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track different analysis types [33m 2350[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track asset generation separately [33m 2318[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould calculate usage within billing period [33m 1510[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould separate usage across different billing periods [33m 2264[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track usage for users without subscription (pay-per-use) [33m 2011[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould link usage to specific manuscript [33m 2229[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould accumulate credits across multiple analyses [33m 1843[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould track timestamp for usage analytics [33m 1612[2mms[22m[39m
+   [33m[2m✓[22m[39m Payment & Webhook Handlers[2m > [22mUsage Tracking[2m > [22mshould delete usage records when manuscript is deleted (CASCADE) [33m 1662[2mms[22m[39m
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/submission-packages.test.js[2m > [22m[2mSubmission Package Bundler[2m > [22m[2mPackage Templates[2m > [22m[2mshould have agent query template
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/submission-packages.test.js[2m > [22m[2mSubmission Package Bundler[2m > [22m[2mPackage Templates[2m > [22m[2mshould have agent query template
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/submission-packages.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/submission-packages.test.js [2m([22m[2m31 tests[22m[2m)[22m[33m 67855[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have agent query template [33m 1387[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have full manuscript template [33m 1387[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have query only template [33m 1330[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould have contest template [33m 1590[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Templates[2m > [22mshould validate required documents [33m 1449[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould create package with metadata [33m 1468[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould include document list with ordering [33m 1586[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould validate package has at least one document [33m 3545[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Creation[2m > [22mshould allow custom package names [33m 1670[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould allow selecting multiple documents [33m 3542[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould maintain document order [33m 1648[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDocument Selection[2m > [22mshould allow reordering documents [33m 2022[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould generate ZIP with multiple files [33m 1595[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould prefix files with order numbers [33m 1600[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould sanitize filenames [33m 1877[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould support different file formats [33m 2037[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mZIP File Generation[2m > [22mshould include metadata file in ZIP [33m 2171[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Duplication[2m > [22mshould create copy of existing package [33m 2131[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Duplication[2m > [22mshould increment copy counter in name [33m 2198[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould list packages for manuscript [33m 1690[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould update package details [33m 2206[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mPackage Management[2m > [22mshould delete package [33m 1954[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mValidation[2m > [22mshould validate package has required documents [33m 1691[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mValidation[2m > [22mshould validate document exists before adding to package [33m 2699[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mValidation[2m > [22mshould prevent duplicate documents in package [33m 1808[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDownload Tracking[2m > [22mshould track download count [33m 2300[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mDownload Tracking[2m > [22mshould track last downloaded timestamp [33m 1744[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle empty package name [33m 1650[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle very long package name [33m 2151[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle package with only one document [33m 2143[2mms[22m[39m
+   [33m[2m✓[22m[39m Submission Package Bundler[2m > [22mEdge Cases[2m > [22mshould handle large file sizes [33m 1662[2mms[22m[39m
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/auth-utils.test.js[2m > [22m[2mAuthentication Utilities[2m > [22m[2mvalidatePassword[2m > [22m[2mshould accept a valid password
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/auth-utils.test.js[2m > [22m[2mAuthentication Utilities[2m > [22m[2mvalidatePassword[2m > [22m[2mshould accept a valid password
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/auth-utils.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/auth-utils.test.js [2m([22m[2m22 tests[22m[2m)[22m[33m 52252[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould accept a valid password [33m 1664[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password shorter than 8 characters [33m 2592[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without uppercase letter [33m 1636[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without lowercase letter [33m 1777[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without number [33m 2158[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject password without special character [33m 1789[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould reject null or undefined password [33m 1658[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould accept password with all requirements [33m 2481[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidatePassword[2m > [22mshould return multiple errors for invalid password [33m 1663[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould accept valid email addresses [33m 1784[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould reject invalid email addresses [33m 2510[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mvalidateEmail[2m > [22mshould handle edge cases [33m 1954[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould hash a password [33m 2131[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould produce different hashes for same password [33m 2357[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould verify correct password [33m 1843[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould reject incorrect password [33m 2057[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould handle empty passwords [33m 2283[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould be case sensitive [33m 3046[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mhashPassword and verifyPassword[2m > [22mshould handle long passwords [33m 1885[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have valid configuration values [33m 1675[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have password requirements defined [33m 2598[2mms[22m[39m
+   [33m[2m✓[22m[39m Authentication Utilities[2m > [22mAUTH_CONFIG[2m > [22mshould have rate limit configuration [33m 1715[2mms[22m[39m
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mQuery Letter Generation[2m > [22m[2mshould generate query letter within word count range
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/document-generation.test.js[2m > [22m[2mDocument Generation[2m > [22m[2mQuery Letter Generation[2m > [22m[2mshould generate query letter within word count range
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/document-generation.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/document-generation.test.js [2m([22m[2m27 tests[22m[2m)[22m[33m 64231[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould generate query letter within word count range [33m 1672[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould include essential query letter components [33m 2171[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould validate query letter structure [33m 1766[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould reject query letters that are too short [33m 1690[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mQuery Letter Generation[2m > [22mshould reject query letters that are too long [33m 2290[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould generate short synopsis at 500 words [33m 2426[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould generate long synopsis at 2500 words [33m 1668[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould include beginning, middle, and end [33m 3393[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould reveal ending (unlike blurb) [33m 1871[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mSynopsis Generation[2m > [22mshould maintain chronological order [33m 3745[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mVersion Management[2m > [22mshould create new version on update [33m 3500[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mVersion Management[2m > [22mshould track version metadata [33m 2396[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mVersion Management[2m > [22mshould allow rollback to previous version [33m 2843[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mVersion Management[2m > [22mshould maintain version history after rollback [33m 2655[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould validate document type [33m 2216[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould reject invalid document type [33m 1468[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould validate required fields [33m 1408[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould calculate word count accurately [33m 1436[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mDocument Validation[2m > [22mshould handle empty document [33m 1596[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mAI Generation Metadata[2m > [22mshould track generation parameters [33m 2017[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mAI Generation Metadata[2m > [22mshould calculate cost based on token usage [33m 1550[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mBatch Generation[2m > [22mshould generate all document types at once [33m 1417[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mBatch Generation[2m > [22mshould track individual generation status [33m 2071[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle very short manuscript title [33m 1408[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle very long manuscript title [33m 1330[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle special characters in content [33m 1631[2mms[22m[39m
+   [33m[2m✓[22m[39m Document Generation[2m > [22mEdge Cases[2m > [22mshould handle unicode characters [33m 2466[2mms[22m[39m
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/metadata-handlers.test.js[2m > [22m[2mEnhanced Metadata Handlers[2m > [22m[2mGenre Validation[2m > [22m[2mshould validate word count for romance novel
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/metadata-handlers.test.js[2m > [22m[2mEnhanced Metadata Handlers[2m > [22m[2mGenre Validation[2m > [22m[2mshould validate word count for romance novel
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/metadata-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/metadata-handlers.test.js [2m([22m[2m21 tests[22m[2m)[22m[33m 42145[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mGenre Validation[2m > [22mshould validate word count for romance novel [33m 1387[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mGenre Validation[2m > [22mshould flag word count outside genre norms [33m 1387[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mGenre Validation[2m > [22mshould accept novella word counts for appropriate genres [33m 1646[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mContent Warning Validation[2m > [22mshould validate content warning categories [33m 1824[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mContent Warning Validation[2m > [22mshould validate severity levels [33m 1389[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mContent Warning Validation[2m > [22mshould handle multiple content warnings [33m 1370[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mMetadata Structure[2m > [22mshould validate primary genre and subgenres [33m 1505[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mMetadata Structure[2m > [22mshould validate age category [33m 2719[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mMetadata Structure[2m > [22mshould validate manuscript status [33m 1936[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mMetadata Structure[2m > [22mshould validate series information [33m 1455[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mMetadata History Tracking[2m > [22mshould record metadata changes with timestamp [33m 1413[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mMetadata History Tracking[2m > [22mshould track multiple change types [33m 1405[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mGenre Hierarchy[2m > [22mshould validate parent-child genre relationships [33m 1611[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mGenre Hierarchy[2m > [22mshould handle subgenre depth [33m 2340[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mWord Count Validation Logic[2m > [22mshould categorize flash fiction correctly [33m 1982[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mWord Count Validation Logic[2m > [22mshould categorize novel correctly [33m 1430[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mWord Count Validation Logic[2m > [22mshould categorize epic correctly [33m 1952[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mEdge Cases[2m > [22mshould handle missing optional metadata fields [33m 1377[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mEdge Cases[2m > [22mshould handle empty subgenres array [33m 1394[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mEdge Cases[2m > [22mshould validate completion percentage range [33m 1737[2mms[22m[39m
+   [33m[2m✓[22m[39m Enhanced Metadata Handlers[2m > [22mEdge Cases[2m > [22mshould reject invalid completion percentage [33m 2425[2mms[22m[39m
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/error-handling.test.js[2m > [22m[2mError Handling[2m > [22m[2mError Classes[2m > [22m[2mshould create AppError with correct properties
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/error-handling.test.js[2m > [22m[2mError Handling[2m > [22m[2mError Classes[2m > [22m[2mshould create AppError with correct properties
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/error-handling.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/error-handling.test.js [2m([22m[2m24 tests[22m[2m)[22m[33m 47449[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create AppError with correct properties [33m 1390[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould serialize AppError to JSON correctly [33m 1522[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create AuthenticationError with 401 status [33m 1875[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create AuthorizationError with 403 status [33m 1351[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create ValidationError with 400 status [33m 1389[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create NotFoundError with 404 status [33m 1451[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create RateLimitError with 429 status [33m 2207[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create ConflictError with 409 status [33m 1386[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create ServerError with 500 status [33m 1406[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Classes[2m > [22mshould create ExternalServiceError with service name [33m 1974[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould create Response with correct status and JSON [33m 1486[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould handle generic Error objects [33m 1319[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould include Retry-After header for rate limit errors [33m 1482[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mcreateErrorResponse[2m > [22mshould merge additional headers [33m 2185[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should not throw when condition is true [33m 1745[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should throw ValidationError when condition is false [33m 1456[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massert should include details in error [33m 3174[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should not throw when userId exists [33m 1345[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should throw when userId is null [33m 2309[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthenticated should throw when userId is undefined [33m 1520[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthorized should not throw when permission is true [33m 1965[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mAssertion Helpers[2m > [22massertAuthorized should throw when permission is false [33m 1975[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Inheritance[2m > [22mshould maintain instanceof relationships [33m 1366[2mms[22m[39m
+   [33m[2m✓[22m[39m Error Handling[2m > [22mError Inheritance[2m > [22mshould have correct error names [33m 1371[2mms[22m[39m
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/unit/test-helpers.test.js[2m > [22m[2mMock Factories[2m > [22m[2mStorage Adapter Mock[2m > [22m[2mshould put and get objects
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/unit/test-helpers.test.js[2m > [22m[2mMock Factories[2m > [22m[2mStorage Adapter Mock[2m > [22m[2mshould put and get objects
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/unit/test-helpers.test.js [2m([22m[2m24 tests[22m[2m)[22m[33m 61471[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould put and get objects [33m 1468[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould delete objects [33m 1604[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould list objects by prefix [33m 1406[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mRedis Mock[2m > [22mshould set and get values [33m 1503[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mRedis Mock[2m > [22mshould set values with expiration [33m 3257[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mRedis Mock[2m > [22mshould delete keys [33m 1533[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mRedis Mock[2m > [22mshould increment values [33m 1538[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mClaude API Mock[2m > [22mshould return mock AI responses [33m 1423[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mClaude API Mock[2m > [22mshould include custom response text [33m 1396[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould track sent emails [33m 1343[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould find emails by recipient [33m 1405[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould clear sent emails [33m 5779[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStripe Mock[2m > [22mshould create checkout sessions [33m 2163[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStripe Mock[2m > [22mshould create payment intents [33m 1454[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStripe Mock[2m > [22mshould construct webhook events [33m 3573[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mUser Factory[2m > [22mshould create valid user data [33m 1415[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mUser Factory[2m > [22mshould accept overrides [33m 1759[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mManuscript Factory[2m > [22mshould create valid manuscript data [33m 4566[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mManuscript Factory[2m > [22mshould accept overrides [33m 2534[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mAnalysis Factory[2m > [22mshould create valid analysis data [33m 2169[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mAnalysis Factory[2m > [22mshould include result JSON [33m 1431[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mPayment Factory[2m > [22mshould create valid payment data [33m 1472[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mUtility Functions[2m > [22mshould generate unique email addresses [33m 5188[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mUtility Functions[2m > [22mshould generate unique IDs [33m 2008[2mms[22m[39m
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/infrastructure.test.js[2m > [22m[2mTest Infrastructure[2m > [22m[2mDatabase Utilities[2m > [22m[2mshould insert and retrieve test records
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/infrastructure.test.js[2m > [22m[2mTest Infrastructure[2m > [22m[2mDatabase Utilities[2m > [22m[2mshould insert and retrieve test records
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[0mGET /health [32m200[0m 8.848 ms - 105[0m
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/integration/infrastructure.test.js [2m([22m[2m13 tests[22m[2m)[22m[33m 44556[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould insert and retrieve test records [33m 1752[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould count test records [33m 3116[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould reset database between tests [33m 2974[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mAPI Client[2m > [22mshould make HTTP requests [33m 1905[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client [33m 3306[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client with expiration [33m 1642[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock storage adapter [33m 1769[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user data [33m 4956[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user with overrides [33m 2698[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test manuscript data [33m 1740[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould generate unique test emails [33m 2057[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated user into database [33m 4832[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated manuscript into database [33m 3331[2mms[22m[39m
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Webhook] Processing event: checkout.session.completed evt_test_c07c08fada66ce6ae54d6e91
+[Webhook] Checkout completed for user: user-123 plan: [90mundefined[39m
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Webhook] One-time payment recorded: fe0dab03-431d-46b9-ad53-62a4bb60d342
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Budget] Error updating spend: TypeError: env.DB.prepare(...).all is not a function
+    at updateBudgetSpend [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:226:85[90m)[39m
+    at logCost [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:164:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at handleCheckoutCompleted [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:181:7[90m)[39m
+    at handleStripeWebhook [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:54:9[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\webhook-signature-verification.test.js:107:26
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Budget] Error updating user spend: TypeError: Cannot read properties of undefined (reading 'current_spend_usd')
+    at updateUserSpend [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:295:34[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at logCost [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:168:7[90m)[39m
+    at handleCheckoutCompleted [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:181:7[90m)[39m
+    at handleStripeWebhook [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:54:9[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\webhook-signature-verification.test.js:107:26
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with valid signature
+[22m[39m[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with recent timestamp (within 5 min)
+[22m[39m[Webhook] Processing event: checkout.session.completed evt_test_416968739d65ac88cb257908
+[Webhook] Checkout completed for user: [90mundefined[39m plan: [90mundefined[39m
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with recent timestamp (within 5 min)
+[22m[39m[Webhook] One-time payment recorded: 510e401f-148c-4644-a8da-4ab078db6365
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with recent timestamp (within 5 min)
+[22m[39m[Budget] Error updating spend: TypeError: env.DB.prepare(...).all is not a function
+    at updateBudgetSpend [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:226:85[90m)[39m
+    at logCost [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:164:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at handleCheckoutCompleted [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:181:7[90m)[39m
+    at handleStripeWebhook [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:54:9[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\webhook-signature-verification.test.js:107:26
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mValid Signatures[2m > [22m[2mshould accept webhook with recent timestamp (within 5 min)
+[22m[39m[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mInvalid Signatures[2m > [22m[2mshould reject webhook with incorrect signature
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mInvalid Signatures[2m > [22m[2mshould reject webhook with malformed signature format
+[22m[39m[Webhook] Signature verification failed: No signatures found with expected scheme
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mInvalid Signatures[2m > [22m[2mshould reject webhook with tampered payload
+[22m[39m[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould reject webhook with expired timestamp (>5 min old)
+[22m[39m[Webhook] Signature verification failed: Timestamp outside the tolerance zone
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould accept webhook with future timestamp (Stripe allows clock skew)
+[22m[39m[Webhook] Processing event: checkout.session.completed evt_test_9fd700054a0db4d5d3074823
+[Webhook] Checkout completed for user: [90mundefined[39m plan: [90mundefined[39m
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould accept webhook with future timestamp (Stripe allows clock skew)
+[22m[39m[Webhook] One-time payment recorded: 23e0ba06-bd05-45aa-9492-aae6a5bf8741
+
+[90mstderr[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould accept webhook with future timestamp (Stripe allows clock skew)
+[22m[39m[Budget] Error updating spend: TypeError: env.DB.prepare(...).all is not a function
+    at updateBudgetSpend [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:226:85[90m)[39m
+    at logCost [90m(D:\manuscript-platform\[39msrc\utils\cost-utils.js:164:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at handleCheckoutCompleted [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:181:7[90m)[39m
+    at handleStripeWebhook [90m(D:\manuscript-platform\[39msrc\handlers\webhook-handlers.js:54:9[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\webhook-signature-verification.test.js:107:26
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js[2m > [22m[2mWebhook Signature Verification[2m > [22m[2mReplay Attack Prevention[2m > [22m[2mshould accept webhook with future timestamp (Stripe allows clock skew)
+[22m[39m[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/webhook-signature-verification.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/integration/webhook-signature-verification.test.js [2m([22m[2m9 tests[22m[2m)[22m[33m 30559[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mValid Signatures[2m > [22mshould accept webhook with valid signature [33m 1795[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mValid Signatures[2m > [22mshould accept webhook with recent timestamp (within 5 min) [33m 1757[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mMissing Signature[2m > [22mshould reject webhook with no signature header [33m 4411[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mMissing Signature[2m > [22mshould reject webhook with empty signature [33m 2031[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with incorrect signature [33m 3509[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with malformed signature format [33m 1712[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mInvalid Signatures[2m > [22mshould reject webhook with tampered payload [33m 4737[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mReplay Attack Prevention[2m > [22mshould reject webhook with expired timestamp (>5 min old) [33m 2664[2mms[22m[39m
+   [33m[2m✓[22m[39m Webhook Signature Verification[2m > [22mReplay Attack Prevention[2m > [22mshould accept webhook with future timestamp (Stripe allows clock skew) [33m 1766[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m10 passed[39m[22m[90m (10)[39m
+[2m      Tests [22m [1m[32m278 passed[39m[22m[90m (278)[39m
+[2m   Start at [22m 19:55:24
+[2m   Duration [22m 657.73s[2m (transform 589ms, setup 20.70s, collect 665ms, tests 632.82s, environment 2ms, prepare 1.74s)[22m
+

@@ -1,0 +1,383 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@172.23.176.1:5432/manuscript_platform_test vitest run
+
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/integration/infrastructure.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+stdout | tests/integration/infrastructure.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/integration/infrastructure.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/integration/infrastructure.test.js (13 tests | 13 skipped) 60045ms
+   ↓ Test Infrastructure > Database Utilities > should insert and retrieve test records
+   ↓ Test Infrastructure > Database Utilities > should count test records
+   ↓ Test Infrastructure > Database Utilities > should reset database between tests
+   ↓ Test Infrastructure > API Client > should make HTTP requests
+   ↓ Test Infrastructure > Mock Factories > should create mock Redis client
+   ↓ Test Infrastructure > Mock Factories > should create mock Redis client with expiration
+   ↓ Test Infrastructure > Mock Factories > should create mock storage adapter
+   ↓ Test Infrastructure > Test Data Factories > should create test user data
+   ↓ Test Infrastructure > Test Data Factories > should create test user with overrides
+   ↓ Test Infrastructure > Test Data Factories > should create test manuscript data
+   ↓ Test Infrastructure > Test Data Factories > should generate unique test emails
+   ↓ Test Infrastructure > Integration: Factories + Database > should insert factory-generated user into database
+   ↓ Test Infrastructure > Integration: Factories + Database > should insert factory-generated manuscript into database
+stdout | tests/integration/handlers/payment-handlers.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/integration/handlers/payment-handlers.test.js (54 tests | 54 skipped) 60125ms
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should require authentication for checkout
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should reject invalid price IDs
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should include userId in session metadata
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should handle missing priceId field
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should handle missing planType field
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should create customer if not exists
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should set correct success and cancel URLs
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should handle Stripe API errors gracefully
+   ↓ Payment & Webhook Handlers > POST /create-checkout-session > should log checkout session creation
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should accept webhook with valid signature
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with invalid signature
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with missing signature
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with expired signature (>5 minutes)
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should handle malformed signature header
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should log signature verification failures
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should return 400 for invalid signatures (not 500)
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - activate subscription
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - record payment
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.updated - sync status
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - downgrade to free
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - preserve data
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - record payment
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - extend billing period
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - mark past_due
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - cancel after 3 failures
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should ignore unhandled event types
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent)
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle webhook for deleted user gracefully
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle malformed webhook data gracefully
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should log all webhook events
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should return 200 for all webhooks (even errors)
+   ↓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should process webhook in under 5 seconds
+   ↓ Payment & Webhook Handlers > GET /subscription > should return current subscription details
+   ↓ Payment & Webhook Handlers > GET /subscription > should require authentication
+   ↓ Payment & Webhook Handlers > GET /subscription > should return free plan for users without subscription
+   ↓ Payment & Webhook Handlers > GET /subscription > should include Stripe subscription ID
+   ↓ Payment & Webhook Handlers > GET /subscription > should include current period dates
+   ↓ Payment & Webhook Handlers > GET /payment-history > should return payment history for user
+   ↓ Payment & Webhook Handlers > GET /payment-history > should require authentication
+   ↓ Payment & Webhook Handlers > GET /payment-history > should return empty array for no payments
+   ↓ Payment & Webhook Handlers > GET /payment-history > should order payments by date (newest first)
+   ↓ Payment & Webhook Handlers > GET /payment-history > should not include other users payments
+   ↓ Payment & Webhook Handlers > Usage Tracking > should track manuscript analysis usage
+   ↓ Payment & Webhook Handlers > Usage Tracking > should track different analysis types
+   ↓ Payment & Webhook Handlers > Usage Tracking > should track asset generation separately
+   ↓ Payment & Webhook Handlers > Usage Tracking > should calculate usage within billing period
+   ↓ Payment & Webhook Handlers > Usage Tracking > should separate usage across different billing periods
+   ↓ Payment & Webhook Handlers > Usage Tracking > should track usage for users without subscription (pay-per-use)
+   ↓ Payment & Webhook Handlers > Usage Tracking > should link usage to specific manuscript
+   ↓ Payment & Webhook Handlers > Usage Tracking > should accumulate credits across multiple analyses
+   ↓ Payment & Webhook Handlers > Usage Tracking > should track timestamp for usage analytics
+   ↓ Payment & Webhook Handlers > Usage Tracking > should delete usage records when manuscript is deleted (CASCADE)
+stdout | tests/integration/webhook-signature-verification.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/integration/webhook-signature-verification.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/integration/webhook-signature-verification.test.js (9 tests | 9 skipped) 60029ms
+   ↓ Webhook Signature Verification > Valid Signatures > should accept webhook with valid signature
+   ↓ Webhook Signature Verification > Valid Signatures > should accept webhook with recent timestamp (within 5 min)
+   ↓ Webhook Signature Verification > Missing Signature > should reject webhook with no signature header
+   ↓ Webhook Signature Verification > Missing Signature > should reject webhook with empty signature
+   ↓ Webhook Signature Verification > Invalid Signatures > should reject webhook with incorrect signature
+   ↓ Webhook Signature Verification > Invalid Signatures > should reject webhook with malformed signature format
+   ↓ Webhook Signature Verification > Invalid Signatures > should reject webhook with tampered payload
+   ↓ Webhook Signature Verification > Replay Attack Prevention > should reject webhook with expired timestamp (>5 min old)
+   ↓ Webhook Signature Verification > Replay Attack Prevention > should accept webhook with future timestamp (Stripe allows clock skew)
+stdout | tests/submission-packages.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/submission-packages.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/submission-packages.test.js (31 tests | 31 skipped) 60018ms
+   ↓ Submission Package Bundler > Package Templates > should have agent query template
+   ↓ Submission Package Bundler > Package Templates > should have full manuscript template
+   ↓ Submission Package Bundler > Package Templates > should have query only template
+   ↓ Submission Package Bundler > Package Templates > should have contest template
+   ↓ Submission Package Bundler > Package Templates > should validate required documents
+   ↓ Submission Package Bundler > Package Creation > should create package with metadata
+   ↓ Submission Package Bundler > Package Creation > should include document list with ordering
+   ↓ Submission Package Bundler > Package Creation > should validate package has at least one document
+   ↓ Submission Package Bundler > Package Creation > should allow custom package names
+   ↓ Submission Package Bundler > Document Selection > should allow selecting multiple documents
+   ↓ Submission Package Bundler > Document Selection > should maintain document order
+   ↓ Submission Package Bundler > Document Selection > should allow reordering documents
+   ↓ Submission Package Bundler > ZIP File Generation > should generate ZIP with multiple files
+   ↓ Submission Package Bundler > ZIP File Generation > should prefix files with order numbers
+   ↓ Submission Package Bundler > ZIP File Generation > should sanitize filenames
+   ↓ Submission Package Bundler > ZIP File Generation > should support different file formats
+   ↓ Submission Package Bundler > ZIP File Generation > should include metadata file in ZIP
+   ↓ Submission Package Bundler > Package Duplication > should create copy of existing package
+   ↓ Submission Package Bundler > Package Duplication > should increment copy counter in name
+   ↓ Submission Package Bundler > Package Management > should list packages for manuscript
+   ↓ Submission Package Bundler > Package Management > should update package details
+   ↓ Submission Package Bundler > Package Management > should delete package
+   ↓ Submission Package Bundler > Validation > should validate package has required documents
+   ↓ Submission Package Bundler > Validation > should validate document exists before adding to package
+   ↓ Submission Package Bundler > Validation > should prevent duplicate documents in package
+   ↓ Submission Package Bundler > Download Tracking > should track download count
+   ↓ Submission Package Bundler > Download Tracking > should track last downloaded timestamp
+   ↓ Submission Package Bundler > Edge Cases > should handle empty package name
+   ↓ Submission Package Bundler > Edge Cases > should handle very long package name
+   ↓ Submission Package Bundler > Edge Cases > should handle package with only one document
+   ↓ Submission Package Bundler > Edge Cases > should handle large file sizes
+stdout | tests/metadata-handlers.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/metadata-handlers.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/metadata-handlers.test.js (21 tests | 21 skipped) 60069ms
+   ↓ Enhanced Metadata Handlers > Genre Validation > should validate word count for romance novel
+   ↓ Enhanced Metadata Handlers > Genre Validation > should flag word count outside genre norms
+   ↓ Enhanced Metadata Handlers > Genre Validation > should accept novella word counts for appropriate genres
+   ↓ Enhanced Metadata Handlers > Content Warning Validation > should validate content warning categories
+   ↓ Enhanced Metadata Handlers > Content Warning Validation > should validate severity levels
+   ↓ Enhanced Metadata Handlers > Content Warning Validation > should handle multiple content warnings
+   ↓ Enhanced Metadata Handlers > Metadata Structure > should validate primary genre and subgenres
+   ↓ Enhanced Metadata Handlers > Metadata Structure > should validate age category
+   ↓ Enhanced Metadata Handlers > Metadata Structure > should validate manuscript status
+   ↓ Enhanced Metadata Handlers > Metadata Structure > should validate series information
+   ↓ Enhanced Metadata Handlers > Metadata History Tracking > should record metadata changes with timestamp
+   ↓ Enhanced Metadata Handlers > Metadata History Tracking > should track multiple change types
+   ↓ Enhanced Metadata Handlers > Genre Hierarchy > should validate parent-child genre relationships
+   ↓ Enhanced Metadata Handlers > Genre Hierarchy > should handle subgenre depth
+   ↓ Enhanced Metadata Handlers > Word Count Validation Logic > should categorize flash fiction correctly
+   ↓ Enhanced Metadata Handlers > Word Count Validation Logic > should categorize novel correctly
+   ↓ Enhanced Metadata Handlers > Word Count Validation Logic > should categorize epic correctly
+   ↓ Enhanced Metadata Handlers > Edge Cases > should handle missing optional metadata fields
+   ↓ Enhanced Metadata Handlers > Edge Cases > should handle empty subgenres array
+   ↓ Enhanced Metadata Handlers > Edge Cases > should validate completion percentage range
+   ↓ Enhanced Metadata Handlers > Edge Cases > should reject invalid completion percentage
+stdout | tests/error-handling.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/error-handling.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/error-handling.test.js (24 tests | 24 skipped) 60021ms
+   ↓ Error Handling > Error Classes > should create AppError with correct properties
+   ↓ Error Handling > Error Classes > should serialize AppError to JSON correctly
+   ↓ Error Handling > Error Classes > should create AuthenticationError with 401 status
+   ↓ Error Handling > Error Classes > should create AuthorizationError with 403 status
+   ↓ Error Handling > Error Classes > should create ValidationError with 400 status
+   ↓ Error Handling > Error Classes > should create NotFoundError with 404 status
+   ↓ Error Handling > Error Classes > should create RateLimitError with 429 status
+   ↓ Error Handling > Error Classes > should create ConflictError with 409 status
+   ↓ Error Handling > Error Classes > should create ServerError with 500 status
+   ↓ Error Handling > Error Classes > should create ExternalServiceError with service name
+   ↓ Error Handling > createErrorResponse > should create Response with correct status and JSON
+   ↓ Error Handling > createErrorResponse > should handle generic Error objects
+   ↓ Error Handling > createErrorResponse > should include Retry-After header for rate limit errors
+   ↓ Error Handling > createErrorResponse > should merge additional headers
+   ↓ Error Handling > Assertion Helpers > assert should not throw when condition is true
+   ↓ Error Handling > Assertion Helpers > assert should throw ValidationError when condition is false
+   ↓ Error Handling > Assertion Helpers > assert should include details in error
+   ↓ Error Handling > Assertion Helpers > assertAuthenticated should not throw when userId exists
+   ↓ Error Handling > Assertion Helpers > assertAuthenticated should throw when userId is null
+   ↓ Error Handling > Assertion Helpers > assertAuthenticated should throw when userId is undefined
+   ↓ Error Handling > Assertion Helpers > assertAuthorized should not throw when permission is true
+   ↓ Error Handling > Assertion Helpers > assertAuthorized should throw when permission is false
+   ↓ Error Handling > Error Inheritance > should maintain instanceof relationships
+   ↓ Error Handling > Error Inheritance > should have correct error names
+stdout | tests/document-generation.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/document-generation.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/document-generation.test.js (27 tests | 27 skipped) 60018ms
+   ↓ Document Generation > Query Letter Generation > should generate query letter within word count range
+   ↓ Document Generation > Query Letter Generation > should include essential query letter components
+   ↓ Document Generation > Query Letter Generation > should validate query letter structure
+   ↓ Document Generation > Query Letter Generation > should reject query letters that are too short
+   ↓ Document Generation > Query Letter Generation > should reject query letters that are too long
+   ↓ Document Generation > Synopsis Generation > should generate short synopsis at 500 words
+   ↓ Document Generation > Synopsis Generation > should generate long synopsis at 2500 words
+   ↓ Document Generation > Synopsis Generation > should include beginning, middle, and end
+   ↓ Document Generation > Synopsis Generation > should reveal ending (unlike blurb)
+   ↓ Document Generation > Synopsis Generation > should maintain chronological order
+   ↓ Document Generation > Version Management > should create new version on update
+   ↓ Document Generation > Version Management > should track version metadata
+   ↓ Document Generation > Version Management > should allow rollback to previous version
+   ↓ Document Generation > Version Management > should maintain version history after rollback
+   ↓ Document Generation > Document Validation > should validate document type
+   ↓ Document Generation > Document Validation > should reject invalid document type
+   ↓ Document Generation > Document Validation > should validate required fields
+   ↓ Document Generation > Document Validation > should calculate word count accurately
+   ↓ Document Generation > Document Validation > should handle empty document
+   ↓ Document Generation > AI Generation Metadata > should track generation parameters
+   ↓ Document Generation > AI Generation Metadata > should calculate cost based on token usage
+   ↓ Document Generation > Batch Generation > should generate all document types at once
+   ↓ Document Generation > Batch Generation > should track individual generation status
+   ↓ Document Generation > Edge Cases > should handle very short manuscript title
+   ↓ Document Generation > Edge Cases > should handle very long manuscript title
+   ↓ Document Generation > Edge Cases > should handle special characters in content
+   ↓ Document Generation > Edge Cases > should handle unicode characters
+stdout | tests/unit/test-helpers.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/unit/test-helpers.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/unit/test-helpers.test.js (24 tests | 24 skipped) 60030ms
+   ↓ Mock Factories > Storage Adapter Mock > should put and get objects
+   ↓ Mock Factories > Storage Adapter Mock > should delete objects
+   ↓ Mock Factories > Storage Adapter Mock > should list objects by prefix
+   ↓ Mock Factories > Redis Mock > should set and get values
+   ↓ Mock Factories > Redis Mock > should set values with expiration
+   ↓ Mock Factories > Redis Mock > should delete keys
+   ↓ Mock Factories > Redis Mock > should increment values
+   ↓ Mock Factories > Claude API Mock > should return mock AI responses
+   ↓ Mock Factories > Claude API Mock > should include custom response text
+   ↓ Mock Factories > Email Service Mock > should track sent emails
+   ↓ Mock Factories > Email Service Mock > should find emails by recipient
+   ↓ Mock Factories > Email Service Mock > should clear sent emails
+   ↓ Mock Factories > Stripe Mock > should create checkout sessions
+   ↓ Mock Factories > Stripe Mock > should create payment intents
+   ↓ Mock Factories > Stripe Mock > should construct webhook events
+   ↓ Test Data Factories > User Factory > should create valid user data
+   ↓ Test Data Factories > User Factory > should accept overrides
+   ↓ Test Data Factories > Manuscript Factory > should create valid manuscript data
+   ↓ Test Data Factories > Manuscript Factory > should accept overrides
+   ↓ Test Data Factories > Analysis Factory > should create valid analysis data
+   ↓ Test Data Factories > Analysis Factory > should include result JSON
+   ↓ Test Data Factories > Payment Factory > should create valid payment data
+   ↓ Test Data Factories > Utility Functions > should generate unique email addresses
+   ↓ Test Data Factories > Utility Functions > should generate unique IDs
+stdout | tests/auth-utils.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/auth-utils.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/auth-utils.test.js (22 tests | 22 skipped) 60071ms
+   ↓ Authentication Utilities > validatePassword > should accept a valid password
+   ↓ Authentication Utilities > validatePassword > should reject password shorter than 8 characters
+   ↓ Authentication Utilities > validatePassword > should reject password without uppercase letter
+   ↓ Authentication Utilities > validatePassword > should reject password without lowercase letter
+   ↓ Authentication Utilities > validatePassword > should reject password without number
+   ↓ Authentication Utilities > validatePassword > should reject password without special character
+   ↓ Authentication Utilities > validatePassword > should reject null or undefined password
+   ↓ Authentication Utilities > validatePassword > should accept password with all requirements
+   ↓ Authentication Utilities > validatePassword > should return multiple errors for invalid password
+   ↓ Authentication Utilities > validateEmail > should accept valid email addresses
+   ↓ Authentication Utilities > validateEmail > should reject invalid email addresses
+   ↓ Authentication Utilities > validateEmail > should handle edge cases
+   ↓ Authentication Utilities > hashPassword and verifyPassword > should hash a password
+   ↓ Authentication Utilities > hashPassword and verifyPassword > should produce different hashes for same password
+   ↓ Authentication Utilities > hashPassword and verifyPassword > should verify correct password
+   ↓ Authentication Utilities > hashPassword and verifyPassword > should reject incorrect password
+   ↓ Authentication Utilities > hashPassword and verifyPassword > should handle empty passwords
+   ↓ Authentication Utilities > hashPassword and verifyPassword > should be case sensitive
+   ↓ Authentication Utilities > hashPassword and verifyPassword > should handle long passwords
+   ↓ Authentication Utilities > AUTH_CONFIG > should have valid configuration values
+   ↓ Authentication Utilities > AUTH_CONFIG > should have password requirements defined
+   ↓ Authentication Utilities > AUTH_CONFIG > should have rate limit configuration
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 10 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/auth-utils.test.js [ tests/auth-utils.test.js ]
+ FAIL  tests/document-generation.test.js [ tests/document-generation.test.js ]
+ FAIL  tests/error-handling.test.js [ tests/error-handling.test.js ]
+ FAIL  tests/metadata-handlers.test.js [ tests/metadata-handlers.test.js ]
+ FAIL  tests/submission-packages.test.js [ tests/submission-packages.test.js ]
+ FAIL  tests/integration/infrastructure.test.js [ tests/integration/infrastructure.test.js ]
+ FAIL  tests/integration/webhook-signature-verification.test.js [ tests/integration/webhook-signature-verification.test.js ]
+ FAIL  tests/unit/test-helpers.test.js [ tests/unit/test-helpers.test.js ]
+ FAIL  tests/integration/handlers/payment-handlers.test.js [ tests/integration/handlers/payment-handlers.test.js ]
+Error: Hook timed out in 60000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ tests/setup.js:26:10
+     24|  * Global setup - runs once before all tests
+     25|  */
+     26| beforeAll(async () => {
+       |          ^
+     27|   console.log('\n🧪 Setting up test environment...');
+     28| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/integration/handlers/auth-handlers.test.js [ tests/integration/handlers/auth-handlers.test.js ]
+Error: [vitest] There was an error when mocking a module. If you are using "vi.mock" factory, make sure there are no top level variables inside, since this call is hoisted to top of the file. Read more: https://vitest.dev/api/vi.html#vi-mock
+ ❯ src/handlers/auth-handlers.js:37:1
+     35| } from '../utils/auth-utils.js';
+     36| import { initCache } from '../utils/db-cache.js';
+     37| import { sendEmailVerification } from '../services/email-service.js';
+       | ^
+     38| 
+     39| // ===================================================================…
+
+Caused by: ReferenceError: Cannot access 'mockEmailService' before initialization
+ ❯ tests/integration/handlers/auth-handlers.test.js:39:26
+ ❯ src/handlers/auth-handlers.js:37:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+
+ Test Files  10 failed (10)
+      Tests  225 skipped (225)
+   Start at  16:52:20
+   Duration  618.67s (transform 2.35s, setup 4.53s, collect 53.58s, tests 540.43s, environment 2ms, prepare 9.73s)
+

@@ -5,6 +5,7 @@
 
 import { generateAuthorBio, generateCompleteBioPackage, validateBio, BIO_LENGTHS } from '../generators/author-bio-generator.js';
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 /**
  * POST /manuscripts/:id/author-bio/generate

@@ -1,0 +1,64 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test vitest run
+
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/submission-packages.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+stdout | tests/submission-packages.test.js
+
+🧪 Setting up test environment...
+
+stderr | tests/submission-packages.test.js
+❌ Failed to set up test environment: Error: connect ECONNREFUSED 127.0.0.1:5432
+[90m    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)[39m {
+  errno: [33m-111[39m,
+  code: [32m'ECONNREFUSED'[39m,
+  syscall: [32m'connect'[39m,
+  address: [32m'127.0.0.1'[39m,
+  port: [33m5432[39m
+}
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+stdout | tests/submission-packages.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/submission-packages.test.js (31 tests | 31 skipped) 8ms
+   ↓ Submission Package Bundler > Package Templates > should have agent query template
+   ↓ Submission Package Bundler > Package Templates > should have full manuscript template
+   ↓ Submission Package Bundler > Package Templates > should have query only template
+   ↓ Submission Package Bundler > Package Templates > should have contest template
+   ↓ Submission Package Bundler > Package Templates > should validate required documents
+   ↓ Submission Package Bundler > Package Creation > should create package with metadata
+   ↓ Submission Package Bundler > Package Creation > should include document list with ordering
+   ↓ Submission Package Bundler > Package Creation > should validate package has at least one document
+   ↓ Submission Package Bundler > Package Creation > should allow custom package names
+   ↓ Submission Package Bundler > Document Selection > should allow selecting multiple documents
+   ↓ Submission Package Bundler > Document Selection > should maintain document order
+   ↓ Submission Package Bundler > Document Selection > should allow reordering documents
+   ↓ Submission Package Bundler > ZIP File Generation > should generate ZIP with multiple files
+   ↓ Submission Package Bundler > ZIP File Generation > should prefix files with order numbers
+   ↓ Submission Package Bundler > ZIP File Generation > should sanitize filenames
+   ↓ Submission Package Bundler > ZIP File Generation > should support different file formats
+   ↓ Submission Package Bundler > ZIP File Generation > should include metadata file in ZIP
+   ↓ Submission Package Bundler > Package Duplication > should create copy of existing package
+   ↓ Submission Package Bundler > Package Duplication > should increment copy counter in name
+   ↓ Submission Package Bundler > Package Management > should list packages for manuscript
+   ↓ Submission Package Bundler > Package Management > should update package details
+   ↓ Submission Package Bundler > Package Management > should delete package
+   ↓ Submission Package Bundler > Validation > should validate package has required documents
+   ↓ Submission Package Bundler > Validation > should validate document exists before adding to package
+   ↓ Submission Package Bundler > Validation > should prevent duplicate documents in package
+   ↓ Submission Package Bundler > Download Tracking > should track download count
+   ↓ Submission Package Bundler > Download Tracking > should track last downloaded timestamp
+   ↓ Submission Package Bundler > Edge Cases > should handle empty package name
+   ↓ Submission Package Bundler > Edge Cases > should handle very long package name
+   ↓ Submission Package Bundler > Edge Cases > should handle package with only one document
+   ↓ Submission Package Bundler > Edge Cases > should handle large file sizes

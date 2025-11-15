@@ -12,6 +12,7 @@
  */
 
 import { Resend } from 'resend';
+import crypto from 'crypto';
 
 // ============================================================================
 // CONFIGURATION

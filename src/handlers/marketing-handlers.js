@@ -11,6 +11,7 @@ import {
   POST_TYPES
 } from '../generators/marketing-content-generator.js';
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 /**
  * POST /manuscripts/:id/marketing/generate

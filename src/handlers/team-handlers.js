@@ -15,6 +15,7 @@
 import { getUserFromRequest } from '../utils/auth-utils.js';
 import { sendTeamInvitationEmail } from '../services/email-service.js';
 import { initCache } from '../utils/db-cache.js';
+import crypto from 'crypto';
 
 /**
  * Verify user has required team role

@@ -2,6 +2,8 @@
 // Generates a KDP-ready export package for manual upload to Amazon KDP
 
 /**
+import crypto from 'crypto';
+
  * Generate KDP export package
  *
  * Creates a ZIP file containing:

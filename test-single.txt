@@ -1,0 +1,62 @@
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/auth-utils.test.js
+
+🧪 Setting up test environment...
+
+stderr | tests/auth-utils.test.js
+❌ Failed to set up test environment: Error: connect ECONNREFUSED 127.0.0.1:5432
+[90m    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)[39m {
+  errno: [33m-111[39m,
+  code: [32m'ECONNREFUSED'[39m,
+  syscall: [32m'connect'[39m,
+  address: [32m'127.0.0.1'[39m,
+  port: [33m5432[39m
+}
+💡 Ensure PostgreSQL is running at TEST_DATABASE_URL
+💡 Current TEST_DATABASE_URL: [90mundefined[39m
+
+stdout | tests/auth-utils.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should accept a valid password
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should reject password shorter than 8 characters
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should reject password without uppercase letter
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should reject password without lowercase letter
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should reject password without number
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should reject password without special character
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should reject null or undefined password
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should accept password with all requirements
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validatePassword > should return multiple errors for invalid password
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validateEmail > should accept valid email addresses
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validateEmail > should reject invalid email addresses
+ ↓ tests/auth-utils.test.js > Authentication Utilities > validateEmail > should handle edge cases
+ ↓ tests/auth-utils.test.js > Authentication Utilities > hashPassword and verifyPassword > should hash a password
+ ↓ tests/auth-utils.test.js > Authentication Utilities > hashPassword and verifyPassword > should produce different hashes for same password
+ ↓ tests/auth-utils.test.js > Authentication Utilities > hashPassword and verifyPassword > should verify correct password
+ ↓ tests/auth-utils.test.js > Authentication Utilities > hashPassword and verifyPassword > should reject incorrect password
+ ↓ tests/auth-utils.test.js > Authentication Utilities > hashPassword and verifyPassword > should handle empty passwords
+ ↓ tests/auth-utils.test.js > Authentication Utilities > hashPassword and verifyPassword > should be case sensitive
+ ↓ tests/auth-utils.test.js > Authentication Utilities > hashPassword and verifyPassword > should handle long passwords
+ ↓ tests/auth-utils.test.js > Authentication Utilities > AUTH_CONFIG > should have valid configuration values
+ ↓ tests/auth-utils.test.js > Authentication Utilities > AUTH_CONFIG > should have password requirements defined
+ ↓ tests/auth-utils.test.js > Authentication Utilities > AUTH_CONFIG > should have rate limit configuration
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/auth-utils.test.js [ tests/auth-utils.test.js ]
+Error: connect ECONNREFUSED 127.0.0.1:5432
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -111, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 5432 }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  22 skipped (22)
+   Start at  16:51:43
+   Duration  7.23s (transform 156ms, setup 535ms, collect 73ms, tests 9ms, environment 0ms, prepare 943ms)
+

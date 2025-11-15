@@ -4,6 +4,7 @@
  */
 
 import { Auth } from './auth.js';
+import crypto from 'crypto';
 
 /**
  * POST /auth/forgot-password

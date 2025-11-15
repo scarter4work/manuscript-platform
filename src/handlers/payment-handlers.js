@@ -4,6 +4,7 @@
  */
 
 import Stripe from 'stripe';
+import crypto from 'crypto';
 
 // Pricing configuration
 const PRICING = {

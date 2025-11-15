@@ -1,4 +1,6 @@
 /**
+import crypto from 'crypto';
+
  * Phase E: DMCA Admin Handlers
  * API endpoints for reviewing and managing DMCA takedown requests
  */
@@ -204,7 +206,7 @@ export async function updateDMCAStatus(request, env, corsHeaders) {
       UPDATE dmca_requests
       SET status = ?, updated_at = ?
       WHERE id = ?
-    `).bind(status, timestamp, requestId).run();
+    `).bind(status, created_at, requestId).run();
 
     console.log(`[DMCA Admin] Updated request ${requestId} to status: ${status}`);
 
@@ -352,7 +354,7 @@ export async function resolveDMCARequest(request, env, corsHeaders) {
 
     // Log audit event
     await env.DB.prepare(`
-      INSERT INTO audit_log (id, user_id, event_type, resource_type, resource_id, created_at, event_details)
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, metadata)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).bind(
       crypto.randomUUID(),

@@ -1,4 +1,6 @@
 /**
+import crypto from 'crypto';
+
  * Sales & Royalty Tracking Handlers
  * API endpoints for sales analytics, royalty tracking, and performance metrics
  */

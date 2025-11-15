@@ -6,6 +6,7 @@
  */
 
 import { sendEmail } from '../services/email-service.js';
+import crypto from 'crypto';
 
 // ============================================================================
 // COST CONSTANTS

@@ -6,6 +6,7 @@
 import Stripe from 'stripe';
 import { calculateStripeFee, logCost } from '../utils/cost-utils.js';
 import { sendPaymentConfirmationEmail, sendPaymentFailedEmail } from '../services/email-service.js';
+import crypto from 'crypto';
 
 /**
  * Main webhook handler

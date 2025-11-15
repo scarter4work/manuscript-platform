@@ -1,0 +1,210 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@192.168.68.52:5432/manuscript_platform_test vitest run
+
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database connected
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  Applying base schema...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+[0mPOST /auth/login [31m503[0m 168.274 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.505 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.461 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.447 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.382 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.313 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.453 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.297 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.519 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.408 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.404 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.477 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.552 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.801 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 1.337 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.552 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.331 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.403 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.830 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.361 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.334 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.396 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.413 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.345 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.286 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.566 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.391 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.418 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.408 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.371 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.384 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.384 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.318 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.292 ms - 46[0m
+[0mPOST /webhooks/stripe [31m503[0m 0.587 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.349 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.288 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.232 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.326 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 1.480 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.262 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.290 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.476 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.307 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.399 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.305 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.989 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.257 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.415 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.376 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.353 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.428 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.280 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.258 ms - 46[0m
+[0mPOST /auth/login [31m503[0m 0.233 ms - 46[0m
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database cleaned
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Database adapter closed
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database disconnected
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ❯ tests/integration/handlers/payment-handlers.test.js (54 tests | 44 failed) 124421ms
+   × Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription 1844ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should require authentication for checkout 1624ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should reject invalid price IDs 1725ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should include userId in session metadata 2805ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should handle missing priceId field 1607ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should handle missing planType field 1900ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should create customer if not exists 2711ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should set correct success and cancel URLs 1756ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should handle Stripe API errors gracefully 1917ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /create-checkout-session > should log checkout session creation 2580ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should accept webhook with valid signature 2335ms
+     → expected [ 200, 400, 404 ] to include 503
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with invalid signature 2557ms
+     → expected [ 400, 404 ] to include 503
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with missing signature 2080ms
+     → expected [ 400, 404 ] to include 503
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with expired signature (>5 minutes) 1505ms
+     → expected [ 400, 404 ] to include 503
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID) 1894ms
+     → expected [ 200, 400, 404 ] to include 503
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should handle malformed signature header 2101ms
+     → expected [ 400, 404 ] to include 503
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should log signature verification failures  1527ms
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should return 400 for invalid signatures (not 500) 1628ms
+     → expected [ 400, 404 ] to include 503
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - activate subscription  3177ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - record payment  1717ms
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.updated - sync status 2524ms
+     → expected [ 200, 400, 404 ] to include 503
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - downgrade to free  2362ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - preserve data  1774ms
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - record payment 2682ms
+     → expected [ 200, 400, 404 ] to include 503
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - extend billing period  2102ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - mark past_due  2317ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - cancel after 3 failures  1736ms
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should ignore unhandled event types 1590ms
+     → expected [ 200, 400, 404 ] to include 503
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent) 1594ms
+     → expected [ 200, 400, 404 ] to include 503
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle webhook for deleted user gracefully 1805ms
+     → expected [ 200, 400, 404, 500 ] to include 503
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle malformed webhook data gracefully 3381ms
+     → expected [ 200, 400, 404, 500 ] to include 503
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should log all webhook events  2481ms
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should return 200 for all webhooks (even errors) 1851ms
+     → expected [ 200, 400, 404, 500 ] to include 503
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should process webhook in under 5 seconds  1723ms
+   × Payment & Webhook Handlers > GET /subscription > should return current subscription details 1817ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /subscription > should require authentication 2545ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /subscription > should return free plan for users without subscription 2477ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /subscription > should include Stripe subscription ID 1708ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /subscription > should include current period dates 2430ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /payment-history > should return payment history for user 1663ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /payment-history > should require authentication 2064ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /payment-history > should return empty array for no payments 3236ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /payment-history > should order payments by date (newest first) 1873ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > GET /payment-history > should not include other users payments 2597ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should track manuscript analysis usage 1804ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should track different analysis types 1604ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should track asset generation separately 2925ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should calculate usage within billing period 2188ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should separate usage across different billing periods 2448ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should track usage for users without subscription (pay-per-use) 2449ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should link usage to specific manuscript 1937ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should accumulate credits across multiple analyses 2566ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should track timestamp for usage analytics 1576ms
+     → Cannot read properties of undefined (reading '0')
+   × Payment & Webhook Handlers > Usage Tracking > should delete usage records when manuscript is deleted (CASCADE) 1642ms
+     → Cannot read properties of undefined (reading '0')
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+

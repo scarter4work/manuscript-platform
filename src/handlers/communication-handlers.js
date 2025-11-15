@@ -5,6 +5,7 @@
  */
 
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 /**
  * GET /notifications/preferences

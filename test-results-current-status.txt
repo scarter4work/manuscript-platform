@@ -1,0 +1,143 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test vitest run
+
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/submission-packages.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+
+stdout | tests/submission-packages.test.js
+
+🧪 Setting up test environment...
+
+stderr | tests/submission-packages.test.js
+❌ Failed to set up test environment: Error: connect ECONNREFUSED 127.0.0.1:5432
+[90m    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)[39m {
+  errno: [33m-111[39m,
+  code: [32m'ECONNREFUSED'[39m,
+  syscall: [32m'connect'[39m,
+  address: [32m'127.0.0.1'[39m,
+  port: [33m5432[39m
+}
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+stdout | tests/submission-packages.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/submission-packages.test.js (31 tests | 31 skipped) 7ms
+   ↓ Submission Package Bundler > Package Templates > should have agent query template
+   ↓ Submission Package Bundler > Package Templates > should have full manuscript template
+   ↓ Submission Package Bundler > Package Templates > should have query only template
+   ↓ Submission Package Bundler > Package Templates > should have contest template
+   ↓ Submission Package Bundler > Package Templates > should validate required documents
+   ↓ Submission Package Bundler > Package Creation > should create package with metadata
+   ↓ Submission Package Bundler > Package Creation > should include document list with ordering
+   ↓ Submission Package Bundler > Package Creation > should validate package has at least one document
+   ↓ Submission Package Bundler > Package Creation > should allow custom package names
+   ↓ Submission Package Bundler > Document Selection > should allow selecting multiple documents
+   ↓ Submission Package Bundler > Document Selection > should maintain document order
+   ↓ Submission Package Bundler > Document Selection > should allow reordering documents
+   ↓ Submission Package Bundler > ZIP File Generation > should generate ZIP with multiple files
+   ↓ Submission Package Bundler > ZIP File Generation > should prefix files with order numbers
+   ↓ Submission Package Bundler > ZIP File Generation > should sanitize filenames
+   ↓ Submission Package Bundler > ZIP File Generation > should support different file formats
+   ↓ Submission Package Bundler > ZIP File Generation > should include metadata file in ZIP
+   ↓ Submission Package Bundler > Package Duplication > should create copy of existing package
+   ↓ Submission Package Bundler > Package Duplication > should increment copy counter in name
+   ↓ Submission Package Bundler > Package Management > should list packages for manuscript
+   ↓ Submission Package Bundler > Package Management > should update package details
+   ↓ Submission Package Bundler > Package Management > should delete package
+   ↓ Submission Package Bundler > Validation > should validate package has required documents
+   ↓ Submission Package Bundler > Validation > should validate document exists before adding to package
+   ↓ Submission Package Bundler > Validation > should prevent duplicate documents in package
+   ↓ Submission Package Bundler > Download Tracking > should track download count
+   ↓ Submission Package Bundler > Download Tracking > should track last downloaded timestamp
+   ↓ Submission Package Bundler > Edge Cases > should handle empty package name
+   ↓ Submission Package Bundler > Edge Cases > should handle very long package name
+   ↓ Submission Package Bundler > Edge Cases > should handle package with only one document
+   ↓ Submission Package Bundler > Edge Cases > should handle large file sizes
+stdout | tests/integration/handlers/auth-handlers.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+
+🧪 Setting up test environment...
+
+stderr | tests/integration/handlers/auth-handlers.test.js
+❌ Failed to set up test environment: Error: connect ECONNREFUSED 127.0.0.1:5432
+[90m    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)[39m {
+  errno: [33m-111[39m,
+  code: [32m'ECONNREFUSED'[39m,
+  syscall: [32m'connect'[39m,
+  address: [32m'127.0.0.1'[39m,
+  port: [33m5432[39m
+}
+💡 Ensure PostgreSQL is running on 127.0.0.1:5432
+💡 Or set TEST_DATABASE_URL to your test database
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+
+🧹 Tearing down test environment...
+✓ Test environment cleaned up
+
+
+ ❯ tests/integration/handlers/auth-handlers.test.js (53 tests | 53 skipped) 8ms
+   ↓ POST /auth/register > should register a new user with valid credentials
+   ↓ POST /auth/register > should reject registration with weak password
+   ↓ POST /auth/register > should reject registration with invalid email
+   ↓ POST /auth/register > should reject registration with duplicate email
+   ↓ POST /auth/register > should hash password with bcrypt
+   ↓ POST /auth/register > should normalize email to lowercase
+   ↓ POST /auth/register > should create verification token
+   ↓ POST /auth/register > should send verification email
+   ↓ POST /auth/register > should log registration event in audit log
+   ↓ POST /auth/register > should set default role to author if not specified
+   ↓ POST /auth/login > should login with valid credentials
+   ↓ POST /auth/login > should reject login with wrong password
+   ↓ POST /auth/login > should reject login with non-existent email
+   ↓ POST /auth/login > should reject login with unverified email
+   ↓ POST /auth/login > should rate limit after 5 failed attempts
+   ↓ POST /auth/login > should update last_login timestamp
+   ↓ POST /auth/login > should create session in Redis
+   ↓ POST /auth/login > should log successful login
+   ↓ POST /auth/login > should log failed login attempts
+   ↓ POST /auth/verify-email > should verify email with valid token
+   ↓ POST /auth/verify-email > should reject invalid token
+   ↓ POST /auth/verify-email > should reject expired token
+   ↓ POST /auth/verify-email > should reject already used token
+   ↓ POST /auth/verify-email > should handle missing token
+   ↓ POST /auth/verify-email > should log email verification event
+   ↓ POST /auth/request-password-reset > should create password reset token for valid email
+   ↓ POST /auth/request-password-reset > should send password reset email
+   ↓ POST /auth/request-password-reset > should not reveal if email does not exist (security)
+   ↓ POST /auth/request-password-reset > should rate limit password reset requests
+   ↓ POST /auth/request-password-reset > should normalize email to lowercase
+   ↓ POST /auth/request-password-reset > should reject invalid email format
+   ↓ POST /auth/request-password-reset > should handle missing email
+   ↓ POST /auth/request-password-reset > should log password reset request
+   ↓ POST /auth/reset-password > should reset password with valid token
+   ↓ POST /auth/reset-password > should mark reset token as used
+   ↓ POST /auth/reset-password > should reject weak new password
+   ↓ POST /auth/reset-password > should reject invalid token
+   ↓ POST /auth/reset-password > should reject expired token
+   ↓ POST /auth/reset-password > should reject already used token
+   ↓ POST /auth/reset-password > should hash new password with bcrypt
+   ↓ POST /auth/reset-password > should log password reset event
+   ↓ POST /auth/logout > should logout and destroy session
+   ↓ POST /auth/logout > should clear session cookie
+   ↓ POST /auth/logout > should log logout event
+   ↓ GET /auth/me > should return current user with valid session
+   ↓ GET /auth/me > should not return password hash
+   ↓ GET /auth/me > should reject request without session
+   ↓ GET /auth/me > should reject request with invalid session
+   ↓ GET /auth/me > should return email verification status
+   ↓ POST /auth/resend-verification > should resend verification email for unverified user
+   ↓ POST /auth/resend-verification > should reject resend for already verified user
+   ↓ POST /auth/resend-verification > should rate limit resend requests
+   ↓ POST /auth/resend-verification > should not reveal if email does not exist (security)

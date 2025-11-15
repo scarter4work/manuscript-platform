@@ -1,0 +1,1026 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@192.168.68.52:5432/manuscript_platform_test vitest run
+
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stderr | tests/integration/handlers/payment-handlers.test.js
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/integration/handlers/payment-handlers.test.js
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database connected
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  Applying base schema...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+[0mPOST /auth/login [32m200[0m 295.167 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 73.074 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 150.656 ms - 128[0m
+[0mPOST /create-checkout-session [33m401[0m 10.158 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 85.459 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 7.977 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 333.197 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 7.636 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 243.058 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 7.090 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 81.692 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 5.885 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 257.910 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 5.824 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 76.548 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 5.831 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 77.953 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 4.996 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 238.974 ms - 128[0m
+[0mPOST /create-checkout-session [33m400[0m 5.426 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should accept webhook with valid signature
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 4.935 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with invalid signature
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 2.309 ms - 29[0m
+[0mPOST /webhooks/stripe [33m400[0m 0.948 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with expired signature (>5 minutes)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.737 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 3.531 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.606 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should handle malformed signature header
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 2.599 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should log signature verification failures
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.742 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should return 400 for invalid signatures (not 500)
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 2.055 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - activate subscription
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.148 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - record payment
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.998 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.updated - sync status
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.216 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - downgrade to free
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.524 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - preserve data
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.502 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - record payment
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 3.607 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - extend billing period
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.630 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - mark past_due
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.545 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - cancel after 3 failures
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.040 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should ignore unhandled event types
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.410 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 3.984 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.006 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle webhook for deleted user gracefully
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.634 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle malformed webhook data gracefully
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.357 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should log all webhook events
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.974 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should return 200 for all webhooks (even errors)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.367 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should process webhook in under 5 seconds
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.076 ms - 29[0m
+[0mPOST /auth/login [32m200[0m 142.195 ms - 132[0m
+[0mGET /subscription [32m200[0m 13.091 ms - 221[0m
+[0mPOST /auth/login [32m200[0m 76.767 ms - 132[0m
+[0mGET /subscription [33m401[0m 7.254 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 89.200 ms - 132[0m
+[0mGET /subscription [32m200[0m 12.075 ms - 114[0m
+[0mPOST /auth/login [32m200[0m 75.829 ms - 132[0m
+[0mGET /subscription [32m200[0m 13.127 ms - 221[0m
+[0mPOST /auth/login [32m200[0m 81.000 ms - 132[0m
+[0mGET /subscription [32m200[0m 13.381 ms - 221[0m
+[0mPOST /auth/login [32m200[0m 259.582 ms - 135[0m
+[0mGET /payment-history [32m200[0m 10.107 ms - 484[0m
+[0mPOST /auth/login [32m200[0m 77.592 ms - 135[0m
+[0mGET /payment-history [33m401[0m 4.364 ms - 24[0m
+[0mPOST /auth/login [32m200[0m 79.833 ms - 135[0m
+[0mGET /payment-history [32m200[0m 9.126 ms - 15[0m
+[0mPOST /auth/login [32m200[0m 77.534 ms - 135[0m
+[0mGET /payment-history [32m200[0m 8.963 ms - 484[0m
+[0mPOST /auth/login [32m200[0m 76.865 ms - 135[0m
+[0mGET /payment-history [32m200[0m 9.934 ms - 484[0m
+[0mPOST /auth/login [32m200[0m 85.077 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 90.141 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 79.015 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 240.081 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 87.762 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 75.031 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 75.754 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 75.852 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 74.581 ms - 134[0m
+[0mPOST /auth/login [32m200[0m 79.430 ms - 134[0m
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database cleaned
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Database adapter closed
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database disconnected
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/integration/handlers/payment-handlers.test.js (54 tests) 144272ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription  2545ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should require authentication for checkout  1795ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should reject invalid price IDs  1943ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should include userId in session metadata  2560ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should handle missing priceId field  2944ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should handle missing planType field  1716ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should create customer if not exists  2785ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should set correct success and cancel URLs  1704ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should handle Stripe API errors gracefully  1664ms
+   ✓ Payment & Webhook Handlers > POST /create-checkout-session > should log checkout session creation  3125ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should accept webhook with valid signature  1736ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with invalid signature  1559ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with missing signature  2275ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with expired signature (>5 minutes)  1677ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)  1576ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should handle malformed signature header  1913ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should log signature verification failures  2425ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should return 400 for invalid signatures (not 500)  1570ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - activate subscription  2608ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - record payment  2874ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.updated - sync status  1808ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - downgrade to free  3141ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - preserve data  1654ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - record payment  2399ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - extend billing period  2541ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - mark past_due  1712ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - cancel after 3 failures  4820ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should ignore unhandled event types  1625ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent)  2729ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle webhook for deleted user gracefully  2083ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle malformed webhook data gracefully  1849ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should log all webhook events  2588ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should return 200 for all webhooks (even errors)  1929ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should process webhook in under 5 seconds  1798ms
+   ✓ Payment & Webhook Handlers > GET /subscription > should return current subscription details  2717ms
+   ✓ Payment & Webhook Handlers > GET /subscription > should require authentication  1748ms
+   ✓ Payment & Webhook Handlers > GET /subscription > should return free plan for users without subscription  3825ms
+   ✓ Payment & Webhook Handlers > GET /subscription > should include Stripe subscription ID  1709ms
+   ✓ Payment & Webhook Handlers > GET /subscription > should include current period dates  1682ms
+   ✓ Payment & Webhook Handlers > GET /payment-history > should return payment history for user  2824ms
+   ✓ Payment & Webhook Handlers > GET /payment-history > should require authentication  2693ms
+   ✓ Payment & Webhook Handlers > GET /payment-history > should return empty array for no payments  4448ms
+   ✓ Payment & Webhook Handlers > GET /payment-history > should order payments by date (newest first)  1796ms
+   ✓ Payment & Webhook Handlers > GET /payment-history > should not include other users payments  4557ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should track manuscript analysis usage  3183ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should track different analysis types  1954ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should track asset generation separately  1774ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should calculate usage within billing period  2905ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should separate usage across different billing periods  6182ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should track usage for users without subscription (pay-per-use)  1849ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should link usage to specific manuscript  1805ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should accumulate credits across multiple analyses  6213ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should track timestamp for usage analytics  2865ms
+   ✓ Payment & Webhook Handlers > Usage Tracking > should delete usage records when manuscript is deleted (CASCADE)  1859ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/integration/infrastructure.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/integration/infrastructure.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stderr | tests/integration/infrastructure.test.js
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/integration/infrastructure.test.js
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stdout | tests/integration/infrastructure.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database connected
+
+stdout | tests/integration/infrastructure.test.js
+  Applying base schema...
+
+stdout | tests/integration/infrastructure.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/integration/infrastructure.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+[0mGET /health [32m200[0m 10.204 ms - 105[0m
+stdout | tests/integration/infrastructure.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database cleaned
+
+stdout | tests/integration/infrastructure.test.js
+✓ Database adapter closed
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database disconnected
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/integration/infrastructure.test.js (13 tests) 46701ms
+   ✓ Test Infrastructure > Database Utilities > should insert and retrieve test records  1571ms
+   ✓ Test Infrastructure > Database Utilities > should count test records  3705ms
+   ✓ Test Infrastructure > Database Utilities > should reset database between tests  1550ms
+   ✓ Test Infrastructure > API Client > should make HTTP requests  1532ms
+   ✓ Test Infrastructure > Mock Factories > should create mock Redis client  4815ms
+   ✓ Test Infrastructure > Mock Factories > should create mock Redis client with expiration  1542ms
+   ✓ Test Infrastructure > Mock Factories > should create mock storage adapter  4224ms
+   ✓ Test Infrastructure > Test Data Factories > should create test user data  1547ms
+   ✓ Test Infrastructure > Test Data Factories > should create test user with overrides  4108ms
+   ✓ Test Infrastructure > Test Data Factories > should create test manuscript data  1699ms
+   ✓ Test Infrastructure > Test Data Factories > should generate unique test emails  4687ms
+   ✓ Test Infrastructure > Integration: Factories + Database > should insert factory-generated user into database  1564ms
+   ✓ Test Infrastructure > Integration: Factories + Database > should insert factory-generated manuscript into database  4095ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/submission-packages.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/submission-packages.test.js
+✓ Test database connected
+
+stdout | tests/submission-packages.test.js
+  Applying base schema...
+
+stdout | tests/submission-packages.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/submission-packages.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/submission-packages.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+stdout | tests/submission-packages.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/submission-packages.test.js
+✓ Test database cleaned
+
+stdout | tests/submission-packages.test.js
+✓ Database adapter closed
+
+stdout | tests/submission-packages.test.js
+✓ Test database disconnected
+
+stdout | tests/submission-packages.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/submission-packages.test.js (31 tests) 104715ms
+   ✓ Submission Package Bundler > Package Templates > should have agent query template  1670ms
+   ✓ Submission Package Bundler > Package Templates > should have full manuscript template  1667ms
+   ✓ Submission Package Bundler > Package Templates > should have query only template  1613ms
+   ✓ Submission Package Bundler > Package Templates > should have contest template  1608ms
+   ✓ Submission Package Bundler > Package Templates > should validate required documents  6971ms
+   ✓ Submission Package Bundler > Package Creation > should create package with metadata  1572ms
+   ✓ Submission Package Bundler > Package Creation > should include document list with ordering  1616ms
+   ✓ Submission Package Bundler > Package Creation > should validate package has at least one document  1578ms
+   ✓ Submission Package Bundler > Package Creation > should allow custom package names  6535ms
+   ✓ Submission Package Bundler > Document Selection > should allow selecting multiple documents  3898ms
+   ✓ Submission Package Bundler > Document Selection > should maintain document order  1559ms
+   ✓ Submission Package Bundler > Document Selection > should allow reordering documents  4127ms
+   ✓ Submission Package Bundler > ZIP File Generation > should generate ZIP with multiple files  2679ms
+   ✓ Submission Package Bundler > ZIP File Generation > should prefix files with order numbers  2863ms
+   ✓ Submission Package Bundler > ZIP File Generation > should sanitize filenames  1562ms
+   ✓ Submission Package Bundler > ZIP File Generation > should support different file formats  1564ms
+   ✓ Submission Package Bundler > ZIP File Generation > should include metadata file in ZIP  5827ms
+   ✓ Submission Package Bundler > Package Duplication > should create copy of existing package  2979ms
+   ✓ Submission Package Bundler > Package Duplication > should increment copy counter in name  2036ms
+   ✓ Submission Package Bundler > Package Management > should list packages for manuscript  2099ms
+   ✓ Submission Package Bundler > Package Management > should update package details  6164ms
+   ✓ Submission Package Bundler > Package Management > should delete package  2184ms
+   ✓ Submission Package Bundler > Validation > should validate package has required documents  2023ms
+   ✓ Submission Package Bundler > Validation > should validate document exists before adding to package  2060ms
+   ✓ Submission Package Bundler > Validation > should prevent duplicate documents in package  5457ms
+   ✓ Submission Package Bundler > Download Tracking > should track download count  3892ms
+   ✓ Submission Package Bundler > Download Tracking > should track last downloaded timestamp  2102ms
+   ✓ Submission Package Bundler > Edge Cases > should handle empty package name  5006ms
+   ✓ Submission Package Bundler > Edge Cases > should handle very long package name  3648ms
+   ✓ Submission Package Bundler > Edge Cases > should handle package with only one document  2020ms
+   ✓ Submission Package Bundler > Edge Cases > should handle large file sizes  2050ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/error-handling.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/error-handling.test.js
+✓ Test database connected
+
+stdout | tests/error-handling.test.js
+  Applying base schema...
+
+stdout | tests/error-handling.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/error-handling.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/error-handling.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+stdout | tests/error-handling.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/error-handling.test.js
+✓ Test database cleaned
+
+stdout | tests/error-handling.test.js
+✓ Database adapter closed
+
+stdout | tests/error-handling.test.js
+✓ Test database disconnected
+
+stdout | tests/error-handling.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/error-handling.test.js (24 tests) 92518ms
+   ✓ Error Handling > Error Classes > should create AppError with correct properties  2059ms
+   ✓ Error Handling > Error Classes > should serialize AppError to JSON correctly  2910ms
+   ✓ Error Handling > Error Classes > should create AuthenticationError with 401 status  2093ms
+   ✓ Error Handling > Error Classes > should create AuthorizationError with 403 status  5760ms
+   ✓ Error Handling > Error Classes > should create ValidationError with 400 status  2642ms
+   ✓ Error Handling > Error Classes > should create NotFoundError with 404 status  2657ms
+   ✓ Error Handling > Error Classes > should create RateLimitError with 429 status  2091ms
+   ✓ Error Handling > Error Classes > should create ConflictError with 409 status  5557ms
+   ✓ Error Handling > Error Classes > should create ServerError with 500 status  3254ms
+   ✓ Error Handling > Error Classes > should create ExternalServiceError with service name  2030ms
+   ✓ Error Handling > createErrorResponse > should create Response with correct status and JSON  2250ms
+   ✓ Error Handling > createErrorResponse > should handle generic Error objects  5466ms
+   ✓ Error Handling > createErrorResponse > should include Retry-After header for rate limit errors  3588ms
+   ✓ Error Handling > createErrorResponse > should merge additional headers  3525ms
+   ✓ Error Handling > Assertion Helpers > assert should not throw when condition is true  2380ms
+   ✓ Error Handling > Assertion Helpers > assert should throw ValidationError when condition is false  2199ms
+   ✓ Error Handling > Assertion Helpers > assert should include details in error  4914ms
+   ✓ Error Handling > Assertion Helpers > assertAuthenticated should not throw when userId exists  2004ms
+   ✓ Error Handling > Assertion Helpers > assertAuthenticated should throw when userId is null  4612ms
+   ✓ Error Handling > Assertion Helpers > assertAuthenticated should throw when userId is undefined  2404ms
+   ✓ Error Handling > Assertion Helpers > assertAuthorized should not throw when permission is true  3460ms
+   ✓ Error Handling > Assertion Helpers > assertAuthorized should throw when permission is false  2167ms
+   ✓ Error Handling > Error Inheritance > should maintain instanceof relationships  4815ms
+   ✓ Error Handling > Error Inheritance > should have correct error names  3639ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/auth-utils.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/auth-utils.test.js
+✓ Test database connected
+
+stdout | tests/auth-utils.test.js
+  Applying base schema...
+
+stdout | tests/auth-utils.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/auth-utils.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/auth-utils.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+stdout | tests/auth-utils.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/auth-utils.test.js
+✓ Test database cleaned
+
+stdout | tests/auth-utils.test.js
+✓ Database adapter closed
+
+stdout | tests/auth-utils.test.js
+✓ Test database disconnected
+
+stdout | tests/auth-utils.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/auth-utils.test.js (22 tests) 79824ms
+   ✓ Authentication Utilities > validatePassword > should accept a valid password  3048ms
+   ✓ Authentication Utilities > validatePassword > should reject password shorter than 8 characters  4189ms
+   ✓ Authentication Utilities > validatePassword > should reject password without uppercase letter  3350ms
+   ✓ Authentication Utilities > validatePassword > should reject password without lowercase letter  3346ms
+   ✓ Authentication Utilities > validatePassword > should reject password without number  3390ms
+   ✓ Authentication Utilities > validatePassword > should reject password without special character  2897ms
+   ✓ Authentication Utilities > validatePassword > should reject null or undefined password  3706ms
+   ✓ Authentication Utilities > validatePassword > should accept password with all requirements  3070ms
+   ✓ Authentication Utilities > validatePassword > should return multiple errors for invalid password  2874ms
+   ✓ Authentication Utilities > validateEmail > should accept valid email addresses  4342ms
+   ✓ Authentication Utilities > validateEmail > should reject invalid email addresses  3072ms
+   ✓ Authentication Utilities > validateEmail > should handle edge cases  4260ms
+   ✓ Authentication Utilities > hashPassword and verifyPassword > should hash a password  3863ms
+   ✓ Authentication Utilities > hashPassword and verifyPassword > should produce different hashes for same password  2999ms
+   ✓ Authentication Utilities > hashPassword and verifyPassword > should verify correct password  3564ms
+   ✓ Authentication Utilities > hashPassword and verifyPassword > should reject incorrect password  2907ms
+   ✓ Authentication Utilities > hashPassword and verifyPassword > should handle empty passwords  4265ms
+   ✓ Authentication Utilities > hashPassword and verifyPassword > should be case sensitive  1703ms
+   ✓ Authentication Utilities > hashPassword and verifyPassword > should handle long passwords  2075ms
+   ✓ Authentication Utilities > AUTH_CONFIG > should have valid configuration values  1757ms
+   ✓ Authentication Utilities > AUTH_CONFIG > should have password requirements defined  1463ms
+   ✓ Authentication Utilities > AUTH_CONFIG > should have rate limit configuration  1514ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/metadata-handlers.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/metadata-handlers.test.js
+✓ Test database connected
+
+stdout | tests/metadata-handlers.test.js
+  Applying base schema...
+
+stdout | tests/metadata-handlers.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/metadata-handlers.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/metadata-handlers.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+stdout | tests/metadata-handlers.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/metadata-handlers.test.js
+✓ Test database cleaned
+
+stdout | tests/metadata-handlers.test.js
+✓ Database adapter closed
+
+stdout | tests/metadata-handlers.test.js
+✓ Test database disconnected
+
+stdout | tests/metadata-handlers.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/metadata-handlers.test.js (21 tests) 57200ms
+   ✓ Enhanced Metadata Handlers > Genre Validation > should validate word count for romance novel  1647ms
+   ✓ Enhanced Metadata Handlers > Genre Validation > should flag word count outside genre norms  2330ms
+   ✓ Enhanced Metadata Handlers > Genre Validation > should accept novella word counts for appropriate genres  1495ms
+   ✓ Enhanced Metadata Handlers > Content Warning Validation > should validate content warning categories  1543ms
+   ✓ Enhanced Metadata Handlers > Content Warning Validation > should validate severity levels  2044ms
+   ✓ Enhanced Metadata Handlers > Content Warning Validation > should handle multiple content warnings  2428ms
+   ✓ Enhanced Metadata Handlers > Metadata Structure > should validate primary genre and subgenres  1515ms
+   ✓ Enhanced Metadata Handlers > Metadata Structure > should validate age category  1806ms
+   ✓ Enhanced Metadata Handlers > Metadata Structure > should validate manuscript status  2415ms
+   ✓ Enhanced Metadata Handlers > Metadata Structure > should validate series information  2072ms
+   ✓ Enhanced Metadata Handlers > Metadata History Tracking > should record metadata changes with timestamp  1510ms
+   ✓ Enhanced Metadata Handlers > Metadata History Tracking > should track multiple change types  2544ms
+   ✓ Enhanced Metadata Handlers > Genre Hierarchy > should validate parent-child genre relationships  2165ms
+   ✓ Enhanced Metadata Handlers > Genre Hierarchy > should handle subgenre depth  2070ms
+   ✓ Enhanced Metadata Handlers > Word Count Validation Logic > should categorize flash fiction correctly  1749ms
+   ✓ Enhanced Metadata Handlers > Word Count Validation Logic > should categorize novel correctly  1549ms
+   ✓ Enhanced Metadata Handlers > Word Count Validation Logic > should categorize epic correctly  1571ms
+   ✓ Enhanced Metadata Handlers > Edge Cases > should handle missing optional metadata fields  2241ms
+   ✓ Enhanced Metadata Handlers > Edge Cases > should handle empty subgenres array  2544ms
+   ✓ Enhanced Metadata Handlers > Edge Cases > should validate completion percentage range  1597ms
+   ✓ Enhanced Metadata Handlers > Edge Cases > should reject invalid completion percentage  2137ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/document-generation.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/document-generation.test.js
+✓ Test database connected
+
+stdout | tests/document-generation.test.js
+  Applying base schema...
+
+stdout | tests/document-generation.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/document-generation.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/document-generation.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+stdout | tests/document-generation.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/document-generation.test.js
+✓ Test database cleaned
+
+stdout | tests/document-generation.test.js
+✓ Database adapter closed
+
+stdout | tests/document-generation.test.js
+✓ Test database disconnected
+
+stdout | tests/document-generation.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/document-generation.test.js (27 tests) 66450ms
+   ✓ Document Generation > Query Letter Generation > should generate query letter within word count range  2155ms
+   ✓ Document Generation > Query Letter Generation > should include essential query letter components  1511ms
+   ✓ Document Generation > Query Letter Generation > should validate query letter structure  1499ms
+   ✓ Document Generation > Query Letter Generation > should reject query letters that are too short  1543ms
+   ✓ Document Generation > Query Letter Generation > should reject query letters that are too long  1568ms
+   ✓ Document Generation > Synopsis Generation > should generate short synopsis at 500 words  3145ms
+   ✓ Document Generation > Synopsis Generation > should generate long synopsis at 2500 words  1824ms
+   ✓ Document Generation > Synopsis Generation > should include beginning, middle, and end  3688ms
+   ✓ Document Generation > Synopsis Generation > should reveal ending (unlike blurb)  1521ms
+   ✓ Document Generation > Synopsis Generation > should maintain chronological order  1533ms
+   ✓ Document Generation > Version Management > should create new version on update  2602ms
+   ✓ Document Generation > Version Management > should track version metadata  2319ms
+   ✓ Document Generation > Version Management > should allow rollback to previous version  1497ms
+   ✓ Document Generation > Version Management > should maintain version history after rollback  2586ms
+   ✓ Document Generation > Document Validation > should validate document type  1674ms
+   ✓ Document Generation > Document Validation > should reject invalid document type  1666ms
+   ✓ Document Generation > Document Validation > should validate required fields  2554ms
+   ✓ Document Generation > Document Validation > should calculate word count accurately  1739ms
+   ✓ Document Generation > Document Validation > should handle empty document  1565ms
+   ✓ Document Generation > AI Generation Metadata > should track generation parameters  2198ms
+   ✓ Document Generation > AI Generation Metadata > should calculate cost based on token usage  2463ms
+   ✓ Document Generation > Batch Generation > should generate all document types at once  1577ms
+   ✓ Document Generation > Batch Generation > should track individual generation status  2751ms
+   ✓ Document Generation > Edge Cases > should handle very short manuscript title  4172ms
+   ✓ Document Generation > Edge Cases > should handle very long manuscript title  1578ms
+   ✓ Document Generation > Edge Cases > should handle special characters in content  1518ms
+   ✓ Document Generation > Edge Cases > should handle unicode characters  1548ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/unit/test-helpers.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/unit/test-helpers.test.js
+✓ Test database connected
+
+stdout | tests/unit/test-helpers.test.js
+  Applying base schema...
+
+stdout | tests/unit/test-helpers.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/unit/test-helpers.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/unit/test-helpers.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+stdout | tests/unit/test-helpers.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/unit/test-helpers.test.js
+✓ Test database cleaned
+
+stdout | tests/unit/test-helpers.test.js
+✓ Database adapter closed
+
+stdout | tests/unit/test-helpers.test.js
+✓ Test database disconnected
+
+stdout | tests/unit/test-helpers.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/unit/test-helpers.test.js (24 tests) 70464ms
+   ✓ Mock Factories > Storage Adapter Mock > should put and get objects  1733ms
+   ✓ Mock Factories > Storage Adapter Mock > should delete objects  1561ms
+   ✓ Mock Factories > Storage Adapter Mock > should list objects by prefix  2690ms
+   ✓ Mock Factories > Redis Mock > should set and get values  1479ms
+   ✓ Mock Factories > Redis Mock > should set values with expiration  2761ms
+   ✓ Mock Factories > Redis Mock > should delete keys  1810ms
+   ✓ Mock Factories > Redis Mock > should increment values  1539ms
+   ✓ Mock Factories > Claude API Mock > should return mock AI responses  2969ms
+   ✓ Mock Factories > Claude API Mock > should include custom response text  2411ms
+   ✓ Mock Factories > Email Service Mock > should track sent emails  2271ms
+   ✓ Mock Factories > Email Service Mock > should find emails by recipient  2649ms
+   ✓ Mock Factories > Email Service Mock > should clear sent emails  2038ms
+   ✓ Mock Factories > Stripe Mock > should create checkout sessions  1987ms
+   ✓ Mock Factories > Stripe Mock > should create payment intents  2760ms
+   ✓ Mock Factories > Stripe Mock > should construct webhook events  2120ms
+   ✓ Test Data Factories > User Factory > should create valid user data  2400ms
+   ✓ Test Data Factories > User Factory > should accept overrides  2342ms
+   ✓ Test Data Factories > Manuscript Factory > should create valid manuscript data  1949ms
+   ✓ Test Data Factories > Manuscript Factory > should accept overrides  2139ms
+   ✓ Test Data Factories > Analysis Factory > should create valid analysis data  2879ms
+   ✓ Test Data Factories > Analysis Factory > should include result JSON  1961ms
+   ✓ Test Data Factories > Payment Factory > should create valid payment data  3140ms
+   ✓ Test Data Factories > Utility Functions > should generate unique email addresses  2082ms
+   ✓ Test Data Factories > Utility Functions > should generate unique IDs  4309ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/integration/webhook-signature-verification.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.52:5432, Database: manuscript_platform_test
+
+stdout | tests/integration/webhook-signature-verification.test.js
+✓ Test database connected
+
+stdout | tests/integration/webhook-signature-verification.test.js
+  Applying base schema...
+
+stdout | tests/integration/webhook-signature-verification.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/integration/webhook-signature-verification.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/webhook-signature-verification.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with valid signature
+[Webhook] Processing event: checkout.session.completed evt_test_f53ad8707b41e3cb64a0b78c
+[Webhook] Checkout completed for user: user-123 plan: [90mundefined[39m
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with valid signature
+[Webhook] One-time payment recorded: 84d21fb5-1dac-445a-ab15-5b000b6c00ac
+
+stderr | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with valid signature
+[Budget] No budget config found
+
+stderr | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with valid signature
+[Budget] Error updating user spend: TypeError: Cannot read properties of undefined (reading 'current_spend_usd')
+    at updateUserSpend [90m(/mnt/d/manuscript-platform/[39msrc/utils/cost-utils.js:296:34[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at logCost [90m(/mnt/d/manuscript-platform/[39msrc/utils/cost-utils.js:169:7[90m)[39m
+    at handleCheckoutCompleted [90m(/mnt/d/manuscript-platform/[39msrc/handlers/webhook-handlers.js:183:7[90m)[39m
+    at handleStripeWebhook [90m(/mnt/d/manuscript-platform/[39msrc/handlers/webhook-handlers.js:55:9[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/webhook-signature-verification.test.js:110:26
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with valid signature
+[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with recent timestamp (within 5 min)
+[Webhook] Processing event: checkout.session.completed evt_test_df485ca4f22563e72e009adc
+[Webhook] Checkout completed for user: [90mundefined[39m plan: [90mundefined[39m
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with recent timestamp (within 5 min)
+[Webhook] One-time payment recorded: 3ed98245-c815-4fa3-9a7a-e8917991d2e4
+
+stderr | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with recent timestamp (within 5 min)
+[Budget] No budget config found
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Valid Signatures > should accept webhook with recent timestamp (within 5 min)
+[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+stderr | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Invalid Signatures > should reject webhook with incorrect signature
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+stderr | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Invalid Signatures > should reject webhook with malformed signature format
+[Webhook] Signature verification failed: No signatures found with expected scheme
+
+stderr | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Invalid Signatures > should reject webhook with tampered payload
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+stderr | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Replay Attack Prevention > should reject webhook with expired timestamp (>5 min old)
+[Webhook] Signature verification failed: Timestamp outside the tolerance zone
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Replay Attack Prevention > should accept webhook with future timestamp (Stripe allows clock skew)
+[Webhook] Processing event: checkout.session.completed evt_test_041fbca7f4c81ed2b968b914
+[Webhook] Checkout completed for user: [90mundefined[39m plan: [90mundefined[39m
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Replay Attack Prevention > should accept webhook with future timestamp (Stripe allows clock skew)
+[Webhook] One-time payment recorded: ee917e7d-466b-470b-9974-f243c662a067
+
+stderr | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Replay Attack Prevention > should accept webhook with future timestamp (Stripe allows clock skew)
+[Budget] No budget config found
+
+stdout | tests/integration/webhook-signature-verification.test.js > Webhook Signature Verification > Replay Attack Prevention > should accept webhook with future timestamp (Stripe allows clock skew)
+[Cost Tracking] Logged stripe_fees/payment_processing/one_time_payment: $1.1697
+
+stdout | tests/integration/webhook-signature-verification.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/integration/webhook-signature-verification.test.js
+✓ Test database cleaned
+
+stdout | tests/integration/webhook-signature-verification.test.js
+✓ Database adapter closed
+
+stdout | tests/integration/webhook-signature-verification.test.js
+✓ Test database disconnected
+
+stdout | tests/integration/webhook-signature-verification.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/integration/webhook-signature-verification.test.js (9 tests) 32130ms
+   ✓ Webhook Signature Verification > Valid Signatures > should accept webhook with valid signature  2245ms
+   ✓ Webhook Signature Verification > Valid Signatures > should accept webhook with recent timestamp (within 5 min)  1959ms
+   ✓ Webhook Signature Verification > Missing Signature > should reject webhook with no signature header  1985ms
+   ✓ Webhook Signature Verification > Missing Signature > should reject webhook with empty signature  2384ms
+   ✓ Webhook Signature Verification > Invalid Signatures > should reject webhook with incorrect signature  3109ms
+   ✓ Webhook Signature Verification > Invalid Signatures > should reject webhook with malformed signature format  1874ms
+   ✓ Webhook Signature Verification > Invalid Signatures > should reject webhook with tampered payload  2842ms
+   ✓ Webhook Signature Verification > Replay Attack Prevention > should reject webhook with expired timestamp (>5 min old)  2401ms
+   ✓ Webhook Signature Verification > Replay Attack Prevention > should accept webhook with future timestamp (Stripe allows clock skew)  2093ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/handlers/auth-handlers.test.js [ tests/integration/handlers/auth-handlers.test.js ]
+Error: [vitest] There was an error when mocking a module. If you are using "vi.mock" factory, make sure there are no top level variables inside, since this call is hoisted to top of the file. Read more: https://vitest.dev/api/vi.html#vi-mock
+ ❯ src/handlers/auth-handlers.js:37:1
+     35| } from '../utils/auth-utils.js';
+     36| import { initCache } from '../utils/db-cache.js';
+     37| import { sendEmailVerification } from '../services/email-service.js';
+       | ^
+     38| 
+     39| // ===================================================================…
+
+Caused by: ReferenceError: Cannot access 'mockEmailService' before initialization
+ ❯ tests/integration/handlers/auth-handlers.test.js:39:26
+ ❯ src/handlers/auth-handlers.js:37:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 9 passed (10)
+      Tests  225 passed (225)
+   Start at  19:04:02
+   Duration  770.19s (transform 2.37s, setup 4.51s, collect 51.69s, tests 694.27s, environment 2ms, prepare 9.38s)
+

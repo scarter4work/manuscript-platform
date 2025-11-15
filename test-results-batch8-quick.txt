@@ -1,0 +1,212 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test vitest run tests/unit/test-helpers.test.js tests/integration/infrastructure.test.js
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mD:/manuscript-platform[39m
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/unit/test-helpers.test.js[2m > [22m[2mMock Factories[2m > [22m[2mStorage Adapter Mock[2m > [22m[2mshould put and get objects
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/unit/test-helpers.test.js[2m > [22m[2mMock Factories[2m > [22m[2mStorage Adapter Mock[2m > [22m[2mshould put and get objects
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/unit/test-helpers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [32m✓[39m tests/unit/test-helpers.test.js [2m([22m[2m24 tests[22m[2m)[22m[33m 49067[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould put and get objects [33m 1441[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould delete objects [33m 2038[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStorage Adapter Mock[2m > [22mshould list objects by prefix [33m 1441[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mRedis Mock[2m > [22mshould set and get values [33m 1405[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mRedis Mock[2m > [22mshould set values with expiration [33m 1612[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mRedis Mock[2m > [22mshould delete keys [33m 2346[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mRedis Mock[2m > [22mshould increment values [33m 1455[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mClaude API Mock[2m > [22mshould return mock AI responses [33m 1843[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mClaude API Mock[2m > [22mshould include custom response text [33m 1619[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould track sent emails [33m 1401[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould find emails by recipient [33m 1464[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mEmail Service Mock[2m > [22mshould clear sent emails [33m 2270[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStripe Mock[2m > [22mshould create checkout sessions [33m 2199[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStripe Mock[2m > [22mshould create payment intents [33m 1486[2mms[22m[39m
+   [33m[2m✓[22m[39m Mock Factories[2m > [22mStripe Mock[2m > [22mshould construct webhook events [33m 2109[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mUser Factory[2m > [22mshould create valid user data [33m 2160[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mUser Factory[2m > [22mshould accept overrides [33m 1481[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mManuscript Factory[2m > [22mshould create valid manuscript data [33m 1738[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mManuscript Factory[2m > [22mshould accept overrides [33m 1474[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mAnalysis Factory[2m > [22mshould create valid analysis data [33m 1443[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mAnalysis Factory[2m > [22mshould include result JSON [33m 2116[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mPayment Factory[2m > [22mshould create valid payment data [33m 1774[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mUtility Functions[2m > [22mshould generate unique email addresses [33m 1463[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Data Factories[2m > [22mUtility Functions[2m > [22mshould generate unique IDs [33m 1738[2mms[22m[39m
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/infrastructure.test.js[2m > [22m[2mTest Infrastructure[2m > [22m[2mDatabase Utilities[2m > [22m[2mshould insert and retrieve test records
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/infrastructure.test.js[2m > [22m[2mTest Infrastructure[2m > [22m[2mDatabase Utilities[2m > [22m[2mshould insert and retrieve test records
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[0mGET /health [32m200[0m 9.105 ms - 105[0m
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/infrastructure.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/infrastructure.test.js [2m([22m[2m13 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 27735[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould insert and retrieve test records [33m 1448[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould count test records [33m 1439[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mDatabase Utilities[2m > [22mshould reset database between tests [33m 1485[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mAPI Client[2m > [22mshould make HTTP requests [33m 1556[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client [33m 2280[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock Redis client with expiration [33m 1442[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock storage adapter[39m[33m 1730[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'length')[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user data [33m 1549[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test user with overrides [33m 1432[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould create test manuscript data [33m 1448[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mTest Data Factories[2m > [22mshould generate unique test emails [33m 2075[2mms[22m[39m
+   [33m[2m✓[22m[39m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated user into database [33m 1983[2mms[22m[39m
+[31m   [31m×[31m Test Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated manuscript into database[39m[33m 1458[2mms[22m[39m
+[31m     → column "report_id" of relation "manuscripts" does not exist[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/infrastructure.test.js[2m > [22mTest Infrastructure[2m > [22mMock Factories[2m > [22mshould create mock storage adapter
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'length')[39m
+[36m [2m❯[22m tests/integration/infrastructure.test.js:[2m104:28[22m[39m
+    [90m102| [39m
+    [90m103| [39m      [35mconst[39m list [33m=[39m [35mawait[39m bucket[33m.[39m[34mlist[39m({ prefix[33m:[39m [32m'test-'[39m })[33m;[39m
+    [90m104| [39m      [34mexpect[39m(list[33m.[39m[33mContents[39m[33m.[39mlength)[33m.[39m[34mtoBe[39m([34m1[39m)[33m;[39m
+    [90m   | [39m                           [31m^[39m
+    [90m105| [39m      [34mexpect[39m(list[33m.[39m[33mContents[39m[[34m0[39m][33m.[39m[33mKey[39m)[33m.[39m[34mtoBe[39m(key)[33m;[39m
+    [90m106| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/infrastructure.test.js[2m > [22mTest Infrastructure[2m > [22mIntegration: Factories + Database[2m > [22mshould insert factory-generated manuscript into database
+[31m[1merror[22m: column "report_id" of relation "manuscripts" does not exist[39m
+[90m [2m❯[22m node_modules/pg/lib/client.js:[2m545:17[22m[39m
+[36m [2m❯[22m insertTestRecord tests/test-helpers/database.js:[2m217:18[22m[39m
+    [90m215| [39m  `[39m[33m;[39m
+    [90m216| [39m
+    [90m217| [39m  [35mconst[39m result [33m=[39m [35mawait[39m testDb[33m.[39m[34mquery[39m(query[33m,[39m values)[33m;[39m
+    [90m   | [39m                 [31m^[39m
+    [90m218| [39m  [35mreturn[39m result[33m.[39mrows[[34m0[39m][33m;[39m
+    [90m219| [39m}
+[90m [2m❯[22m tests/integration/infrastructure.test.js:[2m179:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m35 passed[39m[22m[90m (37)[39m
+[2m   Start at [22m 21:26:00
+[2m   Duration [22m 83.55s[2m (transform 448ms, setup 5.61s, collect 172ms, tests 76.80s, environment 0ms, prepare 288ms)[22m
+

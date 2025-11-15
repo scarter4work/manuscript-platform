@@ -1,0 +1,3338 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@127.0.0.1:5432/manuscript_platform_test vitest run auth-handlers.test.js
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mD:/manuscript-platform[39m
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m[dotenv@17.2.3] injecting env (24) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧪 Setting up test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database connected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  Applying base schema...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m  ✓ Schema and migrations applied
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Server adapters initialized
+✓ Test environment ready
+
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[VirusScanner] Failed to initialize: 
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Payment] Free subscription created for user 9a9a70ce-ac32-4234-aa88-a3ecb5e334f2
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:65:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'1210c39f-1e93-4d1b-99e0-ed3cedf8981f'[39m,
+  [32m'9a9a70ce-ac32-4234-aa88-a3ecb5e334f2'[39m,
+  [32m'register'[39m,
+  [32m'auth'[39m,
+  [32m'9a9a70ce-ac32-4234-aa88-a3ecb5e334f2'[39m,
+  [33m1763002650[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"role":"author","email":"newuser@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:65:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould register a new user with valid credentials
+[22m[39mVerification email sent to: newuser@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Payment] Free subscription created for user c1797c54-3f0c-46ac-a372-dac7ccbfc030
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:150:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'62d7b596-5729-4bbb-8000-01f3ad6953b5'[39m,
+  [32m'c1797c54-3f0c-46ac-a372-dac7ccbfc030'[39m,
+  [32m'register'[39m,
+  [32m'auth'[39m,
+  [32m'c1797c54-3f0c-46ac-a372-dac7ccbfc030'[39m,
+  [33m1763002657[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"role":"author","email":"bcrypt-test@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:150:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould hash password with bcrypt
+[22m[39mVerification email sent to: bcrypt-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Payment] Free subscription created for user 03d87467-b066-4d16-8cc8-49db85e346bd
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:174:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'7259de49-7362-4c19-ba6a-e49fc648f27f'[39m,
+  [32m'03d87467-b066-4d16-8cc8-49db85e346bd'[39m,
+  [32m'register'[39m,
+  [32m'auth'[39m,
+  [32m'03d87467-b066-4d16-8cc8-49db85e346bd'[39m,
+  [33m1763002660[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"role":"author","email":"casesensitive@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:174:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould normalize email to lowercase
+[22m[39mVerification email sent to: casesensitive@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Payment] Free subscription created for user 64e693b7-12ed-41df-b539-9ed9c92f69d0
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:190:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'f6bbfc9a-b374-40ba-b476-0dbe777bd282'[39m,
+  [32m'64e693b7-12ed-41df-b539-9ed9c92f69d0'[39m,
+  [32m'register'[39m,
+  [32m'auth'[39m,
+  [32m'64e693b7-12ed-41df-b539-9ed9c92f69d0'[39m,
+  [33m1763002661[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"role":"author","email":"verify-test@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:190:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould create verification token
+[22m[39mVerification email sent to: verify-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Payment] Free subscription created for user 0efe8d89-e542-4df4-a46b-87c042b1e460
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:217:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'c6b92e50-eb73-4ebe-8db0-b96c72a44f76'[39m,
+  [32m'0efe8d89-e542-4df4-a46b-87c042b1e460'[39m,
+  [32m'register'[39m,
+  [32m'auth'[39m,
+  [32m'0efe8d89-e542-4df4-a46b-87c042b1e460'[39m,
+  [33m1763002664[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"role":"author","email":"email-test@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:217:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould send verification email
+[22m[39mVerification email sent to: email-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Payment] Free subscription created for user 6029191c-1df1-416b-a399-27c14a4baa8b
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:241:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'e12d268b-d1bd-4732-8fac-5f6ad07f5a10'[39m,
+  [32m'6029191c-1df1-416b-a399-27c14a4baa8b'[39m,
+  [32m'register'[39m,
+  [32m'auth'[39m,
+  [32m'6029191c-1df1-416b-a399-27c14a4baa8b'[39m,
+  [33m1763002665[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"role":"author","email":"audit-test@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:241:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould log registration event in audit log
+[22m[39mVerification email sent to: audit-test@example.com
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Payment] Free subscription created for user 818b54bb-4ff8-4a15-b6e3-45012dc6c6f9
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:258:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'3014cb3c-ae5b-49d6-af9c-c543b8dbd03c'[39m,
+  [32m'818b54bb-4ff8-4a15-b6e3-45012dc6c6f9'[39m,
+  [32m'register'[39m,
+  [32m'auth'[39m,
+  [32m'818b54bb-4ff8-4a15-b6e3-45012dc6c6f9'[39m,
+  [33m1763002667[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"role":"author","email":"default-role@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleRegister [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:175:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:258:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/register[2m > [22m[2mshould set default role to author if not specified
+[22m[39mVerification email sent to: default-role@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould login with valid credentials
+[22m[39mDatabase query error: error: column "last_login" is of type integer but expression is of type timestamp with time zone
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:286:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:295:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m215[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'31'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'593'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+Query: UPDATE users SET last_login = NOW() WHERE id = $1
+Params: [ [32m'd6d94c834c897579f2330f1f066f35f7'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould login with valid credentials
+[22m[39mLogin error: error: column "last_login" is of type integer but expression is of type timestamp with time zone
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:286:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:295:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m215[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'31'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'593'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with wrong password
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:321:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'e2f3206d-0d29-4ad7-bbf4-39df04dc38cb'[39m,
+  [32m'd60a4c5e632b9de504e566d6fe34d943'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'd60a4c5e632b9de504e566d6fe34d943'[39m,
+  [33m1763002671[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with wrong password
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:321:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with non-existent email
+[22m[39m[Audit] Skipping audit log for login_failed - no valid user_id
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with unverified email
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:272:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:364:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'26a1e983-5127-4d8b-b0af-b9241d180472'[39m,
+  [32m'662944f5139a0e39ceb3c3a37e661056'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'662944f5139a0e39ceb3c3a37e661056'[39m,
+  [33m1763002674[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"reason":"email_not_verified"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould reject login with unverified email
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:272:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:364:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'781a7cfd-cc7b-4ed9-8f57-d5d5ba34a7e5'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [33m1763002676[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'81016dbf-14ed-4f47-8714-ae538d5d9d07'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [33m1763002676[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'593f0982-261f-4bf4-82c3-a56d93febb64'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [33m1763002676[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'7221244b-a664-4292-9183-9b31ea7e1ea2'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [33m1763002677[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'bf90a6f7-cef0-49d4-bf45-5e8e3ed014cb'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'908ad9c126c71cbb668902b1092bfe8f'[39m,
+  [33m1763002677[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould rate limit after 5 failed attempts
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:384:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould update last_login timestamp
+[22m[39mDatabase query error: error: column "last_login" is of type integer but expression is of type timestamp with time zone
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:286:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:416:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m215[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'31'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'593'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+Query: UPDATE users SET last_login = NOW() WHERE id = $1
+Params: [ [32m'b1a223096ad3a1b896058549a07755de'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould update last_login timestamp
+[22m[39mLogin error: error: column "last_login" is of type integer but expression is of type timestamp with time zone
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:286:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:416:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m215[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'31'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'593'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould create session in Redis
+[22m[39mDatabase query error: error: column "last_login" is of type integer but expression is of type timestamp with time zone
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:286:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:436:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m215[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'31'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'593'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+Query: UPDATE users SET last_login = NOW() WHERE id = $1
+Params: [ [32m'0c7fbc57f65ca300109852bd3ffcbdc4'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould create session in Redis
+[22m[39mLogin error: error: column "last_login" is of type integer but expression is of type timestamp with time zone
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:286:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:436:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m215[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'31'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'593'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log successful login
+[22m[39mDatabase query error: error: column "last_login" is of type integer but expression is of type timestamp with time zone
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:286:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:465:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m215[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'31'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'593'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+Query: UPDATE users SET last_login = NOW() WHERE id = $1
+Params: [ [32m'aae29500e7dbfb32be861e86588c2137'[39m ]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log successful login
+[22m[39mLogin error: error: column "last_login" is of type integer but expression is of type timestamp with time zone
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:286:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:465:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m215[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42804'[39m,
+  detail: [90mundefined[39m,
+  hint: [32m'You will need to rewrite or cast the expression.'[39m,
+  position: [32m'31'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'593'[39m,
+  routine: [32m'transformAssignedExpr'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log failed login attempts
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:482:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'e1e7b058-3ef9-4e11-af76-64b6885ca96b'[39m,
+  [32m'd0d902eaf3bef965b242a4c8f45c856a'[39m,
+  [32m'login_failed'[39m,
+  [32m'auth'[39m,
+  [32m'd0d902eaf3bef965b242a4c8f45c856a'[39m,
+  [33m1763002684[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"login-test@example.com","reason":"invalid_credentials"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/login[2m > [22m[2mshould log failed login attempts
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogin [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:262:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:482:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould verify email with valid token
+[22m[39mCache INVALIDATED: user 205eb8b3e33a5f3d60be8947752d175a
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould verify email with valid token
+[22m[39mCache delete many error: TypeError: Cannot read properties of undefined (reading 'delete')
+    at [90mD:\manuscript-platform\[39msrc\utils\db-cache.js:109:49
+    at Array.map (<anonymous>)
+    at CacheManager.deleteMany [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:109:30[90m)[39m
+    at UserCache.invalidate [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:185:22[90m)[39m
+    at Module.handleVerifyEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:452:22[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:523:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould verify email with valid token
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleVerifyEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:456:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:523:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'94c18071-2fec-459b-8850-b1f5c1b7fd25'[39m,
+  [32m'205eb8b3e33a5f3d60be8947752d175a'[39m,
+  [32m'email_verified'[39m,
+  [32m'auth'[39m,
+  [32m'205eb8b3e33a5f3d60be8947752d175a'[39m,
+  [33m1763002686[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould verify email with valid token
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleVerifyEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:456:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:523:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould log email verification event
+[22m[39mCache INVALIDATED: user c444f64623b5df392ea22a956c0fe8a8
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould log email verification event
+[22m[39mCache delete many error: TypeError: Cannot read properties of undefined (reading 'delete')
+    at [90mD:\manuscript-platform\[39msrc\utils\db-cache.js:109:49
+    at Array.map (<anonymous>)
+    at CacheManager.deleteMany [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:109:30[90m)[39m
+    at UserCache.invalidate [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:185:22[90m)[39m
+    at Module.handleVerifyEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:452:22[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:622:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould log email verification event
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleVerifyEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:456:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:622:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'36272fc6-18be-4cb5-aa6f-12c480d1e9b9'[39m,
+  [32m'c444f64623b5df392ea22a956c0fe8a8'[39m,
+  [32m'email_verified'[39m,
+  [32m'auth'[39m,
+  [32m'c444f64623b5df392ea22a956c0fe8a8'[39m,
+  [33m1763002695[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/verify-email[2m > [22m[2mshould log email verification event
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleVerifyEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:456:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:622:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould create password reset token for valid email
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:657:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'6ab4ba07-9232-44ed-924a-8f42ace0b5a6'[39m,
+  [32m'f1eaf154fcad205519614e00dc8d7451'[39m,
+  [32m'password_reset_requested'[39m,
+  [32m'auth'[39m,
+  [32m'f1eaf154fcad205519614e00dc8d7451'[39m,
+  [33m1763002698[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"reset@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould create password reset token for valid email
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:657:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould create password reset token for valid email
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:657:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould send password reset email
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:681:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'76c17575-9000-40a5-a5d9-2662c1a7cfe7'[39m,
+  [32m'0b41bd1e2ec99473bdddd32a02095e1e'[39m,
+  [32m'password_reset_requested'[39m,
+  [32m'auth'[39m,
+  [32m'0b41bd1e2ec99473bdddd32a02095e1e'[39m,
+  [33m1763002700[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"reset@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould send password reset email
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:681:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould send password reset email
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:681:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'ba2f8517-9ca6-46ca-971b-323c77614d71'[39m,
+  [32m'174e6b0bda7fe909d6946e94cc988efa'[39m,
+  [32m'password_reset_requested'[39m,
+  [32m'auth'[39m,
+  [32m'174e6b0bda7fe909d6946e94cc988efa'[39m,
+  [33m1763002704[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"reset@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'2c167e51-2d8a-407c-86af-9459e2a97f48'[39m,
+  [32m'174e6b0bda7fe909d6946e94cc988efa'[39m,
+  [32m'password_reset_requested'[39m,
+  [32m'auth'[39m,
+  [32m'174e6b0bda7fe909d6946e94cc988efa'[39m,
+  [33m1763002704[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"reset@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'769d2503-aae9-430d-9321-4a39e4b0743a'[39m,
+  [32m'174e6b0bda7fe909d6946e94cc988efa'[39m,
+  [32m'password_reset_requested'[39m,
+  [32m'auth'[39m,
+  [32m'174e6b0bda7fe909d6946e94cc988efa'[39m,
+  [33m1763002704[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"reset@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould rate limit password reset requests
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:727:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould normalize email to lowercase
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:761:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'0c33352e-43c3-4bf8-ad58-ff078e4ffa18'[39m,
+  [32m'0fe2e6570bdb3a606dae8d33c8b8b1bb'[39m,
+  [32m'password_reset_requested'[39m,
+  [32m'auth'[39m,
+  [32m'0fe2e6570bdb3a606dae8d33c8b8b1bb'[39m,
+  [33m1763002705[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"casesensitive@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould normalize email to lowercase
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:761:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould normalize email to lowercase
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:761:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould log password reset request
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:808:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'817693b3-be80-4170-a773-a2f5d4ae46dd'[39m,
+  [32m'ece51eacda601702bd094317b984f36f'[39m,
+  [32m'password_reset_requested'[39m,
+  [32m'auth'[39m,
+  [32m'ece51eacda601702bd094317b984f36f'[39m,
+  [33m1763002711[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"reset@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould log password reset request
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:524:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:808:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/request-password-reset[2m > [22m[2mshould log password reset request
+[22m[39mFailed to send password reset email: Error: Failed to send email: <html>
+<head><title>401 Authorization Required</title></head>
+<body>
+<center><h1>401 Authorization Required</h1></center>
+<hr><center>nginx/1.27.1</center>
+</body>
+</html>
+
+    at sendPasswordResetEmail [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:830:11[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handlePasswordResetRequest [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:534:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:808:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould reset password with valid token
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordReset [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:613:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:849:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'93e14882-abab-4380-937f-b03880f7dbd9'[39m,
+  [32m'3db41d4de3083f522a14470cb8f25b0f'[39m,
+  [32m'password_reset'[39m,
+  [32m'auth'[39m,
+  [32m'3db41d4de3083f522a14470cb8f25b0f'[39m,
+  [33m1763002714[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould reset password with valid token
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordReset [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:613:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:849:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould mark reset token as used
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordReset [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:613:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:875:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'565fef71-608a-4809-8f8e-a05817c280d4'[39m,
+  [32m'78ab34b4a31658d593ba48101d5862b0'[39m,
+  [32m'password_reset'[39m,
+  [32m'auth'[39m,
+  [32m'78ab34b4a31658d593ba48101d5862b0'[39m,
+  [33m1763002716[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould mark reset token as used
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordReset [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:613:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:875:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould hash new password with bcrypt
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordReset [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:613:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:970:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'63f46893-a026-4457-8fcc-1d3512a914e0'[39m,
+  [32m'e05b81157b5bfb3d129e654b975a4512'[39m,
+  [32m'password_reset'[39m,
+  [32m'auth'[39m,
+  [32m'e05b81157b5bfb3d129e654b975a4512'[39m,
+  [33m1763002724[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould hash new password with bcrypt
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordReset [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:613:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:970:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould log password reset event
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordReset [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:613:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:990:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'79122fe9-92ff-497e-a5e9-47f967995f59'[39m,
+  [32m'e99a98da767d3ffb8f6d949b847542c2'[39m,
+  [32m'password_reset'[39m,
+  [32m'auth'[39m,
+  [32m'e99a98da767d3ffb8f6d949b847542c2'[39m,
+  [33m1763002727[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/reset-password[2m > [22m[2mshould log password reset event
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handlePasswordReset [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:613:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:990:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould logout and destroy session
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogout [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:341:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1037:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'7ca25a13-312d-418d-bc63-a96c210865c7'[39m,
+  [32m'c8187e96f2c935ee5484815c6077e888'[39m,
+  [32m'logout'[39m,
+  [32m'auth'[39m,
+  [32m'c8187e96f2c935ee5484815c6077e888'[39m,
+  [33m1763002728[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould logout and destroy session
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogout [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:341:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1037:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould clear session cookie
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogout [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:341:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1055:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'8a877913-7c7b-4bc8-b56d-b1bb31025479'[39m,
+  [32m'e5db836893d4167814bd1cb528435dd2'[39m,
+  [32m'logout'[39m,
+  [32m'auth'[39m,
+  [32m'e5db836893d4167814bd1cb528435dd2'[39m,
+  [33m1763002730[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould clear session cookie
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogout [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:341:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1055:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould log logout event
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogout [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:341:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1069:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'7e86b460-4835-4dc9-9eae-090db0ac6cd1'[39m,
+  [32m'4ab291e21f64d64e3418ade414c47559'[39m,
+  [32m'logout'[39m,
+  [32m'auth'[39m,
+  [32m'4ab291e21f64d64e3418ade414c47559'[39m,
+  [33m1763002733[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/logout[2m > [22m[2mshould log logout event
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleLogout [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:341:7[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1069:5
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return current user with valid session
+[22m[39mCache get error for key user:348d05a75cdbffc0eeaa40cf5eba4ede: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1118:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return current user with valid session
+[22m[39mCache set error for key user:348d05a75cdbffc0eeaa40cf5eba4ede: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1118:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould not return password hash
+[22m[39mCache get error for key user:260e9f75959ef0c62cbd7c43eee56aa2: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1135:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould not return password hash
+[22m[39mCache set error for key user:260e9f75959ef0c62cbd7c43eee56aa2: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1135:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return email verification status
+[22m[39mCache get error for key user:4ca2a1847c4591be4a68b9c3e2ea2033: TypeError: Cannot read properties of undefined (reading 'get')
+    at CacheManager.get [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:62:35[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:124:31[90m)[39m
+    at UserCache.getProfile [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:153:23[90m)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:35[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1177:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mGET /auth/me[2m > [22m[2mshould return email verification status
+[22m[39mCache set error for key user:4ca2a1847c4591be4a68b9c3e2ea2033: TypeError: Cannot read properties of undefined (reading 'put')
+    at CacheManager.set [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:79:21[90m)[39m
+    at CacheManager.getOrFetch [90m(D:\manuscript-platform\[39msrc\utils\db-cache.js:134:18[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at Module.handleGetMe [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:385:18[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1177:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleResendVerification [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:743:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1213:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'fe83cb5e-c804-4455-ad25-d72a65cab1f8'[39m,
+  [32m'116a64df4da1870d2e3b5e0343b1b327'[39m,
+  [32m'verification_resent'[39m,
+  [32m'auth'[39m,
+  [32m'116a64df4da1870d2e3b5e0343b1b327'[39m,
+  [33m1763002744[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"resend@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould resend verification email for unverified user
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleResendVerification [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:743:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1213:22
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleResendVerification [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:743:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1262:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'e3afd5d7-5991-44c5-995f-ba81d1cbbbfd'[39m,
+  [32m'ebd380359331c777c02a9739c6183667'[39m,
+  [32m'verification_resent'[39m,
+  [32m'auth'[39m,
+  [32m'ebd380359331c777c02a9739c6183667'[39m,
+  [33m1763002748[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"resend@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleResendVerification [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:743:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1262:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleResendVerification [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:743:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1262:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'1584cdeb-bcee-481c-babf-ff4337d6c78a'[39m,
+  [32m'ebd380359331c777c02a9739c6183667'[39m,
+  [32m'verification_resent'[39m,
+  [32m'auth'[39m,
+  [32m'ebd380359331c777c02a9739c6183667'[39m,
+  [33m1763002748[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"resend@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleResendVerification [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:743:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1262:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39m[Email] RESEND_API_KEY not configured
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mVerification email resent to: resend@example.com
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mDatabase query error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleResendVerification [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:743:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1262:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+Query: 
+      INSERT INTO audit_log (id, user_id, action, resource_type, resource_id, timestamp, ip_address, user_agent, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    
+Params: [
+  [32m'3367344e-b9de-4305-93b4-57960c78c3d8'[39m,
+  [32m'ebd380359331c777c02a9739c6183667'[39m,
+  [32m'verification_resent'[39m,
+  [32m'auth'[39m,
+  [32m'ebd380359331c777c02a9739c6183667'[39m,
+  [33m1763002748[39m,
+  [32m'unknown'[39m,
+  [32m'unknown'[39m,
+  [32m'{"email":"resend@example.com"}'[39m
+]
+
+[90mstderr[2m | tests/integration/handlers/auth-handlers.test.js[2m > [22m[2mPOST /auth/resend-verification[2m > [22m[2mshould rate limit resend requests
+[22m[39mAudit log error: error: column "action" of relation "audit_log" does not exist
+    at [90mD:\manuscript-platform\[39mnode_modules\[4mpg-pool[24m\index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at PreparedStatement._executeQuery [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(D:\manuscript-platform\[39msrc\adapters\database-adapter.js:163:20[90m)[39m
+    at logAuthEvent [90m(D:\manuscript-platform\[39msrc\utils\auth-utils.js:329:5[90m)[39m
+    at Module.handleResendVerification [90m(D:\manuscript-platform\[39msrc\handlers\auth-handlers.js:743:5[90m)[39m
+    at [90mD:\manuscript-platform\[39mtests\integration\handlers\auth-handlers.test.js:1262:7
+    at [90mfile:///D:/manuscript-platform/[39mnode_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:752:20 {
+  length: [33m128[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42703'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'44'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_target.c'[39m,
+  line: [32m'1070'[39m,
+  routine: [32m'checkInsertTargets'[39m
+}
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m
+🧹 Tearing down test environment...
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Database adapter closed
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database disconnected
+
+[90mstdout[2m | tests/integration/handlers/auth-handlers.test.js
+[22m[39m✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ [31m❯[39m tests/integration/handlers/auth-handlers.test.js [2m([22m[2m53 tests[22m[2m | [22m[31m10 failed[39m[2m)[22m[33m 106419[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould register a new user with valid credentials [33m 1558[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with weak password [33m 1835[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with invalid email [33m 1332[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould reject registration with duplicate email [33m 1450[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould hash password with bcrypt [33m 1839[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould normalize email to lowercase [33m 3104[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould create verification token [33m 1570[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould send verification email [33m 2319[2mms[22m[39m
+[31m   [31m×[31m POST /auth/register[2m > [22mshould log registration event in audit log[39m[33m 1572[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+   [33m[2m✓[22m[39m POST /auth/register[2m > [22mshould set default role to author if not specified [33m 1486[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould login with valid credentials[39m[33m 1639[2mms[22m[39m
+[31m     → expected 500 to be 200 // Object.is equality[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with wrong password [33m 2188[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with non-existent email [33m 1423[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould reject login with unverified email [33m 1780[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/login[2m > [22mshould rate limit after 5 failed attempts [33m 2721[2mms[22m[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould update last_login timestamp[39m[33m 1608[2mms[22m[39m
+[31m     → actual value must be number or bigint, received "object"[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould create session in Redis[39m[33m 2309[2mms[22m[39m
+[31m     → Cannot read properties of null (reading 'match')[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould log successful login[39m[33m 1881[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+[31m   [31m×[31m POST /auth/login[2m > [22mshould log failed login attempts[39m[33m 1547[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould verify email with valid token [33m 2506[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject invalid token [33m 1810[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject expired token [33m 2437[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould reject already used token [33m 1531[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/verify-email[2m > [22mshould handle missing token [33m 1446[2mms[22m[39m
+[31m   [31m×[31m POST /auth/verify-email[2m > [22mshould log email verification event[39m[33m 1380[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould create password reset token for valid email [33m 3152[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould send password reset email [33m 2068[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould not reveal if email does not exist (security) [33m 1731[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould rate limit password reset requests [33m 1950[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould normalize email to lowercase [33m 1600[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould reject invalid email format [33m 1554[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/request-password-reset[2m > [22mshould handle missing email [33m 2679[2mms[22m[39m
+[31m   [31m×[31m POST /auth/request-password-reset[2m > [22mshould log password reset request[39m[33m 1725[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reset password with valid token [33m 2515[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould mark reset token as used [33m 1654[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject weak new password [33m 1387[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject invalid token [33m 1802[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject expired token [33m 2112[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould reject already used token [33m 1403[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/reset-password[2m > [22mshould hash new password with bcrypt [33m 2282[2mms[22m[39m
+[31m   [31m×[31m POST /auth/reset-password[2m > [22mshould log password reset event[39m[33m 2285[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+   [33m[2m✓[22m[39m POST /auth/logout[2m > [22mshould logout and destroy session [33m 1419[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/logout[2m > [22mshould clear session cookie [33m 1721[2mms[22m[39m
+[31m   [31m×[31m POST /auth/logout[2m > [22mshould log logout event[39m[33m 2638[2mms[22m[39m
+[31m     → expected 0 to be greater than 0[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould return current user with valid session [33m 1423[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould not return password hash [33m 2885[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould reject request without session [33m 1560[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould reject request with invalid session [33m 1803[2mms[22m[39m
+   [33m[2m✓[22m[39m GET /auth/me[2m > [22mshould return email verification status [33m 1907[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould resend verification email for unverified user [33m 1649[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould reject resend for already verified user [33m 1402[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould rate limit resend requests [33m 2649[2mms[22m[39m
+   [33m[2m✓[22m[39m POST /auth/resend-verification[2m > [22mshould not reveal if email does not exist (security) [33m 1548[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 10 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/register[2m > [22mshould log registration event in audit log
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m244:24[22m[39m
+    [90m242| [39m
+    [90m243| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m244| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m245| [39m  })[33m;[39m
+    [90m246| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/login[2m > [22mshould login with valid credentials
+[31m[1mAssertionError[22m: expected 500 to be 200 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 500[39m
+
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m298:29[22m[39m
+    [90m296| [39m    [35mconst[39m result [33m=[39m [35mawait[39m response[33m.[39m[34mjson[39m()[33m;[39m
+    [90m297| [39m
+    [90m298| [39m    [34mexpect[39m(response[33m.[39mstatus)[33m.[39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m299| [39m    [34mexpect[39m(result[33m.[39muserId)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m300| [39m    [34mexpect[39m(result[33m.[39memail)[33m.[39m[34mtoBe[39m([32m'login-test@example.com'[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/login[2m > [22mshould update last_login timestamp
+[31m[1mTypeError[22m: actual value must be number or bigint, received "object"[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m422:29[22m[39m
+    [90m420| [39m    [90m// last_login is stored as Unix timestamp (seconds since epoch)[39m
+    [90m421| [39m    [34mexpect[39m(user[33m.[39mlast_login)[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m422| [39m    [34mexpect[39m(user[33m.[39mlast_login)[33m.[39m[34mtoBeGreaterThanOrEqual[39m(beforeLogin)[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m423| [39m  })[33m;[39m
+    [90m424| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/login[2m > [22mshould create session in Redis
+[31m[1mTypeError[22m: Cannot read properties of null (reading 'match')[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m440:38[22m[39m
+    [90m438| [39m    [90m// Extract session ID from Set-Cookie header[39m
+    [90m439| [39m    [35mconst[39m setCookie [33m=[39m response[33m.[39mheaders[33m.[39m[35mget[39m([32m'Set-Cookie'[39m)[33m;[39m
+    [90m440| [39m    [35mconst[39m sessionIdMatch [33m=[39m setCookie[33m.[39m[34mmatch[39m([36m/session_id=([^;]+)/[39m)[33m;[39m
+    [90m   | [39m                                     [31m^[39m
+    [90m441| [39m    [34mexpect[39m(sessionIdMatch)[33m.[39m[34mtoBeTruthy[39m()[33m;[39m
+    [90m442| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/login[2m > [22mshould log successful login
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m468:24[22m[39m
+    [90m466| [39m
+    [90m467| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m468| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m469| [39m  })[33m;[39m
+    [90m470| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/login[2m > [22mshould log failed login attempts
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m485:24[22m[39m
+    [90m483| [39m
+    [90m484| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m485| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m486| [39m  })[33m;[39m
+    [90m487| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/verify-email[2m > [22mshould log email verification event
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m625:24[22m[39m
+    [90m623| [39m
+    [90m624| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m625| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m626| [39m  })[33m;[39m
+    [90m627| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/request-password-reset[2m > [22mshould log password reset request
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m811:24[22m[39m
+    [90m809| [39m
+    [90m810| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m811| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m812| [39m  })[33m;[39m
+    [90m813| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/reset-password[2m > [22mshould log password reset event
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m993:24[22m[39m
+    [90m991| [39m
+    [90m992| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m993| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m994| [39m  })[33m;[39m
+    [90m995| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/handlers/auth-handlers.test.js[2m > [22mPOST /auth/logout[2m > [22mshould log logout event
+[31m[1mAssertionError[22m: expected 0 to be greater than 0[39m
+[36m [2m❯[22m tests/integration/handlers/auth-handlers.test.js:[2m1072:24[22m[39m
+    [90m1070| [39m
+    [90m1071| [39m    const auditCount = await countTestRecords('audit_log', { event_typ…
+    [90m1072| [39m    [34mexpect[39m(auditCount)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m1073| [39m  })[33m;[39m
+    [90m1074| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m10 failed[39m[22m[2m | [22m[1m[32m43 passed[39m[22m[90m (53)[39m
+[2m   Start at [22m 21:57:19
+[2m   Duration [22m 110.86s[2m (transform 477ms, setup 3.66s, collect 112ms, tests 106.42s, environment 0ms, prepare 138ms)[22m
+

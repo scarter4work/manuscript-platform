@@ -10,6 +10,7 @@ import {
   generateChapterSummary
 } from '../generators/human-style-editor.js';
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 /**
  * POST /manuscripts/:id/human-edit/chapter/:chapterNum

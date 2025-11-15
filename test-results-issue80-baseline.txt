@@ -1,0 +1,1557 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@172.23.176.1:5432/manuscript_platform_test vitest run
+
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database connected
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  Applying base schema...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Server adapters initialized
+✓ Test environment ready
+
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should require authentication for checkout
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should reject invalid price IDs
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should include userId in session metadata
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle missing priceId field
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle missing planType field
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create customer if not exists
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should set correct success and cancel URLs
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle Stripe API errors gracefully
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should log checkout session creation
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should accept webhook with valid signature
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should accept webhook with valid signature
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 337.691 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with invalid signature
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with invalid signature
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 4.284 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with missing signature
+No tables found to reset
+
+[0mPOST /webhooks/stripe [33m400[0m 1.432 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with expired signature (>5 minutes)
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with expired signature (>5 minutes)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.792 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.694 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.649 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should handle malformed signature header
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should handle malformed signature header
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.900 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should log signature verification failures
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should log signature verification failures
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.761 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should return 400 for invalid signatures (not 500)
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should return 400 for invalid signatures (not 500)
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.963 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - activate subscription
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - record payment
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.updated - sync status
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - downgrade to free
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - preserve data
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - record payment
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - extend billing period
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - mark past_due
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - cancel after 3 failures
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should ignore unhandled event types
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent)
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle webhook for deleted user gracefully
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle malformed webhook data gracefully
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should log all webhook events
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should return 200 for all webhooks (even errors)
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should process webhook in under 5 seconds
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /subscription > should return current subscription details
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /subscription > should require authentication
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /subscription > should return free plan for users without subscription
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /subscription > should include Stripe subscription ID
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /subscription > should include current period dates
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /payment-history > should return payment history for user
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /payment-history > should require authentication
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /payment-history > should return empty array for no payments
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /payment-history > should order payments by date (newest first)
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /payment-history > should not include other users payments
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should track manuscript analysis usage
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should track different analysis types
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should track asset generation separately
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should calculate usage within billing period
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should separate usage across different billing periods
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should track usage for users without subscription (pay-per-use)
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should link usage to specific manuscript
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should accumulate credits across multiple analyses
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should track timestamp for usage analytics
+No tables found to reset
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > Usage Tracking > should delete usage records when manuscript is deleted (CASCADE)
+No tables found to reset
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database cleaned
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Database adapter closed
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database disconnected
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ❯ tests/integration/handlers/payment-handlers.test.js (54 tests | 47 failed) 4110ms
+   × Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription 142ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should require authentication for checkout 70ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should reject invalid price IDs 68ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should include userId in session metadata 67ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should handle missing priceId field 67ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should handle missing planType field 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should create customer if not exists 68ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should set correct success and cancel URLs 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should handle Stripe API errors gracefully 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /create-checkout-session > should log checkout session creation 69ms
+     → relation "users" does not exist
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should accept webhook with valid signature  356ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with invalid signature 9ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with missing signature 6ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with expired signature (>5 minutes) 5ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID) 12ms
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should handle malformed signature header 5ms
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should log signature verification failures 18ms
+     → relation "audit_log" does not exist
+   ✓ Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should return 400 for invalid signatures (not 500) 6ms
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - activate subscription 71ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - record payment 70ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.updated - sync status 68ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - downgrade to free 71ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - preserve data 68ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - record payment 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - extend billing period 70ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - mark past_due 70ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - cancel after 3 failures 71ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should ignore unhandled event types 68ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent) 66ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle webhook for deleted user gracefully 72ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle malformed webhook data gracefully 75ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should log all webhook events 70ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should return 200 for all webhooks (even errors) 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should process webhook in under 5 seconds 73ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /subscription > should return current subscription details 70ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /subscription > should require authentication 68ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /subscription > should return free plan for users without subscription 66ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /subscription > should include Stripe subscription ID 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /subscription > should include current period dates 67ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /payment-history > should return payment history for user 68ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /payment-history > should require authentication 66ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /payment-history > should return empty array for no payments 67ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /payment-history > should order payments by date (newest first) 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > GET /payment-history > should not include other users payments 66ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should track manuscript analysis usage 67ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should track different analysis types 67ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should track asset generation separately 67ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should calculate usage within billing period 66ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should separate usage across different billing periods 67ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should track usage for users without subscription (pay-per-use) 68ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should link usage to specific manuscript 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should accumulate credits across multiple analyses 69ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should track timestamp for usage analytics 66ms
+     → relation "users" does not exist
+   × Payment & Webhook Handlers > Usage Tracking > should delete usage records when manuscript is deleted (CASCADE) 68ms
+     → relation "users" does not exist
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Test database connected
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+  Applying base schema...
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Server adapters initialized
+✓ Test environment ready
+
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should register a new user with valid credentials
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should register a new user with valid credentials
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should register a new user with valid credentials
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should register a new user with valid credentials
+Database query error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:65:22
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'newuser@example.com'[39m ]
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should register a new user with valid credentials
+Registration error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:65:22
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should reject registration with weak password
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should reject registration with invalid email
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should reject registration with duplicate email
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should hash password with bcrypt
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should hash password with bcrypt
+Database query error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:150:5
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'bcrypt-test@example.com'[39m ]
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should hash password with bcrypt
+Registration error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:150:5
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should normalize email to lowercase
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should normalize email to lowercase
+Database query error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:174:5
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'casesensitive@example.com'[39m ]
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should normalize email to lowercase
+Registration error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:174:5
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should create verification token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should create verification token
+Database query error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:190:22
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'verify-test@example.com'[39m ]
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should create verification token
+Registration error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:190:22
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should send verification email
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should send verification email
+Database query error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:217:22
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'email-test@example.com'[39m ]
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should send verification email
+Registration error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:217:22
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should log registration event in audit log
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should log registration event in audit log
+Database query error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:241:5
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'audit-test@example.com'[39m ]
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should log registration event in audit log
+Registration error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:241:5
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should set default role to author if not specified
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should set default role to author if not specified
+Database query error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:258:5
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+Query: SELECT id FROM users WHERE email = $1
+Params: [ [32m'default-role@example.com'[39m ]
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/register > should set default role to author if not specified
+Registration error: error: relation "users" does not exist
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.first [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:124:20[90m)[39m
+    at Module.handleRegister [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:141:26[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mtests/integration/handlers/auth-handlers.test.js:258:5
+    at [90mfile:///mnt/d/manuscript-platform/[39mnode_modules/[4m@vitest[24m/runner/dist/chunk-hooks.js:752:20 {
+  length: [33m104[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'42P01'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [32m'16'[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [90mundefined[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'parse_relation.c'[39m,
+  line: [32m'1452'[39m,
+  routine: [32m'parserOpenTable'[39m
+}
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should login with valid credentials
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should reject login with wrong password
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should reject login with non-existent email
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should reject login with unverified email
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should rate limit after 5 failed attempts
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should update last_login timestamp
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should create session in Redis
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should log successful login
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/login > should log failed login attempts
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/verify-email > should verify email with valid token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/verify-email > should reject invalid token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/verify-email > should reject expired token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/verify-email > should reject already used token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/verify-email > should handle missing token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/verify-email > should log email verification event
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/request-password-reset > should create password reset token for valid email
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/request-password-reset > should send password reset email
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/request-password-reset > should not reveal if email does not exist (security)
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/request-password-reset > should rate limit password reset requests
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/request-password-reset > should normalize email to lowercase
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/request-password-reset > should reject invalid email format
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/request-password-reset > should handle missing email
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/request-password-reset > should log password reset request
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/reset-password > should reset password with valid token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/reset-password > should mark reset token as used
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/reset-password > should reject weak new password
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/reset-password > should reject invalid token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/reset-password > should reject expired token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/reset-password > should reject already used token
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/reset-password > should hash new password with bcrypt
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/reset-password > should log password reset event
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/logout > should logout and destroy session
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/logout > should clear session cookie
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/logout > should log logout event
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > GET /auth/me > should return current user with valid session
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > GET /auth/me > should not return password hash
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > GET /auth/me > should reject request without session
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > GET /auth/me > should reject request with invalid session
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > GET /auth/me > should return email verification status
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/resend-verification > should resend verification email for unverified user
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/resend-verification > should reject resend for already verified user
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/resend-verification > should rate limit resend requests
+No tables found to reset
+
+stderr | tests/integration/handlers/auth-handlers.test.js > POST /auth/resend-verification > should not reveal if email does not exist (security)
+No tables found to reset
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Test database cleaned
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Database adapter closed
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Test database disconnected
+
+stdout | tests/integration/handlers/auth-handlers.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ❯ tests/integration/handlers/auth-handlers.test.js (53 tests | 51 failed) 4044ms
+   × POST /auth/register > should register a new user with valid credentials 101ms
+     → expected 500 to be 201 // Object.is equality
+   ✓ POST /auth/register > should reject registration with weak password 3ms
+   ✓ POST /auth/register > should reject registration with invalid email 2ms
+   × POST /auth/register > should reject registration with duplicate email 118ms
+     → relation "users" does not exist
+   × POST /auth/register > should hash password with bcrypt 51ms
+     → relation "users" does not exist
+   × POST /auth/register > should normalize email to lowercase 44ms
+     → relation "users" does not exist
+   × POST /auth/register > should create verification token 44ms
+     → expected undefined to be truthy
+   × POST /auth/register > should send verification email 42ms
+     → expected 500 to be 201 // Object.is equality
+   × POST /auth/register > should log registration event in audit log 45ms
+     → relation "audit_log" does not exist
+   × POST /auth/register > should set default role to author if not specified 44ms
+     → relation "users" does not exist
+   × POST /auth/login > should login with valid credentials 73ms
+     → relation "users" does not exist
+   × POST /auth/login > should reject login with wrong password 71ms
+     → relation "users" does not exist
+   × POST /auth/login > should reject login with non-existent email 72ms
+     → relation "users" does not exist
+   × POST /auth/login > should reject login with unverified email 72ms
+     → relation "users" does not exist
+   × POST /auth/login > should rate limit after 5 failed attempts 73ms
+     → relation "users" does not exist
+   × POST /auth/login > should update last_login timestamp 70ms
+     → relation "users" does not exist
+   × POST /auth/login > should create session in Redis 70ms
+     → relation "users" does not exist
+   × POST /auth/login > should log successful login 69ms
+     → relation "users" does not exist
+   × POST /auth/login > should log failed login attempts 72ms
+     → relation "users" does not exist
+   × POST /auth/verify-email > should verify email with valid token 71ms
+     → relation "users" does not exist
+   × POST /auth/verify-email > should reject invalid token 74ms
+     → relation "users" does not exist
+   × POST /auth/verify-email > should reject expired token 73ms
+     → relation "users" does not exist
+   × POST /auth/verify-email > should reject already used token 74ms
+     → relation "users" does not exist
+   × POST /auth/verify-email > should handle missing token 71ms
+     → relation "users" does not exist
+   × POST /auth/verify-email > should log email verification event 73ms
+     → relation "users" does not exist
+   × POST /auth/request-password-reset > should create password reset token for valid email 73ms
+     → relation "users" does not exist
+   × POST /auth/request-password-reset > should send password reset email 73ms
+     → relation "users" does not exist
+   × POST /auth/request-password-reset > should not reveal if email does not exist (security) 72ms
+     → relation "users" does not exist
+   × POST /auth/request-password-reset > should rate limit password reset requests 73ms
+     → relation "users" does not exist
+   × POST /auth/request-password-reset > should normalize email to lowercase 73ms
+     → relation "users" does not exist
+   × POST /auth/request-password-reset > should reject invalid email format 75ms
+     → relation "users" does not exist
+   × POST /auth/request-password-reset > should handle missing email 75ms
+     → relation "users" does not exist
+   × POST /auth/request-password-reset > should log password reset request 69ms
+     → relation "users" does not exist
+   × POST /auth/reset-password > should reset password with valid token 68ms
+     → relation "users" does not exist
+   × POST /auth/reset-password > should mark reset token as used 72ms
+     → relation "users" does not exist
+   × POST /auth/reset-password > should reject weak new password 72ms
+     → relation "users" does not exist
+   × POST /auth/reset-password > should reject invalid token 71ms
+     → relation "users" does not exist
+   × POST /auth/reset-password > should reject expired token 72ms
+     → relation "users" does not exist
+   × POST /auth/reset-password > should reject already used token 74ms
+     → relation "users" does not exist
+   × POST /auth/reset-password > should hash new password with bcrypt 71ms
+     → relation "users" does not exist
+   × POST /auth/reset-password > should log password reset event 73ms
+     → relation "users" does not exist
+   × POST /auth/logout > should logout and destroy session 73ms
+     → relation "users" does not exist
+   × POST /auth/logout > should clear session cookie 70ms
+     → relation "users" does not exist
+   × POST /auth/logout > should log logout event 71ms
+     → relation "users" does not exist
+   × GET /auth/me > should return current user with valid session 71ms
+     → relation "users" does not exist
+   × GET /auth/me > should not return password hash 73ms
+     → relation "users" does not exist
+   × GET /auth/me > should reject request without session 69ms
+     → relation "users" does not exist
+   × GET /auth/me > should reject request with invalid session 71ms
+     → relation "users" does not exist
+   × GET /auth/me > should return email verification status 71ms
+     → relation "users" does not exist
+   × POST /auth/resend-verification > should resend verification email for unverified user 70ms
+     → relation "users" does not exist
+   × POST /auth/resend-verification > should reject resend for already verified user 71ms
+     → relation "users" does not exist
+   × POST /auth/resend-verification > should rate limit resend requests 74ms
+     → relation "users" does not exist
+   × POST /auth/resend-verification > should not reveal if email does not exist (security) 71ms
+     → relation "users" does not exist
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/document-generation.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | tests/document-generation.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/document-generation.test.js
+✓ Test database connected
+
+stdout | tests/document-generation.test.js
+  Applying base schema...
+
+stdout | tests/document-generation.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/document-generation.test.js
+✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/document-generation.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stdout | tests/document-generation.test.js
+✓ Server adapters initialized
+✓ Test environment ready
+
+
+stderr | tests/document-generation.test.js > Document Generation > Query Letter Generation > should generate query letter within word count range
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/document-generation.test.js > Document Generation > Query Letter Generation > should generate query letter within word count range
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stderr | tests/document-generation.test.js > Document Generation > Query Letter Generation > should generate query letter within word count range
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Query Letter Generation > should include essential query letter components
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Query Letter Generation > should validate query letter structure
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Query Letter Generation > should reject query letters that are too short
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Query Letter Generation > should reject query letters that are too long
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Synopsis Generation > should generate short synopsis at 500 words
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Synopsis Generation > should generate long synopsis at 2500 words
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Synopsis Generation > should include beginning, middle, and end
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Synopsis Generation > should reveal ending (unlike blurb)
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Synopsis Generation > should maintain chronological order
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Version Management > should create new version on update
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Version Management > should track version metadata
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Version Management > should allow rollback to previous version
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Version Management > should maintain version history after rollback
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Document Validation > should validate document type
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Document Validation > should reject invalid document type
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Document Validation > should validate required fields
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Document Validation > should calculate word count accurately
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Document Validation > should handle empty document
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > AI Generation Metadata > should track generation parameters
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > AI Generation Metadata > should calculate cost based on token usage
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Batch Generation > should generate all document types at once
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Batch Generation > should track individual generation status
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Edge Cases > should handle very short manuscript title
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Edge Cases > should handle very long manuscript title
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Edge Cases > should handle special characters in content
+No tables found to reset
+
+stderr | tests/document-generation.test.js > Document Generation > Edge Cases > should handle unicode characters
+No tables found to reset
+
+stdout | tests/document-generation.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/document-generation.test.js
+✓ Test database cleaned
+
+stdout | tests/document-generation.test.js
+✓ Database adapter closed
+
+stdout | tests/document-generation.test.js
+✓ Test database disconnected
+
+stdout | tests/document-generation.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ✓ tests/document-generation.test.js (27 tests) 488ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/error-handling.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+
+stdout | tests/error-handling.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/error-handling.test.js
+✓ Test database connected
+
+stdout | tests/error-handling.test.js
+  Applying base schema...
+
+stdout | tests/error-handling.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/error-handling.test.js
+✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/error-handling.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stdout | tests/error-handling.test.js
+✓ Server adapters initialized
+✓ Test environment ready
+
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create AppError with correct properties
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create AppError with correct properties
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create AppError with correct properties
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should serialize AppError to JSON correctly
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create AuthenticationError with 401 status
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create AuthorizationError with 403 status
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create ValidationError with 400 status
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create NotFoundError with 404 status
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create RateLimitError with 429 status
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create ConflictError with 409 status
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create ServerError with 500 status
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Classes > should create ExternalServiceError with service name
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > createErrorResponse > should create Response with correct status and JSON
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > createErrorResponse > should handle generic Error objects
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > createErrorResponse > should include Retry-After header for rate limit errors
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > createErrorResponse > should merge additional headers
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Assertion Helpers > assert should not throw when condition is true
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Assertion Helpers > assert should throw ValidationError when condition is false
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Assertion Helpers > assert should include details in error
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Assertion Helpers > assertAuthenticated should not throw when userId exists
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Assertion Helpers > assertAuthenticated should throw when userId is null
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Assertion Helpers > assertAuthenticated should throw when userId is undefined
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Assertion Helpers > assertAuthorized should not throw when permission is true
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Assertion Helpers > assertAuthorized should throw when permission is false
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Inheritance > should maintain instanceof relationships
+No tables found to reset
+
+stderr | tests/error-handling.test.js > Error Handling > Error Inheritance > should have correct error names
+No tables found to reset
+
+stdout | tests/error-handling.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/error-handling.test.js
+✓ Test database cleaned
+
+stdout | tests/error-handling.test.js
+✓ Database adapter closed
+
+stdout | tests/error-handling.test.js
+✓ Test database disconnected
+
+stdout | tests/error-handling.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ❯ tests/error-handling.test.js (24 tests | 4 failed) 527ms
+   ✓ Error Handling > Error Classes > should create AppError with correct properties 10ms
+   ✓ Error Handling > Error Classes > should serialize AppError to JSON correctly 2ms
+   ✓ Error Handling > Error Classes > should create AuthenticationError with 401 status 2ms
+   ✓ Error Handling > Error Classes > should create AuthorizationError with 403 status 1ms
+   ✓ Error Handling > Error Classes > should create ValidationError with 400 status 2ms
+   ✓ Error Handling > Error Classes > should create NotFoundError with 404 status 2ms
+   ✓ Error Handling > Error Classes > should create RateLimitError with 429 status 2ms
+   ✓ Error Handling > Error Classes > should create ConflictError with 409 status 2ms
+   ✓ Error Handling > Error Classes > should create ServerError with 500 status 2ms
+   ✓ Error Handling > Error Classes > should create ExternalServiceError with service name 2ms
+   × Error Handling > createErrorResponse > should create Response with correct status and JSON 17ms
+     → crypto is not defined
+   × Error Handling > createErrorResponse > should handle generic Error objects 2ms
+     → crypto is not defined
+   × Error Handling > createErrorResponse > should include Retry-After header for rate limit errors 1ms
+     → crypto is not defined
+   × Error Handling > createErrorResponse > should merge additional headers 1ms
+     → crypto is not defined
+   ✓ Error Handling > Assertion Helpers > assert should not throw when condition is true 2ms
+   ✓ Error Handling > Assertion Helpers > assert should throw ValidationError when condition is false 1ms
+   ✓ Error Handling > Assertion Helpers > assert should include details in error 1ms
+   ✓ Error Handling > Assertion Helpers > assertAuthenticated should not throw when userId exists 1ms
+   ✓ Error Handling > Assertion Helpers > assertAuthenticated should throw when userId is null 1ms
+   ✓ Error Handling > Assertion Helpers > assertAuthenticated should throw when userId is undefined 1ms
+   ✓ Error Handling > Assertion Helpers > assertAuthorized should not throw when permission is true 1ms
+   ✓ Error Handling > Assertion Helpers > assertAuthorized should throw when permission is false 1ms
+   ✓ Error Handling > Error Inheritance > should maintain instanceof relationships 1ms
+   ✓ Error Handling > Error Inheritance > should have correct error names 1ms
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+
+stdout | tests/integration/infrastructure.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }
+
+stdout | tests/integration/infrastructure.test.js
+
+🧪 Setting up test environment...
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database connected
+
+stdout | tests/integration/infrastructure.test.js
+  Applying base schema...
+
+stdout | tests/integration/infrastructure.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database initialized
+Initializing adapters...
+✓ Database adapter initialized
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/integration/infrastructure.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stdout | tests/integration/infrastructure.test.js
+✓ Server adapters initialized
+✓ Test environment ready
+
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Database Utilities > should insert and retrieve test records
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Database Utilities > should insert and retrieve test records
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Database Utilities > should insert and retrieve test records
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Database Utilities > should count test records
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Database Utilities > should reset database between tests
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > API Client > should make HTTP requests
+No tables found to reset
+
+[0mGET /health [32m200[0m 10.378 ms - 105[0m
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Mock Factories > should create mock Redis client
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Mock Factories > should create mock Redis client with expiration
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Mock Factories > should create mock storage adapter
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Test Data Factories > should create test user data
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Test Data Factories > should create test user with overrides
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Test Data Factories > should create test manuscript data
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Test Data Factories > should generate unique test emails
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Integration: Factories + Database > should insert factory-generated user into database
+No tables found to reset
+
+stderr | tests/integration/infrastructure.test.js > Test Infrastructure > Integration: Factories + Database > should insert factory-generated manuscript into database
+No tables found to reset
+
+stdout | tests/integration/infrastructure.test.js
+
+🧹 Tearing down test environment...
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database cleaned
+
+stdout | tests/integration/infrastructure.test.js
+✓ Database adapter closed
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database disconnected
+
+stdout | tests/integration/infrastructure.test.js
+✓ Test database cleaned up
+✓ Test environment cleaned up
+
+
+ ❯ tests/integration/infrastructure.test.js (13 tests | 5 failed) 537ms
+   × Test Infrastructure > Database Utilities > should insert and retrieve test records 30ms
+     → relation "users" does not exist
+   × Test Infrastructure > Database Utilities > should count test records 8ms
+     → relation "users" does not exist
+   × Test Infrastructure > Database Utilities > should reset database between tests 3ms
+     → relation "users" does not exist
+   ✓ Test Infrastructure > API Client > should make HTTP requests 24ms
+   ✓ Test Infrastructure > Mock Factories > should create mock Redis client 3ms
+   ✓ Test Infrastructure > Mock Factories > should create mock Redis client with expiration 2ms
+   ✓ Test Infrastructure > Mock Factories > should create mock storage adapter 4ms
+   ✓ Test Infrastructure > Test Data Factories > should create test user data 2ms
+   ✓ Test Infrastructure > Test Data Factories > should create test user with overrides 2ms
+   ✓ Test Infrastructure > Test Data Factories > should create test manuscript data 2ms
+   ✓ Test Infrastructure > Test Data Factories > should generate unique test emails 2ms
+   × Test Infrastructure > Integration: Factories + Database > should insert factory-generated user into database 2ms
+     → relation "users" does not exist
+   × Test Infrastructure > Integration: Factories + Database > should insert factory-generated manuscript into database 2ms
+     → relation "users" does not exist
+stdout | process.<anonymous> (/mnt/d/manuscript-platform/tests/setup.js:115:11)
+
+⚠ Received SIGTERM, cleaning up...
+

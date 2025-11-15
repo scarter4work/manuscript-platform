@@ -2,6 +2,7 @@
 // Handles webhook delivery, retries, and event management
 
 import { createHmac } from 'crypto';
+import crypto from 'crypto';
 
 export class WebhookManager {
   constructor(env) {

@@ -2,6 +2,7 @@
 // Manages publication progress across multiple platforms with per-platform checklists
 
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 /**
  * Verify user session and return auth result

@@ -13,6 +13,7 @@
  */
 
 import { generateEPUB } from './epub-generator.js';
+import crypto from 'crypto';
 
 /**
  * Amazon KDP Specifications

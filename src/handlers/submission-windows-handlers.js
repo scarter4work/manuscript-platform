@@ -2,6 +2,7 @@
 // Publisher submission windows, deadlines, alerts
 
 import { getUserFromRequest } from '../utils/auth-utils.js';
+import crypto from 'crypto';
 
 // ========================================================================
 // PUBLISHER MANAGEMENT

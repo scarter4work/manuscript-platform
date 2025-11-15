@@ -3,6 +3,7 @@
 
 import { authenticateAPIKey, APIKeyManager } from '../managers/api-key-manager.js';
 import { WebhookManager } from '../managers/webhook-manager.js';
+import crypto from 'crypto';
 
 /**
  * POST /api/v1/manuscripts
