@@ -257,6 +257,35 @@ export function createStorageAdapter(env) {
   console.log(`  Access Key ID: ${config.accessKeyId?.substring(0, 4)}... (length: ${config.accessKeyId?.length})`);
   console.log(`  Secret Key: ${config.secretAccessKey ? `***set*** (length: ${config.secretAccessKey.length})` : '***missing***'}`);
 
+  // Enhanced diagnostics for credential issues
+  if (config.accessKeyId) {
+    const keyId = config.accessKeyId;
+    console.log('[StorageAdapter] Access Key ID Diagnostics:');
+    console.log(`  First 8 chars: "${keyId.substring(0, 8)}"`);
+    console.log(`  Last 8 chars: "${keyId.substring(keyId.length - 8)}"`);
+    console.log(`  Contains spaces: ${keyId.includes(' ')}`);
+    console.log(`  Contains newlines: ${keyId.includes('\n') || keyId.includes('\r')}`);
+    console.log(`  Contains tabs: ${keyId.includes('\t')}`);
+
+    // Check for non-printable characters
+    const nonPrintable = keyId.split('').filter(char => {
+      const code = char.charCodeAt(0);
+      return code < 32 || code > 126;
+    });
+    if (nonPrintable.length > 0) {
+      console.log(`  Non-printable chars: ${nonPrintable.length} found`);
+      console.log(`  Char codes: ${nonPrintable.map(c => c.charCodeAt(0)).join(', ')}`);
+    }
+
+    // Expected B2 S3-compatible key format: 25 chars starting with '000' or '005'
+    if (keyId.length !== 25) {
+      console.log(`  ⚠ WARNING: Expected length 25, got ${keyId.length}`);
+    }
+    if (!keyId.startsWith('000') && !keyId.startsWith('005')) {
+      console.log(`  ⚠ WARNING: Expected prefix '000' or '005', got '${keyId.substring(0, 3)}'`);
+    }
+  }
+
   return new StorageAdapter(config);
 }
 
