@@ -224,15 +224,15 @@ class Bucket {
  */
 export function createStorageAdapter(env) {
   const config = {
-    endpoint: env.B2_ENDPOINT,
-    region: env.B2_REGION,
-    accessKeyId: env.B2_ACCESS_KEY_ID,
-    secretAccessKey: env.B2_SECRET_ACCESS_KEY,
+    endpoint: env.B2_ENDPOINT?.trim(),
+    region: env.B2_REGION?.trim(),
+    accessKeyId: env.B2_ACCESS_KEY_ID?.trim(),
+    secretAccessKey: env.B2_SECRET_ACCESS_KEY?.trim(),
     buckets: {
-      manuscripts_raw: env.B2_BUCKET_MANUSCRIPTS_RAW,
-      manuscripts_processed: env.B2_BUCKET_MANUSCRIPTS_PROCESSED,
-      marketing_assets: env.B2_BUCKET_MARKETING_ASSETS,
-      backups: env.B2_BUCKET_BACKUPS,
+      manuscripts_raw: env.B2_BUCKET_MANUSCRIPTS_RAW?.trim(),
+      manuscripts_processed: env.B2_BUCKET_MANUSCRIPTS_PROCESSED?.trim(),
+      marketing_assets: env.B2_BUCKET_MARKETING_ASSETS?.trim(),
+      backups: env.B2_BUCKET_BACKUPS?.trim(),
     }
   };
 
@@ -254,8 +254,8 @@ export function createStorageAdapter(env) {
   console.log('[StorageAdapter] B2 Configuration:');
   console.log(`  Endpoint: ${config.endpoint}`);
   console.log(`  Region: ${config.region}`);
-  console.log(`  Access Key ID: ${config.accessKeyId?.substring(0, 4)}...`);
-  console.log(`  Secret Key: ${config.secretAccessKey ? '***set***' : '***missing***'}`);
+  console.log(`  Access Key ID: ${config.accessKeyId?.substring(0, 4)}... (length: ${config.accessKeyId?.length})`);
+  console.log(`  Secret Key: ${config.secretAccessKey ? `***set*** (length: ${config.secretAccessKey.length})` : '***missing***'}`);
 
   return new StorageAdapter(config);
 }
