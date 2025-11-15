@@ -250,6 +250,13 @@ export function createStorageAdapter(env) {
     }
   }
 
+  // Debug: Log masked credentials (first 4 chars only for security)
+  console.log('[StorageAdapter] B2 Configuration:');
+  console.log(`  Endpoint: ${config.endpoint}`);
+  console.log(`  Region: ${config.region}`);
+  console.log(`  Access Key ID: ${config.accessKeyId?.substring(0, 4)}...`);
+  console.log(`  Secret Key: ${config.secretAccessKey ? '***set***' : '***missing***'}`);
+
   return new StorageAdapter(config);
 }
 

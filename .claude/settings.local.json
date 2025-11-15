@@ -51,7 +51,8 @@
       "Bash(DATABASE_URL=\"postgresql://manuscript_platform_user:dcxKtPenX4XsMHokULvVlgxZpWOPe15v@dpg-d45bhn6uk2gs73cdp7vg-a.oregon-postgres.render.com/manuscript_platform\" node scripts/apply-missing-migrations.js:*)",
       "Bash(DATABASE_URL=\"postgresql://manuscript_platform_user:dcxKtPenX4XsMHokULvVlgxZpWOPe15v@dpg-d45bhn6uk2gs73cdp7vg-a.oregon-postgres.render.com/manuscript_platform\" psql:*)",
       "Bash(PGPASSWORD='dcxKtPenX4XsMHokULvVlgxZpWOPe15v' psql:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "mcp__render__update_environment_variables"
     ],
     "deny": [],
     "ask": []
