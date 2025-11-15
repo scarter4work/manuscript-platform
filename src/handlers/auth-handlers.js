@@ -15,6 +15,7 @@
  * MAN-28/MAN-39: Now includes KV caching for user profile lookups
  */
 
+import crypto from 'crypto';
 import {
   hashPassword,
   verifyPassword,
@@ -285,8 +286,8 @@ export async function handleLogin(request, env) {
     // Update last login timestamp
     const now = Math.floor(Date.now() / 1000);
     await env.DB.prepare(
-      'UPDATE users SET last_login = ?, updated_at = ? WHERE id = ?'
-    ).bind(now, now, user.id).run();
+      'UPDATE users SET last_login = ? WHERE id = ?'
+    ).bind(now, user.id).run();
 
     // Log successful login
     await logAuthEvent(env, user.id, 'login', request, {
