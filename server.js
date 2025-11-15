@@ -8,9 +8,16 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import multer from 'multer';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
+
+// Configure multer for file uploads (store in memory)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
+});
 
 // Import adapters
 import { createDatabaseAdapter } from './src/adapters/database-adapter.js';
@@ -183,7 +190,25 @@ function expressToWorkersRequest(req) {
 
   // Add body for non-GET/HEAD requests
   if (req.method !== 'GET' && req.method !== 'HEAD') {
-    if (req.body) {
+    // Handle file uploads via multer
+    if (req.file) {
+      const formData = new FormData();
+
+      // Add file with proper Blob/File format
+      const blob = new Blob([req.file.buffer], { type: req.file.mimetype });
+      formData.append('file', blob, req.file.originalname);
+
+      // Add other form fields
+      if (req.body) {
+        for (const [key, value] of Object.entries(req.body)) {
+          formData.append(key, value);
+        }
+      }
+
+      init.body = formData;
+      // Remove content-type header - FormData sets it with boundary
+      headers.delete('content-type');
+    } else if (req.body) {
       init.body = JSON.stringify(req.body);
     }
   }
@@ -215,6 +240,10 @@ async function workersToExpressResponse(workersResponse, res) {
     res.send(buffer);
   }
 }
+
+// Apply multer middleware for file uploads on specific routes
+app.post('/upload/manuscript', upload.single('file'));
+app.post('/upload/marketing', upload.single('file'));
 
 // Main route handler - delegates to Workers router
 app.use(async (req, res, next) => {
