@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "workflow-enforcer": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/mnt/d/cc_build_mcp/build/index.js"
+      ]
+    }
+  }
+}

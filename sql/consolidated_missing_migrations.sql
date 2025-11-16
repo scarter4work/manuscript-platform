@@ -92,16 +92,22 @@ CREATE INDEX IF NOT EXISTS idx_payment_history_subscription ON payment_history(s
 CREATE TABLE IF NOT EXISTS usage_tracking (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
-  resource_type TEXT NOT NULL,
-  resource_id TEXT NOT NULL,
+  subscription_id TEXT,
+  manuscript_id TEXT NOT NULL,
+  analysis_type TEXT NOT NULL,
+  assets_generated INTEGER DEFAULT 0,
+  credits_used INTEGER DEFAULT 1,
+  timestamp TIMESTAMP NOT NULL,
   billing_period_start TIMESTAMP NOT NULL,
   billing_period_end TIMESTAMP NOT NULL,
-  tracked_at TIMESTAMP DEFAULT NOW(),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (subscription_id) REFERENCES subscriptions(id) ON DELETE SET NULL,
+  FOREIGN KEY (manuscript_id) REFERENCES manuscripts(id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_usage_tracking_user ON usage_tracking(user_id);
 CREATE INDEX IF NOT EXISTS idx_usage_tracking_period ON usage_tracking(billing_period_start, billing_period_end);
+CREATE INDEX IF NOT EXISTS idx_usage_tracking_timestamp ON usage_tracking(timestamp DESC);
 
 -- Critical view for upload functionality
 CREATE OR REPLACE VIEW user_subscriptions_with_usage AS
@@ -235,7 +241,7 @@ VALUES
   ('migration_004_cost_tracking', NOW()),
   ('migration_007_team_collaboration', NOW()),
   ('migration_008_email_system', NOW())
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (migration_name) DO NOTHING;
 
 COMMIT;
 

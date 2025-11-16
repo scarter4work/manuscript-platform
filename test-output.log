@@ -1,0 +1,903 @@
+
+> manuscript-upload-api@1.0.0 test
+> cross-env NODE_ENV=test TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@192.168.68.63:5432/manuscript_platform_test vitest run tests/integration/handlers/payment-handlers.test.js
+
+
+ RUN  v3.2.4 /mnt/d/manuscript-platform
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+[dotenv@17.2.3] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+Initializing adapters...
+✓ Database adapter initialized
+[StorageAdapter] B2 Configuration:
+  Endpoint: https://s3.us-east-005.backblazeb2.com
+  Region: us-east-005
+  Access Key ID: 23e7... (length: 12)
+  Secret Key: ***set*** (length: 42)
+[StorageAdapter] Access Key ID Diagnostics:
+  First 8 chars: "23e77db7"
+  Last 8 chars: "7db7df6e"
+  Contains spaces: false
+  Contains newlines: false
+  Contains tabs: false
+  ⚠ WARNING: Expected length 25, got 12
+  ⚠ WARNING: Expected prefix '000' or '005', got '23e'
+✓ Storage adapter initialized
+⚠ Running in test mode without Redis - using in-memory session store
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Session store initialized
+✓ Cache adapter initialized
+✓ Queue service initialized
+✓ Environment initialized
+✓ Session middleware applied
+[VirusScanner] Initializing ClamAV at localhost:3310...
+
+stderr | tests/integration/handlers/payment-handlers.test.js
+[VirusScanner] Failed to initialize: connect ECONNREFUSED 127.0.0.1:3310
+
+stderr | tests/integration/handlers/payment-handlers.test.js
+⚠ Virus scanner initialization failed (uploads will continue without scanning)
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+
+🧪 Setting up test environment...
+🔌 Attempting to connect to test database...
+📍 Host: 192.168.68.63:5432, Database: manuscript_platform_test
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database connected
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  Applying base schema...
+  Creating schema_migrations table...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  Applying consolidated missing migrations...
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+  ✓ Schema and migrations applied
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Migrations applied
+✓ Database adapter created (D1-compatible interface)
+
+stdout | tests/integration/handlers/payment-handlers.test.js
+✓ Test database initialized
+✓ Test environment ready
+
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:54:50.659Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:54:50.659Z'[39m, [32m'03c40cb103ab8173af3411b3cb3a4b5d'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create checkout session for valid subscription
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:54:50.659Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 624.403 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should require authentication for checkout
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:54:51.551Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:54:51.551Z'[39m, [32m'31305983c8fd00035a9568f83f363106'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should require authentication for checkout
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:54:51.551Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 111.607 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should reject invalid price IDs
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:54:52.789Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:54:52.789Z'[39m, [32m'3d1c124eb9370d852ef737f4dfc1ae76'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should reject invalid price IDs
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:54:52.789Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 115.864 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should include userId in session metadata
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:54:54.160Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:54:54.160Z'[39m, [32m'10193a2818b578801cf944b2f1cf6b3f'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should include userId in session metadata
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:54:54.160Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 228.643 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle missing priceId field
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:54:55.686Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:54:55.686Z'[39m, [32m'0d7e622f0cc178d19e648599e3a01be6'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle missing priceId field
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:54:55.686Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 129.950 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle missing planType field
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:54:58.759Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:54:58.759Z'[39m, [32m'809520a873536558f42a4c62c84980ae'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle missing planType field
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:54:58.759Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 116.470 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create customer if not exists
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:55:00.455Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:55:00.455Z'[39m, [32m'fcbafc2dddb2e263f5fe42bf1c4644a5'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should create customer if not exists
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:55:00.455Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 117.849 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should set correct success and cancel URLs
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:55:01.494Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:55:01.494Z'[39m, [32m'f1a2b0760c0c85621b387d2e2792a25b'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should set correct success and cancel URLs
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:55:01.494Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 107.473 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle Stripe API errors gracefully
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:55:03.382Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:55:03.382Z'[39m, [32m'180885698e66686fb3dcc6025c32f4c6'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should handle Stripe API errors gracefully
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:55:03.382Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 109.657 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should log checkout session creation
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:55:04.571Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:55:04.571Z'[39m, [32m'5524ee58c411a9ddd0410d43497d263b'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /create-checkout-session > should log checkout session creation
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:55:04.571Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 110.221 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should accept webhook with valid signature
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 7.225 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with invalid signature
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 4.497 ms - 29[0m
+[0mPOST /webhooks/stripe [33m400[0m 0.902 ms - 33[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject webhook with expired signature (>5 minutes)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.297 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.375 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should reject replay attacks (duplicate event ID)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.319 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should handle malformed signature header
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 2.011 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should log signature verification failures
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.639 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Signature Verification > should return 400 for invalid signatures (not 500)
+[Webhook] Signature verification failed: Unable to extract timestamp and signatures from header
+
+[0mPOST /webhooks/stripe [33m400[0m 1.614 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - activate subscription
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.650 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle checkout.session.completed - record payment
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.894 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.updated - sync status
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.467 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - downgrade to free
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.843 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle customer.subscription.deleted - preserve data
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.195 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - record payment
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.674 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_succeeded - extend billing period
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.602 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - mark past_due
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.161 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle invoice.payment_failed - cancel after 3 failures
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.611 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should ignore unhandled event types
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.274 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.818 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle duplicate webhook deliveries (idempotent)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.861 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle webhook for deleted user gracefully
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.339 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should handle malformed webhook data gracefully
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 2.665 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should log all webhook events
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.979 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should return 200 for all webhooks (even errors)
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.917 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > POST /webhooks/stripe - Event Handling > should process webhook in under 5 seconds
+[Webhook] Signature verification failed: No signatures found matching the expected signature for payload. Are you passing the raw request body you received from Stripe? 
+ If a webhook request is being forwarded by a third-party tool, ensure that the exact request body, including JSON formatting and new line style, is preserved.
+
+Learn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature
+
+
+[0mPOST /webhooks/stripe [33m400[0m 1.568 ms - 29[0m
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /subscription > should return current subscription details
+Database query error: error: invalid input syntax for type integer: "2025-11-16T16:55:39.929Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+Query: UPDATE users SET last_login = $1 WHERE id = $2
+Params: [ [32m'2025-11-16T16:55:39.929Z'[39m, [32m'15ff0a2103b6909bbad22df1f6d10790'[39m ]
+
+stderr | tests/integration/handlers/payment-handlers.test.js > Payment & Webhook Handlers > GET /subscription > should return current subscription details
+Login error: error: invalid input syntax for type integer: "2025-11-16T16:55:39.929Z"
+    at [90m/mnt/d/manuscript-platform/[39mnode_modules/[4mpg-pool[24m/index.js:45:11
+[90m    at processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at PreparedStatement._executeQuery [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:185:22[90m)[39m
+    at PreparedStatement.run [90m(/mnt/d/manuscript-platform/[39msrc/adapters/database-adapter.js:163:20[90m)[39m
+    at Object.handleLogin [as login] [90m(/mnt/d/manuscript-platform/[39msrc/handlers/auth-handlers.js:288:5[90m)[39m
+    at routeRequest [90m(/mnt/d/manuscript-platform/[39msrc/router/router.js:71:27[90m)[39m
+    at [90m/mnt/d/manuscript-platform/[39mserver.js:273:29 {
+  length: [33m167[39m,
+  severity: [32m'ERROR'[39m,
+  code: [32m'22P02'[39m,
+  detail: [90mundefined[39m,
+  hint: [90mundefined[39m,
+  position: [90mundefined[39m,
+  internalPosition: [90mundefined[39m,
+  internalQuery: [90mundefined[39m,
+  where: [32m"unnamed portal parameter $1 = '...'"[39m,
+  schema: [90mundefined[39m,
+  table: [90mundefined[39m,
+  column: [90mundefined[39m,
+  dataType: [90mundefined[39m,
+  constraint: [90mundefined[39m,
+  file: [32m'numutils.c'[39m,
+  line: [32m'619'[39m,
+  routine: [32m'pg_strtoint32_safe'[39m
+}
+
+[0mPOST /auth/login [31m500[0m 221.968 ms - 33[0m

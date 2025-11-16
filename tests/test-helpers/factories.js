@@ -168,7 +168,7 @@ export function createTestSubscription(userId, overrides = {}) {
  * @returns {object} Payment record
  */
 export function createTestPayment(userId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   const stripePaymentId = `pi_${crypto.randomBytes(12).toString('hex')}`;
 

@@ -52,9 +52,20 @@
       "Bash(DATABASE_URL=\"postgresql://manuscript_platform_user:dcxKtPenX4XsMHokULvVlgxZpWOPe15v@dpg-d45bhn6uk2gs73cdp7vg-a.oregon-postgres.render.com/manuscript_platform\" psql:*)",
       "Bash(PGPASSWORD='dcxKtPenX4XsMHokULvVlgxZpWOPe15v' psql:*)",
       "Bash(npm install:*)",
-      "mcp__render__update_environment_variables"
+      "mcp__render__update_environment_variables",
+      "Bash(node build/index.js:*)",
+      "Bash(node /mnt/d/cc_build_mcp/build/index.js --version:*)",
+      "Bash(npm run build:*)",
+      "Bash(timeout 2 node:*)",
+      "Bash(node /mnt/d/cc_build_mcp/build/index.js:*)",
+      "mcp__workflow-enforcer__workflow_start_issue",
+      "mcp__workflow-enforcer__workflow_status",
+      "mcp__workflow-enforcer__workflow_run_tests",
+      "Bash(/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command \"Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -like ''*Ethernet*'' -or $_.InterfaceAlias -like ''*Wi-Fi*'' } | Where-Object { $_.IPAddress -notlike ''169.254.*'' -and $_.IPAddress -ne ''127.0.0.1'' } | Select-Object -ExpandProperty IPAddress\")",
+      "mcp__workflow-enforcer__workflow_commit"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enableAllProjectMcpServers": true
 }

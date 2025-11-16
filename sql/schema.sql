@@ -80,20 +80,20 @@ CREATE INDEX IF NOT EXISTS idx_submissions_status ON submissions(status);
 CREATE TABLE IF NOT EXISTS audit_log (
   id TEXT PRIMARY KEY,                    -- UUID
   user_id TEXT NOT NULL,                  -- Foreign key to users
-  event_type TEXT NOT NULL,               -- upload/download/delete/update/view/login/logout/payment
-  resource_type TEXT NOT NULL,            -- manuscript/user/submission/payment
+  action TEXT NOT NULL,                   -- upload/download/delete/update/view/login/logout/payment/register
+  resource_type TEXT NOT NULL,            -- manuscript/user/submission/payment/auth
   resource_id TEXT NOT NULL,              -- ID of affected resource
-  created_at BIGINT NOT NULL,            -- Unix timestamp
+  timestamp BIGINT NOT NULL,              -- Unix timestamp
   ip_address TEXT,                        -- IP address of request
   user_agent TEXT,                        -- User agent string
-  event_details TEXT,                     -- JSON: additional context (was metadata)
+  metadata TEXT,                          -- JSON: additional context
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Indexes for audit queries
 CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_log(user_id);
-CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_audit_event_type ON audit_log(event_type);
+CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
 
 -- ============================================================================
 -- DMCA REQUESTS TABLE
