@@ -235,7 +235,7 @@ describe('POST /auth/register', () => {
 
     await authHandlers.handleRegister(mockRequest, mockEnv);
 
-    const auditCount = await countTestRecords('audit_log', { event_type: 'register' });
+    const auditCount = await countTestRecords('audit_log', { action: 'register' });
     expect(auditCount).toBeGreaterThan(0);
   });
 
@@ -397,7 +397,7 @@ describe('POST /auth/login', () => {
   });
 
   it('should update last_login timestamp', async () => {
-    const beforeLogin = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
+    const beforeLogin = new Date(); // PostgreSQL TIMESTAMP
 
     const mockRequest = {
       json: async () => ({
@@ -413,9 +413,10 @@ describe('POST /auth/login', () => {
 
     const user = await findTestRecord('users', { email: 'login-test@example.com' });
 
-    // last_login is stored as Unix timestamp (seconds since epoch)
+    // last_login is stored as PostgreSQL TIMESTAMP
     expect(user.last_login).toBeDefined();
-    expect(user.last_login).toBeGreaterThanOrEqual(beforeLogin);
+    const loginTime = new Date(user.last_login);
+    expect(loginTime.getTime()).toBeGreaterThanOrEqual(beforeLogin.getTime());
   });
 
   it('should create session in Redis', async () => {
@@ -460,7 +461,7 @@ describe('POST /auth/login', () => {
 
     await authHandlers.handleLogin(mockRequest, mockEnv);
 
-    const auditCount = await countTestRecords('audit_log', { event_type: 'login' });
+    const auditCount = await countTestRecords('audit_log', { action: 'login' });
     expect(auditCount).toBeGreaterThan(0);
   });
 
@@ -477,7 +478,7 @@ describe('POST /auth/login', () => {
 
     await authHandlers.handleLogin(mockRequest, mockEnv);
 
-    const auditCount = await countTestRecords('audit_log', { event_type: 'login_failed' });
+    const auditCount = await countTestRecords('audit_log', { action: 'login_failed' });
     expect(auditCount).toBeGreaterThan(0);
   });
 });
@@ -617,7 +618,7 @@ describe('POST /auth/verify-email', () => {
 
     await authHandlers.handleVerifyEmail(mockRequest, mockEnv);
 
-    const auditCount = await countTestRecords('audit_log', { event_type: 'email_verified' });
+    const auditCount = await countTestRecords('audit_log', { action: 'email_verified' });
     expect(auditCount).toBeGreaterThan(0);
   });
 });
@@ -803,7 +804,7 @@ describe('POST /auth/request-password-reset', () => {
 
     await authHandlers.handleRequestPasswordReset(mockRequest, mockEnv);
 
-    const auditCount = await countTestRecords('audit_log', { event_type: 'password_reset_requested' });
+    const auditCount = await countTestRecords('audit_log', { action: 'password_reset_requested' });
     expect(auditCount).toBeGreaterThan(0);
   });
 });
@@ -985,7 +986,7 @@ describe('POST /auth/reset-password', () => {
 
     await authHandlers.handleResetPassword(mockRequest, mockEnv);
 
-    const auditCount = await countTestRecords('audit_log', { event_type: 'password_reset' });
+    const auditCount = await countTestRecords('audit_log', { action: 'password_reset' });
     expect(auditCount).toBeGreaterThan(0);
   });
 });
@@ -1064,7 +1065,7 @@ describe('POST /auth/logout', () => {
 
     await authHandlers.handleLogout(mockRequest, mockEnv);
 
-    const auditCount = await countTestRecords('audit_log', { event_type: 'logout' });
+    const auditCount = await countTestRecords('audit_log', { action: 'logout' });
     expect(auditCount).toBeGreaterThan(0);
   });
 });

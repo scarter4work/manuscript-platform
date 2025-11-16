@@ -443,10 +443,9 @@ export async function handleVerifyEmail(request, env) {
     }
 
     // Update user's email_verified flag
-    const now = Math.floor(Date.now() / 1000);
     await env.DB.prepare(
-      'UPDATE users SET email_verified = 1, updated_at = ? WHERE id = ?'
-    ).bind(now, userId).run();
+      'UPDATE users SET email_verified = TRUE WHERE id = ?'
+    ).bind(userId).run();
 
     // Invalidate user cache
     const cache = initCache(env);
@@ -601,10 +600,9 @@ export async function handlePasswordReset(request, env) {
     const newPasswordHash = await hashPassword(newPassword);
 
     // Update user's password
-    const now = Math.floor(Date.now() / 1000);
     await env.DB.prepare(
-      'UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?'
-    ).bind(newPasswordHash, now, userId).run();
+      'UPDATE users SET password_hash = ? WHERE id = ?'
+    ).bind(newPasswordHash, userId).run();
 
     // Invalidate all existing sessions for this user (force re-login)
     // Note: KV doesn't support querying by value, so we can't easily delete all user sessions

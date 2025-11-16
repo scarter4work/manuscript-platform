@@ -62,7 +62,6 @@ export async function createTestUser(dbOrOverrides = {}, overrides = {}) {
     email_verified: true,
     created_at: now,
     last_login: null,
-    stripe_customer_id: null,
     ...actualOverrides
   };
 
@@ -96,7 +95,6 @@ export async function createTestUserWithPassword({ email, password, role = 'auth
     email_verified: true,
     created_at: now,
     last_login: null,
-    stripe_customer_id: null,
     ...overrides
   };
 }
