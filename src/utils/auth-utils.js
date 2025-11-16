@@ -481,18 +481,16 @@ export async function generateVerificationToken(userId, tokenType, env) {
   const tokenBytes = crypto.getRandomValues(new Uint8Array(32));
   const token = Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('');
 
-  const createdAt = Math.floor(Date.now() / 1000);
-  const expiresAt = createdAt + Math.floor(
-    tokenType === 'password_reset'
-      ? AUTH_CONFIG.RESET_TOKEN_EXPIRY / 1000
-      : AUTH_CONFIG.TOKEN_EXPIRY / 1000
-  );
+  // Calculate expiry interval in seconds
+  const expirySeconds = tokenType === 'password_reset'
+    ? Math.floor(AUTH_CONFIG.RESET_TOKEN_EXPIRY / 1000)
+    : Math.floor(AUTH_CONFIG.TOKEN_EXPIRY / 1000);
 
-  // Store in database
+  // Store in database using PostgreSQL TIMESTAMP and INTERVAL
   await env.DB.prepare(`
     INSERT INTO verification_tokens (token, user_id, token_type, created_at, expires_at, used)
-    VALUES (?, ?, ?, ?, ?, 0)
-  `).bind(token, userId, tokenType, createdAt, expiresAt).run();
+    VALUES (?, ?, ?, NOW(), NOW() + INTERVAL '${expirySeconds} seconds', FALSE)
+  `).bind(token, userId, tokenType).run();
 
   return token;
 }
@@ -517,20 +515,20 @@ export async function validateVerificationToken(token, tokenType, env) {
   }
 
   // Check if already used
-  if (result.used === 1) {
+  if (result.used === true || result.used === 1) {
     return null;
   }
 
-  // Check if expired
-  const now = Math.floor(Date.now() / 1000);
-  if (result.expires_at < now) {
+  // Check if expired (PostgreSQL TIMESTAMP comparison)
+  const expiresAt = new Date(result.expires_at);
+  if (expiresAt < new Date()) {
     return null;
   }
 
   // Mark as used
   await env.DB.prepare(`
     UPDATE verification_tokens
-    SET used = 1
+    SET used = TRUE
     WHERE token = ?
   `).bind(token).run();
 

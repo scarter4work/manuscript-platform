@@ -91,7 +91,7 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 - Use **Render MCP** for Render deployment operations (deployments, logs, services)
   - ✅ **Configured**: MCP server at `/home/scarter/.claude/mcp.json`
   - **Global settings**: `/home/scarter/.claude/settings.local.json` (`enableAllProjectMcpServers: true`)
-  - API token: `rnd_w9xM8IlICH4le9I5wbCqTVVznWUR` (rotate regularly)
+  - API token: `rnd_PsnMsQ4YrxciokUxKbneNtq3Z5YL` (rotate regularly)
   - Check deployment status, view logs, manage services
   - Prefer MCP over manual API calls or web console checks
   - **Note**: Requires Claude Code restart after config changes
@@ -506,7 +506,7 @@ If `/home/scarter/.claude/mcp.json` goes missing, recreate with:
       "type": "http",
       "url": "https://mcp.render.com/mcp",
       "headers": {
-        "Authorization": "Bearer rnd_w9xM8IlICH4le9I5wbCqTVVznWUR"
+        "Authorization": "Bearer rnd_PsnMsQ4YrxciokUxKbneNtq3Z5YL"
       }
     }
   }

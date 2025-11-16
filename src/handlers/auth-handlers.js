@@ -152,13 +152,12 @@ export async function handleRegister(request, env) {
 
     // Generate user ID
     const userId = crypto.randomUUID();
-    const now = Math.floor(Date.now() / 1000);
 
-    // Insert user into database
+    // Insert user into database (created_at has DEFAULT NOW() in schema)
     await env.DB.prepare(`
-      INSERT INTO users (id, email, password_hash, role, created_at, updated_at, email_verified)
-      VALUES (?, ?, ?, ?, ?, ?, 0)
-    `).bind(userId, normalizedEmail, passwordHash, role, now, now).run();
+      INSERT INTO users (id, email, password_hash, role, email_verified)
+      VALUES (?, ?, ?, ?, ?)
+    `).bind(userId, normalizedEmail, passwordHash, role, false).run();
 
     // Create free subscription for new user
     try {
@@ -284,10 +283,9 @@ export async function handleLogin(request, env) {
     const sessionId = await createSession(user.id, env, rememberMe);
 
     // Update last login timestamp
-    const now = Math.floor(Date.now() / 1000); // UNIX timestamp
     await env.DB.prepare(
-      'UPDATE users SET last_login = ? WHERE id = ?'
-    ).bind(now, user.id).run();
+      'UPDATE users SET last_login = NOW() WHERE id = $1'
+    ).bind(user.id).run();
 
     // Log successful login
     await logAuthEvent(env, user.id, 'login', request, {

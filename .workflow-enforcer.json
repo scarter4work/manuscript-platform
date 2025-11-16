@@ -1,0 +1,14 @@
+{
+  "mode": "strict",
+  "template": "full-deployment",
+  "test_command": "npm test",
+  "deploy_method": "git-push",
+  "production_verification": "script",
+  "production_test_command": "npm run test:prod",
+  "production_url": "https://manuscript-platform.onrender.com",
+  "skip_deploy_for_patterns": [
+    "docs/**",
+    "*.md",
+    "tests/**/*.test.js"
+  ]
+}

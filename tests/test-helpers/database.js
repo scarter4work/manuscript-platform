@@ -171,37 +171,18 @@ async function runMigrations(db) {
   ];
 
   try {
-    console.log('  Applying base schema...');
+    console.log('  Applying production schema...');
 
-    // Apply base schema
-    const baseSchemaPath = path.join(projectRoot, 'sql', 'schema.sql');
+    // Apply exact production schema (dumped from Render PostgreSQL)
+    const baseSchemaPath = path.join(projectRoot, 'sql', 'schema_from_production.sql');
     const windowsBaseSchemaPath = wslToWindowsPath(baseSchemaPath);
     execFileSync(psqlPath, [...psqlArgs, '-f', windowsBaseSchemaPath], {
       env: { ...process.env, PGPASSWORD: 'Bjoran32!' },
       stdio: 'pipe'
     });
 
-    // Create schema_migrations table (required by consolidated migrations)
-    console.log('  Creating schema_migrations table...');
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS schema_migrations (
-        id SERIAL PRIMARY KEY,
-        migration_name TEXT NOT NULL UNIQUE,
-        applied_at TIMESTAMP DEFAULT NOW()
-      )
-    `);
-
-    // Apply consolidated missing migrations (includes subscriptions table)
-    console.log('  Applying consolidated missing migrations...');
-    const consolidatedPath = path.join(projectRoot, 'sql', 'consolidated_missing_migrations.sql');
-    const windowsConsolidatedPath = wslToWindowsPath(consolidatedPath);
-    const consolidatedResult = execFileSync(psqlPath, [...psqlArgs, '-f', windowsConsolidatedPath], {
-      env: { ...process.env, PGPASSWORD: 'Bjoran32!' },
-      stdio: 'pipe'
-    });
-    if (consolidatedResult.stderr && consolidatedResult.stderr.length > 0) {
-      console.log('  Consolidated migrations stderr:', consolidatedResult.stderr.toString().substring(0, 500));
-    }
+    // Note: schema_postgresql.sql already includes all tables from migrations
+    // No need to run consolidated_missing_migrations.sql
 
     // Apply sql/ migrations
     const sqlDir = path.join(projectRoot, 'sql');
@@ -265,24 +246,8 @@ export async function insertTestRecord(table, data) {
   }
 
   const columns = Object.keys(enrichedData);
-  // Convert values for PostgreSQL type compatibility
-  const values = columns.map(col => {
-    const v = enrichedData[col];
-
-    // Convert boolean to integer (PostgreSQL INTEGER columns)
-    if (typeof v === 'boolean') {
-      return v ? 1 : 0;
-    }
-
-    // Convert UNIX timestamps to ISO 8601 for TIMESTAMP columns in usage_tracking table
-    if (table === 'usage_tracking' && (col === 'timestamp' || col === 'billing_period_start' || col === 'billing_period_end')) {
-      if (typeof v === 'number') {
-        return new Date(v * 1000).toISOString();
-      }
-    }
-
-    return v;
-  });
+  // PostgreSQL native types - no conversion needed
+  const values = columns.map(col => enrichedData[col]);
   const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
 
   const query = `
@@ -328,17 +293,8 @@ export async function countTestRecords(table, conditions = {}) {
   }
 
   const keys = Object.keys(conditions);
-  // Convert timestamp values for usage_tracking table
-  const values = keys.map(key => {
-    const v = conditions[key];
-    // Convert UNIX timestamps to ISO 8601 for TIMESTAMP columns in usage_tracking table
-    if (table === 'usage_tracking' && (key === 'timestamp' || key === 'billing_period_start' || key === 'billing_period_end')) {
-      if (typeof v === 'number') {
-        return new Date(v * 1000).toISOString();
-      }
-    }
-    return v;
-  });
+  // PostgreSQL native types - no conversion needed
+  const values = keys.map(key => conditions[key]);
 
   let query = `SELECT COUNT(*) as count FROM ${table}`;
 

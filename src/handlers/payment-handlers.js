@@ -429,22 +429,16 @@ export async function trackUsage(env, userId, manuscriptId, analysisType = 'full
     `).bind(userId).first();
 
     const usageId = crypto.randomUUID();
-    const timestamp = Math.floor(Date.now() / 1000);
 
-    // Convert UNIX timestamps to PostgreSQL TIMESTAMP format
-    const timestampValue = new Date(timestamp * 1000).toISOString();
-    const periodStart = subscription?.current_period_start
-      ? new Date(subscription.current_period_start * 1000).toISOString()
-      : timestampValue;
-    const periodEnd = subscription?.current_period_end
-      ? new Date(subscription.current_period_end * 1000).toISOString()
-      : new Date((timestamp + 30 * 24 * 60 * 60) * 1000).toISOString();
+    // Use native PostgreSQL TIMESTAMP columns
+    const periodStart = subscription?.current_period_start || 'NOW()';
+    const periodEnd = subscription?.current_period_end || 'NOW() + INTERVAL \'30 days\'';
 
     await env.DB.prepare(`
       INSERT INTO usage_tracking (
         id, user_id, subscription_id, manuscript_id, analysis_type,
         assets_generated, credits_used, timestamp, billing_period_start, billing_period_end
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), $8, $9)
     `).bind(
       usageId,
       userId,
@@ -453,7 +447,6 @@ export async function trackUsage(env, userId, manuscriptId, analysisType = 'full
       analysisType,
       assetsGenerated ? 1 : 0,
       1, // credits_used
-      timestampValue,
       periodStart,
       periodEnd
     ).run();

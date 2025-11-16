@@ -1075,7 +1075,7 @@ describe('Payment & Webhook Handlers', () => {
         analysis_type: 'full',
         assets_generated: 0,
         credits_used: 1,
-        timestamp,
+        timestamp: new Date().toISOString(),
         billing_period_start: subscription.current_period_start,
         billing_period_end: subscription.current_period_end
       });
@@ -1280,9 +1280,9 @@ describe('Payment & Webhook Handlers', () => {
         analysis_type: 'full',
         assets_generated: 0,
         credits_used: 1,
-        timestamp,
-        billing_period_start: timestamp,
-        billing_period_end: timestamp + 2592000
+        timestamp: new Date().toISOString(),
+        billing_period_start: new Date().toISOString(),
+        billing_period_end: new Date(Date.now() + 2592000000).toISOString()
       });
 
       const usage = await findTestRecord('usage_tracking', { id: usageId });
@@ -1380,9 +1380,8 @@ describe('Payment & Webhook Handlers', () => {
         user_id: testUser.id
       });
 
-      const beforeTimestamp = Math.floor(Date.now() / 1000) - 10;
+      const beforeTimestamp = new Date(Date.now() - 10000).toISOString(); // 10 seconds ago
       const usageId = generateId();
-      const timestamp = Math.floor(Date.now() / 1000);
 
       await insertTestRecord('usage_tracking', {
         id: usageId,
@@ -1392,16 +1391,17 @@ describe('Payment & Webhook Handlers', () => {
         analysis_type: 'full',
         assets_generated: 0,
         credits_used: 1,
-        timestamp,
+        timestamp: new Date().toISOString(),
         billing_period_start: subscription.current_period_start,
         billing_period_end: subscription.current_period_end
       });
 
       const usage = await findTestRecord('usage_tracking', { id: usageId });
-      // Convert PostgreSQL TIMESTAMP to UNIX timestamp for comparison
-      const usageTimestamp = Math.floor(new Date(usage.timestamp).getTime() / 1000);
-      expect(usageTimestamp).toBeGreaterThan(beforeTimestamp);
-      expect(usageTimestamp).toBeLessThanOrEqual(Math.floor(Date.now() / 1000));
+      // PostgreSQL TIMESTAMP - compare as Date objects
+      const usageTime = new Date(usage.timestamp);
+      const beforeTime = new Date(beforeTimestamp);
+      expect(usageTime.getTime()).toBeGreaterThan(beforeTime.getTime());
+      expect(usageTime.getTime()).toBeLessThanOrEqual(Date.now());
     });
 
     it('should delete usage records when manuscript is deleted (CASCADE)', async () => {

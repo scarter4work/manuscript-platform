@@ -52,7 +52,7 @@ export async function createTestUser(dbOrOverrides = {}, overrides = {}) {
   const isDbClient = dbOrOverrides && typeof dbOrOverrides.query === 'function';
   const actualOverrides = isDbClient ? overrides : dbOrOverrides;
 
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   const userData = {
     id: generateId(),
@@ -61,7 +61,6 @@ export async function createTestUser(dbOrOverrides = {}, overrides = {}) {
     role: 'author',
     email_verified: true,
     created_at: now,
-    updated_at: now,
     last_login: null,
     stripe_customer_id: null,
     ...actualOverrides
@@ -87,7 +86,7 @@ export async function createTestUser(dbOrOverrides = {}, overrides = {}) {
  */
 export async function createTestUserWithPassword({ email, password, role = 'author', ...overrides }) {
   const password_hash = await bcrypt.hash(password, 10);
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -96,7 +95,6 @@ export async function createTestUserWithPassword({ email, password, role = 'auth
     role,
     email_verified: true,
     created_at: now,
-    updated_at: now,
     last_login: null,
     stripe_customer_id: null,
     ...overrides
@@ -111,7 +109,7 @@ export async function createTestUserWithPassword({ email, password, role = 'auth
  * @returns {object} Manuscript record
  */
 export function createTestManuscript(userId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
   const id = generateId();
 
   return {
@@ -126,7 +124,6 @@ export function createTestManuscript(userId, overrides = {}) {
     file_type: 'txt',
     metadata: null,
     uploaded_at: now,
-    updated_at: now,
     flagged_for_review: 0,
     ...overrides
   };
@@ -140,7 +137,7 @@ export function createTestManuscript(userId, overrides = {}) {
  * @returns {object} Subscription record
  */
 export function createTestSubscription(userId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -195,15 +192,16 @@ export function createTestPayment(userId, overrides = {}) {
  * @returns {object} Verification token record
  */
 export function createTestVerificationToken(userId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + (24 * 60 * 60 * 1000)); // +24 hours
 
   return {
     user_id: userId,
     token: crypto.randomBytes(32).toString('hex'),
     token_type: 'email_verification',
-    used: 0, // PostgreSQL INTEGER (0 = false, 1 = true)
-    expires_at: now + 86400, // +24 hours
-    created_at: now,
+    used: false, // PostgreSQL BOOLEAN
+    expires_at: expiresAt.toISOString(),
+    created_at: now.toISOString(),
     ...overrides
   };
 }
@@ -216,7 +214,7 @@ export function createTestVerificationToken(userId, overrides = {}) {
  * @returns {object} Supporting document record
  */
 export function createTestDocument(manuscriptId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -228,7 +226,6 @@ export function createTestDocument(manuscriptId, overrides = {}) {
     version: 1,
     is_current_version: true,
     created_at: now,
-    updated_at: now,
     ...overrides
   };
 }
@@ -241,7 +238,7 @@ export function createTestDocument(manuscriptId, overrides = {}) {
  * @returns {object} Submission package record
  */
 export function createTestPackage(manuscriptId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -251,7 +248,6 @@ export function createTestPackage(manuscriptId, overrides = {}) {
     status: 'draft',
     document_order: null,
     created_at: now,
-    updated_at: now,
     ...overrides
   };
 }
@@ -264,7 +260,7 @@ export function createTestPackage(manuscriptId, overrides = {}) {
  * @returns {object} Submission record
  */
 export function createTestSubmission(manuscriptId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -277,7 +273,6 @@ export function createTestSubmission(manuscriptId, overrides = {}) {
     response_date: null,
     response_type: null,
     created_at: now,
-    updated_at: now,
     ...overrides
   };
 }
@@ -290,7 +285,7 @@ export function createTestSubmission(manuscriptId, overrides = {}) {
  * @returns {object} Feedback record
  */
 export function createTestFeedback(submissionId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -311,7 +306,7 @@ export function createTestFeedback(submissionId, overrides = {}) {
  * @returns {object} Marketing kit record
  */
 export function createTestMarketingKit(manuscriptId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -319,7 +314,6 @@ export function createTestMarketingKit(manuscriptId, overrides = {}) {
     status: 'completed',
     generation_cost: 0.15,
     created_at: now,
-    updated_at: now,
     ...overrides
   };
 }
@@ -332,7 +326,7 @@ export function createTestMarketingKit(manuscriptId, overrides = {}) {
  * @returns {object} Social media post record
  */
 export function createTestSocialPost(kitId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -358,7 +352,7 @@ export function createTestSocialPost(kitId, overrides = {}) {
  * @returns {object} Audit log record
  */
 export function createTestAuditLog(userId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -379,7 +373,7 @@ export function createTestAuditLog(userId, overrides = {}) {
  * @returns {object} Usage tracking record
  */
 export function createTestUsageTracking(userId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
   const firstOfMonth = new Date();
   firstOfMonth.setDate(1);
   firstOfMonth.setHours(0, 0, 0, 0);
@@ -394,7 +388,6 @@ export function createTestUsageTracking(userId, overrides = {}) {
     kdp_packages_generated: 0,
     query_letters_generated: 0,
     created_at: now,
-    updated_at: now,
     ...overrides
   };
 }
@@ -505,7 +498,7 @@ export function createCompleteTestSubmission(manuscriptId, options = {}) {
  * @returns {object} Analysis record
  */
 export function createTestAnalysis(manuscriptId, overrides = {}) {
-  const now = Math.floor(Date.now() / 1000);
+  const now = new Date().toISOString();
 
   return {
     id: generateId(),
@@ -528,7 +521,6 @@ export function createTestAnalysis(manuscriptId, overrides = {}) {
       ]
     }),
     created_at: now,
-    updated_at: now,
     completed_at: now,
     ...overrides
   };
