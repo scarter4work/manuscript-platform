@@ -284,7 +284,7 @@ export async function handleLogin(request, env) {
     const sessionId = await createSession(user.id, env, rememberMe);
 
     // Update last login timestamp
-    const now = new Date().toISOString();
+    const now = Math.floor(Date.now() / 1000); // UNIX timestamp
     await env.DB.prepare(
       'UPDATE users SET last_login = ? WHERE id = ?'
     ).bind(now, user.id).run();

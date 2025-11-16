@@ -431,6 +431,15 @@ export async function trackUsage(env, userId, manuscriptId, analysisType = 'full
     const usageId = crypto.randomUUID();
     const timestamp = Math.floor(Date.now() / 1000);
 
+    // Convert UNIX timestamps to PostgreSQL TIMESTAMP format
+    const timestampValue = new Date(timestamp * 1000).toISOString();
+    const periodStart = subscription?.current_period_start
+      ? new Date(subscription.current_period_start * 1000).toISOString()
+      : timestampValue;
+    const periodEnd = subscription?.current_period_end
+      ? new Date(subscription.current_period_end * 1000).toISOString()
+      : new Date((timestamp + 30 * 24 * 60 * 60) * 1000).toISOString();
+
     await env.DB.prepare(`
       INSERT INTO usage_tracking (
         id, user_id, subscription_id, manuscript_id, analysis_type,
@@ -444,9 +453,9 @@ export async function trackUsage(env, userId, manuscriptId, analysisType = 'full
       analysisType,
       assetsGenerated ? 1 : 0,
       1, // credits_used
-      timestamp,
-      subscription?.current_period_start || timestamp,
-      subscription?.current_period_end || timestamp + (30 * 24 * 60 * 60) // +30 days
+      timestampValue,
+      periodStart,
+      periodEnd
     ).run();
 
     console.log(`[Payment] Usage tracked: ${usageId}`);
@@ -463,8 +472,8 @@ export async function trackUsage(env, userId, manuscriptId, analysisType = 'full
 export async function createFreeSubscription(env, userId) {
   try {
     const subscriptionId = crypto.randomUUID();
-    const timestamp = Math.floor(Date.now() / 1000);
-    const periodEnd = timestamp + (30 * 24 * 60 * 60); // +30 days
+    const now = new Date();
+    const periodEnd = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // +30 days
 
     await env.DB.prepare(`
       INSERT INTO subscriptions (
@@ -478,11 +487,11 @@ export async function createFreeSubscription(env, userId) {
       `default_${userId}`,
       'free',
       'active',
-      timestamp,
-      periodEnd,
+      now.toISOString(),
+      periodEnd.toISOString(),
       0,
-      timestamp,
-      timestamp
+      now.toISOString(),
+      now.toISOString()
     ).run();
 
     console.log(`[Payment] Free subscription created for user ${userId}`);

@@ -104,21 +104,28 @@ Work is **NOT COMPLETE** until ALL acceptance criteria are met:
 ### WSL2 PostgreSQL Connection Setup
 **Problem**: WSL2 runs in a VM, so `127.0.0.1` in WSL2 refers to WSL2's localhost, NOT Windows. PostgreSQL running on Windows cannot be reached via `localhost` from WSL2.
 
-**Solution** (Applied 2025-11-13):
+**IMPORTANT: Use Windows LAN IP, NOT WSL Gateway IP**
+- The PostgreSQL host IP must be the **Windows LAN IP address** (e.g., `192.168.68.63`)
+- This is NOT the same as the WSL gateway IP (e.g., `172.23.176.1`)
+- The Windows LAN IP can change after a reboot or network changes
+- To find current Windows LAN IP: `Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -like '*Ethernet*' -or $_.InterfaceAlias -like '*Wi-Fi*' }`
+
+**Solution** (Applied 2025-11-13, Updated 2025-11-16):
 
 **1. Windows Firewall Configuration**
 ```powershell
 # Run as Administrator in Windows PowerShell
-New-NetFirewallRule -DisplayName "PostgreSQL from WSL" -Direction Inbound -LocalPort 5432 -Protocol TCP -Action Allow -RemoteAddress 172.23.176.0/24
+New-NetFirewallRule -DisplayName "PostgreSQL from WSL" -Direction Inbound -LocalPort 5432 -Protocol TCP -Action Allow -RemoteAddress 172.23.176.0/24,192.168.68.0/24
 ```
 
 **2. Connection String Configuration**
-- Test database connection uses Windows host IP instead of localhost
+- Test database connection uses **Windows LAN IP** (not WSL gateway)
 - `package.json` test script:
   ```
-  TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@172.23.176.1:5432/manuscript_platform_test
+  TEST_DATABASE_URL=postgresql://postgres:Bjoran32!@192.168.68.63:5432/manuscript_platform_test
   ```
-- Host IP (`172.23.176.1`) is the WSL gateway address (check with `ip route show | grep default`)
+- Host IP (`192.168.68.63`) is the **Windows LAN IP address**
+- Check/update IP after system reboot: `Get-NetIPAddress` (PowerShell) or test with `PGPASSWORD='Bjoran32!' psql -h <IP> -U postgres -l`
 
 **3. Test Migration Script Fixes** (`tests/test-helpers/database.js`)
 - **Extract host from connection string**: Parse `TEST_DATABASE_URL` to get the host dynamically

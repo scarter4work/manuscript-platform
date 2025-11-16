@@ -181,6 +181,28 @@ async function runMigrations(db) {
       stdio: 'pipe'
     });
 
+    // Create schema_migrations table (required by consolidated migrations)
+    console.log('  Creating schema_migrations table...');
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS schema_migrations (
+        id SERIAL PRIMARY KEY,
+        migration_name TEXT NOT NULL UNIQUE,
+        applied_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
+    // Apply consolidated missing migrations (includes subscriptions table)
+    console.log('  Applying consolidated missing migrations...');
+    const consolidatedPath = path.join(projectRoot, 'sql', 'consolidated_missing_migrations.sql');
+    const windowsConsolidatedPath = wslToWindowsPath(consolidatedPath);
+    const consolidatedResult = execFileSync(psqlPath, [...psqlArgs, '-f', windowsConsolidatedPath], {
+      env: { ...process.env, PGPASSWORD: 'Bjoran32!' },
+      stdio: 'pipe'
+    });
+    if (consolidatedResult.stderr && consolidatedResult.stderr.length > 0) {
+      console.log('  Consolidated migrations stderr:', consolidatedResult.stderr.toString().substring(0, 500));
+    }
+
     // Apply sql/ migrations
     const sqlDir = path.join(projectRoot, 'sql');
     const sqlFiles = (await fs.readdir(sqlDir))
@@ -243,11 +265,24 @@ export async function insertTestRecord(table, data) {
   }
 
   const columns = Object.keys(enrichedData);
-  // Convert boolean values to integers for PostgreSQL INTEGER columns
-  // PostgreSQL is strict about types: true → 1, false → 0
-  const values = Object.values(enrichedData).map(v =>
-    typeof v === 'boolean' ? (v ? 1 : 0) : v
-  );
+  // Convert values for PostgreSQL type compatibility
+  const values = columns.map(col => {
+    const v = enrichedData[col];
+
+    // Convert boolean to integer (PostgreSQL INTEGER columns)
+    if (typeof v === 'boolean') {
+      return v ? 1 : 0;
+    }
+
+    // Convert UNIX timestamps to ISO 8601 for TIMESTAMP columns in usage_tracking table
+    if (table === 'usage_tracking' && (col === 'timestamp' || col === 'billing_period_start' || col === 'billing_period_end')) {
+      if (typeof v === 'number') {
+        return new Date(v * 1000).toISOString();
+      }
+    }
+
+    return v;
+  });
   const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
 
   const query = `
@@ -293,7 +328,17 @@ export async function countTestRecords(table, conditions = {}) {
   }
 
   const keys = Object.keys(conditions);
-  const values = Object.values(conditions);
+  // Convert timestamp values for usage_tracking table
+  const values = keys.map(key => {
+    const v = conditions[key];
+    // Convert UNIX timestamps to ISO 8601 for TIMESTAMP columns in usage_tracking table
+    if (table === 'usage_tracking' && (key === 'timestamp' || key === 'billing_period_start' || key === 'billing_period_end')) {
+      if (typeof v === 'number') {
+        return new Date(v * 1000).toISOString();
+      }
+    }
+    return v;
+  });
 
   let query = `SELECT COUNT(*) as count FROM ${table}`;
 

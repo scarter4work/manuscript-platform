@@ -59,15 +59,17 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('users', testUser);
 
       // Create subscription
+      const now = new Date();
+      const periodEnd = new Date(now.getTime() + 2592000 * 1000); // +30 days
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
         plan_type: 'free',
         status: 'active',
-        current_period_start: Math.floor(Date.now() / 1000),
-        current_period_end: Math.floor(Date.now() / 1000) + 2592000,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
+        current_period_start: now.toISOString(),
+        current_period_end: periodEnd.toISOString(),
+        created_at: now.toISOString(),
+        updated_at: now.toISOString()
       });
 
       // Login
@@ -212,7 +214,7 @@ describe('Payment & Webhook Handlers', () => {
 
       // Audit log would track this event
       const auditLog = await queryTestDb(
-        'SELECT * FROM audit_log WHERE user_id = $1 AND event_type LIKE $2 ORDER BY created_at DESC LIMIT 1',
+        'SELECT * FROM audit_log WHERE user_id = $1 AND action LIKE $2 ORDER BY timestamp DESC LIMIT 1',
         [testUser.id, '%checkout%']
       );
 
@@ -348,7 +350,7 @@ describe('Payment & Webhook Handlers', () => {
 
       // Security audit log would track failed webhook attempts
       const auditLog = await queryTestDb(
-        'SELECT * FROM audit_log WHERE event_type LIKE $1 ORDER BY created_at DESC LIMIT 1',
+        'SELECT * FROM audit_log WHERE action LIKE $1 ORDER BY timestamp DESC LIMIT 1',
         ['%webhook%']
       );
 
@@ -388,15 +390,17 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('users', testUser);
 
       // Create free subscription
+      const now2 = new Date();
+      const periodEnd2 = new Date(now2.getTime() + 2592000 * 1000); // +30 days
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
         plan_type: 'free',
         status: 'active',
-        current_period_start: Math.floor(Date.now() / 1000),
-        current_period_end: Math.floor(Date.now() / 1000) + 2592000,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
+        current_period_start: now2.toISOString(),
+        current_period_end: periodEnd2.toISOString(),
+        created_at: now2.toISOString(),
+        updated_at: now2.toISOString()
       });
     });
 
@@ -736,7 +740,7 @@ describe('Payment & Webhook Handlers', () => {
 
       // Webhook events may be logged
       const auditLog = await queryTestDb(
-        'SELECT * FROM audit_log WHERE event_details LIKE $1',
+        'SELECT * FROM audit_log WHERE metadata LIKE $1',
         ['%webhook%']
       );
 
@@ -801,6 +805,8 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('users', testUser);
 
       // Create subscription
+      const now3 = new Date();
+      const periodEnd3 = new Date(now3.getTime() + 2592000 * 1000);
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
@@ -808,10 +814,10 @@ describe('Payment & Webhook Handlers', () => {
         status: 'active',
         stripe_subscription_id: 'sub_test_123',
         stripe_customer_id: 'cus_test_123',
-        current_period_start: Math.floor(Date.now() / 1000),
-        current_period_end: Math.floor(Date.now() / 1000) + 2592000,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
+        current_period_start: now3.toISOString(),
+        current_period_end: periodEnd3.toISOString(),
+        created_at: now3.toISOString(),
+        updated_at: now3.toISOString()
       });
 
       // Login
@@ -896,27 +902,30 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('users', testUser);
 
       // Create subscription
+      const now4 = new Date();
+      const periodEnd4 = new Date(now4.getTime() + 2592000 * 1000);
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
         plan_type: 'freelancer',
         status: 'active',
-        current_period_start: Math.floor(Date.now() / 1000),
-        current_period_end: Math.floor(Date.now() / 1000) + 2592000,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
+        current_period_start: now4.toISOString(),
+        current_period_end: periodEnd4.toISOString(),
+        created_at: now4.toISOString(),
+        updated_at: now4.toISOString()
       });
 
       // Create payment records
+      const thirtyDaysAgo = new Date(Date.now() - 86400 * 30 * 1000).toISOString();
       const payment1 = createTestPayment(testUser.id, {
         amount: 2999,
         description: 'Freelancer Plan - Monthly',
-        created_at: Math.floor(Date.now() / 1000) - 86400 * 30 // 30 days ago
+        created_at: thirtyDaysAgo
       });
       const payment2 = createTestPayment(testUser.id, {
         amount: 2999,
         description: 'Freelancer Plan - Monthly',
-        created_at: Math.floor(Date.now() / 1000)
+        created_at: new Date().toISOString()
       });
 
       await insertTestRecord('payment_history', payment1);
@@ -971,9 +980,10 @@ describe('Payment & Webhook Handlers', () => {
 
       if (response.status === 200 && response.body.payments.length >= 2) {
         const payments = response.body.payments;
-        expect(payments[0].created_at).toBeGreaterThanOrEqual(
-          payments[1].created_at
-        );
+        // Convert timestamps to comparable values (Date objects or milliseconds)
+        const firstDate = new Date(payments[0].created_at).getTime();
+        const secondDate = new Date(payments[1].created_at).getTime();
+        expect(firstDate).toBeGreaterThanOrEqual(secondDate);
       }
     });
 
@@ -1019,16 +1029,18 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('users', testUser);
 
       // Create subscription
+      const now5 = new Date();
+      const periodEnd5 = new Date(now5.getTime() + 2592000 * 1000);
       await insertTestRecord('subscriptions', {
         id: testUser.id + '-sub',
         user_id: testUser.id,
         plan_type: 'freelancer',
         status: 'active',
         stripe_subscription_id: 'sub_test_123',
-        current_period_start: Math.floor(Date.now() / 1000),
-        current_period_end: Math.floor(Date.now() / 1000) + 2592000,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
+        current_period_start: now5.toISOString(),
+        current_period_end: periodEnd5.toISOString(),
+        created_at: now5.toISOString(),
+        updated_at: now5.toISOString()
       });
 
       // Create manuscript
@@ -1386,8 +1398,10 @@ describe('Payment & Webhook Handlers', () => {
       });
 
       const usage = await findTestRecord('usage_tracking', { id: usageId });
-      expect(usage.timestamp).toBeGreaterThan(beforeTimestamp);
-      expect(usage.timestamp).toBeLessThanOrEqual(Math.floor(Date.now() / 1000));
+      // Convert PostgreSQL TIMESTAMP to UNIX timestamp for comparison
+      const usageTimestamp = Math.floor(new Date(usage.timestamp).getTime() / 1000);
+      expect(usageTimestamp).toBeGreaterThan(beforeTimestamp);
+      expect(usageTimestamp).toBeLessThanOrEqual(Math.floor(Date.now() / 1000));
     });
 
     it('should delete usage records when manuscript is deleted (CASCADE)', async () => {
