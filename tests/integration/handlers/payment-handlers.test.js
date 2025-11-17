@@ -1061,7 +1061,6 @@ describe('Payment & Webhook Handlers', () => {
     it('should track manuscript analysis usage', async () => {
       // Import trackUsage directly (if exported) or test via analysis endpoint
       const usageId = generateId();
-      const timestamp = Math.floor(Date.now() / 1000);
 
       const subscription = await findTestRecord('subscriptions', {
         user_id: testUser.id
@@ -1070,21 +1069,18 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('usage_tracking', {
         id: usageId,
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: new Date().toISOString(),
+        resource_type: 'manuscript',
+        resource_id: testManuscript.id,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
       const usage = await findTestRecord('usage_tracking', { id: usageId });
       expect(usage).toBeTruthy();
       expect(usage.user_id).toBe(testUser.id);
-      expect(usage.manuscript_id).toBe(testManuscript.id);
-      expect(usage.credits_used).toBe(1);
+      expect(usage.resource_type).toBe('manuscript');
+      expect(usage.resource_id).toBe(testManuscript.id);
     });
 
     it('should track different analysis types', async () => {
@@ -1097,14 +1093,11 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('usage_tracking', {
         id: basicUsageId,
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'basic',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: Math.floor(Date.now() / 1000),
+        resource_type: 'analysis_basic',
+        resource_id: testManuscript.id,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
       // Track full analysis
@@ -1112,14 +1105,11 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('usage_tracking', {
         id: fullUsageId,
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: Math.floor(Date.now() / 1000),
+        resource_type: 'analysis_full',
+        resource_id: testManuscript.id,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
       const basicUsage = await findTestRecord('usage_tracking', {
@@ -1127,8 +1117,8 @@ describe('Payment & Webhook Handlers', () => {
       });
       const fullUsage = await findTestRecord('usage_tracking', { id: fullUsageId });
 
-      expect(basicUsage.analysis_type).toBe('basic');
-      expect(fullUsage.analysis_type).toBe('full');
+      expect(basicUsage.resource_type).toBe('analysis_basic');
+      expect(fullUsage.resource_type).toBe('analysis_full');
     });
 
     it('should track asset generation separately', async () => {
@@ -1136,34 +1126,29 @@ describe('Payment & Webhook Handlers', () => {
         user_id: testUser.id
       });
 
-      // Without assets
+      // Without assets (manuscript only)
       const usageNoAssets = generateId();
       await insertTestRecord('usage_tracking', {
         id: usageNoAssets,
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: Math.floor(Date.now() / 1000),
+        resource_type: 'manuscript',
+        resource_id: testManuscript.id,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
-      // With assets
+      // With assets (marketing kit)
       const usageWithAssets = generateId();
+      const marketingKitId = generateId();
       await insertTestRecord('usage_tracking', {
         id: usageWithAssets,
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 1,
-        credits_used: 1,
-        timestamp: Math.floor(Date.now() / 1000),
+        resource_type: 'marketing_kit',
+        resource_id: marketingKitId,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
       const noAssets = await findTestRecord('usage_tracking', {
@@ -1173,8 +1158,8 @@ describe('Payment & Webhook Handlers', () => {
         id: usageWithAssets
       });
 
-      expect(noAssets.assets_generated).toBe(0);
-      expect(withAssets.assets_generated).toBe(1);
+      expect(noAssets.resource_type).toBe('manuscript');
+      expect(withAssets.resource_type).toBe('marketing_kit');
     });
 
     it('should calculate usage within billing period', async () => {
@@ -1187,14 +1172,11 @@ describe('Payment & Webhook Handlers', () => {
         await insertTestRecord('usage_tracking', {
           id: generateId(),
           user_id: testUser.id,
-          subscription_id: subscription.id,
-          manuscript_id: testManuscript.id,
-          analysis_type: 'full',
-          assets_generated: 0,
-          credits_used: 1,
-          timestamp: Math.floor(Date.now() / 1000),
+          resource_type: 'manuscript',
+          resource_id: testManuscript.id,
           billing_period_start: subscription.current_period_start,
-          billing_period_end: subscription.current_period_end
+          billing_period_end: subscription.current_period_end,
+          tracked_at: new Date().toISOString()
         });
       }
 
@@ -1207,10 +1189,11 @@ describe('Payment & Webhook Handlers', () => {
     });
 
     it('should separate usage across different billing periods', async () => {
-      const currentPeriodStart = Math.floor(Date.now() / 1000);
-      const currentPeriodEnd = currentPeriodStart + 2592000;
-      const previousPeriodStart = currentPeriodStart - 2592000;
-      const previousPeriodEnd = currentPeriodStart;
+      const now = new Date();
+      const currentPeriodStart = new Date(now);
+      const currentPeriodEnd = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)); // +30 days
+      const previousPeriodStart = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000)); // -30 days
+      const previousPeriodEnd = new Date(now);
 
       const subscription = await findTestRecord('subscriptions', {
         user_id: testUser.id
@@ -1220,38 +1203,32 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('usage_tracking', {
         id: generateId(),
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: currentPeriodStart + 100,
-        billing_period_start: currentPeriodStart,
-        billing_period_end: currentPeriodEnd
+        resource_type: 'manuscript',
+        resource_id: testManuscript.id,
+        billing_period_start: currentPeriodStart.toISOString(),
+        billing_period_end: currentPeriodEnd.toISOString(),
+        tracked_at: now.toISOString()
       });
 
       // Previous period usage
       await insertTestRecord('usage_tracking', {
         id: generateId(),
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: previousPeriodStart + 100,
-        billing_period_start: previousPeriodStart,
-        billing_period_end: previousPeriodEnd
+        resource_type: 'manuscript',
+        resource_id: testManuscript.id,
+        billing_period_start: previousPeriodStart.toISOString(),
+        billing_period_end: previousPeriodEnd.toISOString(),
+        tracked_at: new Date(previousPeriodStart.getTime() + 100000).toISOString()
       });
 
       const currentUsage = await countTestRecords('usage_tracking', {
         user_id: testUser.id,
-        billing_period_start: currentPeriodStart
+        billing_period_start: currentPeriodStart.toISOString()
       });
 
       const previousUsage = await countTestRecords('usage_tracking', {
         user_id: testUser.id,
-        billing_period_start: previousPeriodStart
+        billing_period_start: previousPeriodStart.toISOString()
       });
 
       expect(currentUsage).toBe(1);
@@ -1270,24 +1247,22 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('manuscripts', manuscript);
 
       const usageId = generateId();
-      const timestamp = Math.floor(Date.now() / 1000);
+      const now = new Date();
 
       await insertTestRecord('usage_tracking', {
         id: usageId,
         user_id: payPerUser.id,
-        subscription_id: null, // No subscription
-        manuscript_id: manuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: new Date().toISOString(),
-        billing_period_start: new Date().toISOString(),
-        billing_period_end: new Date(Date.now() + 2592000000).toISOString()
+        resource_type: 'manuscript',
+        resource_id: manuscript.id,
+        billing_period_start: now.toISOString(),
+        billing_period_end: new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000)).toISOString(),
+        tracked_at: now.toISOString()
       });
 
       const usage = await findTestRecord('usage_tracking', { id: usageId });
       expect(usage).toBeTruthy();
-      expect(usage.subscription_id).toBeNull();
+      expect(usage.user_id).toBe(payPerUser.id);
+      expect(usage.resource_type).toBe('manuscript');
     });
 
     it('should link usage to specific manuscript', async () => {
@@ -1305,35 +1280,29 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('usage_tracking', {
         id: generateId(),
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: Math.floor(Date.now() / 1000),
+        resource_type: 'manuscript',
+        resource_id: testManuscript.id,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
       // Track usage for second manuscript
       await insertTestRecord('usage_tracking', {
         id: generateId(),
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: manuscript2.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: Math.floor(Date.now() / 1000),
+        resource_type: 'manuscript',
+        resource_id: manuscript2.id,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
       const manuscript1Usage = await countTestRecords('usage_tracking', {
-        manuscript_id: testManuscript.id
+        resource_id: testManuscript.id
       });
       const manuscript2Usage = await countTestRecords('usage_tracking', {
-        manuscript_id: manuscript2.id
+        resource_id: manuscript2.id
       });
 
       expect(manuscript1Usage).toBe(1);
@@ -1345,26 +1314,23 @@ describe('Payment & Webhook Handlers', () => {
         user_id: testUser.id
       });
 
-      // Track 5 analyses
+      // Track 5 analyses (each tracked event represents usage)
       for (let i = 0; i < 5; i++) {
         await insertTestRecord('usage_tracking', {
           id: generateId(),
           user_id: testUser.id,
-          subscription_id: subscription.id,
-          manuscript_id: testManuscript.id,
-          analysis_type: 'full',
-          assets_generated: 0,
-          credits_used: 1,
-          timestamp: Math.floor(Date.now() / 1000),
+          resource_type: 'manuscript',
+          resource_id: testManuscript.id,
           billing_period_start: subscription.current_period_start,
-          billing_period_end: subscription.current_period_end
+          billing_period_end: subscription.current_period_end,
+          tracked_at: new Date().toISOString()
         });
       }
 
-      // Calculate total credits used
+      // Calculate total usage events (each event = 1 credit)
       const result = await queryTestDb(
         `
-        SELECT SUM(credits_used) as total_credits
+        SELECT COUNT(*) as total_usage
         FROM usage_tracking
         WHERE user_id = $1
         AND billing_period_start = $2
@@ -1372,7 +1338,7 @@ describe('Payment & Webhook Handlers', () => {
         [testUser.id, subscription.current_period_start]
       );
 
-      expect(parseInt(result.rows[0].total_credits)).toBe(5);
+      expect(parseInt(result.rows[0].total_usage)).toBe(5);
     });
 
     it('should track timestamp for usage analytics', async () => {
@@ -1386,19 +1352,16 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('usage_tracking', {
         id: usageId,
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: new Date().toISOString(),
+        resource_type: 'manuscript',
+        resource_id: testManuscript.id,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
       const usage = await findTestRecord('usage_tracking', { id: usageId });
       // PostgreSQL TIMESTAMP - compare as Date objects
-      const usageTime = new Date(usage.timestamp);
+      const usageTime = new Date(usage.tracked_at);
       const beforeTime = new Date(beforeTimestamp);
       expect(usageTime.getTime()).toBeGreaterThan(beforeTime.getTime());
       expect(usageTime.getTime()).toBeLessThanOrEqual(Date.now());
@@ -1413,27 +1376,27 @@ describe('Payment & Webhook Handlers', () => {
       await insertTestRecord('usage_tracking', {
         id: usageId,
         user_id: testUser.id,
-        subscription_id: subscription.id,
-        manuscript_id: testManuscript.id,
-        analysis_type: 'full',
-        assets_generated: 0,
-        credits_used: 1,
-        timestamp: Math.floor(Date.now() / 1000),
+        resource_type: 'manuscript',
+        resource_id: testManuscript.id,
         billing_period_start: subscription.current_period_start,
-        billing_period_end: subscription.current_period_end
+        billing_period_end: subscription.current_period_end,
+        tracked_at: new Date().toISOString()
       });
 
       // Verify usage exists
       let usage = await findTestRecord('usage_tracking', { id: usageId });
       expect(usage).toBeTruthy();
 
-      // Delete manuscript (should cascade)
+      // Delete manuscript (CASCADE may or may not be implemented)
       await queryTestDb('DELETE FROM manuscripts WHERE id = $1', [
         testManuscript.id
       ]);
 
-      // Verify usage was deleted
+      // Note: CASCADE deletion depends on foreign key constraints being set up
+      // This test verifies the behavior exists if constraints are configured
       usage = await findTestRecord('usage_tracking', { id: usageId });
+      // If FK constraints with CASCADE exist, usage should be null
+      // If not, usage may still exist (test will fail if CASCADE is expected but not configured)
       expect(usage).toBeNull();
     });
   });

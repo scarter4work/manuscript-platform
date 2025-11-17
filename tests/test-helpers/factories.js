@@ -135,7 +135,9 @@ export function createTestManuscript(userId, overrides = {}) {
  * @returns {object} Subscription record
  */
 export function createTestSubscription(userId, overrides = {}) {
-  const now = new Date().toISOString();
+  const now = new Date();
+  const periodEnd = new Date(now);
+  periodEnd.setDate(periodEnd.getDate() + 30); // +30 days
 
   return {
     id: generateId(),
@@ -144,11 +146,11 @@ export function createTestSubscription(userId, overrides = {}) {
     status: 'active',
     stripe_subscription_id: null,
     stripe_price_id: null,
-    current_period_start: now,
-    current_period_end: now + 2592000, // +30 days
+    current_period_start: now.toISOString(),
+    current_period_end: periodEnd.toISOString(),
     cancel_at_period_end: false,
-    created_at: now,
-    updated_at: now,
+    created_at: now.toISOString(),
+    updated_at: now.toISOString(),
     ...overrides,
     // Ensure stripe_customer_id is never null (required by schema)
     stripe_customer_id: overrides.stripe_customer_id || 'cus_test_' + generateId().substring(0, 8)
@@ -371,21 +373,22 @@ export function createTestAuditLog(userId, overrides = {}) {
  * @returns {object} Usage tracking record
  */
 export function createTestUsageTracking(userId, overrides = {}) {
-  const now = new Date().toISOString();
+  const now = new Date();
   const firstOfMonth = new Date();
   firstOfMonth.setDate(1);
   firstOfMonth.setHours(0, 0, 0, 0);
 
+  const periodEnd = new Date(firstOfMonth);
+  periodEnd.setDate(periodEnd.getDate() + 30); // +30 days
+
   return {
     id: generateId(),
     user_id: userId,
-    period_start: Math.floor(firstOfMonth.getTime() / 1000),
-    period_end: Math.floor(firstOfMonth.getTime() / 1000) + 2592000, // +30 days
-    manuscripts_analyzed: 0,
-    marketing_kits_generated: 0,
-    kdp_packages_generated: 0,
-    query_letters_generated: 0,
-    created_at: now,
+    resource_type: 'manuscript',
+    resource_id: generateId(),
+    billing_period_start: firstOfMonth.toISOString(),
+    billing_period_end: periodEnd.toISOString(),
+    tracked_at: now.toISOString(),
     ...overrides
   };
 }
