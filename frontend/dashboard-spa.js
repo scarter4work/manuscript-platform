@@ -4,7 +4,7 @@
 const app = {
     // Configuration
     API_BASE: window.location.hostname === 'localhost'
-        ? 'http://localhost:8787'
+        ? 'http://localhost:8080'  // Spring Boot default port
         : window.location.origin,
     
     // State
